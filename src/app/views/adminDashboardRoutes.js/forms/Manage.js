@@ -1,0 +1,222 @@
+import {
+  InputLabel,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+import { Fragment, React, useState } from "react";
+import { Box } from "@mui/system";
+import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
+
+import {
+  Card,
+  Button,
+  Grid,
+  styled,
+  useTheme,
+  Icon,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TablePagination,
+  TableRow,
+} from "@mui/material";
+import RowCards from "../shared/RowCards";
+import { Breadcrumb } from "app/components";
+import FormDialog2 from "app/views/material-kit/dialog/FormDialog2";
+import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
+import DeleteIcon from "@mui/icons-material/Delete";
+import useFetch from "hooks/useFetch";
+import { Link } from "react-router-dom";
+const ContentBox = styled("div")(({ theme }) => ({
+  margin: "30px",
+  [theme.breakpoints.down("sm")]: { margin: "16px" },
+}));
+
+const Title = styled("span")(() => ({
+  fontSize: "1rem",
+  fontWeight: "500",
+  marginRight: ".5rem",
+  textTransform: "capitalize",
+}));
+
+const SubTitle = styled("span")(({ theme }) => ({
+  fontSize: "0.875rem",
+  color: theme.palette.text.secondary,
+}));
+
+const H4 = styled("h4")(({ theme }) => ({
+  fontSize: "1rem",
+  fontWeight: "500",
+  marginBottom: "16px",
+  textTransform: "capitalize",
+  color: theme.palette.text.secondary,
+}));
+const StyledTable = styled(Table)(() => ({
+  whiteSpace: "pre",
+  "& thead": {
+    "& tr": { "& th": { paddingLeft: 0, paddingRight: 0 } },
+  },
+  "& tbody": {
+    "& tr": { "& td": { paddingLeft: 0, textTransform: "capitalize" } },
+  },
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  margin: theme.spacing(1),
+}));
+
+const Manage = () => {
+  const { data, loading, error } = useFetch("/get-exam");
+
+  const { palette } = useTheme();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [action, setAction] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorElMap, setAnchorElMap] = useState({});
+  const handleChangePage = (_, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+  // Function to handle opening the context menu for a specific exam
+  const handleOpenMenu = (event, examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: event.currentTarget,
+    }));
+  };
+
+  // Function to handle closing the context menu for a specific exam
+  const handleCloseMenu = (examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: null,
+    }));
+  };
+  const handleAction = (value) => {
+    setAction(value);
+    handleCloseMenu();
+  };
+
+  return (
+    <Fragment>
+      <ContentBox className="analytics">
+        <Box className="breadcrumb">
+          <FormDialog2 />
+        </Box>
+
+        <Box width="100%" overflow="auto">
+          <StyledTable>
+            <TableHead>
+              <TableRow>
+                <TableCell align="left">Exam Name</TableCell>
+                <TableCell align="left">ClassName</TableCell>
+                <TableCell align="left">Subject</TableCell>
+                <TableCell align="left">Exam Date</TableCell>
+                <TableCell align="left">Time</TableCell>
+                <TableCell align="right">Option</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data &&
+                data.map((item) => (
+                  <TableRow key={item._id}>
+                    <TableCell align="center">{item.title}</TableCell>
+                    <TableCell align="center">{item.className}</TableCell>
+                    <TableCell align="left">{item.subject}</TableCell>
+                    <TableCell align="center">{item.date}</TableCell>
+
+                    <TableCell align="center">
+                      {item.fromTime}
+                      {item.toTime}
+                    </TableCell>
+                    <TableCell align="right">
+                      <IconButton
+                        aria-controls={`action-menu-${item._id}`}
+                        aria-haspopup="true"
+                        onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
+                      >
+                        <MoreVertIcon /> {/* MoreVertIcon for the menu */}
+                      </IconButton>
+                      <Menu
+                        id={`action-menu-${item._id}`}
+                        anchorEl={anchorElMap[item._id]}
+                        open={Boolean(anchorElMap[item._id])}
+                        onClose={() => handleCloseMenu(item._id)}
+                      >
+                        <MenuItem>
+                          <ListItemIcon></ListItemIcon>
+                          <Link
+                            to={`/dashboard/manage-online-exam/${item._id}`}
+                          >
+                            Manage Questions
+                          </Link>
+                        </MenuItem>
+                        <MenuItem>
+                          <ListItemIcon>
+                            <EditIcon /> {/* Use an Edit icon */}
+                          </ListItemIcon>
+                          Edit
+                        </MenuItem>
+                        <MenuItem>
+                          <ListItemIcon>
+                            <DeleteIcon /> {/* Use a Delete icon */}
+                          </ListItemIcon>
+                          Delete
+                        </MenuItem>
+                      </Menu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </StyledTable>
+
+          <TablePagination
+            sx={{ px: 2 }}
+            page={page}
+            component="div"
+            rowsPerPage={rowsPerPage}
+            count={data.length}
+            onPageChange={handleChangePage}
+            rowsPerPageOptions={[5, 10, 25]}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            nextIconButtonProps={{ "aria-label": "Next Page" }}
+            backIconButtonProps={{ "aria-label": "Previous Page" }}
+          />
+        </Box>
+
+        {/* <TopSellingTable />
+            <StatCards2 />
+
+            <H4>Ongoing Projects</H4>
+            <RowCards />
+          </Grid>
+
+          <Grid item lg={4} md={4} sm={12} xs={12}>
+            <Card sx={{ px: 3, py: 2, mb: 3 }}>
+              <Title>Traffic Sources</Title>
+              <SubTitle>Last 30 days</SubTitle>
+
+              <DoughnutChart
+                height="300px"
+                color={[palette.primary.dark, palette.primary.main, palette.primary.light]}
+              />
+            </Card>
+
+            <UpgradeCard />
+            <Campaigns />*/}
+      </ContentBox>
+    </Fragment>
+  );
+};
+
+export default Manage;
