@@ -7,6 +7,7 @@ import {
   TextField,
   IconButton,
   InputAdornment,
+  MenuItem,
   FormControl,
   FormLabel,
   RadioGroup,
@@ -17,7 +18,7 @@ import { Box, styled } from "@mui/system";
 import { Paragraph } from "app/components/Typography";
 import useAuth from "app/hooks/useAuth";
 import { Formik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -76,6 +77,28 @@ const JwtRegister = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  // Declare variables and states here
+  const [classData, setClassData] = useState([]); // To store the list of classes
+  const [selectedClass, setSelectedClass] = useState(""); // To store the selected class
+
+  useEffect(() => {
+    // Assuming you have the JWT token stored in localStorage
+    const token = localStorage.getItem("jwtToken");
+    // Fetch classes from your API
+    fetch("http://localhost:3003/api/class", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`, // Include your authentication token
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setClassData(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching classes:", error);
+      });
+  }, []);
 
   const handleFormSubmit = (values) => {
     setLoading(true);
@@ -267,22 +290,26 @@ const JwtRegister = () => {
                           )}
                           sx={{ mb: 3 }}
                         />
-
                         <TextField
                           fullWidth
-                          size="small"
-                          type="text"
-                          name="classname"
-                          label="Class Name"
+                          select
+                          label="Select a class"
                           variant="outlined"
-                          onBlur={handleBlur}
+                          name="classname" // Make sure the name matches your form field
                           value={values.classname}
-                          id="classname"
                           onChange={handleChange}
-                          helperText={touched.classname && errors.classname}
-                          error={Boolean(errors.classname && touched.classname)}
                           sx={{ mb: 3 }}
-                        />
+                        >
+                          {classData.map((classItem) => (
+                            <MenuItem
+                              key={classItem._id}
+                              value={classItem.name}
+                            >
+                              {classItem.name}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+
                         <TextField
                           fullWidth
                           size="small"

@@ -15,7 +15,10 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useLocation, useNavigate } from "react-router-dom";
+import DeleteConfirmationModal from "./DeleteConfirmationModal"; // Adjust the import path
+
 import useFetch from "hooks/useFetch";
+import EditQuestionModal from "./EditQuestionModal";
 
 const ManSin = () => {
   const location = useLocation();
@@ -34,13 +37,45 @@ const ManSin = () => {
   const [optionFields, setOptionFields] = useState([]);
   const [mark, setMark] = useState("");
   const [questionTitle, setQuestionTitle] = useState("");
+  const [deleteQuestionId, setDeleteQuestionId] = useState(null);
+  const [editQuestion, setEditQuestion] = useState(null);
+
   const [options, setOptions] = useState([]);
   const navigate = useNavigate();
 
   const [questions, setQuestions] = useState([]);
   // Function to calculate total marks
+
+  const confirmDelete = async () => {
+    if (deleteQuestionId) {
+      // Delete the question here
+      // Add your delete logic here
+
+      // After deleting, close the modal
+      setDeleteQuestionId(null);
+    }
+  };
+  const handleEditQuestion = (question) => {
+    setEditQuestion(question);
+  };
+  const updateQuestion = (updatedQuestion) => {
+    // Update the question in your state
+    const updatedQuestions = questions.map((question) => {
+      if (question._id === updatedQuestion._id) {
+        return updatedQuestion;
+      }
+      return question;
+    });
+
+    setQuestions(updatedQuestions);
+  };
+  // Function to calculate total marks
   const calculateTotalMarks = () => {
-    return questions.reduce((total, question) => total + question.mark, 0);
+    // Use map to extract the mark as an integer and then sum them up
+    return questions.reduce(
+      (total, question) => total + parseInt(question.mark),
+      0
+    );
   };
   // Update total marks whenever questions change
   useEffect(() => {
@@ -56,6 +91,50 @@ const ManSin = () => {
 
   const handleNumberOfOptionsChange = (event) => {
     setNumberOfOptions(parseInt(event.target.value));
+  };
+  const addQuestion = (newQuestion) => {
+    console.log("Adding question:", newQuestion);
+    const newMark = parseInt(newQuestion.mark);
+    console.log("New Mark:", newMark);
+    console.log("Previous Questions:", questions);
+    setQuestions([...questions, newQuestion]);
+    console.log("Updated Questions:", questions);
+    setTotalMark((prevTotalMark) => prevTotalMark + newMark);
+  };
+
+  const handleDeleteQuestion = async (questionId) => {
+    try {
+      // Fetch the JWT token from local storage
+      const token = localStorage.getItem("jwtToken");
+
+      const response = await fetch(
+        `http://localhost:3003/api/questions/${questionId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        // Question deleted successfully
+        console.log("Question deleted successfully");
+
+        // Update your local state to remove the deleted question
+        setQuestions((prevQuestions) =>
+          prevQuestions.filter((question) => question._id !== questionId)
+        );
+
+        // Set the questionId to null to close the modal
+        setDeleteQuestionId(null);
+      } else {
+        // Handle errors
+        console.error("Failed to delete the question");
+      }
+    } catch (error) {
+      console.error("An error occurred while deleting the question:", error);
+    }
   };
 
   useEffect(() => {
@@ -131,6 +210,7 @@ const ManSin = () => {
       if (response.ok) {
         // Question submitted successfully, you can handle the response here
         console.log("Question submitted successfully");
+        addQuestion(questionData);
       } else {
         // Handle errors
         console.error("Failed to submit the question");
@@ -401,7 +481,9 @@ const ManSin = () => {
                             title=""
                             data-original-title="Edit"
                           >
-                            <EditIcon />
+                            <EditIcon
+                              onClick={() => handleEditQuestion(question)}
+                            />
                           </a>
                           <a
                             href="#"
@@ -410,12 +492,31 @@ const ManSin = () => {
                             title=""
                             data-original-title="Delete"
                           >
-                            <DeleteIcon />
+                            <DeleteIcon
+                              onClick={() => setDeleteQuestionId(question._id)}
+                              style={{ cursor: "pointer" }}
+                            />
+
+                            <DeleteConfirmationModal
+                              open={deleteQuestionId === question._id} // Open the modal for the specific question
+                              onClose={() => setDeleteQuestionId(null)}
+                              onConfirm={() =>
+                                handleDeleteQuestion(question._id)
+                              } // Pass the question ID to handleDeleteQuestion
+                            />
                           </a>
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
+                  {editQuestion && (
+                    <EditQuestionModal
+                      open={!!editQuestion}
+                      onClose={() => setEditQuestion(null)}
+                      question={editQuestion}
+                      onUpdate={updateQuestion}
+                    />
+                  )}
                 </Table>
               </div>
             </div>

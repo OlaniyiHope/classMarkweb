@@ -14,32 +14,32 @@ export const navigations = [
           {
             name: "Class J.S.S 1",
             iconText: "SI",
-            path: "/dashboard/jss1-student_information",
+            path: "student/dashboard/jss1-student_information",
           },
           {
             name: "Class J.S.S 2",
             iconText: "SI",
-            path: "/dashboard/jss2-student_information",
+            path: "student/dashboard/jss2-student_information",
           },
           {
             name: "Class J.S.S 3",
             iconText: "SI",
-            path: "/dashboard/jss3-student_information",
+            path: "student/dashboard/jss3-student_information",
           },
           {
             name: "Class S.S.S 1",
             iconText: "SI",
-            path: "/dashboard/ss1-student_information",
+            path: "student/dashboard/ss1-student_information",
           },
           {
             name: "Class S.S.S 2",
             iconText: "SI",
-            path: "/dashboard/ss2-student_information",
+            path: "student/dashboard/ss2-student_information",
           },
           {
             name: "Class S.S.S 3",
             iconText: "SI",
-            path: "/dashboard/ss3-student_information",
+            path: "student/dashboard/ss3-student_information",
           },
         ],
 
@@ -59,7 +59,11 @@ export const navigations = [
     name: "Subject",
     icon: "security",
     children: [
-      { name: "Class J.S.S 1", iconText: "SI", path: "/dashboard/js1-subject" },
+      {
+        name: "Class J.S.S 1",
+        iconText: "SI",
+        path: "student/dashboard/js1-subject",
+      },
       { name: "Class J.S.S 2", iconText: "SI", path: "/dashboard/js2-subject" },
       { name: "Class J.S.S 3", iconText: "SI", path: "/dashboard/js3-subject" },
       { name: "Class S.S.S 1", iconText: "SI", path: "/dashboard/ss1-subject" },
@@ -79,13 +83,13 @@ export const navigations = [
     name: "Exam",
     icon: "security",
     children: [
-      { name: "Exam List", iconText: "SI", path: "/dashboard/examlist" },
+      { name: "Exam List", iconText: "SI", path: "student/dashboard/examlist" },
       { name: "Exam Grades", iconText: "SI", path: "/dashboard/grade" },
-      { name: "Manage Marks", iconText: "SI", path: "/dashboard/exam" },
+      { name: "Manage Marks", iconText: "SI", path: "student/dashboard/exam" },
       {
         name: "Manage Marks View",
         iconText: "SI",
-        path: "/dashboard/manage-mark-view",
+        path: "student/dashboard/manage-mark-view",
       },
       {
         name: "Tabulation Sheet",
@@ -102,12 +106,12 @@ export const navigations = [
       {
         name: "Create Online Exam",
         iconText: "SI",
-        path: "/dashboard/online-exam",
+        path: "student/dashboard/online-exam",
       },
       {
         name: "Manage Online Exam",
         iconText: "SI",
-        path: "/dashboard/manage-online-exam",
+        path: "student/dashboard/manage-online-exam",
       },
     ],
   },

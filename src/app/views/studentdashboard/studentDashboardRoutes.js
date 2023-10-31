@@ -27,6 +27,7 @@ import Info6 from "./forms/Info6";
 import Sub4 from "./forms/Sub4";
 import Sub5 from "./forms/Sub5";
 import Sub6 from "./forms/Sub6";
+import ExamDetail from "./forms/ExamDetail";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -92,56 +93,61 @@ const studentDashboardRoutes = [
     auth: "student",
   },
   {
-    path: "/dashboard/jss2-student_information",
+    path: "/student/dashboard/jss2-student_information",
     element: <Info2 />,
     auth: "student",
   },
   {
-    path: "/dashboard/jss3-student_information",
+    path: "/student/dashboard/jss3-student_information",
     element: <Info3 />,
     auth: "student",
   },
   {
-    path: "/dashboard/ss1-student_information",
+    path: "/student/dashboard/ss1-student_information",
     element: <Info4 />,
     auth: "student",
   },
   {
-    path: "/dashboard/ss2-student_information",
+    path: "/student/dashboard/ss2-student_information",
     element: <Info5 />,
     auth: "student",
   },
   {
-    path: "/dashboard/ss3-student_information",
+    path: "/student/dashboard/ss3-student_information",
     element: <Info6 />,
     auth: "student",
   },
-  { path: "/dashboard/teacher", element: <Teacher />, auth: "student" },
-  { path: "/dashboard/subject", element: <Subject />, auth: "student" },
-  { path: "/dashboard/class", element: <Class />, auth: "student" },
-  { path: "/dashboard/exam", element: <Exam />, auth: "student" },
-  { path: "/dashboard/grade", element: <Grade />, auth: "student" },
+  { path: "/student/dashboard/teacher", element: <Teacher />, auth: "student" },
+  { path: "/student/dashboard/subject", element: <Subject />, auth: "student" },
+  { path: "/student/dashboard/class", element: <Class />, auth: "student" },
+  { path: "/student/dashboard/exam", element: <Exam />, auth: "student" },
+  { path: "/student/dashboard/grade", element: <Grade />, auth: "student" },
   {
-    path: "/dashboard/tabulation-sheet",
+    path: "/student/dashboard/tabulation-sheet",
     element: <Tab />,
     auth: "student",
   },
   {
-    path: "/dashboard/online-exam",
+    path: "/student/dashboard/online-exam",
     element: <Online />,
     auth: "student",
   },
   {
-    path: "/dashboard/manage-online-exam",
+    path: "/student/dashboard/manage-online-exam",
     element: <Manage />,
     auth: "student",
   },
   {
-    path: "/dashboard/student-payment",
+    path: "/student/dashboard/manage-online-exam/:id",
+    element: <ExamDetail />,
+    auth: "student",
+  },
+  {
+    path: "/student/dashboard/student-payment",
     element: <Payment />,
     auth: "student",
   },
-  { path: "/dashboard/profile", element: <Profile />, auth: "student" },
+  { path: "/student/dashboard/profile", element: <Profile />, auth: "student" },
 ];
 
 export default studentDashboardRoutes;

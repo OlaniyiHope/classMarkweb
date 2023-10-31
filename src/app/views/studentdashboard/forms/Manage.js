@@ -1,133 +1,62 @@
-import {} from '@mui/material';
-import { Fragment, React, useState } from 'react';
-import { Box } from '@mui/system';
+import React, { Fragment, useEffect, useState } from "react";
+import { Box } from "@mui/system";
 import {
-  Card,
-  Button,
-  Grid,
-  styled,
-  useTheme,
-  Icon,
-  IconButton,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
-} from '@mui/material';
-import RowCards from '../shared/RowCards';
-import { Breadcrumb } from 'app/components';
-import FormDialog2 from 'app/views/material-kit/dialog/FormDialog2';
-import FormDialog4 from 'app/views/material-kit/dialog/FormDialog4';
-const ContentBox = styled('div')(({ theme }) => ({
-  margin: '30px',
-  [theme.breakpoints.down('sm')]: { margin: '16px' },
-}));
-
-const Title = styled('span')(() => ({
-  fontSize: '1rem',
-  fontWeight: '500',
-  marginRight: '.5rem',
-  textTransform: 'capitalize',
-}));
-
-const SubTitle = styled('span')(({ theme }) => ({
-  fontSize: '0.875rem',
-  color: theme.palette.text.secondary,
-}));
-
-const H4 = styled('h4')(({ theme }) => ({
-  fontSize: '1rem',
-  fontWeight: '500',
-  marginBottom: '16px',
-  textTransform: 'capitalize',
-  color: theme.palette.text.secondary,
-}));
-const StyledTable = styled(Table)(() => ({
-  whiteSpace: 'pre',
-  '& thead': {
-    '& tr': { '& th': { paddingLeft: 0, paddingRight: 0 } },
-  },
-  '& tbody': {
-    '& tr': { '& td': { paddingLeft: 0, textTransform: 'capitalize' } },
-  },
-}));
-
-const StyledButton = styled(Button)(({ theme }) => ({
-  margin: theme.spacing(1),
-}));
-
-const subscribarList = [
-  {
-    name: 'john doe',
-    date: '18 january, 2019',
-    amount: 1000,
-    status: 'close',
-    company: 'ABC Fintech LTD.',
-  },
-  {
-    name: 'kessy bryan',
-    date: '10 january, 2019',
-    amount: 9000,
-    status: 'open',
-    company: 'My Fintech LTD.',
-  },
-  {
-    name: 'kessy bryan',
-    date: '10 january, 2019',
-    amount: 9000,
-    status: 'open',
-    company: 'My Fintech LTD.',
-  },
-  {
-    name: 'james cassegne',
-    date: '8 january, 2019',
-    amount: 5000,
-    status: 'close',
-    company: 'Collboy Tech LTD.',
-  },
-  {
-    name: 'lucy brown',
-    date: '1 january, 2019',
-    amount: 89000,
-    status: 'open',
-    company: 'ABC Fintech LTD.',
-  },
-  {
-    name: 'lucy brown',
-    date: '1 january, 2019',
-    amount: 89000,
-    status: 'open',
-    company: 'ABC Fintech LTD.',
-  },
-  {
-    name: 'lucy brown',
-    date: '1 january, 2019',
-    amount: 89000,
-    status: 'open',
-    company: 'ABC Fintech LTD.',
-  },
-  {
-    name: 'lucy brown',
-    date: '1 january, 2019',
-    amount: 89000,
-    status: 'open',
-    company: 'ABC Fintech LTD.',
-  },
-  {
-    name: 'lucy brown',
-    date: '1 january, 2019',
-    amount: 89000,
-    status: 'open',
-    company: 'ABC Fintech LTD.',
-  },
-];
+  IconButton,
+  MenuItem,
+  ListItemIcon,
+  Menu,
+  Icon,
+} from "@mui/material";
+import axios from "axios"; // Import Axios for making API requests
+import { useTheme } from "@mui/material/styles"; // Import useTheme
+import FormDialog4 from "app/views/material-kit/dialog/FormDialog4";
+import useAuth from "app/hooks/useAuth";
+import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Link } from "react-router-dom";
+import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
+// ... other imports ...
 
 const Manage = () => {
-  const { palette } = useTheme();
+  const { palette } = useTheme(); // Define palette from useTheme
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [data, setData] = useState([]); // State to store fetched exams
+  const { logout, user } = useAuth();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorElMap, setAnchorElMap] = useState({});
+
+  // Function to fetch exams
+  const fetchExams = async () => {
+    try {
+      // Fetch the authentication token from local storage
+      const token = localStorage.getItem("jwtToken");
+
+      // Include the token in the request headers
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      const response = await axios.get(
+        `http://localhost:3003/api/get-exams-by-class/${user.classname}`,
+        { headers } // Include the headers in the request
+      );
+
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching exams:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchExams(); // Fetch exams when the component mounts
+  }, []); // Empty dependency array ensures the effect runs once
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
@@ -137,87 +66,103 @@ const Manage = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  const handleOpenMenu = (event, examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: event.currentTarget,
+    }));
+  };
 
+  // Function to handle closing the context menu for a specific exam
+  const handleCloseMenu = (examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: null,
+    }));
+  };
   return (
     <Fragment>
-      <ContentBox className="analytics">
-        <Box className="breadcrumb">
-          <Breadcrumb
-            routeSegments={[
-              { name: 'Material', path: '/material' },
-              { name: 'Student Information' },
-            ]}
-          />
-          <FormDialog4 />
-        </Box>
+      {/* ... your other JSX for Breadcrumb and FormDialog4 ... */}
 
-        <Box width="100%" overflow="auto">
-          <StyledTable>
-            <TableHead>
-              <TableRow>
-                <TableCell align="center">S/N</TableCell>
-                <TableCell align="left">ClassName</TableCell>
-                <TableCell align="center">Numeric Name</TableCell>
-                <TableCell align="center">Teacher</TableCell>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell align="left">Exam Name</TableCell>
+            <TableCell align="center">ClassName</TableCell>
+            <TableCell align="center">Subject</TableCell>
+            <TableCell align="center">Exam Date</TableCell>
+            <TableCell align="center">Time</TableCell>
+            <TableCell align="right">Action</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data &&
+            data.map((item) => (
+              <TableRow key={item._id}>
+                <TableCell align="center">{item.title}</TableCell>
+                <TableCell align="center">{item.className}</TableCell>
+                <TableCell align="center">{item.subject}</TableCell>
+                <TableCell align="center">{item.date}</TableCell>
+                <TableCell align="center">
+                  {item.fromTime} - {item.toTime}
+                </TableCell>
 
-                <TableCell align="right">Action</TableCell>
+                <TableCell align="right">
+                  <IconButton
+                    aria-controls={`action-menu-${item._id}`}
+                    aria-haspopup="true"
+                    onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
+                  >
+                    <MoreVertIcon /> {/* MoreVertIcon for the menu */}
+                  </IconButton>
+                  <Menu
+                    id={`action-menu-${item._id}`}
+                    anchorEl={anchorElMap[item._id]}
+                    open={Boolean(anchorElMap[item._id])}
+                    onClose={() => handleCloseMenu(item._id)}
+                  >
+                    <MenuItem>
+                      <ListItemIcon></ListItemIcon>
+                      <Link
+                        to={`/student/dashboard/manage-online-exam/${item._id} `}
+                      >
+                        {" "}
+                        {/* Provide the relative path */}
+                        Manage Questions
+                      </Link>
+                    </MenuItem>
+
+                    <MenuItem>
+                      <ListItemIcon>
+                        <EditIcon /> {/* Use an Edit icon */}
+                      </ListItemIcon>
+                      Edit
+                    </MenuItem>
+                    <MenuItem>
+                      <ListItemIcon>
+                        <DeleteIcon /> {/* Use a Delete icon */}
+                      </ListItemIcon>
+                      Delete
+                    </MenuItem>
+                  </Menu>
+                </TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {subscribarList
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((subscriber, index) => (
-                  <TableRow key={index}>
-                    <TableCell align="left">{subscriber.name}</TableCell>
-                    <TableCell align="center">{subscriber.company}</TableCell>
-                    <TableCell align="center">{subscriber.date}</TableCell>
-                    <TableCell align="center">{subscriber.status}</TableCell>
-                    <TableCell align="center">${subscriber.amount}</TableCell>
-                    <TableCell align="right">
-                      <IconButton>
-                        <Icon color="error">close</Icon>
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </StyledTable>
+            ))}
+        </TableBody>
+      </Table>
 
-          <TablePagination
-            sx={{ px: 2 }}
-            page={page}
-            component="div"
-            rowsPerPage={rowsPerPage}
-            count={subscribarList.length}
-            onPageChange={handleChangePage}
-            rowsPerPageOptions={[5, 10, 25]}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            nextIconButtonProps={{ 'aria-label': 'Next Page' }}
-            backIconButtonProps={{ 'aria-label': 'Previous Page' }}
-          />
-        </Box>
-
-        {/* <TopSellingTable />
-            <StatCards2 />
-
-            <H4>Ongoing Projects</H4>
-            <RowCards />
-          </Grid>
-
-          <Grid item lg={4} md={4} sm={12} xs={12}>
-            <Card sx={{ px: 3, py: 2, mb: 3 }}>
-              <Title>Traffic Sources</Title>
-              <SubTitle>Last 30 days</SubTitle>
-
-              <DoughnutChart
-                height="300px"
-                color={[palette.primary.dark, palette.primary.main, palette.primary.light]}
-              />
-            </Card>
-
-            <UpgradeCard />
-            <Campaigns />*/}
-      </ContentBox>
+      <TablePagination
+        sx={{ px: 2 }}
+        page={page}
+        component="div"
+        rowsPerPage={rowsPerPage}
+        count={data.length}
+        onPageChange={handleChangePage}
+        rowsPerPageOptions={[5, 10, 25]}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        nextIconButtonProps={{ "aria-label": "Next Page" }}
+        backIconButtonProps={{ "aria-label": "Previous Page" }}
+      />
     </Fragment>
   );
 };
