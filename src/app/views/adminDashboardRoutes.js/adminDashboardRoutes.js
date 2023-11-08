@@ -29,6 +29,7 @@ import Sub5 from "./forms/Sub5";
 import Sub6 from "./forms/Sub6";
 import AddClass from "./forms/AddClass";
 import ManSin from "./forms/ManSin";
+import ViewResult from "./forms/ViewResult";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -97,6 +98,11 @@ const adminDashboardRoutes = [
   {
     path: "/dashboard/manage-online-exam/:id",
     element: <ManSin />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/view-result/:id",
+    element: <ViewResult />,
     auth: "admin",
   },
 

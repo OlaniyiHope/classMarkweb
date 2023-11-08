@@ -6,7 +6,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { Fragment, React, useState } from "react";
+import { Fragment, React, useEffect, useState } from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 
@@ -22,6 +22,8 @@ import {
   TableBody,
   TableCell,
   TableHead,
+  TableContainer,
+  Paper,
   TablePagination,
   TableRow,
 } from "@mui/material";
@@ -31,7 +33,7 @@ import FormDialog2 from "app/views/material-kit/dialog/FormDialog2";
 import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
 import useFetch from "hooks/useFetch";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -70,8 +72,16 @@ const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(1),
 }));
 
-const Manage = () => {
-  const { data, loading, error } = useFetch("/get-exam");
+const ViewResult = () => {
+  const [scores, setScores] = useState([]);
+  const [examData, setExamData] = useState(null);
+
+  const { id } = useParams();
+  const examId = id; // Assuming the entire parameter is the examId
+
+  console.log("examId:", examId);
+
+  const { data, loading, error } = useFetch(`/exams/all-scores/${examId}`);
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
@@ -79,6 +89,26 @@ const Manage = () => {
   const [action, setAction] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});
+  useEffect(() => {
+    if (data) {
+      setScores(data);
+    }
+  }, [data]);
+  useEffect(() => {
+    // Fetch exam details separately
+    async function fetchExamData() {
+      try {
+        const response = await fetch(`/get-exam/${id}`);
+        const data = await response.json();
+        setExamData(data);
+      } catch (error) {
+        // Handle the error here
+      }
+    }
+
+    fetchExamData();
+  }, [id]);
+
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
   };
@@ -113,75 +143,65 @@ const Manage = () => {
         <Box className="breadcrumb">
           <FormDialog2 />
         </Box>
-
+        <TableContainer component={Paper}>
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <b>Exam Title</b>
+                </TableCell>
+                <TableCell>
+                  {examData ? examData.title : "Loading..."}
+                </TableCell>
+                <TableCell>
+                  <b>Date</b>
+                </TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <b>Class</b>
+                </TableCell>
+                <TableCell></TableCell>
+                <TableCell>
+                  <b>Time</b>
+                </TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <b>Exam Instruction</b>
+                </TableCell>
+                <TableCell></TableCell>
+                <TableCell>
+                  <b>Total Mark</b>
+                </TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
         <Box width="100%" overflow="auto">
           <StyledTable>
             <TableHead>
               <TableRow>
-                <TableCell align="left">Exam Name</TableCell>
-                <TableCell align="left">ClassName</TableCell>
-                <TableCell align="left">Subject</TableCell>
-                <TableCell align="left">Exam Date</TableCell>
-                <TableCell align="left">Time</TableCell>
-                <TableCell align="right">Option</TableCell>
+                <TableCell align="left">Student Name</TableCell>
+                <TableCell align="left">Mark Obtained</TableCell>
+                <TableCell align="left">Result</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {data &&
-                data.map((item) => (
-                  <TableRow key={item._id}>
-                    <TableCell align="center">{item.title}</TableCell>
-                    <TableCell align="center">{item.className}</TableCell>
-                    <TableCell align="left">{item.subject}</TableCell>
-                    <TableCell align="center">{item.date}</TableCell>
-
+              {scores &&
+                scores.map((item) => (
+                  <TableRow>
+                    {" "}
+                    {/* Assuming userId is unique */}
                     <TableCell align="center">
-                      {item.fromTime}
-                      {item.toTime}
-                    </TableCell>
-                    <TableCell align="right">
-                      <IconButton
-                        aria-controls={`action-menu-${item._id}`}
-                        aria-haspopup="true"
-                        onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
-                      >
-                        <MoreVertIcon /> {/* MoreVertIcon for the menu */}
-                      </IconButton>
-                      <Menu
-                        id={`action-menu-${item._id}`}
-                        anchorEl={anchorElMap[item._id]}
-                        open={Boolean(anchorElMap[item._id])}
-                        onClose={() => handleCloseMenu(item._id)}
-                      >
-                        <MenuItem>
-                          <ListItemIcon></ListItemIcon>
-                          <Link
-                            to={`/dashboard/manage-online-exam/${item._id}`}
-                          >
-                            Manage Questions
-                          </Link>
-                        </MenuItem>
-                        <MenuItem>
-                          <ListItemIcon></ListItemIcon>
-
-                          <Link to={`/dashboard/view-result/${item._id}`}>
-                            View Result
-                          </Link>
-                        </MenuItem>
-                        <MenuItem>
-                          <ListItemIcon>
-                            <EditIcon /> {/* Use an Edit icon */}
-                          </ListItemIcon>
-                          Edit
-                        </MenuItem>
-                        <MenuItem>
-                          <ListItemIcon>
-                            <DeleteIcon /> {/* Use a Delete icon */}
-                          </ListItemIcon>
-                          Delete
-                        </MenuItem>
-                      </Menu>
-                    </TableCell>
+                      {item.studentName}
+                    </TableCell>{" "}
+                    {/* Access userId.studentName */}
+                    <TableCell align="center">{item.score}</TableCell>
+                    <TableCell align="left">Result Here</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
@@ -202,28 +222,28 @@ const Manage = () => {
         </Box>
 
         {/* <TopSellingTable />
-            <StatCards2 />
-
-            <H4>Ongoing Projects</H4>
-            <RowCards />
-          </Grid>
-
-          <Grid item lg={4} md={4} sm={12} xs={12}>
-            <Card sx={{ px: 3, py: 2, mb: 3 }}>
-              <Title>Traffic Sources</Title>
-              <SubTitle>Last 30 days</SubTitle>
-
-              <DoughnutChart
-                height="300px"
-                color={[palette.primary.dark, palette.primary.main, palette.primary.light]}
-              />
-            </Card>
-
-            <UpgradeCard />
-            <Campaigns />*/}
+              <StatCards2 />
+  
+              <H4>Ongoing Projects</H4>
+              <RowCards />
+            </Grid>
+  
+            <Grid item lg={4} md={4} sm={12} xs={12}>
+              <Card sx={{ px: 3, py: 2, mb: 3 }}>
+                <Title>Traffic Sources</Title>
+                <SubTitle>Last 30 days</SubTitle>
+  
+                <DoughnutChart
+                  height="300px"
+                  color={[palette.primary.dark, palette.primary.main, palette.primary.light]}
+                />
+              </Card>
+  
+              <UpgradeCard />
+              <Campaigns />*/}
       </ContentBox>
     </Fragment>
   );
 };
 
-export default Manage;
+export default ViewResult;

@@ -28,6 +28,7 @@ import Sub4 from "./forms/Sub4";
 import Sub5 from "./forms/Sub5";
 import Sub6 from "./forms/Sub6";
 import ExamDetail from "./forms/ExamDetail";
+import ManageResult from "./forms/ManageResult";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -135,6 +136,11 @@ const studentDashboardRoutes = [
   {
     path: "/student/dashboard/manage-online-exam",
     element: <Manage />,
+    auth: "student",
+  },
+  {
+    path: "/student/dashboard/manage-online-result/:id",
+    element: <ManageResult />,
     auth: "student",
   },
   {

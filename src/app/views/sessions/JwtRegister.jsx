@@ -48,16 +48,16 @@ const JWTRegister = styled(JustifyBox)(() => ({
 
 // inital login credentials
 const initialValues = {
+  username: "",
   email: "",
   phone: "",
-  password: "",
   address: "",
-  username: "",
+  password: "",
+  studentName: "",
+  role: "",
   classname: "",
   parentsName: "",
-  studentName: "",
   date: "",
-  role: "",
   remember: true,
 };
 
@@ -105,15 +105,15 @@ const JwtRegister = () => {
 
     try {
       register(
+        values.username,
         values.email,
         values.phone,
-        values.password,
         values.address,
-        values.username,
+        values.password,
         values.role,
+        values.studentName,
         values.classname,
         values.parentsName,
-        values.studentName,
         values.date
       );
       navigate("/");
@@ -196,18 +196,20 @@ const JwtRegister = () => {
                     <TextField
                       fullWidth
                       size="small"
-                      type="phone"
+                      type="tel" // Use type "tel" to indicate a telephone number input
                       name="phone"
                       label="Phone Number"
                       variant="outlined"
-                      id="phone"
                       onBlur={handleBlur}
                       value={values.phone}
+                      id="phone"
                       onChange={handleChange}
                       helperText={touched.phone && errors.phone}
                       error={Boolean(errors.phone && touched.phone)}
                       sx={{ mb: 3 }}
+                      inputProps={{ pattern: "[0-9]*" }} // Allow only numeric input
                     />
+
                     <TextField
                       fullWidth
                       size="small"

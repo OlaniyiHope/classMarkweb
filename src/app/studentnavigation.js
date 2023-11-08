@@ -104,7 +104,7 @@ export const navigations = [
     icon: "security",
     children: [
       {
-        name: "Create Online Exam",
+        name: "Mark View/Report card",
         iconText: "SI",
         path: "student/dashboard/online-exam",
       },
@@ -112,6 +112,11 @@ export const navigations = [
         name: "Manage Online Exam",
         iconText: "SI",
         path: "student/dashboard/manage-online-exam",
+      },
+      {
+        name: "View Result",
+        iconText: "SI",
+        path: "/student/dashboard/manage-online-result/:examId",
       },
     ],
   },

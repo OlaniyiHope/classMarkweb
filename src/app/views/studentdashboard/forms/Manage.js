@@ -19,8 +19,9 @@ import FormDialog4 from "app/views/material-kit/dialog/FormDialog4";
 import useAuth from "app/hooks/useAuth";
 import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
+import { Breadcrumb } from "app/components";
 // ... other imports ...
 
 const Manage = () => {
@@ -28,6 +29,7 @@ const Manage = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [data, setData] = useState([]); // State to store fetched exams
+  const [resultData, setresultData] = useState([]); // State to store fetched exams
   const { logout, user } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});
@@ -84,6 +86,23 @@ const Manage = () => {
     <Fragment>
       {/* ... your other JSX for Breadcrumb and FormDialog4 ... */}
 
+      <Box className="breadcrumb">
+        <Breadcrumb
+          routeSegments={[
+            { name: "Material", path: "/material" },
+            { name: "Manage Online Exam" },
+          ]}
+        />
+      </Box>
+      <div>
+        <button>Active Exams</button>
+        <button>
+          <button>
+            <Link>View Results</Link>
+          </button>
+        </button>
+      </div>
+
       <Table>
         <TableHead>
           <TableRow>
@@ -129,6 +148,16 @@ const Manage = () => {
                         {" "}
                         {/* Provide the relative path */}
                         Manage Questions
+                      </Link>
+                    </MenuItem>
+                    <MenuItem>
+                      <ListItemIcon></ListItemIcon>
+                      <Link
+                        to={`/student/dashboard/manage-online-result/${item._id} `}
+                      >
+                        {" "}
+                        {/* Provide the relative path */}
+                        View Resuult
                       </Link>
                     </MenuItem>
 
