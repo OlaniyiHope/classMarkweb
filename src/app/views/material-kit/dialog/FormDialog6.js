@@ -35,7 +35,7 @@ export default function FormDialog6() {
     try {
       await axios.post("http://localhost:3003/api/userrs/register", formData);
 
-      navigate("/dashboard/default");
+      navigate("/dashboard");
     } catch (err) {}
   };
 
@@ -55,7 +55,7 @@ export default function FormDialog6() {
   return (
     <Box>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Add new Subjecr
+        Add new Subject
       </Button>
 
       <Dialog

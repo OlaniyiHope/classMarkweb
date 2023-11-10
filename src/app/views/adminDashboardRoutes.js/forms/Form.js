@@ -93,7 +93,7 @@ const Form = () => {
     try {
       await axios.post("http://localhost:3003/api/userrs/register", formData);
 
-      navigate("/dashboard/default");
+      navigate("admin/dashboard");
     } catch (err) {}
   };
 

@@ -116,7 +116,7 @@ export const navigations = [
       {
         name: "View Result",
         iconText: "SI",
-        path: "/student/dashboard/manage-online-result/:examId",
+        path: "/student/dashboard/manage-online-result",
       },
     ],
   },

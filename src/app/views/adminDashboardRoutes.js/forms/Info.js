@@ -1,6 +1,8 @@
 import {} from "@mui/material";
 import { Fragment, React, useState } from "react";
 import { Box } from "@mui/system";
+import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
+
 import {
   Card,
   Button,
@@ -9,6 +11,9 @@ import {
   useTheme,
   Icon,
   IconButton,
+  ListItemIcon,
+  Menu,
+  MenuItem,
   Table,
   TableBody,
   TableCell,
@@ -16,6 +21,8 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
+import DeleteIcon from "@mui/icons-material/Delete";
 import RowCards from "../shared/RowCards";
 import { Breadcrumb } from "app/components";
 import FormDialog2 from "app/views/material-kit/dialog/FormDialog2";
@@ -60,12 +67,26 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Info = () => {
-  const { data, loading, error } = useFetch("/userrs/clo");
+  const { data, loading, error } = useFetch("/student/JS1");
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [anchorElMap, setAnchorElMap] = useState({});
+  const handleOpenMenu = (event, examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: event.currentTarget,
+    }));
+  };
 
+  // Function to handle closing the context menu for a specific exam
+  const handleCloseMenu = (examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: null,
+    }));
+  };
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
   };
@@ -85,7 +106,7 @@ const Info = () => {
               { name: "Student Information" },
             ]}
           />
-          <Link to="/dashboard/student_add">
+          <Link to="admin/dashboard/student_add">
             <FormDialog2 />
           </Link>
         </Box>
@@ -99,9 +120,6 @@ const Info = () => {
                 <TableCell align="center">Name</TableCell>
                 <TableCell align="center">Address</TableCell>
                 <TableCell align="center">Email/Username</TableCell>
-                <TableCell align="center">Age</TableCell>
-
-                <TableCell align="center">Class Name</TableCell>
 
                 <TableCell align="right">Action</TableCell>
               </TableRow>
@@ -110,23 +128,60 @@ const Info = () => {
               {data &&
                 data.map((item) => (
                   <TableRow key={item._id}>
+                    <TableCell align="center">{item._id}</TableCell>
                     <TableCell align="center"></TableCell>
-                    <TableCell align="left">{item.student_name}</TableCell>
-                    <TableCell align="center">{item.email}</TableCell>
-                    <TableCell align="center">{item.gender}</TableCell>
+
+                    <TableCell align="left">{item.studentName}</TableCell>
                     <TableCell align="center">{item.address}</TableCell>
-                    <TableCell align="center">{item.age}</TableCell>
-                    <TableCell align="center">{item.classname}</TableCell>
+                    <TableCell align="center">{item.email}</TableCell>
+
                     <TableCell align="right">
-                      <IconButton>
-                        <Icon color="error">close</Icon>
+                      <IconButton
+                        aria-controls={`action-menu-${item._id}`}
+                        aria-haspopup="true"
+                        onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
+                      >
+                        <MoreVertIcon /> {/* MoreVertIcon for the menu */}
                       </IconButton>
+                      <Menu
+                        id={`action-menu-${item._id}`}
+                        anchorEl={anchorElMap[item._id]}
+                        open={Boolean(anchorElMap[item._id])}
+                        onClose={() => handleCloseMenu(item._id)}
+                      >
+                        <MenuItem>
+                          <ListItemIcon></ListItemIcon>
+                          <Link
+                            to={`/dashboard/student_mark_sheet/${item._id}`}
+                          >
+                            Mark Sheet
+                          </Link>
+                        </MenuItem>
+                        <MenuItem>
+                          <ListItemIcon></ListItemIcon>
+
+                          <Link to={`/dashboard/view-result/${item._id}`}>
+                            View Result
+                          </Link>
+                        </MenuItem>
+                        <MenuItem>
+                          <ListItemIcon>
+                            <EditIcon /> {/* Use an Edit icon */}
+                          </ListItemIcon>
+                          Edit
+                        </MenuItem>
+                        <MenuItem>
+                          <ListItemIcon>
+                            <DeleteIcon /> {/* Use a Delete icon */}
+                          </ListItemIcon>
+                          Delete
+                        </MenuItem>
+                      </Menu>
                     </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
           </StyledTable>
-
           <TablePagination
             sx={{ px: 2 }}
             page={page}

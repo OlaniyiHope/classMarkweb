@@ -1,11 +1,17 @@
 export const navigations = [
-  { name: "Admin Dasbboard", path: "/dashboard/admin", icon: "dashboard" },
+  { name: "Dashboard ", path: "/dashboard/admin", icon: "dashboard" },
+  { name: " Admin", path: "/admin/admin", icon: "dashboard" },
+
   { label: "PAGES", type: "label" },
   {
     name: "Student",
     icon: "security",
     children: [
-      { name: "Admit Student", iconText: "SI", path: "dashboard/student_add" },
+      {
+        name: "Admit Student",
+        iconText: "SI",
+        path: "/dashboard/student_add",
+      },
       {
         name: "Student information",
         iconText: "SU",
@@ -60,19 +66,43 @@ export const navigations = [
     name: "Subject",
     icon: "security",
     children: [
-      { name: "Class J.S.S 1", iconText: "SI", path: "/dashboard/js1-subject" },
-      { name: "Class J.S.S 2", iconText: "SI", path: "/dashboard/js2-subject" },
-      { name: "Class J.S.S 3", iconText: "SI", path: "/dashboard/js3-subject" },
-      { name: "Class S.S.S 1", iconText: "SI", path: "/dashboard/ss1-subject" },
-      { name: "Class S.S.S 2", iconText: "SI", path: "/dashboard/ss2-subject" },
-      { name: "Class S.S.S 3", iconText: "SI", path: "/dashboard/ss3-subject" },
+      {
+        name: "Class J.S.S 1",
+        iconText: "SI",
+        path: "/dashboard/js1-subject",
+      },
+      {
+        name: "Class J.S.S 2",
+        iconText: "SI",
+        path: "/dashboard/js2-subject",
+      },
+      {
+        name: "Class J.S.S 3",
+        iconText: "SI",
+        path: "/dashboard/js3-subject",
+      },
+      {
+        name: "Class S.S.S 1",
+        iconText: "SI",
+        path: "/dashboard/ss1-subject",
+      },
+      {
+        name: "Class S.S.S 2",
+        iconText: "SI",
+        path: "/dashboard/ss2-subject",
+      },
+      {
+        name: "Class S.S.S 3",
+        iconText: "SI",
+        path: "/dashboard/ss3-subject",
+      },
     ],
   },
   {
     name: "Class",
     icon: "security",
     children: [
-      { name: "Manage Class", iconText: "SI", path: "dashboard/class" },
+      { name: "Manage Class", iconText: "SI", path: "/dashboard/class" },
       { name: "Academic Syllabus", iconText: "SI", path: "/session/signin" },
     ],
   },

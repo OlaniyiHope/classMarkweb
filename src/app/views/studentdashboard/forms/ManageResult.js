@@ -125,7 +125,7 @@
 
 // export default ManageResult;
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -139,16 +139,33 @@ import {
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import useAuth from "app/hooks/useAuth";
+import AuthContext from "app/contexts/JWTAuthContext";
+
+// Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 const ManageResult = () => {
-  const { examId } = useParams(); // Access examId from URL
+  // const { user } = useContext(AuthContext);
+  const { user } = useAuth();
+  const { id: examId } = useParams();
+
+  console.log("User ID:", user.id);
+  console.log("Exam ID:", examId);
+
+  const { id } = useParams(); // Access examId from URL
   const [scores, setScores] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const { user } = useAuth();
+
+  // Import useNavigate
+  const navigate = useNavigate();
+
+  // Function to navigate to the "View Result" route with userId parameter
+  const navigateToViewResult = () => {
+    navigate(`/student/dashboard/manage-online-result/${user.id}`);
+  };
 
   useEffect(() => {
-    // Make an API request to fetch the exam score for the logged-in user
     const fetchExamScore = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
@@ -157,8 +174,10 @@ const ManageResult = () => {
         };
 
         const response = await axios.get(
-          `http://localhost:3003/api/exams/score/${examId}/${user.id}`,
-          { headers }
+          `http://localhost:3003/api/students/all-scores/${user._id}`, // Use user._id instead of user.id
+          {
+            headers,
+          }
         );
         setScores(response.data);
       } catch (error) {
@@ -167,8 +186,7 @@ const ManageResult = () => {
     };
 
     fetchExamScore();
-  }, [examId, user.id]);
-
+  }, [user._id]);
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
   };
@@ -180,6 +198,7 @@ const ManageResult = () => {
 
   return (
     <div>
+      <button onClick={navigateToViewResult}>View Result</button>
       <Table>
         <TableHead>
           <TableRow>
@@ -189,14 +208,19 @@ const ManageResult = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {scores &&
+          {scores.length > 0 ? (
             scores.map((item) => (
-              <TableRow key={item._id}>
-                <TableCell align="center">{item.title}</TableCell>
+              <TableRow key={item.examTitle}>
+                <TableCell align="center">{item.examTitle}</TableCell>
                 <TableCell align="center">{item.subject}</TableCell>
                 <TableCell align="center">{item.score}</TableCell>
               </TableRow>
-            ))}
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={3}>No scores available</TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
 

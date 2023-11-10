@@ -139,7 +139,7 @@ const studentDashboardRoutes = [
     auth: "student",
   },
   {
-    path: "/student/dashboard/manage-online-result/:id",
+    path: "/student/dashboard/manage-online-result",
     element: <ManageResult />,
     auth: "student",
   },
