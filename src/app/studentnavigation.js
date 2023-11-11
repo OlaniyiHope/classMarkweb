@@ -86,11 +86,7 @@ export const navigations = [
       { name: "Exam List", iconText: "SI", path: "student/dashboard/examlist" },
       { name: "Exam Grades", iconText: "SI", path: "/dashboard/grade" },
       { name: "Manage Marks", iconText: "SI", path: "student/dashboard/exam" },
-      {
-        name: "Manage Marks View",
-        iconText: "SI",
-        path: "student/dashboard/manage-mark-view",
-      },
+
       {
         name: "Tabulation Sheet",
         iconText: "SI",
@@ -98,6 +94,11 @@ export const navigations = [
       },
       { name: "Question Paper", iconText: "SI", path: "/session/" },
     ],
+  },
+  {
+    name: "Mark View",
+    path: "/student/dashboard/student_mark_sheet",
+    icon: "dashboard",
   },
   {
     name: "Online Exam",

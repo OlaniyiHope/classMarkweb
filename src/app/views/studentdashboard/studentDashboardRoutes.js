@@ -29,6 +29,8 @@ import Sub5 from "./forms/Sub5";
 import Sub6 from "./forms/Sub6";
 import ExamDetail from "./forms/ExamDetail";
 import ManageResult from "./forms/ManageResult";
+import MarkSheet from "./forms/MarkSheet";
+import ReportCard from "./forms/ReportCard";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -147,6 +149,16 @@ const studentDashboardRoutes = [
     path: "/student/dashboard/manage-online-exam/:id",
     element: <ExamDetail />,
     auth: "student",
+  },
+  {
+    path: "/student/dashboard/student_mark_sheet",
+    element: <MarkSheet />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/report_card/:id",
+    element: <ReportCard />,
+    auth: "admin",
   },
   {
     path: "/student/dashboard/student-payment",
