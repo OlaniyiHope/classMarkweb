@@ -45,9 +45,6 @@
     "shortid": "^2.2.16",
     "yup": "^0.32.11"
   },
-  "engines": {
-    "node": "16.17.1"
-  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
