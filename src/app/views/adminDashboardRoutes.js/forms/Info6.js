@@ -111,76 +111,140 @@ const Info6 = () => {
         </Box>
 
         <Box width="100%" overflow="auto">
-          <StyledTable>
-            <TableHead>
-              <TableRow>
-                <TableCell align="center">ID No</TableCell>
-                <TableCell align="left">Photo</TableCell>
-                <TableCell align="center">Name</TableCell>
-                <TableCell align="center">Address</TableCell>
-                <TableCell align="center">Email/Username</TableCell>
+          <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
+            <div class="table-responsive full-data">
+              <table
+                class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
+                id="example-student"
+              >
+                <thead>
+                  <tr>
+                    <th>
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="checkAll"
+                        required=""
+                      />
+                    </th>
+                    <th>S/N</th>
+                    <th>ID No</th>
+                    <th>Photo</th>
+                    <th> Name</th>
+                    <th>Address</th>
+                    <th>Email</th>
 
-                <TableCell align="right">Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data &&
-                data.map((item) => (
-                  <TableRow key={item._id}>
-                    <TableCell align="center">{item._id}</TableCell>
-                    <TableCell align="center"></TableCell>
+                    <th class="text-end">Action</th>
+                  </tr>
+                </thead>
+                {data && data.length > 0 ? (
+                  data.map((item, index) => (
+                    <tbody>
+                      <tr key={item._id}>
+                        <td>
+                          <div class="checkbox me-0 align-self-center">
+                            <div class="custom-control custom-checkbox ">
+                              <input
+                                type="checkbox"
+                                class="form-check-input"
+                                id="check16"
+                                required=""
+                              />
+                              <label
+                                class="custom-control-label"
+                                for="check16"
+                              ></label>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="trans-list">
+                            <h4>{index + 1}</h4>
+                          </div>
+                        </td>
+                        <td>
+                          <span class="text-primary font-w600">{item._id}</span>
+                        </td>
+                        <td>
+                          <div class="date">
+                            {" "}
+                            <img
+                              src="images/trans/10.jpg"
+                              alt=""
+                              class="avatar me-3"
+                            />
+                          </div>
+                        </td>
+                        <td>
+                          <div class="date">{item.studentName}</div>
+                        </td>
+                        <td>
+                          <h6 class="mb-0">{item.address}</h6>
+                        </td>
+                        <td>
+                          <h6 class="mb-0">{item.email}</h6>
+                        </td>
 
-                    <TableCell align="left">{item.studentName}</TableCell>
-                    <TableCell align="center">{item.address}</TableCell>
-                    <TableCell align="center">{item.email}</TableCell>
+                        <td>
+                          <TableCell align="right">
+                            <IconButton
+                              aria-controls={`action-menu-${item._id}`}
+                              aria-haspopup="true"
+                              onClick={(event) =>
+                                handleOpenMenu(event, item._id)
+                              } // Pass item._id
+                            >
+                              <MoreVertIcon /> {/* MoreVertIcon for the menu */}
+                            </IconButton>
+                            <Menu
+                              id={`action-menu-${item._id}`}
+                              anchorEl={anchorElMap[item._id]}
+                              open={Boolean(anchorElMap[item._id])}
+                              onClose={() => handleCloseMenu(item._id)}
+                            >
+                              <MenuItem>
+                                <ListItemIcon></ListItemIcon>
+                                <Link
+                                  to={`/dashboard/student_mark_sheet/${item._id}`}
+                                >
+                                  Mark Sheet
+                                </Link>
+                              </MenuItem>
+                              <MenuItem>
+                                <ListItemIcon></ListItemIcon>
 
-                    <TableCell align="right">
-                      <IconButton
-                        aria-controls={`action-menu-${item._id}`}
-                        aria-haspopup="true"
-                        onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
-                      >
-                        <MoreVertIcon /> {/* MoreVertIcon for the menu */}
-                      </IconButton>
-                      <Menu
-                        id={`action-menu-${item._id}`}
-                        anchorEl={anchorElMap[item._id]}
-                        open={Boolean(anchorElMap[item._id])}
-                        onClose={() => handleCloseMenu(item._id)}
-                      >
-                        <MenuItem>
-                          <ListItemIcon></ListItemIcon>
-                          <Link
-                            to={`/dashboard/student_mark_sheet/${item._id}`}
-                          >
-                            Mark Sheet
-                          </Link>
-                        </MenuItem>
-                        <MenuItem>
-                          <ListItemIcon></ListItemIcon>
-
-                          <Link to={`/dashboard/view-result/${item._id}`}>
-                            View Result
-                          </Link>
-                        </MenuItem>
-                        <MenuItem>
-                          <ListItemIcon>
-                            <EditIcon /> {/* Use an Edit icon */}
-                          </ListItemIcon>
-                          Edit
-                        </MenuItem>
-                        <MenuItem>
-                          <ListItemIcon>
-                            <DeleteIcon /> {/* Use a Delete icon */}
-                          </ListItemIcon>
-                          Delete
-                        </MenuItem>
-                      </Menu>
+                                <Link to={`/dashboard/view-result/${item._id}`}>
+                                  View Result
+                                </Link>
+                              </MenuItem>
+                              <MenuItem>
+                                <ListItemIcon>
+                                  <EditIcon /> {/* Use an Edit icon */}
+                                </ListItemIcon>
+                                Edit
+                              </MenuItem>
+                              <MenuItem>
+                                <ListItemIcon>
+                                  <DeleteIcon /> {/* Use a Delete icon */}
+                                </ListItemIcon>
+                                Delete
+                              </MenuItem>
+                            </Menu>
+                          </TableCell>
+                        </td>
+                      </tr>
+                    </tbody>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} align="center">
+                      No Class to display.
                     </TableCell>
                   </TableRow>
-                ))}
-            </TableBody>
-          </StyledTable>
+                )}
+              </table>
+            </div>
+          </div>
 
           <TablePagination
             sx={{ px: 2 }}

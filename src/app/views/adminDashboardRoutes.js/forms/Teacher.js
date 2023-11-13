@@ -86,60 +86,120 @@ const Teacher = () => {
       </Box>
       <ContentBox className="analytics">
         <Box width="100%" overflow="auto">
-          <StyledTable>
-            <TableHead>
-              <TableRow>
-                <TableCell align="center">S/N</TableCell>
-                <TableCell align="left">Photo</TableCell>
-                <TableCell align="center">Name</TableCell>
-                <TableCell align="center">Email</TableCell>
-                <TableCell align="center">Phone</TableCell>
-                <TableCell align="right">Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data &&
-                data
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((item, index) => (
-                    <TableRow key={item._id}>
-                      <TableCell align="center">{index + 1}</TableCell>
-                      <TableCell align="center">[Add Photo Here]</TableCell>
-                      <TableCell align="left">{item.username}</TableCell>
-                      <TableCell align="center">{item.email}</TableCell>
-                      <TableCell align="center">{item.phone}</TableCell>
-                      <TableCell align="right">
-                        <IconButton
-                          aria-controls="action-menu"
-                          aria-haspopup="true"
-                          onClick={handleOpenMenu}
-                        >
-                          <MoreVertIcon /> {/* MoreVertIcon for the menu */}
-                        </IconButton>
-                        <Menu
-                          id="action-menu"
-                          anchorEl={anchorEl}
-                          open={Boolean(anchorEl)}
-                          onClose={handleCloseMenu}
-                        >
-                          <MenuItem>
-                            <ListItemIcon>
-                              <EditIcon /> {/* Use an Edit icon */}
-                            </ListItemIcon>
-                            Edit
-                          </MenuItem>
-                          <MenuItem>
-                            <ListItemIcon>
-                              <DeleteIcon /> {/* Use a Delete icon */}
-                            </ListItemIcon>
-                            Delete
-                          </MenuItem>
-                        </Menu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-            </TableBody>
-          </StyledTable>
+          <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
+            <div class="table-responsive full-data">
+              <table
+                class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
+                id="example-student"
+              >
+                <thead>
+                  <tr>
+                    <th>
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="checkAll"
+                        required=""
+                      />
+                    </th>
+                    <th>S/N</th>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+
+                    <th class="text-end">Action</th>
+                  </tr>
+                </thead>
+                {data && data.length > 0 ? (
+                  data.map((item, index) => (
+                    <tbody>
+                      <tr key={item._id}>
+                        <td>
+                          <div class="checkbox me-0 align-self-center">
+                            <div class="custom-control custom-checkbox ">
+                              <input
+                                type="checkbox"
+                                class="form-check-input"
+                                id="check16"
+                                required=""
+                              />
+                              <label
+                                class="custom-control-label"
+                                for="check16"
+                              ></label>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="trans-list">
+                            <h4>{index + 1}</h4>
+                          </div>
+                        </td>
+                        <td>
+                          <span class="text-primary font-w600">
+                            <img
+                              src="images/trans/10.jpg"
+                              alt=""
+                              class="avatar me-3"
+                            />
+                          </span>
+                        </td>
+                        <td>
+                          <span class="text-primary font-w600">
+                            {item.username}
+                          </span>
+                        </td>
+                        <td>
+                          <div class="date">{item.email}</div>
+                        </td>
+                        <td>
+                          <h6 class="mb-0">{item.phone}</h6>
+                        </td>
+
+                        <td>
+                          <TableCell align="right">
+                            <IconButton
+                              aria-controls="action-menu"
+                              aria-haspopup="true"
+                              onClick={handleOpenMenu}
+                            >
+                              <MoreVertIcon /> {/* MoreVertIcon for the menu */}
+                            </IconButton>
+                            <Menu
+                              id="action-menu"
+                              anchorEl={anchorEl}
+                              open={Boolean(anchorEl)}
+                              onClose={handleCloseMenu}
+                            >
+                              <MenuItem>
+                                <ListItemIcon>
+                                  <EditIcon /> {/* Use an Edit icon */}
+                                </ListItemIcon>
+                                Edit
+                              </MenuItem>
+                              <MenuItem>
+                                <ListItemIcon>
+                                  <DeleteIcon /> {/* Use a Delete icon */}
+                                </ListItemIcon>
+                                Delete
+                              </MenuItem>
+                            </Menu>
+                          </TableCell>
+                        </td>
+                      </tr>
+                    </tbody>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} align="center">
+                      No Teacher to display.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </table>
+            </div>
+          </div>
 
           <TablePagination
             sx={{ px: 2 }}

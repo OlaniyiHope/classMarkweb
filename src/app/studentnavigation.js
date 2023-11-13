@@ -1,60 +1,6 @@
 export const navigations = [
-  { name: "Student", path: "/dashboard/admin", icon: "dashboard" },
-  { label: "PAGES", type: "label" },
-  {
-    name: "Student",
-    icon: "security",
-    children: [
-      { name: "Admit Student", iconText: "SI", path: "dashboard/student_add" },
-      {
-        name: "Student information",
-        iconText: "SU",
-
-        children: [
-          {
-            name: "Class J.S.S 1",
-            iconText: "SI",
-            path: "student/dashboard/jss1-student_information",
-          },
-          {
-            name: "Class J.S.S 2",
-            iconText: "SI",
-            path: "student/dashboard/jss2-student_information",
-          },
-          {
-            name: "Class J.S.S 3",
-            iconText: "SI",
-            path: "student/dashboard/jss3-student_information",
-          },
-          {
-            name: "Class S.S.S 1",
-            iconText: "SI",
-            path: "student/dashboard/ss1-student_information",
-          },
-          {
-            name: "Class S.S.S 2",
-            iconText: "SI",
-            path: "student/dashboard/ss2-student_information",
-          },
-          {
-            name: "Class S.S.S 3",
-            iconText: "SI",
-            path: "student/dashboard/ss3-student_information",
-          },
-        ],
-
-        path: "/session/signup",
-      },
-      {
-        name: "Forgot Password",
-        iconText: "FP",
-        path: "/session/forgot-password",
-      },
-      { name: "Student Promotion", iconText: "404", path: "/session/404" },
-    ],
-  },
+  { name: "Dashboard", path: "/dashboard/admin", icon: "dashboard" },
   { name: "Teachers", path: "/dashboard/teacher", icon: "dashboard" },
-
   {
     name: "Subject",
     icon: "security",
@@ -71,12 +17,12 @@ export const navigations = [
       { name: "Class S.S.S 3", iconText: "SI", path: "/dashboard/ss3-subject" },
     ],
   },
+
   {
-    name: "Class",
+    name: "Class Routine",
     icon: "security",
     children: [
       { name: "Manage Class", iconText: "SI", path: "dashboard/class" },
-      { name: "Academic Syllabus", iconText: "SI", path: "/session/signin" },
     ],
   },
   {
@@ -122,7 +68,7 @@ export const navigations = [
     ],
   },
   {
-    name: "Accounting",
+    name: "Payment",
     icon: "security",
     children: [
       {
@@ -136,56 +82,4 @@ export const navigations = [
   },
 
   { name: "Profile", path: "/dashboard/profile", icon: "dashboard" },
-
-  {
-    name: "Session/Auth",
-    icon: "security",
-    children: [
-      { name: "Sign in", iconText: "SI", path: "/session/signin" },
-      { name: "Sign up", iconText: "SU", path: "/session/signup" },
-      {
-        name: "Forgot Password",
-        iconText: "FP",
-        path: "/session/forgot-password",
-      },
-      { name: "Error", iconText: "404", path: "/session/404" },
-    ],
-  },
-  { label: "Components", type: "label" },
-  {
-    name: "Components",
-    icon: "favorite",
-    badge: { value: "30+", color: "secondary" },
-    children: [
-      { name: "Auto Complete", path: "/material/autocomplete", iconText: "A" },
-      { name: "Buttons", path: "/material/buttons", iconText: "B" },
-      { name: "Checkbox", path: "/material/checkbox", iconText: "C" },
-      { name: "Dialog", path: "/material/dialog", iconText: "D" },
-      {
-        name: "Expansion Panel",
-        path: "/material/expansion-panel",
-        iconText: "E",
-      },
-      { name: "Form", path: "/material/form", iconText: "F" },
-      { name: "Icons", path: "/material/icons", iconText: "I" },
-      { name: "Menu", path: "/material/menu", iconText: "M" },
-      { name: "Progress", path: "/material/progress", iconText: "P" },
-      { name: "Radio", path: "/material/radio", iconText: "R" },
-      { name: "Switch", path: "/material/switch", iconText: "S" },
-      { name: "Slider", path: "/material/slider", iconText: "S" },
-      { name: "Snackbar", path: "/material/snackbar", iconText: "S" },
-      { name: "Table", path: "/material/table", iconText: "T" },
-    ],
-  },
-  {
-    name: "Charts",
-    icon: "trending_up",
-    children: [{ name: "Echarts", path: "/charts/echarts", iconText: "E" }],
-  },
-  {
-    name: "Documentation",
-    icon: "launch",
-    type: "extLink",
-    path: "http://demos.ui-lib.com/matx-react-doc/",
-  },
 ];

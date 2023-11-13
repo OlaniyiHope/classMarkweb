@@ -115,77 +115,138 @@ const Manage = () => {
         </Box>
 
         <Box width="100%" overflow="auto">
-          <StyledTable>
-            <TableHead>
-              <TableRow>
-                <TableCell align="left">Exam Name</TableCell>
-                <TableCell align="left">ClassName</TableCell>
-                <TableCell align="left">Subject</TableCell>
-                <TableCell align="left">Exam Date</TableCell>
-                <TableCell align="left">Time</TableCell>
-                <TableCell align="right">Option</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data &&
-                data.map((item) => (
-                  <TableRow key={item._id}>
-                    <TableCell align="center">{item.title}</TableCell>
-                    <TableCell align="center">{item.className}</TableCell>
-                    <TableCell align="left">{item.subject}</TableCell>
-                    <TableCell align="center">{item.date}</TableCell>
+          <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
+            <div class="table-responsive full-data">
+              <table
+                class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
+                id="example-student"
+              >
+                <thead>
+                  <tr>
+                    <th>
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="checkAll"
+                        required=""
+                      />
+                    </th>
+                    <th>S/N</th>
+                    <th>Exam Name</th>
+                    <th>Class Name</th>
+                    <th>Subject</th>
+                    <th>Exam Date</th>
+                    <th>Time</th>
 
-                    <TableCell align="center">
-                      {item.fromTime}
-                      {item.toTime}
-                    </TableCell>
-                    <TableCell align="right">
-                      <IconButton
-                        aria-controls={`action-menu-${item._id}`}
-                        aria-haspopup="true"
-                        onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
-                      >
-                        <MoreVertIcon /> {/* MoreVertIcon for the menu */}
-                      </IconButton>
-                      <Menu
-                        id={`action-menu-${item._id}`}
-                        anchorEl={anchorElMap[item._id]}
-                        open={Boolean(anchorElMap[item._id])}
-                        onClose={() => handleCloseMenu(item._id)}
-                      >
-                        <MenuItem>
-                          <ListItemIcon></ListItemIcon>
-                          <Link
-                            to={`/dashboard/manage-online-exam/${item._id}`}
-                          >
-                            Manage Questions
-                          </Link>
-                        </MenuItem>
-                        <MenuItem>
-                          <ListItemIcon></ListItemIcon>
+                    <th class="text-end">Action</th>
+                  </tr>
+                </thead>
+                {data && data.length > 0 ? (
+                  data.map((item, index) => (
+                    <tbody>
+                      <tr key={item._id}>
+                        <td>
+                          <div class="checkbox me-0 align-self-center">
+                            <div class="custom-control custom-checkbox ">
+                              <input
+                                type="checkbox"
+                                class="form-check-input"
+                                id="check16"
+                                required=""
+                              />
+                              <label
+                                class="custom-control-label"
+                                for="check16"
+                              ></label>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="trans-list">
+                            <h4>{index + 1}</h4>
+                          </div>
+                        </td>
 
-                          <Link to={`/dashboard/view-result/${item._id}`}>
-                            View Result
-                          </Link>
-                        </MenuItem>
-                        <MenuItem>
-                          <ListItemIcon>
-                            <EditIcon /> {/* Use an Edit icon */}
-                          </ListItemIcon>
-                          Edit
-                        </MenuItem>
-                        <MenuItem>
-                          <ListItemIcon>
-                            <DeleteIcon /> {/* Use a Delete icon */}
-                          </ListItemIcon>
-                          Delete
-                        </MenuItem>
-                      </Menu>
+                        <td>
+                          <div class="date">{item.title}</div>
+                        </td>
+                        <td>
+                          <h6 class="mb-0">{item.className}</h6>
+                        </td>
+                        <td>
+                          <h6 class="mb-0">{item.subject}</h6>
+                        </td>
+                        <td>
+                          <h6 class="mb-0">{item.date}</h6>
+                        </td>
+                        <td>
+                          <h6 class="mb-0">
+                            {" "}
+                            {item.fromTime} --
+                            {item.toTime}
+                          </h6>
+                        </td>
+
+                        <td>
+                          <TableCell align="right">
+                            <IconButton
+                              aria-controls={`action-menu-${item._id}`}
+                              aria-haspopup="true"
+                              onClick={(event) =>
+                                handleOpenMenu(event, item._id)
+                              } // Pass item._id
+                            >
+                              <MoreVertIcon /> {/* MoreVertIcon for the menu */}
+                            </IconButton>
+                            <Menu
+                              id={`action-menu-${item._id}`}
+                              anchorEl={anchorElMap[item._id]}
+                              open={Boolean(anchorElMap[item._id])}
+                              onClose={() => handleCloseMenu(item._id)}
+                            >
+                              <MenuItem>
+                                <ListItemIcon></ListItemIcon>
+                                <Link
+                                  to={`/dashboard/manage-online-exam/${item._id}`}
+                                >
+                                  Manage Questions
+                                </Link>
+                              </MenuItem>
+                              <MenuItem>
+                                <ListItemIcon></ListItemIcon>
+
+                                <Link to={`/dashboard/view-result/${item._id}`}>
+                                  View Result
+                                </Link>
+                              </MenuItem>
+                              <MenuItem>
+                                <ListItemIcon>
+                                  <EditIcon /> {/* Use an Edit icon */}
+                                </ListItemIcon>
+                                Edit
+                              </MenuItem>
+                              <MenuItem>
+                                <ListItemIcon>
+                                  <DeleteIcon /> {/* Use a Delete icon */}
+                                </ListItemIcon>
+                                Delete
+                              </MenuItem>
+                            </Menu>
+                          </TableCell>
+                        </td>
+                      </tr>
+                    </tbody>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} align="center">
+                      No Class to display.
                     </TableCell>
                   </TableRow>
-                ))}
-            </TableBody>
-          </StyledTable>
+                )}
+              </table>
+            </div>
+          </div>
 
           <TablePagination
             sx={{ px: 2 }}
