@@ -17,6 +17,9 @@ import { NavLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import jwtDecode from "jwt-decode";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle, faApple } from "@fortawesome/free-brands-svg-icons";
+
 import "./style.css";
 
 const FlexBox = styled(Box)(({ theme }) => ({
@@ -170,14 +173,10 @@ const JwtLogin = () => {
                               href="https://www.google.com/"
                               className="btn btn-outline-light d-block social-bx"
                             >
-                              <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 28 28"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                {/* Google icon */}
-                              </svg>
+                              <FontAwesomeIcon
+                                icon={faGoogle}
+                                className="me-2"
+                              />
                               <span>Sign in with Google</span>
                             </Button>
                           </div>
@@ -186,7 +185,10 @@ const JwtLogin = () => {
                               href="https://www.apple.com/"
                               className="btn btn-outline-light d-block social-bx"
                             >
-                              {/* Apple icon */}
+                              <FontAwesomeIcon
+                                icon={faApple}
+                                className="me-2"
+                              />
                               <span>Sign in with Apple</span>
                             </Button>
                           </div>
@@ -196,6 +198,7 @@ const JwtLogin = () => {
                             Or with email
                           </span>
                         </div>
+
                         <div className="mb-3">
                           <TextField
                             fullWidth
@@ -207,7 +210,6 @@ const JwtLogin = () => {
                             onChange={handleChange}
                             helperText={touched.email && errors.email}
                             error={Boolean(errors.email && touched.email)}
-                            sx={{ mb: 2 }}
                           />
                         </div>
                         <div className="mb-3">
