@@ -167,7 +167,7 @@ const JwtLogin = () => {
                           <h3 className="text-center mb-2 text-black">
                             Sign In
                           </h3>
-                          <span>Your Social Campaigns</span>
+                          <span>Your School Dashboard</span>
                         </div>
                         <div className="row mb-4">
                           <div className="col-xl-6 col-6">

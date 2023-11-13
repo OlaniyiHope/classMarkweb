@@ -11,6 +11,13 @@ const Container = styled("div")(({ theme }) => ({
 }));
 
 const IconList = [
+  "school", // Generic school icon
+  "class", // Icon for a class or course
+  "event_note", // Icon for events or schedule
+  "payment", // Icon for payment
+  "people", // Icon for students or people
+  "person", // Icon for individual person (e.g., parent)
+  "assignment_turned_in",
   "3d_rotation",
   "ac_unit",
   "access_alarm",
@@ -949,7 +956,12 @@ const AppIcon = () => {
   return (
     <Container>
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Material", path: "/material" }, { name: "Icons" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Material", path: "/material" },
+            { name: "Icons" },
+          ]}
+        />
       </Box>
 
       <SimpleCard title="icons">
