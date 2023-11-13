@@ -1,4 +1,4 @@
-import {} from "@mui/material";
+import { TextField } from "@mui/material";
 import { Fragment, React, useState } from "react";
 import useFetch from "hooks/useFetch";
 import { Box } from "@mui/system";
@@ -21,7 +21,16 @@ import RowCards from "../shared/RowCards";
 import PaginationTable from "app/views/material-kit/tables/PaginationTable";
 import FormDialog from "app/views/material-kit/dialog/FormDialog";
 import { Breadcrumb } from "app/components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
+import { faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+
 import "./style.css";
+
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -61,10 +70,11 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Admin = () => {
-  const { data, loading, error } = useFetch("/ad/getallUsers");
+  const { data, loading, error } = useFetch("/get-admin");
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
@@ -73,6 +83,9 @@ const Admin = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
   };
 
   return (
@@ -86,6 +99,192 @@ const Admin = () => {
         />
         <FormDialog />
       </Box>
+      <div className="row gutters-20" style={{ marginTop: "60px" }}>
+        <div className="col-xl-3 col-sm-6 col-12">
+          <div className="dashboard-summery-one mg-b-20">
+            <div className="row align-items-center">
+              <div className="col-6">
+                <div className="item-icon bg-light-green">
+                  <FontAwesomeIcon
+                    icon={faUser}
+                    className="flaticon-classmates text-green"
+                  />
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="item-content">
+                  <div className="item-title">Students</div>
+                  <div className="item-number">
+                    <span className="counter" data-num="150000">
+                      100
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-xl-3 col-sm-6 col-12">
+          <div className="dashboard-summery-one mg-b-20">
+            <div className="row align-items-center">
+              <div className="col-6">
+                <div className="item-icon bg-light-blue">
+                  <FontAwesomeIcon
+                    icon={faUsers}
+                    className="flaticon-multiple-users-silhouette text-blue"
+                  />
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="item-content">
+                  <div className="item-title">Teachers</div>
+                  <div className="item-number">
+                    <span className="counter" data-num="2250">
+                      20
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-xl-3 col-sm-6 col-12">
+          <div className="dashboard-summery-one mg-b-20">
+            <div className="row align-items-center">
+              <div className="col-6">
+                <div className="item-icon bg-light-yellow">
+                  <FontAwesomeIcon
+                    icon={faUserFriends}
+                    className="flaticon-couple text-orange"
+                  />
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="item-content">
+                  <div className="item-title">Parents</div>
+                  <div className="item-number">
+                    <span className="counter" data-num="5690">
+                      70
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-xl-3 col-sm-6 col-12">
+          <div className="dashboard-summery-one mg-b-20">
+            <div className="row align-items-center">
+              <div className="col-6">
+                <div className="item-icon bg-light-red">
+                  <FontAwesomeIcon
+                    icon={faMoneyBillAlt}
+                    className="flaticon-money text-red"
+                  />
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="item-content">
+                  <div className="item-title">Admin</div>
+                  <div className="item-number">
+                    <span className="counter" data-num="193000">
+                      5
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style={{ display: "flex" }}>
+        <div style={{ flexBasis: "50%" }}>
+          <Calendar
+            onChange={handleDateChange}
+            value={selectedDate}
+            style={{ width: "70%", padding: "100px" }}
+          />
+        </div>
+
+        <div class="notice-box-wrap m-height-660" style={{ flexBasis: "50%" }}>
+          <div class="notice-list">
+            <div class="post-date bg-skyblue">16 June, 2019</div>
+            <h6 class="notice-title">
+              <a href="#">
+                Great School manag mene esom tus eleifend lectus sed maximus mi
+                faucibusnting.
+              </a>
+            </h6>
+            <div class="entry-meta">
+              {" "}
+              Jennyfar Lopez / <span>5 min ago</span>
+            </div>
+          </div>
+          <div class="notice-list">
+            <div class="post-date bg-yellow">16 June, 2019</div>
+            <h6 class="notice-title">
+              <a href="#">Great School manag printing.</a>
+            </h6>
+            <div class="entry-meta">
+              {" "}
+              Jennyfar Lopez / <span>5 min ago</span>
+            </div>
+          </div>
+          <div class="notice-list">
+            <div class="post-date bg-pink">16 June, 2019</div>
+            <h6 class="notice-title">
+              <a href="#">
+                Great School manag Nulla rhoncus eleifensed mim us mi faucibus
+                id. Mauris vestibulum non purus lobortismenearea
+              </a>
+            </h6>
+            <div class="entry-meta">
+              {" "}
+              Jennyfar Lopez / <span>5 min ago</span>
+            </div>
+          </div>
+          <div class="notice-list">
+            <div class="post-date bg-blue">16 June, 2019</div>
+            <h6 class="notice-title">
+              <a href="#">Great School manag mene esom text of the printing.</a>
+            </h6>
+            <div class="entry-meta">
+              {" "}
+              Jennyfar Lopez / <span>5 min ago</span>
+            </div>
+          </div>
+          <div class="notice-list">
+            <div class="post-date bg-yellow">16 June, 2019</div>
+            <h6 class="notice-title">
+              <a href="#">Great School manag printing.</a>
+            </h6>
+            <div class="entry-meta">
+              {" "}
+              Jennyfar Lopez / <span>5 min ago</span>
+            </div>
+          </div>
+          <div class="notice-list">
+            <div class="post-date bg-blue">16 June, 2019</div>
+            <h6 class="notice-title">
+              <a href="#">Great School manag meneesom.</a>
+            </h6>
+            <div class="entry-meta">
+              {" "}
+              Jennyfar Lopez / <span>5 min ago</span>
+            </div>
+          </div>
+          <div class="notice-list">
+            <div class="post-date bg-pink">16 June, 2019</div>
+            <h6 class="notice-title">
+              <a href="#">Great School manag meneesom.</a>
+            </h6>
+            <div class="entry-meta">
+              {" "}
+              Jennyfar Lopez / <span>5 min ago</span>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
         <div class="table-responsive full-data">
           <table

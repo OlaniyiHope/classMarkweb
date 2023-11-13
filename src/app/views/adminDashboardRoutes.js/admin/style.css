@@ -47956,3 +47956,153 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 /*# sourceMappingURL=style.css.map */
+/* Dashboard Summery Styles */
+.row.gutters-20 {
+  margin-right: -10px;
+  margin-left: -10px;
+  margin-top: "40px";
+}
+
+.dashboard-summery-one {
+  border-radius: 10px;
+  background-color: #fff;
+
+  overflow: hidden;
+}
+
+.dashboard-summery-one .item-icon {
+  font-size: 30px;
+  text-align: center;
+  padding: 15px;
+}
+
+.dashboard-summery-one .item-content {
+  padding: 15px;
+}
+
+.dashboard-summery-one .item-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.dashboard-summery-one .item-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+}
+
+/* Background Colors */
+.bg-light-green {
+  background-color: #8ce196;
+  color: #228b22; /* Dark Green */
+}
+
+.bg-light-blue {
+  background-color: #a9d3f2;
+  color: #0d47a1; /* Dark Blue */
+}
+
+.bg-light-yellow {
+  background-color: #fbd28b;
+  color: #e65100; /* Dark Orange */
+}
+
+.bg-light-red {
+  background-color: #f8a7a3;
+  color: #c62828; /* Dark Red */
+}
+
+/* Counter Styles */
+.counter {
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+}
+
+/* Flaticon Styles (adjust based on your actual icons) */
+.flaticon-classmates::before {
+  content: "\f007"; /* Adjust this value based on your icon's content */
+}
+
+.flaticon-multiple-users-silhouette::before {
+  content: "\f500"; /* Adjust this value based on your icon's content */
+}
+
+.flaticon-couple::before {
+  content: "\f501"; /* Adjust this value based on your icon's content */
+}
+
+.flaticon-money::before {
+  content: "\f3d1"; /* Adjust this value based on your icon's content */
+}
+
+/* Text Colors */
+.text-green {
+  color: #228b22; /* Dark Green */
+}
+
+.text-blue {
+  color: #0d47a1; /* Dark Blue */
+}
+
+.text-orange {
+  color: #e65100; /* Dark Orange */
+}
+
+.text-red {
+  color: #c62828; /* Dark Red */
+}
+.notice-box-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.notice-list {
+  flex: 1 1 30%; /* Adjust the width as needed */
+  margin: 10px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.post-date {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.bg-skyblue {
+  background-color: #87CEEB;
+}
+
+.bg-yellow {
+  background-color: #FFD700;
+}
+
+.bg-pink {
+  background-color: #FFC0CB;
+}
+
+.bg-blue {
+  background-color: #ADD8E6;
+}
+
+.notice-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.entry-meta {
+  font-size: 14px;
+  color: #777;
+}
+
+.entry-meta span {
+  font-weight: 600;
+  margin-left: 5px;
+}
