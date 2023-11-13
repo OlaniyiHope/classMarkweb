@@ -18,6 +18,10 @@ import * as Yup from "yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import jwtDecode from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import pic from "./one.jpg";
+import pic1 from "./two.jpg";
+import logo from "./logohlhs.png";
+import pic3 from "./pic-2.png";
 import { faGoogle, faApple } from "@fortawesome/free-brands-svg-icons";
 
 import "./style.css";
@@ -124,21 +128,19 @@ const JwtLogin = () => {
       >
         <div className="d-flex flex-column-auto flex-column pt-lg-40 pt-15">
           <div className="text-center mb-lg-4 mb-2 pt-5 logo">
-            <img src="images/logo-white.png" alt="" />
+            <img src={logo} alt="" style={{ height: "100px" }} />
           </div>
-          <h3 className="mb-2 text-white">Welcome back!</h3>
-          <p className="mb-4">
-            User Experience & Interface Design <br />
-            Strategy SaaS Solutions
+          <h3 className="mb-2 text-white">HEAVENLY LOVE HIGH SCHOOL</h3>
+          <p className="mb-4" style={{ color: "white" }}>
+            Welcome!...Log in to your School Dashboard. 📚💡
+            <br />
           </p>
         </div>
-        <div className="aside-image position-relative">
-          <img className="img1 move-1" alt="" />
-          <img className="img2 move-2" alt="" />
-          <img className="img3 move-3" alt="" />
-        </div>
       </div>
-      <div className="container flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
+      <div
+        className="container flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto"
+        style={{ width: "95%" }}
+      >
         <div className="d-flex justify-content-center h-100 align-items-center">
           <div className="authincation-content style-2">
             <div className="row no-gutters">
