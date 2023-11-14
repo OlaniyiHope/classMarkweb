@@ -1,9 +1,17 @@
 export const navigations = [
-  { name: "Dashboard", path: "/dashboard/admin", icon: "dashboard" },
-  { name: "Teachers", path: "/dashboard/teacher", icon: "dashboard" },
+  {
+    name: "Dashboard",
+    path: "/student/dashboard/default",
+    icon: <span style={{ color: "#ffc107" }}>dashboard</span>,
+  },
+  {
+    name: "Teachers",
+    path: "/student/dashboard/teacher",
+    icon: <span style={{ color: "#ffc107" }}>person</span>,
+  },
   {
     name: "Subject",
-    icon: "security",
+    icon: "book",
     children: [
       {
         name: "Class J.S.S 1",
@@ -20,14 +28,14 @@ export const navigations = [
 
   {
     name: "Class Routine",
-    icon: "security",
+    icon: "school",
     children: [
       { name: "Manage Class", iconText: "SI", path: "dashboard/class" },
     ],
   },
   {
     name: "Exam",
-    icon: "security",
+    icon: "assignment",
     children: [
       { name: "Exam List", iconText: "SI", path: "student/dashboard/examlist" },
       { name: "Exam Grades", iconText: "SI", path: "/dashboard/grade" },
@@ -44,11 +52,11 @@ export const navigations = [
   {
     name: "Mark View",
     path: "/student/dashboard/student_mark_sheet",
-    icon: "dashboard",
+    icon: "assignment",
   },
   {
     name: "Online Exam",
-    icon: "security",
+    icon: "assignment",
     children: [
       {
         name: "Mark View/Report card",
@@ -69,7 +77,7 @@ export const navigations = [
   },
   {
     name: "Payment",
-    icon: "security",
+    icon: "payment",
     children: [
       {
         name: "Student Payments",
@@ -81,5 +89,9 @@ export const navigations = [
     ],
   },
 
-  { name: "Profile", path: "/dashboard/profile", icon: "dashboard" },
+  {
+    name: "Profile",
+    path: "/dashboard/profile",
+    icon: <span style={{ color: "#ffc107" }}>person</span>,
+  },
 ];

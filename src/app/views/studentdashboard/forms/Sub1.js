@@ -89,35 +89,90 @@ const Sub1 = () => {
         </Box>
 
         <Box width="100%" overflow="auto">
-          <StyledTable>
-            <TableHead>
-              <TableRow>
-                <TableCell align="center">S/N</TableCell>
-                <TableCell align="left">Subject Name</TableCell>
-                <TableCell align="center">Teacher</TableCell>
-                <TableCell align="center">Class</TableCell>
+          <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
+            <div class="table-responsive full-data">
+              <table
+                class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
+                id="example-student"
+              >
+                <thead>
+                  <tr>
+                    <th>
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="checkAll"
+                        required=""
+                      />
+                    </th>
+                    <th>S/N</th>
+                    <th>Subject Name</th>
+                    <th>Teacher</th>
+                    <th>Class</th>
 
-                <TableCell align="right">Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data &&
-                data.map((item) => (
-                  <TableRow key={item._id}>
-                    <TableCell align="center"></TableCell>
-                    <TableCell align="left">{item.name}</TableCell>
-                    <TableCell align="center">{item.teacher}</TableCell>
-                    <TableCell align="center">{item.classname}</TableCell>
-
-                    <TableCell align="right">
-                      <IconButton>
-                        <Icon color="error">close</Icon>
-                      </IconButton>
+                    <th class="text-end">Action</th>
+                  </tr>
+                </thead>
+                {data && data.length > 0 ? (
+                  data.map((item, index) => (
+                    <tbody>
+                      <tr key={item._id}>
+                        <td>
+                          <div class="checkbox me-0 align-self-center">
+                            <div class="custom-control custom-checkbox ">
+                              <input
+                                type="checkbox"
+                                class="form-check-input"
+                                id="check16"
+                                required=""
+                              />
+                              <label
+                                class="custom-control-label"
+                                for="check16"
+                              ></label>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="trans-list">
+                            <h4>{index + 1}</h4>
+                          </div>
+                        </td>
+                        <td>
+                          <span class="text-primary font-w600">{item._id}</span>
+                        </td>
+                        <td>
+                          <div class="date">
+                            {" "}
+                            <img
+                              src="images/trans/10.jpg"
+                              alt=""
+                              class="avatar me-3"
+                            />
+                          </div>
+                        </td>
+                        <td>
+                          <div class="date">{item.name}</div>
+                        </td>
+                        <td>
+                          <h6 class="mb-0">{item.teacher}</h6>
+                        </td>
+                        <td>
+                          <h6 class="mb-0">{item.classname}</h6>
+                        </td>
+                      </tr>
+                    </tbody>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} align="center">
+                      No Subject to display.
                     </TableCell>
                   </TableRow>
-                ))}
-            </TableBody>
-          </StyledTable>
+                )}
+              </table>
+            </div>
+          </div>
 
           <TablePagination
             sx={{ px: 2 }}

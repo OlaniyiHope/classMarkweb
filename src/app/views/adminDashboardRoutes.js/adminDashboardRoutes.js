@@ -32,12 +32,13 @@ import ManSin from "./forms/ManSin";
 import ViewResult from "./forms/ViewResult";
 import MarkSheet from "./forms/MarkSheet";
 import ReportCard from "./forms/ReportCard";
+import ViewAdmin from "./admin/ViewAdmin";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
 const adminDashboardRoutes = [
   { path: "/dashboard/admin", element: <Admin />, auth: "admin" },
-  { path: "/admin/admin", element: <Admin />, auth: "admin" },
+  { path: "/admin/admin", element: <ViewAdmin />, auth: "admin" },
   { path: "/dashboard/student_add", element: <Form />, auth: "admin" },
   { path: "/dashboard/classes", element: <AddClass />, auth: "admin" },
   { path: "/dashboard/js1-subject", element: <Sub1 />, auth: "admin" },

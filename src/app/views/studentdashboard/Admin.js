@@ -17,7 +17,7 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-
+import RowCards from "../shared/RowCards";
 import PaginationTable from "app/views/material-kit/tables/PaginationTable";
 import FormDialog from "app/views/material-kit/dialog/FormDialog";
 import { Breadcrumb } from "app/components";
@@ -69,7 +69,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(1),
 }));
 
-const Analytics = () => {
+const Admin = () => {
   const { data, loading, error } = useFetch("/get-admin");
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
@@ -90,7 +90,7 @@ const Analytics = () => {
 
   return (
     <div>
-      <h2>Student Dashboard</h2>
+      <h2>Admin Dashboard</h2>
       <div className="row gutters-20" style={{ marginTop: "60px" }}>
         <div className="col-xl-3 col-sm-6 col-12">
           <div className="dashboard-summery-one mg-b-20">
@@ -299,4 +299,4 @@ const Analytics = () => {
   );
 };
 
-export default Analytics;
+export default Admin;

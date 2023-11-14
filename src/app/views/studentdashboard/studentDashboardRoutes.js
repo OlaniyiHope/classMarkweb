@@ -40,11 +40,7 @@ const studentDashboardRoutes = [
     element: <Analytics />,
     auth: "student",
   },
-  {
-    path: "/student/dashboard/admin",
-    element: <Admin />,
-    auth: "student",
-  },
+
   {
     path: "/student/dashboard/student_add",
     element: <Form />,
