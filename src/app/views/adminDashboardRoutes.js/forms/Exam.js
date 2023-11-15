@@ -23,6 +23,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./form.css";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Container = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -49,6 +52,7 @@ const Exam = () => {
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedExam, setSelectedExam] = useState("");
   const [studentData, setStudentData] = useState([]);
+  const [marksData, setMarksData] = useState([]); // State to store marks data
 
   const [showMarkManagement, setShowMarkManagement] = useState(false);
 
@@ -121,6 +125,64 @@ const Exam = () => {
     setSelectedSubject(event.target.value);
   };
 
+  const handleSaveChanges = async () => {
+    // Prepare marks data from user input
+    const marks = studentData.map((student, index) => ({
+      studentId: student._id,
+      examscore: Number(document.getElementById(`examscore_${index}`).value),
+      marksObtained: Number(
+        document.getElementById(`marksObtained_${index}`).value
+      ),
+      comment: document.getElementById(`comment_${index}`).value,
+    }));
+
+    // Send marks data to the server
+    const token = localStorage.getItem("jwtToken");
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${token}`);
+
+    try {
+      const response = await fetch("http://localhost:3003/api/save-marks", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ examId: selectedExam, marks }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save marks");
+      }
+
+      const result = await response.json();
+      console.log(result);
+      // Show success toast
+      toast.success("Marks saved successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      // Optionally, you can reset the form or perform any other actions
+
+      // Optionally, you can reset the form or perform any other actions
+    } catch (error) {
+      console.error("Error saving marks:", error);
+      // Handle the error (e.g., show an error message)
+      toast.error("Failed to save marks", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
   return (
     <div>
       <Container>
@@ -190,71 +252,81 @@ const Exam = () => {
               </Button>
             </Grid>
           </Grid>
-        </ValidatorForm>
-        {showMarkManagement && (
-          <>
-            <div class="col-sm-4">
-              <div class="tile-stats tile-gray">
-                <div class="icon">
-                  <i class="entypo-chart-bar"></i>
+
+          {showMarkManagement && (
+            <>
+              <div class="col-sm-4">
+                <div class="tile-stats tile-gray">
+                  <div class="icon">
+                    <i class="entypo-chart-bar"></i>
+                  </div>
+
+                  <h3 style={{ color: "#696969" }}>Marks For Math</h3>
+                  <h4 style={{ color: "#696969" }}>
+                    Class J.S.S. 1 : Section A
+                  </h4>
+                  <h4 style={{ color: "#696969" }}>
+                    Subject : ENGLISH STUDIES{" "}
+                  </h4>
                 </div>
-
-                <h3 style={{ color: "#696969" }}>Marks For Math</h3>
-                <h4 style={{ color: "#696969" }}>Class J.S.S. 1 : Section A</h4>
-                <h4 style={{ color: "#696969" }}>Subject : ENGLISH STUDIES </h4>
               </div>
-            </div>
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Id</th>
-                  <th>Name</th>
-                  <th>Exam</th>
-                  <th>Marks Obtained</th>
-                  <th>Comment</th>
-                </tr>
-              </thead>
-              <tbody>
-                {studentData.map((student, index) => (
+              <table class="table table-bordered">
+                <thead>
                   <tr>
-                    <td>28</td>
-
-                    <td>127hlhs</td>
-
-                    <td>{student.studentName} </td>
-                    <td>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="exam_2521"
-                        name="exam_2521"
-                        value="0"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="mark_obtained_2521"
-                        name="marks_obtained_2521"
-                        value=""
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        class="form-control"
-                        name="comment_2521"
-                        value=""
-                      />
-                    </td>
+                    <th>#</th>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Exam</th>
+                    <th>Marks Obtained</th>
+                    <th>Comment</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </>
-        )}
+                </thead>
+                <tbody>
+                  {studentData.map((student, index) => (
+                    <tr>
+                      <td> {index + 1}</td>
+
+                      <td>{student._id}</td>
+
+                      <td>{student.studentName} </td>
+                      <td>
+                        <TextField
+                          type="number"
+                          name={`examscore_${index}`}
+                          id={`examscore_${index}`}
+                        />
+                      </td>
+                      <td>
+                        <TextField
+                          type="number"
+                          name={`marksObtained_${index}`}
+                          id={`marksObtained_${index}`}
+                        />
+                      </td>
+                      <td>
+                        <TextField
+                          name={`comment_${index}`}
+                          id={`comment_${index}`}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  type="button"
+                  onClick={handleSaveChanges}
+                >
+                  <Span sx={{ pl: 1, textTransform: "capitalize" }}>
+                    Save Changes
+                  </Span>
+                </Button>
+              </table>
+            </>
+          )}
+        </ValidatorForm>
+        <ToastContainer />
       </Container>
     </div>
   );
