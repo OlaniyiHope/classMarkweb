@@ -85,14 +85,11 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password, role) => {
     try {
-      const response = await axios.post(
-        "https://edu-3cb7e7c6ba61.herokuapp.com/api/login",
-        {
-          email,
-          password,
-          role,
-        }
-      );
+      const response = await axios.post("http://localhost:3003/api/login", {
+        email,
+        password,
+        role,
+      });
       console.log("Response data:", response.data);
 
       if (response.status === 200) {
@@ -140,25 +137,22 @@ export const AuthProvider = ({ children }) => {
     date
     // birthday
   ) => {
-    const response = await axios.post(
-      "https://edu-3cb7e7c6ba61.herokuapp.com/api/register",
-      {
-        username,
-        email,
-        phone,
-        address,
-        password,
-        role,
-        studentName,
-        classname,
-        // subjectTaught,
-        parentsName,
-        // gender,
-        date,
-        // contactNo,
-        // birthday,
-      }
-    );
+    const response = await axios.post("http://localhost:3003/api/register", {
+      username,
+      email,
+      phone,
+      address,
+      password,
+      role,
+      studentName,
+      classname,
+      // subjectTaught,
+      parentsName,
+      // gender,
+      date,
+      // contactNo,
+      // birthday,
+    });
 
     const { token, user } = response.data;
 

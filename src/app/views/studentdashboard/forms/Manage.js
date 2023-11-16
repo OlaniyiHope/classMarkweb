@@ -46,7 +46,7 @@ const Manage = () => {
       };
 
       const response = await axios.get(
-        `https://edu-3cb7e7c6ba61.herokuapp.com/api/get-exams-by-class/${user.classname}`,
+        `http://localhost:3003/api/get-exams-by-class/${user.classname}`,
         { headers } // Include the headers in the request
       );
 

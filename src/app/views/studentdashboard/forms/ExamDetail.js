@@ -67,7 +67,7 @@ const ExamDetail = () => {
   const fetchExamAndQuestions = async () => {
     try {
       const examResponse = await axios.get(
-        `https://edu-3cb7e7c6ba61.herokuapp.com/api/get-exam/${id}`
+        `http://localhost:3003/api/get-exam/${id}`
       );
       setExam(examResponse.data);
 
@@ -77,7 +77,7 @@ const ExamDetail = () => {
       };
 
       const questionsResponse = await axios.get(
-        `https://edu-3cb7e7c6ba61.herokuapp.com/api/questions/${id}`,
+        `http://localhost:3003/api/questions/${id}`,
         { headers }
       );
       const questionsData = questionsResponse.data;
@@ -166,7 +166,7 @@ const ExamDetail = () => {
       console.log("Data before submitting:", data); // Log the data before submitting
 
       const response = await axios.post(
-        "https://edu-3cb7e7c6ba61.herokuapp.com/api/exams/submit",
+        "http://localhost:3003/api/exams/submit",
         data,
         { headers }
       );

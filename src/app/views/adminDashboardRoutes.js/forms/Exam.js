@@ -64,7 +64,7 @@ const Exam = () => {
 
     try {
       const response = await fetch(
-        `https://edu-3cb7e7c6ba61.herokuapp.com/api/student/${selectedClass}`,
+        `http://localhost:3003/api/student/${selectedClass}`,
         {
           headers,
         }
@@ -94,12 +94,9 @@ const Exam = () => {
       headers.append("Authorization", `Bearer ${token}`);
 
       // Make an API call to fetch subjects for the selected class with the authorization token
-      fetch(
-        `https://edu-3cb7e7c6ba61.herokuapp.com/api/get-subject/${selectedClass}`,
-        {
-          headers,
-        }
-      )
+      fetch(`http://localhost:3003/api/get-subject/${selectedClass}`, {
+        headers,
+      })
         .then((response) => response.json())
         .then((data) => {
           setSubjectData(data);
@@ -132,7 +129,9 @@ const Exam = () => {
     // Prepare marks data from user input
     const marks = studentData.map((student, index) => ({
       studentId: student._id,
+      testscore: Number(document.getElementById(`testscore_${index}`).value),
       examscore: Number(document.getElementById(`examscore_${index}`).value),
+
       marksObtained: Number(
         document.getElementById(`marksObtained_${index}`).value
       ),
@@ -145,15 +144,12 @@ const Exam = () => {
     headers.append("Authorization", `Bearer ${token}`);
 
     try {
-      const response = await fetch(
-        "https://edu-3cb7e7c6ba61.herokuapp.com/api/save-marks",
-        {
-          method: "POST",
-          headers,
-          body: JSON.stringify({ examId: selectedExam, marks }),
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      const response = await fetch("http://localhost:3003/api/save-marks", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ examId: selectedExam, marks }),
+        headers: { "Content-Type": "application/json" },
+      });
 
       if (!response.ok) {
         throw new Error("Failed to save marks");
@@ -282,6 +278,7 @@ const Exam = () => {
                     <th>#</th>
                     <th>Id</th>
                     <th>Name</th>
+                    <th>Test</th>
                     <th>Exam</th>
                     <th>Marks Obtained</th>
                     <th>Comment</th>
@@ -295,6 +292,13 @@ const Exam = () => {
                       <td>{student._id}</td>
 
                       <td>{student.studentName} </td>
+                      <td>
+                        <TextField
+                          type="number"
+                          name={`testscore_${index}`}
+                          id={`testscore_${index}`}
+                        />
+                      </td>
                       <td>
                         <TextField
                           type="number"

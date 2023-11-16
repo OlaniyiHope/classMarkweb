@@ -46,13 +46,9 @@ export default function FormDialog3() {
       };
 
       // Make an API call to create a teacher
-      await axios.post(
-        "https://edu-3cb7e7c6ba61.herokuapp.com/api/create-teachers",
-        formData,
-        {
-          headers, // Include the headers in the request
-        }
-      );
+      await axios.post("http://localhost:3003/api/create-teachers", formData, {
+        headers, // Include the headers in the request
+      });
 
       // Handle successful teacher creation
       navigate("/dashboard/teacher");
