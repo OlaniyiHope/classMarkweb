@@ -165,41 +165,12 @@ const JwtLogin = () => {
                       <form onSubmit={handleSubmit}>
                         <div className="text-center mb-4">
                           <h3 className="text-center mb-2 text-black">
-                            Sign In
+                            Sign In to
                           </h3>
                           <span>Your School Dashboard</span>
                         </div>
-                        <div className="row mb-4">
-                          <div className="col-xl-6 col-6">
-                            <Button
-                              href="https://www.google.com/"
-                              className="btn btn-outline-light d-block social-bx"
-                            >
-                              <FontAwesomeIcon
-                                icon={faGoogle}
-                                className="me-2"
-                              />
-                              <span>Sign in with Google</span>
-                            </Button>
-                          </div>
-                          <div className="col-xl-6 col-6">
-                            <Button
-                              href="https://www.apple.com/"
-                              className="btn btn-outline-light d-block social-bx"
-                            >
-                              <FontAwesomeIcon
-                                icon={faApple}
-                                className="me-2"
-                              />
-                              <span>Sign in with Apple</span>
-                            </Button>
-                          </div>
-                        </div>
-                        <div className="sepertor">
-                          <span className="d-block mb-4 fs-13">
-                            Or with email
-                          </span>
-                        </div>
+
+                        <div className="sepertor"></div>
 
                         <div className="mb-3">
                           <TextField
