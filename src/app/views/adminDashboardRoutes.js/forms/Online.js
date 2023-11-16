@@ -100,7 +100,7 @@ const Online = () => {
     };
 
     // Make a POST request to your backend to create the exam with the JWT token
-    fetch("http://localhost:3003/api/create-exam", {
+    fetch("https://edu-3cb7e7c6ba61.herokuapp.com/api/create-exam", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -132,9 +132,12 @@ const Online = () => {
       headers.append("Authorization", `Bearer ${token}`);
 
       // Make an API call to fetch subjects for the selected class with the authorization token
-      fetch(`http://localhost:3003/api/get-subject/${selectedClass}`, {
-        headers,
-      })
+      fetch(
+        `https://edu-3cb7e7c6ba61.herokuapp.com/api/get-subject/${selectedClass}`,
+        {
+          headers,
+        }
+      )
         .then((response) => response.json())
         .then((data) => {
           setSubjectData(data);

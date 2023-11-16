@@ -20,7 +20,7 @@ const EditQuestionModal = ({ open, onClose, question, onUpdate }) => {
     try {
       const token = localStorage.getItem("jwtToken");
       const response = await fetch(
-        `http://localhost:3003/api/questions/${editedQuestion._id}`,
+        `https://edu-3cb7e7c6ba61.herokuapp.com/api/questions/${editedQuestion._id}`,
         {
           method: "PUT",
           headers: {

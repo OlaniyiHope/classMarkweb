@@ -88,7 +88,7 @@ const ManSin2 = () => {
         };
 
         const response = await fetch(
-          `http://localhost:3003/api/questions/${id}`,
+          `https://edu-3cb7e7c6ba61.herokuapp.com/api/questions/${id}`,
           {
             method: "GET",
             headers, // Include the headers in the request
@@ -143,14 +143,17 @@ const ManSin2 = () => {
         ).value;
       }
 
-      const response = await fetch("http://localhost:3003/api/questions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Include the JWT token in the headers
-        },
-        body: JSON.stringify(questionData),
-      });
+      const response = await fetch(
+        "https://edu-3cb7e7c6ba61.herokuapp.com/api/questions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Include the JWT token in the headers
+          },
+          body: JSON.stringify(questionData),
+        }
+      );
 
       if (response.ok) {
         // Question submitted successfully, you can handle the response here
