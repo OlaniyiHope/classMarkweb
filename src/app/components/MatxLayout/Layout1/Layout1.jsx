@@ -131,8 +131,6 @@ const Layout1 = () => {
           </ContentBox>
         )}
       </LayoutContainer>
-
-      {settings.secondarySidebar.show && <SecondarySidebar />}
     </Layout1Root>
   );
 };
