@@ -92,6 +92,7 @@ const Layout1 = () => {
           <Layout1Sidenav />
         </SidenavTheme>
       )}
+
       <LayoutContainer width={sidenavWidth} secondarySidebar={secondarySidebar}>
         {layout1Settings.topbar.show && layout1Settings.topbar.fixed && (
           <ThemeProvider theme={topbarTheme}>
@@ -130,6 +131,8 @@ const Layout1 = () => {
           </ContentBox>
         )}
       </LayoutContainer>
+
+      {settings.secondarySidebar.show && <SecondarySidebar />}
     </Layout1Root>
   );
 };
