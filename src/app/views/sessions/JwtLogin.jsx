@@ -26,35 +26,6 @@ import { faGoogle, faApple } from "@fortawesome/free-brands-svg-icons";
 
 import "./style.css";
 
-const FlexBox = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-}));
-
-const JustifyBox = styled(FlexBox)(({ theme }) => ({
-  justifyContent: "center",
-}));
-
-const ContentBox = styled(Box)(({ theme }) => ({
-  height: "100%",
-  padding: "32px",
-  position: "relative",
-  background: "rgba(0, 0, 0, 0.01)",
-}));
-
-const JWTRoot = styled(JustifyBox)(({ theme }) => ({
-  background: "#1A2038",
-  minHeight: "100% !important",
-  "& .card": {
-    maxWidth: 800,
-    minHeight: 400,
-    margin: "1rem",
-    display: "flex",
-    borderRadius: 12,
-    alignItems: "center",
-  },
-}));
-
 // inital login credentials
 const initialValues = {
   email: "",
