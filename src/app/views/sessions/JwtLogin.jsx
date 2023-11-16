@@ -252,6 +252,7 @@ const JwtLogin = () => {
                           >
                             Register
                           </NavLink>
+                          <br></br>
                           Do you want to the home page?
                           <NavLink
                             to="https://kubiquee.vercel.app"
