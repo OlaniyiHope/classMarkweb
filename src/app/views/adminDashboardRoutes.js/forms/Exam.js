@@ -47,17 +47,15 @@ const Exam = () => {
     error: classError,
   } = useFetch("/class");
   const { data: examData } = useFetch("/getofflineexam");
-  const [subjectData, setSubjectData] = useState([]); // Initialize subject data as an empty array
+  const [subjectData, setSubjectData] = useState([]);
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedExam, setSelectedExam] = useState("");
   const [studentData, setStudentData] = useState([]);
-  const [marksData, setMarksData] = useState([]); // State to store marks data
-
+  const [subjectIdLookup, setSubjectIdLookup] = useState({});
   const [showMarkManagement, setShowMarkManagement] = useState(false);
 
   const handleManageMarkClick = async () => {
-    // Fetch student data based on the selected class
     const token = localStorage.getItem("jwtToken");
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${token}`);
@@ -76,47 +74,47 @@ const Exam = () => {
 
       const students = await response.json();
       setStudentData(students);
-
-      // Update the state to show mark management
       setShowMarkManagement(true);
     } catch (error) {
       console.error("Error fetching student data:", error);
-      // Handle the error (e.g., show an error message)
     }
   };
+
   useEffect(() => {
     if (selectedClass) {
-      // Fetch the authentication token from wherever you've stored it (e.g., local storage)
       const token = localStorage.getItem("jwtToken");
-
-      // Include the token in the request headers
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      // Make an API call to fetch subjects for the selected class with the authorization token
       fetch(`http://localhost:3003/api/get-subject/${selectedClass}`, {
         headers,
       })
         .then((response) => response.json())
         .then((data) => {
           setSubjectData(data);
+
+          // Create a subjectId lookup
+          const lookup = {};
+          data.forEach((subject) => {
+            lookup[subject.name] = subject._id;
+          });
+          setSubjectIdLookup(lookup);
         })
         .catch((error) => {
           console.error("Error fetching subjects:", error);
         });
     } else {
-      // Clear the subjects if no class is selected
       setSubjectData([]);
+      setSubjectIdLookup({});
     }
   }, [selectedClass]);
 
   const handleClassChange = (event) => {
     const newSelectedClass = event.target.value;
     setSelectedClass(newSelectedClass);
-
-    // Clear the selected subject when the class changes
     setSelectedSubject("");
   };
+
   const handleExamChange = (event) => {
     setSelectedExam(event.target.value);
   };
@@ -124,40 +122,53 @@ const Exam = () => {
   const handleSubjectChange = (event) => {
     setSelectedSubject(event.target.value);
   };
-
   const handleSaveChanges = async () => {
-    // Prepare marks data from user input
-    const marks = studentData.map((student, index) => ({
-      studentId: student._id,
-      testscore: Number(document.getElementById(`testscore_${index}`).value),
-      examscore: Number(document.getElementById(`examscore_${index}`).value),
-
-      marksObtained: Number(
-        document.getElementById(`marksObtained_${index}`).value
-      ),
-      comment: document.getElementById(`comment_${index}`).value,
-    }));
-
-    // Send marks data to the server
-    const token = localStorage.getItem("jwtToken");
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${token}`);
-
     try {
+      const marks = studentData.map((student, index) => {
+        const studentId = student._id;
+        const subjectId = subjectIdLookup[student.subjectName]; // Use the lookup to get subjectId
+        const subjectName = selectedSubject;
+
+        const testscore = Number(
+          document.getElementById(`testscore_${index}`).value
+        );
+        const examscore = Number(
+          document.getElementById(`examscore_${index}`).value
+        );
+        const marksObtained = Number(
+          document.getElementById(`marksObtained_${index}`).value
+        );
+        const comment = document.getElementById(`comment_${index}`).value;
+
+        return {
+          studentId,
+          subjectId,
+          subjectName,
+          testscore,
+          examscore,
+          marksObtained,
+          comment,
+        };
+      });
+
+      const token = localStorage.getItem("jwtToken");
+      const headers = new Headers();
+      headers.append("Authorization", `Bearer ${token}`);
+
       const response = await fetch("http://localhost:3003/api/save-marks", {
         method: "POST",
-        headers,
-        body: JSON.stringify({ examId: selectedExam, marks }),
-        headers: { "Content-Type": "application/json" },
+        headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          examId: selectedExam,
+          className: selectedClass,
+          marks,
+        }),
       });
 
       if (!response.ok) {
         throw new Error("Failed to save marks");
       }
 
-      const result = await response.json();
-      console.log(result);
-      // Show success toast
       toast.success("Marks saved successfully!", {
         position: "top-right",
         autoClose: 3000,
@@ -167,12 +178,9 @@ const Exam = () => {
         draggable: true,
         progress: undefined,
       });
-      // Optionally, you can reset the form or perform any other actions
-
-      // Optionally, you can reset the form or perform any other actions
     } catch (error) {
       console.error("Error saving marks:", error);
-      // Handle the error (e.g., show an error message)
+
       toast.error("Failed to save marks", {
         position: "top-right",
         autoClose: 3000,
@@ -198,8 +206,8 @@ const Exam = () => {
                 select
                 label="Select an Exam"
                 variant="outlined"
-                value={selectedExam} // Bind the selected value
-                onChange={handleExamChange} // Handle the change
+                value={selectedExam}
+                onChange={handleExamChange}
               >
                 {examData &&
                   examData.map((item) => (
@@ -214,8 +222,8 @@ const Exam = () => {
                 select
                 label="Select a class"
                 variant="outlined"
-                value={selectedClass} // Bind the selected value
-                onChange={handleClassChange} // Handle the change
+                value={selectedClass}
+                onChange={handleClassChange}
               >
                 {classData &&
                   classData.map((item) => (
@@ -233,7 +241,7 @@ const Exam = () => {
                 value={selectedSubject}
                 onChange={handleSubjectChange}
               >
-                {Array.isArray(subjectData) &&
+                {subjectData &&
                   subjectData.map((item) => (
                     <MenuItem key={item.id} value={item.name}>
                       {item.name}
@@ -248,21 +256,18 @@ const Exam = () => {
                 type="submit"
                 onClick={handleManageMarkClick}
               >
-                <Span sx={{ pl: 1, textTransform: "capitalize" }}>
-                  Manage Mark
-                </Span>
+                Manage Mark
               </Button>
             </Grid>
           </Grid>
 
           {showMarkManagement && (
             <>
-              <div class="col-sm-4">
-                <div class="tile-stats tile-gray">
-                  <div class="icon">
-                    <i class="entypo-chart-bar"></i>
+              <div className="col-sm-4">
+                <div className="tile-stats tile-gray">
+                  <div className="icon">
+                    <i className="entypo-chart-bar"></i>
                   </div>
-
                   <h3 style={{ color: "#696969" }}>Marks For Math</h3>
                   <h4 style={{ color: "#696969" }}>
                     Class J.S.S. 1 : Section A
@@ -272,7 +277,7 @@ const Exam = () => {
                   </h4>
                 </div>
               </div>
-              <table class="table table-bordered">
+              <table className="table table-bordered">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -286,12 +291,13 @@ const Exam = () => {
                 </thead>
                 <tbody>
                   {studentData.map((student, index) => (
-                    <tr>
-                      <td> {index + 1}</td>
-
+                    <tr key={index}>
+                      <td>{index + 1}</td>
                       <td>{student._id}</td>
-
-                      <td>{student.studentName} </td>
+                      <td id={`subjectId_${index}`} style={{ display: "none" }}>
+                        {subjectIdLookup[student.subjectName]}
+                      </td>
+                      <td>{student.studentName}</td>
                       <td>
                         <TextField
                           type="number"
@@ -322,17 +328,15 @@ const Exam = () => {
                     </tr>
                   ))}
                 </tbody>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  type="button"
-                  onClick={handleSaveChanges}
-                >
-                  <Span sx={{ pl: 1, textTransform: "capitalize" }}>
-                    Save Changes
-                  </Span>
-                </Button>
               </table>
+              <Button
+                color="primary"
+                variant="contained"
+                type="button"
+                onClick={handleSaveChanges}
+              >
+                Save Changes
+              </Button>
             </>
           )}
         </ValidatorForm>

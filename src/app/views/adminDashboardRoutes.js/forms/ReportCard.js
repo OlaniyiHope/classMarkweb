@@ -75,7 +75,6 @@ const ReportCard = () => {
               <br />
               +234 8028724575, +234 8165051826
               <br />
-              info@hlhs.portalreport.org
             </p>
             <h3 style={{ marginBottom: "30px" }}>
               STUDENT CUMULATIVE REPORT CARD

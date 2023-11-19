@@ -1,72 +1,58 @@
 // import { Fragment, React, useEffect, useState } from "react";
 // import { Box } from "@mui/system";
-// import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
-
-// import { Card, Button, Grid, styled, Table } from "@mui/material";
-
+// import MoreVertIcon from "@mui/icons-material/MoreVert";
+// import { Button, styled } from "@mui/material";
 // import { Link, useParams } from "react-router-dom";
-// import useAuth from "app/hooks/useAuth";
 // import useFetch from "hooks/useFetch";
+
 // const ContentBox = styled("div")(({ theme }) => ({
 //   margin: "30px",
 //   [theme.breakpoints.down("sm")]: { margin: "16px" },
 // }));
 
 // const MarkSheet = () => {
-//   const [studentData, setStudentData] = useState(null); // Add state for student data
-//   const { data, loading, error } = useFetch(`/students/SS3/${id}`);
-
+//   const [studentData, setStudentData] = useState(null);
 //   const { id } = useParams();
-//   const { user } = useAuth();
-//   const fetchStudentData = async (studentId) => {
-//     try {
-//       const response = await fetch(`/students/${studentId}`);
-//       if (!response.ok) {
-//         throw new Error(`Error fetching student data: ${response.statusText}`);
-//       }
+//   console.log("Student ID:", id);
 
-//       const studentInfo = await response.json();
-//       console.log("Fetched student data:", studentInfo);
-//       setStudentData(studentInfo);
-//     } catch (error) {
-//       console.error("Error fetching student data:", error.message);
-//       // Handle the error here
-//     }
-//   };
+//   const { data, loading, error } = useFetch(`/students/${id}`); // Fetch data using the correct URL
 
 //   useEffect(() => {
-//     // Fetch student data when the component mounts
-//     fetchStudentData(id);
-//   }, [id]);
-
-//   // Add a conditional check for studentData
-//   useEffect(() => {
-//     // Check if studentData is not null and contains expected properties
-//     if (studentData && studentData.studentName && studentData.classname) {
-//       console.log("Fetched student data:", studentData);
+//     // Check if the data is available before updating the state
+//     console.log("Data from useFetch:", data);
+//     if (data && data.studentName && data.classname) {
+//       console.log("Fetched student data:", data);
+//       setStudentData(data);
 //     }
-//   }, [studentData]);
+//   }, [data]);
+
 //   return (
 //     <Fragment>
 //       <ContentBox className="analytics">
-//         {/*}   <h2>
-//           MarkSheet for {studentData ? studentData.studentName : ""}
-//           {studentData ? studentData.classname : ""}
-//   </h2>*/}
 //         <h2>
-//           MarkSheet for {data.studentName}
-//           {data.classname}
+//           Marksheet for {studentData ? studentData.studentName : ""}({" "}
+//           {studentData ? studentData.classname : ""})
 //         </h2>
 
 //         <Box width="100%" overflow="auto">
-//           <Button
-//             color="primary"
-//             variant="contained"
-//             type="submit"
-//             style={{ width: "100%", marginTop: "100px" }}
-//           >
-//             Cummulative Result
-//           </Button>
+//           <Link to={`/dashboard/term_report_card/${data._id}`}>
+//             <Button
+//               color="primary"
+//               variant="contained"
+//               style={{ width: "100%", marginTop: "100px" }}
+//             >
+//               First Term Report Card
+//             </Button>
+//           </Link>
+//           <Link to={`/dashboard/report_card/${data._id}`}>
+//             <Button
+//               color="primary"
+//               variant="contained"
+//               style={{ width: "100%", marginTop: "100px" }}
+//             >
+//               Cummulative Result
+//             </Button>
+//           </Link>
 //         </Box>
 //       </ContentBox>
 //     </Fragment>
@@ -74,12 +60,16 @@
 // };
 
 // export default MarkSheet;
+
+// ... (import statements)
+
 import { Fragment, React, useEffect, useState } from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Button, styled } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import useFetch from "hooks/useFetch";
+import TermRep from "./TermRep";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -106,18 +96,29 @@ const MarkSheet = () => {
     <Fragment>
       <ContentBox className="analytics">
         <h2>
-          Marksheet for {studentData ? studentData.studentName : ""}({" "}
-          {studentData ? studentData.classname : ""})
+          Marksheet for {studentData ? studentData.studentName : ""}{" "}
+          {studentData ? studentData.classname : ""}
         </h2>
 
         <Box width="100%" overflow="auto">
-          <Link to={`/dashboard/report_card/${data._id}`}>
+          {/* Use studentId for "First Term Report Card" link */}
+          <Link to={`/dashboard/term_report_card/${id}`}>
             <Button
               color="primary"
               variant="contained"
               style={{ width: "100%", marginTop: "100px" }}
             >
-              Cummulative Result
+              First Term Report Card
+            </Button>
+          </Link>
+          {/* Use id for "Cumulative Result" link */}
+          <Link to={`/dashboard/report_card/${id}`}>
+            <Button
+              color="primary"
+              variant="contained"
+              style={{ width: "100%", marginTop: "100px" }}
+            >
+              Cumulative Result
             </Button>
           </Link>
         </Box>
