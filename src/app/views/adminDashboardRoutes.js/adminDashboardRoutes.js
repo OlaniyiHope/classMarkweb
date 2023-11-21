@@ -35,6 +35,9 @@ import ReportCard from "./forms/ReportCard";
 import ViewAdmin from "./admin/ViewAdmin";
 import TermRep from "./forms/TermRep";
 import TermRepCont from "./forms/TermRepCont";
+import StuReceipt from "./forms/StuReceipt";
+
+import { ReceiptProvider } from "./forms/receiptContext";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -131,11 +134,22 @@ const adminDashboardRoutes = [
     element: <TermRepCont />,
     auth: "admin",
   },
+
   {
     path: "/dashboard/student-payment",
     element: <Payment />,
     auth: "admin",
   },
+  {
+    path: "/dashboard/student-receipt",
+    element: (
+      <ReceiptProvider>
+        <StuReceipt />
+      </ReceiptProvider>
+    ),
+    auth: "admin",
+  },
+
   { path: "/dashboard/profile", element: <Profile />, auth: "admin" },
 ];
 

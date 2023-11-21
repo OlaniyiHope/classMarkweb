@@ -62,7 +62,7 @@ const Exam = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3003/api/student/${selectedClass}`,
+        `https://edu-3cb7e7c6ba61.herokuapp.com/api/student/${selectedClass}`,
         {
           headers,
         }
@@ -86,9 +86,12 @@ const Exam = () => {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      fetch(`http://localhost:3003/api/get-subject/${selectedClass}`, {
-        headers,
-      })
+      fetch(
+        `https://edu-3cb7e7c6ba61.herokuapp.com/api/get-subject/${selectedClass}`,
+        {
+          headers,
+        }
+      )
         .then((response) => response.json())
         .then((data) => {
           setSubjectData(data);
@@ -155,15 +158,18 @@ const Exam = () => {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      const response = await fetch("http://localhost:3003/api/save-marks", {
-        method: "POST",
-        headers: { ...headers, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          examId: selectedExam,
-          className: selectedClass,
-          marks,
-        }),
-      });
+      const response = await fetch(
+        "https://edu-3cb7e7c6ba61.herokuapp.com/api/save-marks",
+        {
+          method: "POST",
+          headers: { ...headers, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            examId: selectedExam,
+            className: selectedClass,
+            marks,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to save marks");

@@ -27,6 +27,8 @@ const TermRep = ({ studentId }) => {
   const { id } = useParams();
 
   const { data } = useFetch(`/students/${id}`);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (data && data.studentName && data.classname) {
@@ -34,25 +36,40 @@ const TermRep = ({ studentId }) => {
     }
   }, [data]);
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const fetchStudentData = async (studentId) => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      const response = await axios.get(
+        `https://edu-3cb7e7c6ba61.herokuapp.com/api/get-scores-by-student/${studentId}`,
+        { headers }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching student data:", error);
+      throw new Error("Failed to fetch student data");
+    }
+  };
 
   useEffect(() => {
-    const fetchStudentData = async () => {
+    const fetchData = async () => {
+      setLoading(true);
+
       try {
-        const response = await axios.get(
-          `http://localhost:3003/api/get-scores-by-student/${studentId}`
-        );
-        setStudentData(response.data);
+        const data = await fetchStudentData(studentId);
+        setStudentData(data);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching student data:", error);
         setError("Failed to fetch student data");
         setLoading(false);
       }
     };
 
-    fetchStudentData();
+    fetchData();
   }, [studentId]);
 
   if (loading) {
@@ -329,7 +346,7 @@ const TermRep = ({ studentId }) => {
                             <table className="table" id="customers">
                               <thead style={{ backgroundColor: "#ffc107" }}>
                                 <tr>
-                                  <th scope="col">SlNo</th>
+                                  <th scope="col">S/No</th>
                                   <th scope="col" style={{ textAlign: "left" }}>
                                     Subject
                                   </th>

@@ -44,7 +44,7 @@ const ReportCard = () => {
         };
 
         const response = await axios.get(
-          `http://localhost:3003/api/students/all-scores/${id}`, // Use user._id instead of user.id
+          `https://edu-3cb7e7c6ba61.herokuapp.com/api/students/all-scores/${id}`, // Use user._id instead of user.id
           {
             headers,
           }

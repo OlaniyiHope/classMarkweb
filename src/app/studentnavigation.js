@@ -76,17 +76,9 @@ export const navigations = [
     ],
   },
   {
-    name: "Payment",
-    icon: "payment",
-    children: [
-      {
-        name: "Student Payments",
-        iconText: "SI",
-        path: "/dashboard/student-payment",
-      },
-      { name: "Create Student Payment", iconText: "SI", path: "/session/" },
-      { name: "Expenses", iconText: "SI", path: "/session/" },
-    ],
+    name: " Payment History",
+    iconText: "SI",
+    path: "/student/dashboard/student-payment",
   },
 
   {

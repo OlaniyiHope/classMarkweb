@@ -1,251 +1,198 @@
-import { DatePicker } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { Stack } from '@mui/material';
-import { Box } from '@mui/system';
-import { Breadcrumb, SimpleCard } from 'app/components';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import {} from "@mui/material";
+import { Fragment, React, useState } from "react";
+import { Box } from "@mui/system";
 import {
+  Card,
   Button,
-  Checkbox,
-  FormControlLabel,
   Grid,
-  Icon,
-  Radio,
-  RadioGroup,
   styled,
-} from '@mui/material';
-import { Span } from 'app/components/Typography';
-import { useEffect, useState } from 'react';
-import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
-const Container = styled('div')(({ theme }) => ({
-  margin: '30px',
-  [theme.breakpoints.down('sm')]: { margin: '16px' },
-  '& .breadcrumb': {
-    marginBottom: '30px',
-    [theme.breakpoints.down('sm')]: { marginBottom: '16px' },
+  useTheme,
+  Icon,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TablePagination,
+  TableRow,
+  ListItemIcon,
+  MenuItem,
+  Menu,
+} from "@mui/material";
+import RowCards from "../shared/RowCards";
+import { Breadcrumb } from "app/components";
+import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Link } from "react-router-dom";
+
+import useFetch from "hooks/useFetch";
+import FormDialog4 from "app/views/material-kit/dialog/FormDialog4";
+const ContentBox = styled("div")(({ theme }) => ({
+  margin: "30px",
+  [theme.breakpoints.down("sm")]: { margin: "16px" },
+}));
+
+const Title = styled("span")(() => ({
+  fontSize: "1rem",
+  fontWeight: "500",
+  marginRight: ".5rem",
+  textTransform: "capitalize",
+}));
+
+const SubTitle = styled("span")(({ theme }) => ({
+  fontSize: "0.875rem",
+  color: theme.palette.text.secondary,
+}));
+
+const H4 = styled("h4")(({ theme }) => ({
+  fontSize: "1rem",
+  fontWeight: "500",
+  marginBottom: "16px",
+  textTransform: "capitalize",
+  color: theme.palette.text.secondary,
+}));
+const StyledTable = styled(Table)(() => ({
+  whiteSpace: "pre",
+  "& thead": {
+    "& tr": { "& th": { paddingLeft: 0, paddingRight: 0 } },
+  },
+  "& tbody": {
+    "& tr": { "& td": { paddingLeft: 0, textTransform: "capitalize" } },
   },
 }));
 
-const TextField = styled(TextValidator)(() => ({
-  width: '100%',
-  marginBottom: '16px',
+const StyledButton = styled(Button)(({ theme }) => ({
+  margin: theme.spacing(1),
 }));
 
-const Payment = () => {
-  const [state, setState] = useState({ date: new Date() });
+const Payments = () => {
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const { data, loading, error } = useFetch("/receipt");
+  console.log(data);
 
-  useEffect(() => {
-    ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
-      if (value !== state.password) return false;
+  const { palette } = useTheme();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-      return true;
-    });
-    return () => ValidatorForm.removeValidationRule('isPasswordMatch');
-  }, [state.password]);
-
-  const handleSubmit = (event) => {
-    // console.log("submitted");
-    // console.log(event);
+  const handleChangePage = (_, newPage) => {
+    setPage(newPage);
   };
 
-  const handleChange = (event) => {
-    event.persist();
-    setState({ ...state, [event.target.name]: event.target.value });
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
   };
-
-  const handleDateChange = (date) => setState({ ...state, date });
-
-  const {
-    username,
-    firstName,
-    creditCard,
-    mobile,
-    password,
-    confirmPassword,
-    gender,
-    date,
-    email,
-  } = state;
 
   return (
-    <div>
-      <Container>
+    <Fragment>
+      <ContentBox className="analytics">
         <Box className="breadcrumb">
-          <Breadcrumb routeSegments={[{ name: 'Material', path: '/material' }, { name: 'Form' }]} />
+          <Breadcrumb routeSegments={[{ name: "Payment" }]} />
+          {/* <FormDialog4 /> */}
         </Box>
 
-        <Stack spacing={3}>
-          <SimpleCard title="Simple Form">
-            <ValidatorForm onSubmit={handleSubmit} onError={() => null}>
-              <Grid container spacing={6}>
-                <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
-                  <TextField
-                    type="text"
-                    name="username"
-                    id="standard-basic"
-                    value={username || ''}
-                    onChange={handleChange}
-                    errorMessages={['this field is required']}
-                    label="Username (Min length 4, Max length 9)"
-                    validators={['required', 'minStringLength: 4', 'maxStringLength: 9']}
-                  />
+        <Box width="100%" overflow="auto">
+          <StyledTable>
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">S/N</TableCell>
+                <TableCell align="left">Student Name</TableCell>
+                <TableCell align="center">Total Fees</TableCell>
+                <TableCell align="center">Amount Paid</TableCell>
+                <TableCell align="center">Reason</TableCell>
+                <TableCell align="center">Date</TableCell>
+                <TableCell align="center">Status</TableCell>
+                <TableCell align="right">Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data &&
+                data.map((item, index) => (
+                  <TableRow key={item._id}>
+                    <TableCell align="center">{index + 1}</TableCell>
+                    <TableCell align="left">{item.studentName}</TableCell>
+                    <TableCell align="center">{item.amount}</TableCell>
+                    <TableCell align="center">{item.balance}</TableCell>
+                    <TableCell align="center">{item.reason}</TableCell>
+                    <TableCell>
+                      {item.date
+                        ? new Date(item.date).toLocaleDateString()
+                        : ""}
+                    </TableCell>
+                    <TableCell align="center">{item.status}</TableCell>
+                    <TableCell align="right">
+                      <Menu id={`action-menu-${item._id}`}>
+                        <MenuItem>
+                          <ListItemIcon></ListItemIcon>
+                          <Link
+                            to={`/dashboard/manage-online-exam/${item._id}`}
+                          >
+                            Manage Questions
+                          </Link>
+                        </MenuItem>
+                        <MenuItem>
+                          <ListItemIcon></ListItemIcon>
 
-                  <TextField
-                    type="text"
-                    name="firstName"
-                    label="First Name"
-                    onChange={handleChange}
-                    value={firstName || ''}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
-                  />
+                          <Link to={`/dashboard/view-result/${item._id}`}>
+                            View Result
+                          </Link>
+                        </MenuItem>
+                        <MenuItem>
+                          <ListItemIcon>
+                            <EditIcon /> {/* Use an Edit icon */}
+                          </ListItemIcon>
+                          Edit
+                        </MenuItem>
+                        <MenuItem>
+                          <ListItemIcon>
+                            <DeleteIcon /> {/* Use a Delete icon */}
+                          </ListItemIcon>
+                          Delete
+                        </MenuItem>
+                      </Menu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </StyledTable>
 
-                  <TextField
-                    type="email"
-                    name="email"
-                    label="Email"
-                    value={email || ''}
-                    onChange={handleChange}
-                    validators={['required', 'isEmail']}
-                    errorMessages={['this field is required', 'email is not valid']}
-                  />
+          <TablePagination
+            sx={{ px: 2 }}
+            page={page}
+            component="div"
+            rowsPerPage={rowsPerPage}
+            count={data.length}
+            onPageChange={handleChangePage}
+            rowsPerPageOptions={[5, 10, 25]}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            nextIconButtonProps={{ "aria-label": "Next Page" }}
+            backIconButtonProps={{ "aria-label": "Previous Page" }}
+          />
+        </Box>
 
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker
-                      value={date}
-                      onChange={handleDateChange}
-                      renderInput={(props) => (
-                        <TextField
-                          {...props}
-                          label="Date picker"
-                          id="mui-pickers-date"
-                          sx={{ mb: 2, width: '100%' }}
-                        />
-                      )}
-                    />
-                  </LocalizationProvider>
+        {/* <TopSellingTable />
+            <StatCards2 />
 
-                  <TextField
-                    sx={{ mb: 4 }}
-                    type="number"
-                    name="creditCard"
-                    label="Credit Card"
-                    onChange={handleChange}
-                    value={creditCard || ''}
-                    errorMessages={['this field is required']}
-                    validators={['required', 'minStringLength:16', 'maxStringLength: 16']}
-                  />
-                </Grid>
+            <H4>Ongoing Projects</H4>
+            <RowCards />
+          </Grid>
 
-                <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
-                  <TextField
-                    type="text"
-                    name="mobile"
-                    value={mobile || ''}
-                    label="Mobile Nubmer"
-                    onChange={handleChange}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
-                  />
-                  <TextField
-                    name="password"
-                    type="password"
-                    label="Password"
-                    value={password || ''}
-                    onChange={handleChange}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
-                  />{' '}
-                  <TextField
-                    type="text"
-                    name="firstName"
-                    label="Section"
-                    onChange={handleChange}
-                    value={firstName || ''}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
-                  />
-                  <TextField
-                    type="text"
-                    name="firstName"
-                    label="Birthday"
-                    onChange={handleChange}
-                    value={firstName || ''}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
-                  />
-                  <TextField
-                    type="text"
-                    name="firstName"
-                    label="Address"
-                    onChange={handleChange}
-                    value={firstName || ''}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
-                  />
-                  <TextField
-                    type="text"
-                    name="firstName"
-                    label="Id No"
-                    onChange={handleChange}
-                    value={firstName || ''}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
-                  />
-                  <TextField
-                    type="password"
-                    name="confirmPassword"
-                    onChange={handleChange}
-                    label="Confirm Password"
-                    value={confirmPassword || ''}
-                    validators={['required', 'isPasswordMatch']}
-                    errorMessages={['this field is required', "password didn't match"]}
-                  />
-                  <RadioGroup
-                    row
-                    name="gender"
-                    sx={{ mb: 2 }}
-                    value={gender || ''}
-                    onChange={handleChange}
-                  >
-                    <FormControlLabel
-                      value="Male"
-                      label="Male"
-                      labelPlacement="end"
-                      control={<Radio color="secondary" />}
-                    />
+          <Grid item lg={4} md={4} sm={12} xs={12}>
+            <Card sx={{ px: 3, py: 2, mb: 3 }}>
+              <Title>Traffic Sources</Title>
+              <SubTitle>Last 30 days</SubTitle>
 
-                    <FormControlLabel
-                      value="Female"
-                      label="Female"
-                      labelPlacement="end"
-                      control={<Radio color="secondary" />}
-                    />
+              <DoughnutChart
+                height="300px"
+                color={[palette.primary.dark, palette.primary.main, palette.primary.light]}
+              />
+            </Card>
 
-                    <FormControlLabel
-                      value="Others"
-                      label="Others"
-                      labelPlacement="end"
-                      control={<Radio color="secondary" />}
-                    />
-                  </RadioGroup>
-                  <FormControlLabel
-                    control={<Checkbox />}
-                    label="I have read and agree to the terms of service."
-                  />
-                </Grid>
-              </Grid>
-
-              <Button color="primary" variant="contained" type="submit">
-                <Icon>send</Icon>
-                <Span sx={{ pl: 1, textTransform: 'capitalize' }}>Submit</Span>
-              </Button>
-            </ValidatorForm>
-          </SimpleCard>
-        </Stack>
-      </Container>
-    </div>
+            <UpgradeCard />
+            <Campaigns />*/}
+      </ContentBox>
+    </Fragment>
   );
 };
 
-export default Payment;
+export default Payments;
