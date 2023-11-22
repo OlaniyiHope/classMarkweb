@@ -25,7 +25,7 @@ const Brand = ({ children }) => {
     <BrandRoot>
       <Box display="flex" alignItems="center">
         <StyledSpan mode={mode} className="sidenavHoverShow">
-          <b>EDU TECH</b>
+          <b>EDU PRO</b>
         </StyledSpan>
       </Box>
 
