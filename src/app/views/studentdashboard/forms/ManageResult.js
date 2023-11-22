@@ -198,7 +198,6 @@ const ManageResult = () => {
 
   return (
     <div>
-      <button onClick={navigateToViewResult}>View Result</button>
       <Table>
         <TableHead>
           <TableRow>

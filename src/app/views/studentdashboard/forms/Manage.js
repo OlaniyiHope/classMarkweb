@@ -94,14 +94,6 @@ const Manage = () => {
           ]}
         />
       </Box>
-      <div>
-        <button>Active Exams</button>
-        <button>
-          <button>
-            <Link>View Results</Link>
-          </button>
-        </button>
-      </div>
 
       <Table>
         <TableHead>
@@ -149,29 +141,6 @@ const Manage = () => {
                         {/* Provide the relative path */}
                         Manage Questions
                       </Link>
-                    </MenuItem>
-                    <MenuItem>
-                      <ListItemIcon></ListItemIcon>
-                      <Link
-                        to={`/student/dashboard/manage-online-result/${item._id} `}
-                      >
-                        {" "}
-                        {/* Provide the relative path */}
-                        View Resuult
-                      </Link>
-                    </MenuItem>
-
-                    <MenuItem>
-                      <ListItemIcon>
-                        <EditIcon /> {/* Use an Edit icon */}
-                      </ListItemIcon>
-                      Edit
-                    </MenuItem>
-                    <MenuItem>
-                      <ListItemIcon>
-                        <DeleteIcon /> {/* Use a Delete icon */}
-                      </ListItemIcon>
-                      Delete
                     </MenuItem>
                   </Menu>
                 </TableCell>
