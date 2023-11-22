@@ -84,7 +84,6 @@ const Sub4 = () => {
               { name: "SS1 Subjects" },
             ]}
           />
-          <FormDialog7 />
         </Box>
 
         <Box width="100%" overflow="auto">

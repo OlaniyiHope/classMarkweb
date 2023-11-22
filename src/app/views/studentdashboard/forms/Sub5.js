@@ -85,7 +85,6 @@ const Sub5 = () => {
               { name: "SS2 Subjects" },
             ]}
           />
-          <FormDialog8 />
         </Box>
 
         <Box width="100%" overflow="auto">

@@ -84,7 +84,6 @@ const Info4 = () => {
               { name: "Student Information" },
             ]}
           />
-          <FormDialog2 />
         </Box>
 
         <Box width="100%" overflow="auto">

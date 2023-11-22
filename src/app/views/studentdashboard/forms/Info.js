@@ -85,9 +85,6 @@ const Info = () => {
               { name: "Student Information" },
             ]}
           />
-          <Link to="/dashboard/student_add">
-            <FormDialog2 />
-          </Link>
         </Box>
 
         <Box width="100%" overflow="auto">

@@ -85,7 +85,6 @@ const Sub1 = () => {
               { name: "Subject" },
             ]}
           />
-          <FormDialog4 />
         </Box>
 
         <Box width="100%" overflow="auto">
