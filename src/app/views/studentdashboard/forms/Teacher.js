@@ -13,13 +13,12 @@ import {
   TableRow,
   ListItemIcon,
 } from "@mui/material";
-
+import useFetch from "hooks/useFetch";
 import FormDialog3 from "app/views/material-kit/dialog/FormDialog3";
 import { TablePagination } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
-import useFetch from "hooks/useFetch";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -82,9 +81,6 @@ const Teacher = () => {
 
   return (
     <Fragment>
-      <Box className="breadcrumb">
-        <FormDialog3 />
-      </Box>
       <ContentBox className="analytics">
         <Box width="100%" overflow="auto">
           <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
