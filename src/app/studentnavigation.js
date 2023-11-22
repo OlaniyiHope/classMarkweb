@@ -53,11 +53,7 @@ export const navigations = [
       { name: "Manage Class", iconText: "SI", path: "dashboard/class" },
     ],
   },
-  {
-    name: "Exam List",
-    iconText: "SI",
-    path: "student/dashboard/examlist",
-  },
+
   {
     name: "Mark View",
     path: "/student/dashboard/student_mark_sheet",
