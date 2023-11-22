@@ -139,19 +139,7 @@ const Sub1 = () => {
                             <h4>{index + 1}</h4>
                           </div>
                         </td>
-                        <td>
-                          <span class="text-primary font-w600">{item._id}</span>
-                        </td>
-                        <td>
-                          <div class="date">
-                            {" "}
-                            <img
-                              src="images/trans/10.jpg"
-                              alt=""
-                              class="avatar me-3"
-                            />
-                          </div>
-                        </td>
+
                         <td>
                           <div class="date">{item.name}</div>
                         </td>
