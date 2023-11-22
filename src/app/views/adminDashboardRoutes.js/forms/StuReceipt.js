@@ -521,7 +521,7 @@ const StuReceipt = () => {
         <Box className="breadcrumb">
           <Breadcrumb
             routeSegments={[
-              { name: "Receipt", path: "/material" },
+              // { name: "Receipt", path: "/material" },
               { name: "Student Receipt" },
             ]}
           />

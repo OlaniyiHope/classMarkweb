@@ -81,8 +81,8 @@ const Examlist = () => {
         <Box className="breadcrumb">
           <Breadcrumb
             routeSegments={[
-              { name: "Material", path: "/material" },
-              { name: "Class" },
+              // { name: "Material", path: "/material" },
+              { name: "List of Exams" },
             ]}
           />
           <Examform />

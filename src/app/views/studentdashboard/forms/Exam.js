@@ -1,10 +1,10 @@
-import { DatePicker } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { Stack } from '@mui/material';
-import { Box } from '@mui/system';
-import { Breadcrumb, SimpleCard } from 'app/components';
-import axios from 'axios';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { DatePicker } from "@mui/lab";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { Stack } from "@mui/material";
+import { Box } from "@mui/system";
+import { Breadcrumb, SimpleCard } from "app/components";
+import axios from "axios";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import {
   Button,
   Checkbox,
@@ -15,18 +15,18 @@ import {
   DialogTitle,
   RadioGroup,
   styled,
-} from '@mui/material';
-import useFetch from 'hooks/useFetch';
-import { Span } from 'app/components/Typography';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './form.css';
-const Container = styled('div')(({ theme }) => ({
-  margin: '30px',
-  [theme.breakpoints.down('sm')]: { margin: '16px' },
-  '& .breadcrumb': {
-    marginBottom: '30px',
-    [theme.breakpoints.down('sm')]: { marginBottom: '16px' },
+} from "@mui/material";
+import useFetch from "hooks/useFetch";
+import { Span } from "app/components/Typography";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./form.css";
+const Container = styled("div")(({ theme }) => ({
+  margin: "30px",
+  [theme.breakpoints.down("sm")]: { margin: "16px" },
+  "& .breadcrumb": {
+    marginBottom: "30px",
+    [theme.breakpoints.down("sm")]: { marginBottom: "16px" },
   },
 }));
 
@@ -106,12 +106,9 @@ const Exam = (term, classname, subject) => {
     <div>
       <Container>
         <Box className="breadcrumb">
-          <Breadcrumb
-            routeSegments={[{ name: 'Material', path: '/material' }, { name: 'Manage Exam Mark' }]}
-          />
+          <Breadcrumb routeSegments={[{ name: "Manage Exam Mark" }]} />
         </Box>
         <div>
-          
           <select name="term" onChange={handleChange}>
             <option selected="true" disabled="disabled">
               What Term
@@ -144,7 +141,12 @@ const Exam = (term, classname, subject) => {
           <option className="yo">SocialStudies</option>
         </select>
 
-        <Button color="primary" variant="contained" type="submit" onClick={handleClick}>
+        <Button
+          color="primary"
+          variant="contained"
+          type="submit"
+          onClick={handleClick}
+        >
           Submit
         </Button>
         {/* <Stack spacing={3}>

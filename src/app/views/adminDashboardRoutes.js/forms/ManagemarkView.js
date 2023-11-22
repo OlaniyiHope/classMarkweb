@@ -1,10 +1,10 @@
-import { DatePicker } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { Stack } from '@mui/material';
-import { Box } from '@mui/system';
-import { Breadcrumb, SimpleCard } from 'app/components';
-import axios from 'axios';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { DatePicker } from "@mui/lab";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { Stack } from "@mui/material";
+import { Box } from "@mui/system";
+import { Breadcrumb, SimpleCard } from "app/components";
+import axios from "axios";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import {
   Button,
   Checkbox,
@@ -24,39 +24,39 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-} from '@mui/material';
+} from "@mui/material";
 
-import useFetch from 'hooks/useFetch';
-import { Span } from 'app/components/Typography';
-import { useEffect, useState, Fragment, useMemo } from 'react';
-import './form.css';
-import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
-import FormDialog2 from 'app/views/material-kit/dialog/FormDialog2';
-import { useLocation, useParams } from 'react-router-dom';
-const Container = styled('div')(({ theme }) => ({
-  margin: '30px',
-  [theme.breakpoints.down('sm')]: { margin: '16px' },
-  '& .breadcrumb': {
-    marginBottom: '30px',
-    [theme.breakpoints.down('sm')]: { marginBottom: '16px' },
+import useFetch from "hooks/useFetch";
+import { Span } from "app/components/Typography";
+import { useEffect, useState, Fragment, useMemo } from "react";
+import "./form.css";
+import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
+import FormDialog2 from "app/views/material-kit/dialog/FormDialog2";
+import { useLocation, useParams } from "react-router-dom";
+const Container = styled("div")(({ theme }) => ({
+  margin: "30px",
+  [theme.breakpoints.down("sm")]: { margin: "16px" },
+  "& .breadcrumb": {
+    marginBottom: "30px",
+    [theme.breakpoints.down("sm")]: { marginBottom: "16px" },
   },
 }));
-const ContentBox = styled('div')(({ theme }) => ({
-  margin: '30px',
-  [theme.breakpoints.down('sm')]: { margin: '16px' },
+const ContentBox = styled("div")(({ theme }) => ({
+  margin: "30px",
+  [theme.breakpoints.down("sm")]: { margin: "16px" },
 }));
 const StyledTable = styled(Table)(() => ({
-  whiteSpace: 'pre',
-  '& thead': {
-    '& tr': { '& th': { paddingLeft: 0, paddingRight: 0 } },
+  whiteSpace: "pre",
+  "& thead": {
+    "& tr": { "& th": { paddingLeft: 0, paddingRight: 0 } },
   },
-  '& tbody': {
-    '& tr': { '& td': { paddingLeft: 0, textTransform: 'capitalize' } },
+  "& tbody": {
+    "& tr": { "& td": { paddingLeft: 0, textTransform: "capitalize" } },
   },
 }));
 const TextField = styled(TextValidator)(() => ({
-  width: '100%',
-  marginBottom: '16px',
+  width: "100%",
+  marginBottom: "16px",
 }));
 
 const ManagemarkView = () => {
@@ -65,11 +65,13 @@ const ManagemarkView = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { search } = useLocation();
   const query = useMemo(() => new URLSearchParams(search), [search]);
-  const term = query.get('term');
-  const subject = query.get('subject');
-  const classname = query.get('classname');
+  const term = query.get("term");
+  const subject = query.get("subject");
+  const classname = query.get("classname");
   console.log(term, classname, subject);
-  const { data, loading, error, reFetch } = useFetch(`/mark/${term}/${classname}/${subject}`);
+  const { data, loading, error, reFetch } = useFetch(
+    `/mark/${term}/${classname}/${subject}`
+  );
 
   const handleChange = (event) => {
     event.persist();
@@ -102,12 +104,6 @@ const ManagemarkView = () => {
     <Fragment>
       <ContentBox className="analytics">
         <Box className="breadcrumb">
-          <Breadcrumb
-            routeSegments={[
-              { name: 'Material', path: '/material' },
-              { name: 'Student Information' },
-            ]}
-          />
           <FormDialog2 />
         </Box>
 
@@ -162,8 +158,8 @@ const ManagemarkView = () => {
             onPageChange={handleChangePage}
             rowsPerPageOptions={[5, 10, 25]}
             onRowsPerPageChange={handleChangeRowsPerPage}
-            nextIconButtonProps={{ 'aria-label': 'Next Page' }}
-            backIconButtonProps={{ 'aria-label': 'Previous Page' }}
+            nextIconButtonProps={{ "aria-label": "Next Page" }}
+            backIconButtonProps={{ "aria-label": "Previous Page" }}
           />
         </Box>
 

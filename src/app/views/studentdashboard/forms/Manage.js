@@ -89,7 +89,7 @@ const Manage = () => {
       <Box className="breadcrumb">
         <Breadcrumb
           routeSegments={[
-            { name: "Material", path: "/material" },
+            // { name: "Material", path: "/material" },
             { name: "Manage Online Exam" },
           ]}
         />

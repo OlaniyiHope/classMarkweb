@@ -79,12 +79,7 @@ const Sub1 = () => {
     <Fragment>
       <ContentBox className="analytics">
         <Box className="breadcrumb">
-          <Breadcrumb
-            routeSegments={[
-              { name: "Material", path: "/material" },
-              { name: "Subject" },
-            ]}
-          />
+          <Breadcrumb routeSegments={[{ name: "Js1 Subjects" }]} />
           <FormDialog4 />
         </Box>
 

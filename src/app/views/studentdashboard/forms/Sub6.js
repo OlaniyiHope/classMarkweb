@@ -80,7 +80,7 @@ const Sub6 = () => {
         <Box className="breadcrumb">
           <Breadcrumb
             routeSegments={[
-              { name: "Material", path: "/material" },
+              // { name: "Material", path: "/material" },
               { name: "SS3 Subjects" },
             ]}
           />

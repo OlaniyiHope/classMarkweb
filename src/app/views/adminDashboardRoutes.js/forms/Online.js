@@ -187,7 +187,7 @@ const Online = () => {
         <Box className="breadcrumb">
           <Breadcrumb
             routeSegments={[
-              { name: "Material", path: "/material" },
+              // { name: "Material", path: "/material" },
               { name: "Add Exam" },
             ]}
           />

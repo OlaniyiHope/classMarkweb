@@ -106,15 +106,6 @@ const Form = () => {
   return (
     <div>
       <Container>
-        <Box className="breadcrumb">
-          <Breadcrumb
-            routeSegments={[
-              { name: "Material", path: "/material" },
-              { name: "Form" },
-            ]}
-          />
-        </Box>
-
         <Stack spacing={3}>
           <SimpleCard title="Simple Form">
             <DialogTitle id="form-dialog-title"> Add new Student</DialogTitle>

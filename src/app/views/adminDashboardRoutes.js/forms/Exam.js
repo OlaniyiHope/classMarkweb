@@ -274,13 +274,9 @@ const Exam = () => {
                   <div className="icon">
                     <i className="entypo-chart-bar"></i>
                   </div>
-                  <h3 style={{ color: "#696969" }}>Marks For Math</h3>
-                  <h4 style={{ color: "#696969" }}>
-                    Class J.S.S. 1 : Section A
-                  </h4>
-                  <h4 style={{ color: "#696969" }}>
-                    Subject : ENGLISH STUDIES{" "}
-                  </h4>
+                  <h3 style={{ color: "#696969" }}>Marks For </h3>
+                  <h4 style={{ color: "#696969" }}>Class :</h4>
+                  <h4 style={{ color: "#696969" }}>Subject :</h4>
                 </div>
               </div>
               <table className="table table-bordered">

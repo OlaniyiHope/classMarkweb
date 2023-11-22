@@ -89,8 +89,8 @@ const ViewAdmin = () => {
       <Box className="breadcrumb">
         <Breadcrumb
           routeSegments={[
-            { name: "Material", path: "/material" },
-            { name: "Admin" },
+            // { name: "Material", path: "/material" },
+            { name: "All Admins" },
           ]}
         />
         <FormDialog />

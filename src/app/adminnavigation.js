@@ -179,16 +179,4 @@ export const navigations = [
     path: "/dashboard/profile",
     icon: <span style={{ color: "#ffc107" }}>person</span>,
   },
-
-  {
-    name: "Charts",
-    icon: "trending_up",
-    children: [{ name: "Echarts", path: "/charts/echarts", iconText: "E" }],
-  },
-  {
-    name: "Documentation",
-    icon: <span style={{ color: "#ffc107" }}>launch</span>,
-    type: "extLink",
-    path: "http://demos.ui-lib.com/matx-react-doc/",
-  },
 ];

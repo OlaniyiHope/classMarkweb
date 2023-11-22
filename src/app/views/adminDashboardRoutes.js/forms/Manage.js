@@ -110,9 +110,9 @@ const Manage = () => {
   return (
     <Fragment>
       <ContentBox className="analytics">
-        <Box className="breadcrumb">
+        {/*}    <Box className="breadcrumb">
           <FormDialog2 />
-        </Box>
+  </Box>*/}
 
         <Box width="100%" overflow="auto">
           <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
