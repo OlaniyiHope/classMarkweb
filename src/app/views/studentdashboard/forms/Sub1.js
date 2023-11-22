@@ -60,7 +60,9 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Sub1 = () => {
-  const { data, loading, error } = useFetch("/subject/JS1");
+  const className = "JS1"; // Specify the class name here
+
+  const { data, loading, error } = useFetch(`/get-subject/${className}`); // Use the specified class name in the URL
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
