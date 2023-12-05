@@ -29,16 +29,19 @@ const TermRep = ({ studentId }) => {
   // const { data } = useFetch(`/students/${id}`);
 
   const { data } = useFetch(`/students/${studentId}`);
+  console.log("Data from useFetch:", data);
+  // const { data,  } = useFetch(`/students/${user._id}`); // Fetch data using the correct URL
 
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL;
 
-  useEffect(() => {
-    if (data && data.studentName && data.classname) {
-      setStudentData(data);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data && data.studentName && data.classname) {
+  //     setStudentData(data);
+  //   }
+  // }, [data]);
 
   const fetchStudentData = async (studentId) => {
     try {
@@ -85,44 +88,14 @@ const TermRep = ({ studentId }) => {
   if (error) {
     return <p>{error}</p>;
   }
-  // useEffect(() => {
-  //   const fetchStudentSubjects = async () => {
-  //     try {
-  //       const token = localStorage.getItem("jwtToken");
-  //       const headers = {
-  //         Authorization: `Bearer ${token}`,
-  //       };
+  const totalMarksObtained = studentData?.scores?.reduce(
+    (total, score) => total + (score.marksObtained || 0),
+    0
+  );
 
-  //       const studentResponse = await axios.get(
-  //         `http://localhost:3003/api/students/${id}`,
-  //         {
-  //           headers,
-  //         }
-  //       );
-
-  //       const { classname } = studentResponse.data;
-
-  //       const subjectsResponse = await axios.get(
-  //         `http://localhost:3003/api/get-subject/${classname}`,
-  //         {
-  //           headers,
-  //         }
-  //       );
-
-  //       if (subjectsResponse.data && subjectsResponse.data.length > 0) {
-  //         setSubjectData(subjectsResponse.data);
-  //         setExamName(subjectsResponse.data[0]?.name || "");
-  //       } else {
-  //         console.log("No subjects found");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching student subjects:", error);
-  //       setSubjectData([]);
-  //     }
-  //   };
-
-  //   fetchStudentSubjects();
-  // }, [id]);
+  const totalMarks = studentData?.scores
+    ? studentData.scores.length * 100 // Assuming 100 marks per subject
+    : 0;
 
   return (
     <Fragment>
@@ -177,7 +150,7 @@ const TermRep = ({ studentId }) => {
                             marginLeft: "30px",
                             textAlign: "center",
                           }}
-                          value={studentData?.studentName || ""}
+                          value={data?.studentName || ""}
                         />
                       </p>
                     </div>
@@ -219,7 +192,7 @@ const TermRep = ({ studentId }) => {
                             marginLeft: "30px",
                             textAlign: "center",
                           }}
-                          value={studentData?.id || ""}
+                          value={data?._id || ""}
                         />
                       </p>
                       <p style={{ color: "#042954" }}>
@@ -283,7 +256,7 @@ const TermRep = ({ studentId }) => {
                             marginLeft: "30px",
                             textAlign: "center",
                           }}
-                          value={studentData?.mark || ""}
+                          value={totalMarks || ""}
                         />
                       </p>
                     </div>
@@ -302,7 +275,7 @@ const TermRep = ({ studentId }) => {
                             marginLeft: "30px",
                             textAlign: "center",
                           }}
-                          value={studentData?.mark || ""}
+                          value={totalMarksObtained || ""}
                         />
                       </p>
                       <p style={{ color: "#042954" }}>
@@ -368,7 +341,7 @@ const TermRep = ({ studentId }) => {
                                 {studentData?.scores &&
                                   studentData.scores.map((score, index) => (
                                     <tr key={index}>
-                                      <td></td>
+                                      <td>{index + 1}</td>
                                       <td>{score?.subjectName || ""}</td>
                                       <td>{score?.testscore || ""}</td>
                                       <td>
@@ -380,7 +353,7 @@ const TermRep = ({ studentId }) => {
                                       <td></td>
                                       <td></td>
                                       <td>
-                                        {score?.marks?.[0]?.comment || ""}
+                                        <td>{score?.comment || ""}</td>
                                       </td>
                                     </tr>
                                   ))}
