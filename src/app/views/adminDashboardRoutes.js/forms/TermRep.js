@@ -96,7 +96,14 @@ const TermRep = ({ studentId }) => {
   const totalMarks = studentData?.scores
     ? studentData.scores.length * 100 // Assuming 100 marks per subject
     : 0;
-
+  const averageMarks = studentData?.scores
+    ? (studentData.scores.reduce(
+        (acc, score) => acc + (score.marksObtained || 0),
+        0
+      ) /
+        totalMarks) *
+      100
+    : 0;
   return (
     <Fragment>
       <ContentBox className="analytics">
@@ -291,7 +298,7 @@ const TermRep = ({ studentId }) => {
                             marginLeft: "30px",
                             textAlign: "center",
                           }}
-                          value={studentData?.mark || ""}
+                          value={averageMarks || ""}
                         />
                       </p>
                       <p style={{ color: "#042954" }}>
