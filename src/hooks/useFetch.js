@@ -5,6 +5,7 @@ const useFetch = (url) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,12 +19,9 @@ const useFetch = (url) => {
           Authorization: `Bearer ${token}`,
         };
 
-        const res = await axios.get(
-          `https://edu-3cb7e7c6ba61.herokuapp.com/api${url}`,
-          {
-            headers, // Include the headers in the request
-          }
-        );
+        const res = await axios.get(`${apiUrl}/api${url}`, {
+          headers, // Include the headers in the request
+        });
 
         setData(res.data);
       } catch (err) {
@@ -45,12 +43,9 @@ const useFetch = (url) => {
         Authorization: `Bearer ${token}`,
       };
 
-      const res = await axios.get(
-        `https://edu-3cb7e7c6ba61.herokuapp.com/api${url}`,
-        {
-          headers, // Include the headers in the request
-        }
-      );
+      const res = await axios.get(`${apiUrl}/api${url}`, {
+        headers, // Include the headers in the request
+      });
 
       setData(res.data);
     } catch (err) {

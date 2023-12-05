@@ -22,6 +22,7 @@ export default function Examform() {
   const { name, comment, date } = formData;
 
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,13 +37,9 @@ export default function Examform() {
       };
 
       // Make an API call to create a subject
-      await axios.post(
-        "https://edu-3cb7e7c6ba61.herokuapp.com/api/offlineexam",
-        formData,
-        {
-          headers, // Include the headers in the request
-        }
-      );
+      await axios.post(`${apiUrl}/api/offlineexam`, formData, {
+        headers, // Include the headers in the request
+      });
 
       // Handle successful subject creation
       navigate("/dashboard/examlist");

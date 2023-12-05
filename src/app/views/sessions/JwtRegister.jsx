@@ -83,12 +83,13 @@ const JwtRegister = () => {
   // Declare variables and states here
   const [classData, setClassData] = useState([]); // To store the list of classes
   const [selectedClass, setSelectedClass] = useState(""); // To store the selected class
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     // Assuming you have the JWT token stored in localStorage
     const token = localStorage.getItem("jwtToken");
     // Fetch classes from your API
-    fetch("https://edu-3cb7e7c6ba61.herokuapp.com/api/class", {
+    fetch(`${apiUrl}/api/class`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`, // Include your authentication token

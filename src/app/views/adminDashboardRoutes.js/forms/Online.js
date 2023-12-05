@@ -53,6 +53,7 @@ const Online = () => {
   const [percent, setPercent] = useState(0); // Add state for percent
   const [instruction, setInstruction] = useState(""); // Add state for instruction
   // ...
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const currentDate = new Date();
   const formattedDate = currentDate.toJSON().slice(0, 10); // Format the date (yyyy-MM-dd)
@@ -100,7 +101,7 @@ const Online = () => {
     };
 
     // Make a POST request to your backend to create the exam with the JWT token
-    fetch("https://edu-3cb7e7c6ba61.herokuapp.com/api/create-exam", {
+    fetch(`${apiUrl}/api/create-exam`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -132,12 +133,9 @@ const Online = () => {
       headers.append("Authorization", `Bearer ${token}`);
 
       // Make an API call to fetch subjects for the selected class with the authorization token
-      fetch(
-        `https://edu-3cb7e7c6ba61.herokuapp.com/api/get-subject/${selectedClass}`,
-        {
-          headers,
-        }
-      )
+      fetch(`${apiUrl}/api/get-subject/${selectedClass}`, {
+        headers,
+      })
         .then((response) => response.json())
         .then((data) => {
           setSubjectData(data);

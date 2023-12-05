@@ -156,6 +156,7 @@ const ManageResult = () => {
   const [scores, setScores] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   // Import useNavigate
   const navigate = useNavigate();
@@ -174,7 +175,7 @@ const ManageResult = () => {
         };
 
         const response = await axios.get(
-          `https://edu-3cb7e7c6ba61.herokuapp.com/api/students/all-scores/${user._id}`, // Use user._id instead of user.id
+          `${apiUrl}/api/students/all-scores/${user._id}`, // Use user._id instead of user.id
           {
             headers,
           }

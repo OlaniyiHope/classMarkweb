@@ -2,7 +2,7 @@ import {} from "@mui/material";
 import { Fragment, React, useState } from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
-
+import { Container } from "@mui/material";
 import {
   Card,
   Button,
@@ -99,169 +99,171 @@ const Info = () => {
   return (
     <Fragment>
       <ContentBox className="analytics">
-        <Box className="breadcrumb">
-          <Breadcrumb
-            routeSegments={[
-              // { name: "Material", path: "/material" },
-              { name: "Student Information" },
-            ]}
-          />
-          <Link to="admin/dashboard/student_add">
-            <FormDialog2 />
-          </Link>
-        </Box>
+        <Container>
+          <Box className="breadcrumb">
+            <Breadcrumb routeSegments={[{ name: "Student Information" }]} />
+          </Box>
+          <Box className="breadcrumb">
+            <Link to="admin/dashboard/student_add">
+              <FormDialog2 />
+            </Link>
+          </Box>
+          <Box width="100%" overflow="auto">
+            <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
+              <div class="table-responsive full-data">
+                <table
+                  class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
+                  id="example-student"
+                >
+                  <thead>
+                    <tr>
+                      <th>
+                        <input
+                          type="checkbox"
+                          class="form-check-input"
+                          id="checkAll"
+                          required=""
+                        />
+                      </th>
+                      <th>S/N</th>
+                      <th>ID No</th>
+                      <th>Photo</th>
+                      <th>Name</th>
+                      <th>Address</th>
+                      <th>Email/Username</th>
 
-        <Box width="100%" overflow="auto">
-          <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
-            <div class="table-responsive full-data">
-              <table
-                class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
-                id="example-student"
-              >
-                <thead>
-                  <tr>
-                    <th>
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="checkAll"
-                        required=""
-                      />
-                    </th>
-                    <th>S/N</th>
-                    <th>ID No</th>
-                    <th>Photo</th>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Email/Username</th>
-
-                    <th class="text-end">Action</th>
-                  </tr>
-                </thead>
-                {data && data.length > 0 ? (
-                  data.map((item, index) => (
-                    <tbody>
-                      <tr key={item._id}>
-                        <td>
-                          <div class="checkbox me-0 align-self-center">
-                            <div class="custom-control custom-checkbox ">
-                              <input
-                                type="checkbox"
-                                class="form-check-input"
-                                id="check16"
-                                required=""
-                              />
-                              <label
-                                class="custom-control-label"
-                                for="check16"
-                              ></label>
+                      <th class="text-end">Action</th>
+                    </tr>
+                  </thead>
+                  {data && data.length > 0 ? (
+                    data.map((item, index) => (
+                      <tbody>
+                        <tr key={item._id}>
+                          <td>
+                            <div class="checkbox me-0 align-self-center">
+                              <div class="custom-control custom-checkbox ">
+                                <input
+                                  type="checkbox"
+                                  class="form-check-input"
+                                  id="check16"
+                                  required=""
+                                />
+                                <label
+                                  class="custom-control-label"
+                                  for="check16"
+                                ></label>
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="trans-list">
-                            <h4>{index + 1}</h4>
-                          </div>
-                        </td>
-                        <td>
-                          <span class="text-primary font-w600">{item._id}</span>
-                        </td>
-                        <td>
-                          <div class="date">
-                            {" "}
-                            <img
-                              src="images/trans/10.jpg"
-                              alt=""
-                              class="avatar me-3"
-                            />
-                          </div>
-                        </td>
-                        <td>
-                          <div class="date">{item.studentName}</div>
-                        </td>
-                        <td>
-                          <h6 class="mb-0">{item.address}</h6>
-                        </td>
-                        <td>
-                          <h6 class="mb-0">{item.email}</h6>
-                        </td>
+                          </td>
+                          <td>
+                            <div class="trans-list">
+                              <h4>{index + 1}</h4>
+                            </div>
+                          </td>
+                          <td>
+                            <span class="text-primary font-w600">
+                              {item._id}
+                            </span>
+                          </td>
+                          <td>
+                            <div class="date">
+                              {" "}
+                              <img
+                                src="images/trans/10.jpg"
+                                alt=""
+                                class="avatar me-3"
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <div class="date">{item.studentName}</div>
+                          </td>
+                          <td>
+                            <h6 class="mb-0">{item.address}</h6>
+                          </td>
+                          <td>
+                            <h6 class="mb-0">{item.email}</h6>
+                          </td>
 
-                        <td>
-                          <TableCell align="right">
-                            <IconButton
-                              aria-controls={`action-menu-${item._id}`}
-                              aria-haspopup="true"
-                              onClick={(event) =>
-                                handleOpenMenu(event, item._id)
-                              } // Pass item._id
-                            >
-                              <MoreVertIcon /> {/* MoreVertIcon for the menu */}
-                            </IconButton>
-                            <Menu
-                              id={`action-menu-${item._id}`}
-                              anchorEl={anchorElMap[item._id]}
-                              open={Boolean(anchorElMap[item._id])}
-                              onClose={() => handleCloseMenu(item._id)}
-                            >
-                              <MenuItem>
-                                <ListItemIcon></ListItemIcon>
-                                <Link
-                                  to={`/dashboard/student_mark_sheet/${item._id}`}
-                                >
-                                  Mark Sheet
-                                </Link>
-                              </MenuItem>
-                              <MenuItem>
-                                <ListItemIcon></ListItemIcon>
+                          <td>
+                            <TableCell align="right">
+                              <IconButton
+                                aria-controls={`action-menu-${item._id}`}
+                                aria-haspopup="true"
+                                onClick={(event) =>
+                                  handleOpenMenu(event, item._id)
+                                } // Pass item._id
+                              >
+                                <MoreVertIcon />{" "}
+                                {/* MoreVertIcon for the menu */}
+                              </IconButton>
+                              <Menu
+                                id={`action-menu-${item._id}`}
+                                anchorEl={anchorElMap[item._id]}
+                                open={Boolean(anchorElMap[item._id])}
+                                onClose={() => handleCloseMenu(item._id)}
+                              >
+                                <MenuItem>
+                                  <ListItemIcon></ListItemIcon>
+                                  <Link
+                                    to={`/dashboard/student_mark_sheet/${item._id}`}
+                                  >
+                                    Mark Sheet
+                                  </Link>
+                                </MenuItem>
+                                <MenuItem>
+                                  <ListItemIcon></ListItemIcon>
 
-                                <Link to={`/dashboard/view-result/${item._id}`}>
-                                  View Result
-                                </Link>
-                              </MenuItem>
-                              <MenuItem>
-                                <ListItemIcon>
-                                  <EditIcon /> {/* Use an Edit icon */}
-                                </ListItemIcon>
-                                Edit
-                              </MenuItem>
-                              <MenuItem>
-                                <ListItemIcon>
-                                  <DeleteIcon /> {/* Use a Delete icon */}
-                                </ListItemIcon>
-                                Delete
-                              </MenuItem>
-                            </Menu>
-                          </TableCell>
-                        </td>
-                      </tr>
-                    </tbody>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={5} align="center">
-                      No Class to display.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </table>
+                                  <Link
+                                    to={`/dashboard/view-result/${item._id}`}
+                                  >
+                                    View Result
+                                  </Link>
+                                </MenuItem>
+                                <MenuItem>
+                                  <ListItemIcon>
+                                    <EditIcon /> {/* Use an Edit icon */}
+                                  </ListItemIcon>
+                                  Edit
+                                </MenuItem>
+                                <MenuItem>
+                                  <ListItemIcon>
+                                    <DeleteIcon /> {/* Use a Delete icon */}
+                                  </ListItemIcon>
+                                  Delete
+                                </MenuItem>
+                              </Menu>
+                            </TableCell>
+                          </td>
+                        </tr>
+                      </tbody>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={5} align="center">
+                        No Student to display.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </table>
+              </div>
             </div>
-          </div>
 
-          <TablePagination
-            sx={{ px: 2 }}
-            page={page}
-            component="div"
-            rowsPerPage={rowsPerPage}
-            count={data.length}
-            onPageChange={handleChangePage}
-            rowsPerPageOptions={[5, 10, 25]}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            nextIconButtonProps={{ "aria-label": "Next Page" }}
-            backIconButtonProps={{ "aria-label": "Previous Page" }}
-          />
-        </Box>
+            <TablePagination
+              sx={{ px: 2 }}
+              page={page}
+              component="div"
+              rowsPerPage={rowsPerPage}
+              count={data.length}
+              onPageChange={handleChangePage}
+              rowsPerPageOptions={[5, 10, 25]}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              nextIconButtonProps={{ "aria-label": "Next Page" }}
+              backIconButtonProps={{ "aria-label": "Previous Page" }}
+            />
+          </Box>
 
-        {/* <TopSellingTable />
+          {/* <TopSellingTable />
             <StatCards2 />
 
             <H4>Ongoing Projects</H4>
@@ -281,6 +283,7 @@ const Info = () => {
 
             <UpgradeCard />
             <Campaigns />*/}
+        </Container>
       </ContentBox>
     </Fragment>
   );

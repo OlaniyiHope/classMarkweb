@@ -37,7 +37,7 @@ const initialState = {
   name: "", // Initial value for the class name
   teacher: "", // Initial value for the class teacher's name
 };
-
+const apiUrl = process.env.REACT_APP_API_URL;
 const AddClass = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(initialState); // Assuming you have an 'initialState' object defined
@@ -55,13 +55,9 @@ const AddClass = () => {
       };
 
       // Make an API call to create a class
-      await axios.post(
-        "https://edu-3cb7e7c6ba61.herokuapp.com/api/class",
-        formData,
-        {
-          headers, // Include the headers in the request
-        }
-      );
+      await axios.post(`${apiUrl}/api/class`, formData, {
+        headers, // Include the headers in the request
+      });
 
       // Handle successful class creation
       navigate("/dashboard/class");

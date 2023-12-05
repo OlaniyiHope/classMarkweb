@@ -33,7 +33,7 @@ import ViewResult from "./forms/ViewResult";
 import MarkSheet from "./forms/MarkSheet";
 import ReportCard from "./forms/ReportCard";
 import ViewAdmin from "./admin/ViewAdmin";
-import TermRep from "./forms/TermRep";
+
 import TermRepCont from "./forms/TermRepCont";
 import StuReceipt from "./forms/StuReceipt";
 

@@ -34,6 +34,8 @@ const ManSin2 = () => {
 
   const [totalMark, setTotalMark] = useState(0);
   const [questions, setQuestions] = useState([]);
+  const apiUrl = process.env.REACT_APP_API_URL;
+
   // Function to calculate total marks
   const calculateTotalMarks = () => {
     const total = questions.reduce(
@@ -87,13 +89,10 @@ const ManSin2 = () => {
           Authorization: `Bearer ${token}`,
         };
 
-        const response = await fetch(
-          `https://edu-3cb7e7c6ba61.herokuapp.com/api/questions/${id}`,
-          {
-            method: "GET",
-            headers, // Include the headers in the request
-          }
-        );
+        const response = await fetch(`${apiUrl}/api/questions/${id}`, {
+          method: "GET",
+          headers, // Include the headers in the request
+        });
 
         if (response.ok) {
           const questionsData = await response.json();
@@ -143,17 +142,14 @@ const ManSin2 = () => {
         ).value;
       }
 
-      const response = await fetch(
-        "https://edu-3cb7e7c6ba61.herokuapp.com/api/questions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Include the JWT token in the headers
-          },
-          body: JSON.stringify(questionData),
-        }
-      );
+      const response = await fetch(`${apiUrl}/api/questions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include the JWT token in the headers
+        },
+        body: JSON.stringify(questionData),
+      });
 
       if (response.ok) {
         // Question submitted successfully, you can handle the response here

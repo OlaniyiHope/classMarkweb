@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import TermRep from "./TermRep";
+import useAuth from "app/hooks/useAuth";
 
 const TermRepCont = () => {
   const { id } = useParams();

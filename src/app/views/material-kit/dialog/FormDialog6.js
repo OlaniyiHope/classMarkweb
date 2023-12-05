@@ -24,6 +24,7 @@ export default function FormDialog6() {
   const { teachers_name, subject_name, classname } = formData;
   const [classs, setClasss] = useState();
   const [error, setError] = useState();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,10 +34,7 @@ export default function FormDialog6() {
       classname,
     };
     try {
-      await axios.post(
-        "https://edu-3cb7e7c6ba61.herokuapp.com/api/userrs/register",
-        formData
-      );
+      await axios.post(`${apiUrl}/api/userrs/register`, formData);
 
       navigate("/dashboard");
     } catch (err) {}

@@ -28,6 +28,7 @@ const ReportCard = () => {
   const [scores, setScores] = useState([]);
 
   const { data, loading, error } = useFetch(`/students/${id}`);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     if (data && data.studentName && data.classname) {
@@ -44,7 +45,7 @@ const ReportCard = () => {
         };
 
         const response = await axios.get(
-          `https://edu-3cb7e7c6ba61.herokuapp.com/api/students/all-scores/${id}`, // Use user._id instead of user.id
+          `${apiUrl}/api/students/all-scores/${id}`, // Use user._id instead of user.id
           {
             headers,
           }

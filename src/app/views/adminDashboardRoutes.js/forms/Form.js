@@ -66,6 +66,8 @@ const Form = () => {
   const [classs, setClasss] = useState();
   const [error, setError] = useState();
 
+  const apiUrl = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     ValidatorForm.addValidationRule("isPasswordMatch", (value) => {
       if (value !== state.password) return false;
@@ -91,10 +93,7 @@ const Form = () => {
       password,
     };
     try {
-      await axios.post(
-        "https://edu-3cb7e7c6ba61.herokuapp.com/api/userrs/register",
-        formData
-      );
+      await axios.post(`${apiUrl}/api/userrs/register`, formData);
 
       navigate("admin/dashboard");
     } catch (err) {}

@@ -24,6 +24,8 @@ export default function FormDialog5() {
   const [selectedClass, setSelectedClass] = useState("");
   const navigate = useNavigate();
 
+  const apiUrl = process.env.REACT_APP_API_URL;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -37,13 +39,9 @@ export default function FormDialog5() {
       };
 
       // Make an API call to create a subject
-      await axios.post(
-        "https://edu-3cb7e7c6ba61.herokuapp.com/api/create-subject",
-        formData,
-        {
-          headers, // Include the headers in the request
-        }
-      );
+      await axios.post(`${apiUrl}/api/create-subject`, formData, {
+        headers, // Include the headers in the request
+      });
 
       // Handle successful subject creation
       navigate("/dashboard/ss2-subject");

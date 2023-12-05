@@ -24,6 +24,7 @@ export default function FormDialog3() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(initialState);
   const { username, email, password, address, phone } = formData;
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,13 +47,9 @@ export default function FormDialog3() {
       };
 
       // Make an API call to create a teacher
-      await axios.post(
-        "https://edu-3cb7e7c6ba61.herokuapp.com/api/create-teachers",
-        formData,
-        {
-          headers, // Include the headers in the request
-        }
-      );
+      await axios.post(`${apiUrl}/api/create-teachers`, formData, {
+        headers, // Include the headers in the request
+      });
 
       // Handle successful teacher creation
       navigate("/dashboard/teacher");

@@ -26,9 +26,13 @@ const TermRep = ({ studentId }) => {
   const [studentData, setStudentData] = useState(null);
   const { id } = useParams();
 
-  const { data } = useFetch(`/students/${id}`);
+  // const { data } = useFetch(`/students/${id}`);
+
+  const { data } = useFetch(`/students/${studentId}`);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     if (data && data.studentName && data.classname) {
@@ -44,7 +48,7 @@ const TermRep = ({ studentId }) => {
       };
 
       const response = await axios.get(
-        `https://edu-3cb7e7c6ba61.herokuapp.com/api/get-scores-by-student/${studentId}`,
+        `${apiUrl}/api/get-scores-by-student/${studentId}`,
         { headers }
       );
 
@@ -70,6 +74,8 @@ const TermRep = ({ studentId }) => {
     };
 
     fetchData();
+
+    console.log("Student ID in useEffect:", studentId);
   }, [studentId]);
 
   if (loading) {
@@ -358,22 +364,26 @@ const TermRep = ({ studentId }) => {
                                   <th scope="col">Remark</th>
                                 </tr>
                               </thead>
-
                               <tbody>
-                                {studentData?.scores.map((score, index) => (
-                                  <tr key={index}>
-                                    <td></td>
-                                    <td>{score.subjectName}</td>
-                                    <td>{score.testscore}</td>
-                                    <td>{score.marks[0]?.examscore || ""}</td>
-                                    <td>
-                                      {score.marks[0]?.marksObtained || ""}
-                                    </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>{score.marks[0]?.comment || ""}</td>
-                                  </tr>
-                                ))}
+                                {studentData?.scores &&
+                                  studentData.scores.map((score, index) => (
+                                    <tr key={index}>
+                                      <td></td>
+                                      <td>{score?.subjectName || ""}</td>
+                                      <td>{score?.testscore || ""}</td>
+                                      <td>
+                                        <td>{score?.examscore || ""}</td>
+                                      </td>
+                                      <td>
+                                        <td>{score?.marksObtained || ""}</td>
+                                      </td>
+                                      <td></td>
+                                      <td></td>
+                                      <td>
+                                        {score?.marks?.[0]?.comment || ""}
+                                      </td>
+                                    </tr>
+                                  ))}
                               </tbody>
                             </table>
                           </td>

@@ -54,6 +54,7 @@ const Exam = () => {
   const [studentData, setStudentData] = useState([]);
   const [subjectIdLookup, setSubjectIdLookup] = useState({});
   const [showMarkManagement, setShowMarkManagement] = useState(false);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleManageMarkClick = async () => {
     const token = localStorage.getItem("jwtToken");
@@ -61,12 +62,9 @@ const Exam = () => {
     headers.append("Authorization", `Bearer ${token}`);
 
     try {
-      const response = await fetch(
-        `https://edu-3cb7e7c6ba61.herokuapp.com/api/student/${selectedClass}`,
-        {
-          headers,
-        }
-      );
+      const response = await fetch(`${apiUrl}/api/student/${selectedClass}`, {
+        headers,
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch student data");
@@ -86,12 +84,9 @@ const Exam = () => {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      fetch(
-        `https://edu-3cb7e7c6ba61.herokuapp.com/api/get-subject/${selectedClass}`,
-        {
-          headers,
-        }
-      )
+      fetch(`${apiUrl}/api/get-subject/${selectedClass}`, {
+        headers,
+      })
         .then((response) => response.json())
         .then((data) => {
           setSubjectData(data);
@@ -158,18 +153,15 @@ const Exam = () => {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      const response = await fetch(
-        "https://edu-3cb7e7c6ba61.herokuapp.com/api/save-marks",
-        {
-          method: "POST",
-          headers: { ...headers, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            examId: selectedExam,
-            className: selectedClass,
-            marks,
-          }),
-        }
-      );
+      const response = await fetch(`${apiUrl}/api/save-marks`, {
+        method: "POST",
+        headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          examId: selectedExam,
+          className: selectedClass,
+          marks,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to save marks");

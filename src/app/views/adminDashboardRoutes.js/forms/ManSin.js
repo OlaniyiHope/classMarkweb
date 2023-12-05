@@ -27,6 +27,7 @@ const ManSin = () => {
 
   const { data, loading, error } = useFetch(`/get-exam/${id}`);
   const [questionType, setQuestionType] = useState("");
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   // State for total marks
   const [totalMark, setTotalMark] = useState(0);
@@ -107,15 +108,12 @@ const ManSin = () => {
       // Fetch the JWT token from local storage
       const token = localStorage.getItem("jwtToken");
 
-      const response = await fetch(
-        `https://edu-3cb7e7c6ba61.herokuapp.com/api/questions/${questionId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${apiUrl}/api/questions/${questionId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
         // Question deleted successfully
@@ -148,13 +146,10 @@ const ManSin = () => {
           Authorization: `Bearer ${token}`,
         };
 
-        const response = await fetch(
-          `https://edu-3cb7e7c6ba61.herokuapp.com/api/questions/${id}`,
-          {
-            method: "GET",
-            headers, // Include the headers in the request
-          }
-        );
+        const response = await fetch(`${apiUrl}/api/questions/${id}`, {
+          method: "GET",
+          headers, // Include the headers in the request
+        });
 
         if (response.ok) {
           const questionsData = await response.json();
@@ -198,17 +193,14 @@ const ManSin = () => {
         ).value;
       }
 
-      const response = await fetch(
-        "https://edu-3cb7e7c6ba61.herokuapp.com/api/questions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Include the JWT token in the headers
-          },
-          body: JSON.stringify(questionData),
-        }
-      );
+      const response = await fetch(`${apiUrl}/api/questions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include the JWT token in the headers
+        },
+        body: JSON.stringify(questionData),
+      });
 
       if (response.ok) {
         // Question submitted successfully, you can handle the response here

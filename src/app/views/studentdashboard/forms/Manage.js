@@ -33,6 +33,7 @@ const Manage = () => {
   const { logout, user } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   // Function to fetch exams
   const fetchExams = async () => {
@@ -46,7 +47,7 @@ const Manage = () => {
       };
 
       const response = await axios.get(
-        `https://edu-3cb7e7c6ba61.herokuapp.com/api/get-exams-by-class/${user.classname}`,
+        `${apiUrl}/api/get-exams-by-class/${user.classname}`,
         { headers } // Include the headers in the request
       );
 
