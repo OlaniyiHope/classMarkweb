@@ -126,7 +126,7 @@ const Info3 = () => {
                           required=""
                         />
                       </th>
-                      <th>ID No</th>
+                      <th>Adm No</th>
                       <th>S/N</th>
                       <th>Photo</th>
                       <th>Name</th>
@@ -163,7 +163,7 @@ const Info3 = () => {
                           </td>
                           <td>
                             <span class="text-primary font-w600">
-                              {item._id}
+                              {item.AdmNo}
                             </span>
                           </td>
                           <td>

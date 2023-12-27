@@ -114,7 +114,9 @@ const Manage = () => {
                 <TableCell align="center">{item.title}</TableCell>
                 <TableCell align="center">{item.className}</TableCell>
                 <TableCell align="center">{item.subject}</TableCell>
-                <TableCell align="center">{item.date}</TableCell>
+                <TableCell align="center">   {item.date
+                  ? new Date(item.date).toLocaleDateString()
+                  : ""}</TableCell>
                 <TableCell align="center">
                   {item.fromTime} - {item.toTime}
                 </TableCell>

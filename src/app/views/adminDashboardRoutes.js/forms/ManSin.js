@@ -544,7 +544,12 @@ const ManSin = () => {
                       <TableCell>
                         <b>Date</b>
                       </TableCell>
-                      <TableCell>{data?.date}</TableCell>
+                      <TableCell>
+                        {" "}
+                        {data.date
+                          ? new Date(data.date).toLocaleDateString()
+                          : ""}
+                      </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>

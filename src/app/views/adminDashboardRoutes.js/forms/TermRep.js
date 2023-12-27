@@ -55,7 +55,20 @@ const TermRep = ({ studentId }) => {
         { headers }
       );
 
-      return response.data;
+      console.log("Original data:", response.data);
+
+      // Filter out subjects without marks
+      const filteredScores = response.data.scores.filter(
+        (score) => score.marksObtained !== undefined
+      );
+
+      console.log("Filtered data:", {
+        ...response.data,
+        scores: filteredScores,
+      });
+
+      // Return the data with the filtered scores
+      return { ...response.data, scores: filteredScores };
     } catch (error) {
       console.error("Error fetching student data:", error);
       throw new Error("Failed to fetch student data");
@@ -97,13 +110,16 @@ const TermRep = ({ studentId }) => {
     ? studentData.scores.length * 100 // Assuming 100 marks per subject
     : 0;
   const averageMarks = studentData?.scores
-    ? (studentData.scores.reduce(
-        (acc, score) => acc + (score.marksObtained || 0),
-        0
-      ) /
-        totalMarks) *
-      100
+    ? (
+        (studentData.scores.reduce(
+          (acc, score) => acc + (score.marksObtained || 0),
+          0
+        ) /
+          totalMarks) *
+        100
+      ).toFixed(1)
     : 0;
+
   return (
     <Fragment>
       <ContentBox className="analytics">
@@ -199,7 +215,7 @@ const TermRep = ({ studentId }) => {
                             marginLeft: "30px",
                             textAlign: "center",
                           }}
-                          value={data?._id || ""}
+                          value={data?.AdmNo || ""}
                         />
                       </p>
                       <p style={{ color: "#042954" }}>
@@ -346,24 +362,29 @@ const TermRep = ({ studentId }) => {
                               </thead>
                               <tbody>
                                 {studentData?.scores &&
-                                  studentData.scores.map((score, index) => (
-                                    <tr key={index}>
-                                      <td>{index + 1}</td>
-                                      <td>{score?.subjectName || ""}</td>
-                                      <td>{score?.testscore || ""}</td>
-                                      <td>
-                                        <td>{score?.examscore || ""}</td>
-                                      </td>
-                                      <td>
-                                        <td>{score?.marksObtained || ""}</td>
-                                      </td>
-                                      <td></td>
-                                      <td></td>
-                                      <td>
-                                        <td>{score?.comment || ""}</td>
-                                      </td>
-                                    </tr>
-                                  ))}
+                                  studentData.scores
+                                    .filter(
+                                      (score) =>
+                                        score.marksObtained !== undefined
+                                    ) // Filter out subjects without marks
+                                    .map((score, index) => (
+                                      <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{score?.subjectName || "-"}</td>
+                                        <td>{score?.testscore || "-"}</td>
+                                        <td>
+                                          <td>{score?.examscore || "-"}</td>
+                                        </td>
+                                        <td>
+                                          <td>{score?.marksObtained || "-"}</td>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                          <td>{score?.comment || "-"}</td>
+                                        </td>
+                                      </tr>
+                                    ))}
                               </tbody>
                             </table>
                           </td>

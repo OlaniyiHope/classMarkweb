@@ -177,7 +177,11 @@ const Manage = () => {
                           <h6 class="mb-0">{item.subject}</h6>
                         </td>
                         <td>
-                          <h6 class="mb-0">{item.date}</h6>
+                          <h6 class="mb-0">
+                            {item.date
+                              ? new Date(item.date).toLocaleDateString()
+                              : ""}
+                          </h6>
                         </td>
                         <td>
                           <h6 class="mb-0">

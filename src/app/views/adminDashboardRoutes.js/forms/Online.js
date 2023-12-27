@@ -90,7 +90,7 @@ const Online = () => {
       title: title,
       className: selectedClass,
       subject: selectedSubject,
-      date: formattedDate, // Format the date
+      date: selectedDate, // Format the date
       // fromTime: fromTime,
       // toTime: toTime,
 
@@ -251,11 +251,7 @@ const Online = () => {
                     label="Exam Date"
                     variant="outlined"
                     sx={{ mb: 3 }}
-                    value={
-                      selectedDate
-                        ? new Date(selectedDate).toLocaleDateString()
-                        : ""
-                    }
+                    value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)} // Update the selectedDate when the user selects a date
                   />
 

@@ -106,7 +106,12 @@ const Examlist = () => {
                   <TableRow key={item._id}>
                     <TableCell align="center"></TableCell>
                     <TableCell align="left">{item.name}</TableCell>
-                    <TableCell align="center">{item.date}</TableCell>
+                    <TableCell align="center">
+                      {" "}
+                      {item.date
+                        ? new Date(item.date).toLocaleDateString()
+                        : ""}
+                    </TableCell>
                     <TableCell align="center">{item.comment}</TableCell>
 
                     <TableCell align="right">

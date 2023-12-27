@@ -52,16 +52,48 @@ const Exam = () => {
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedExam, setSelectedExam] = useState("");
   const [studentData, setStudentData] = useState([]);
+  console.log("Current studentData state:", studentData);
+  const [selectedStudentId, setSelectedStudentId] = useState("");
+
   const [subjectIdLookup, setSubjectIdLookup] = useState({});
   const [showMarkManagement, setShowMarkManagement] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
 
-  const handleManageMarkClick = async () => {
-    const token = localStorage.getItem("jwtToken");
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${token}`);
-
+  const fetchStudentData = async (examId, subjectId) => {
     try {
+      const token = localStorage.getItem("jwtToken");
+      const headers = new Headers();
+      headers.append("Authorization", `Bearer ${token}`);
+
+      const response = await fetch(
+        `${apiUrl}/api/get-all-scores/${examId}/${subjectId}`,
+        {
+          headers,
+        }
+      );
+
+      if (!response.ok) {
+        console.error(
+          "Failed to fetch student data. Response details:",
+          response
+        );
+        throw new Error("Failed to fetch student data");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching student data:", error);
+      return { scores: [] }; // Return empty array if there's an error
+    }
+  };
+
+  const handleManageMarkClick = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      const headers = new Headers();
+      headers.append("Authorization", `Bearer ${token}`);
+
       const response = await fetch(`${apiUrl}/api/student/${selectedClass}`, {
         headers,
       });
@@ -71,41 +103,107 @@ const Exam = () => {
       }
 
       const students = await response.json();
-      setStudentData(students);
-      setShowMarkManagement(true);
+
+      // Handle the case where no students are found
+      if (students.length === 0) {
+        console.warn("No students found for the selected class.");
+        // Proceed with the logic for initializing the state, etc.
+        // You might want to show a message to the user or take appropriate action.
+      } else {
+        // Assuming you want to pick the first student for now
+        const firstStudentId = students[0]._id;
+        setSelectedStudentId(firstStudentId);
+
+        const existingData = await fetchStudentData(
+          selectedExam,
+          subjectIdLookup[selectedSubject]
+        );
+
+        console.log("Response from fetchStudentData:", existingData);
+        console.log("Existing scores:", existingData.scores);
+
+        // Ensure that the scores are properly set in the initial state
+        const initialState = students.map((student) => {
+          const studentScore = existingData.scores.find(
+            (score) => score.studentId && score.studentId._id === student._id
+          );
+
+          console.log(`Student ${student._id} - Existing Score:`, studentScore);
+
+          const defaultTestScore = studentScore
+            ? studentScore.testscore !== undefined
+              ? studentScore.testscore
+              : 0
+            : 0;
+
+          const defaultExamScore = studentScore
+            ? studentScore.examscore !== undefined
+              ? studentScore.examscore
+              : 0
+            : 0;
+
+          return {
+            studentId: student._id,
+            studentName: student.studentName,
+            testscore: defaultTestScore,
+            examscore: defaultExamScore,
+            marksObtained: defaultTestScore + defaultExamScore,
+            comment: studentScore ? studentScore.comment || "" : "",
+          };
+        });
+
+        console.log("Initial state:", initialState);
+
+        setStudentData(initialState);
+        setShowMarkManagement(true);
+      }
     } catch (error) {
       console.error("Error fetching student data:", error);
     }
   };
 
   useEffect(() => {
-    if (selectedClass) {
-      const token = localStorage.getItem("jwtToken");
-      const headers = new Headers();
-      headers.append("Authorization", `Bearer ${token}`);
+    const fetchSubjectData = async () => {
+      try {
+        if (!selectedClass) {
+          setSubjectData([]);
+          setSubjectIdLookup({});
+          return;
+        }
 
-      fetch(`${apiUrl}/api/get-subject/${selectedClass}`, {
-        headers,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setSubjectData(data);
+        const token = localStorage.getItem("jwtToken");
+        const headers = new Headers();
+        headers.append("Authorization", `Bearer ${token}`);
 
-          // Create a subjectId lookup
-          const lookup = {};
-          data.forEach((subject) => {
-            lookup[subject.name] = subject._id;
-          });
-          setSubjectIdLookup(lookup);
-        })
-        .catch((error) => {
-          console.error("Error fetching subjects:", error);
+        const response = await fetch(
+          `${apiUrl}/api/get-subject/${selectedClass}`,
+          {
+            headers,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch subjects");
+        }
+
+        const data = await response.json();
+
+        setSubjectData(data);
+
+        // Create a subjectId lookup
+        const lookup = {};
+        data.forEach((subject) => {
+          lookup[subject.name] = subject._id;
         });
-    } else {
-      setSubjectData([]);
-      setSubjectIdLookup({});
-    }
-  }, [selectedClass]);
+        setSubjectIdLookup(lookup);
+      } catch (error) {
+        console.error("Error fetching subjects:", error);
+      }
+    };
+
+    // Call the fetchSubjectData function
+    fetchSubjectData();
+  }, [selectedClass, apiUrl]); // Include all dependencies used inside the useEffect
 
   const handleClassChange = (event) => {
     const newSelectedClass = event.target.value;
@@ -114,29 +212,25 @@ const Exam = () => {
   };
 
   const handleExamChange = (event) => {
-    setSelectedExam(event.target.value);
+    const selectedExamId = event.target.value;
+    setSelectedExam(selectedExamId);
   };
 
   const handleSubjectChange = (event) => {
     setSelectedSubject(event.target.value);
   };
+
   const handleSaveChanges = async () => {
     try {
       const marks = studentData.map((student, index) => {
-        const studentId = student._id;
-        const subjectId = subjectIdLookup[student.subjectName]; // Use the lookup to get subjectId
+        const studentId = student.studentId;
+        const subjectId = subjectIdLookup[selectedSubject];
         const subjectName = selectedSubject;
 
-        const testscore = Number(
-          document.getElementById(`testscore_${index}`).value
-        );
-        const examscore = Number(
-          document.getElementById(`examscore_${index}`).value
-        );
-        const marksObtained = Number(
-          document.getElementById(`marksObtained_${index}`).value
-        );
-        const comment = document.getElementById(`comment_${index}`).value;
+        const testscore = student.testscore || 0;
+        const examscore = student.examscore || 0;
+        const marksObtained = testscore + examscore;
+        const comment = student.comment || "";
 
         return {
           studentId,
@@ -149,22 +243,68 @@ const Exam = () => {
         };
       });
 
+      console.log("Updated Marks:", marks);
+
       const token = localStorage.getItem("jwtToken");
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      const response = await fetch(`${apiUrl}/api/save-marks`, {
-        method: "POST",
-        headers: { ...headers, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          examId: selectedExam,
-          className: selectedClass,
-          marks,
-        }),
-      });
+      // Check if marks exist for the selected exam and subject
+      const responseCheckMarks = await fetch(
+        `${apiUrl}/api/get-all-scores/${selectedExam}/${subjectIdLookup[selectedSubject]}`,
+        {
+          headers,
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error("Failed to save marks");
+      console.log("Response from Check Marks:", responseCheckMarks);
+
+      if (responseCheckMarks.ok) {
+        // Marks exist, update them for each student
+        const updatePromises = marks.map(async (mark) => {
+          const responseUpdateMarks = await fetch(
+            `${apiUrl}/api/update-marks/${mark.studentId}`,
+            {
+              method: "PUT",
+              headers: { ...headers, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                examId: selectedExam,
+                subjectId: subjectIdLookup[selectedSubject],
+                testscore: mark.testscore,
+                examscore: mark.examscore,
+                marksObtained: mark.marksObtained,
+                comment: mark.comment,
+              }),
+            }
+          );
+
+          console.log("Response from Update Marks:", responseUpdateMarks);
+
+          if (!responseUpdateMarks.ok) {
+            throw new Error(
+              `Failed to update marks for student ${mark.studentId}`
+            );
+          }
+        });
+
+        await Promise.all(updatePromises);
+      } else {
+        // Marks don't exist, save them for each student
+        const responseSaveMarks = await fetch(`${apiUrl}/api/save-marks`, {
+          method: "POST",
+          headers: { ...headers, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            examId: selectedExam,
+            subjectId: subjectIdLookup[selectedSubject],
+            marks,
+          }),
+        });
+
+        console.log("Response from Save Marks:", responseSaveMarks);
+
+        if (!responseSaveMarks.ok) {
+          throw new Error("Failed to save marks");
+        }
       }
 
       toast.success("Marks saved successfully!", {
@@ -191,6 +331,28 @@ const Exam = () => {
     }
   };
 
+  const handleScoreChange = (index, scoreType, value) => {
+    // Assuming studentData is an array
+    const updatedStudents = [...studentData];
+
+    // Update the corresponding score
+    if (scoreType === "testscore") {
+      updatedStudents[index].testscore = parseInt(value, 10) || 0;
+    } else if (scoreType === "examscore") {
+      updatedStudents[index].examscore = parseInt(value, 10) || 0;
+    } else if (scoreType === "comment") {
+      updatedStudents[index].comment = value; // Update the comment field
+    }
+
+    // Update marksObtained by adding test score and exam score
+    updatedStudents[index].marksObtained =
+      (updatedStudents[index].testscore || 0) +
+      (updatedStudents[index].examscore || 0);
+
+    // Update state with the modified students
+    setStudentData(updatedStudents);
+  };
+
   return (
     <div>
       <Container>
@@ -209,7 +371,7 @@ const Exam = () => {
               >
                 {examData &&
                   examData.map((item) => (
-                    <MenuItem key={item.id} value={item.name}>
+                    <MenuItem key={item._id} value={item._id}>
                       {item.name}
                     </MenuItem>
                   ))}
@@ -266,7 +428,9 @@ const Exam = () => {
                   <div className="icon">
                     <i className="entypo-chart-bar"></i>
                   </div>
-                  <h3 style={{ color: "#696969" }}>Marks For </h3>
+                  <h3 style={{ color: "#696969" }}>
+                    Marks For: {selectedExam}{" "}
+                  </h3>
                   <h4 style={{ color: "#696969" }}>Class :</h4>
                   <h4 style={{ color: "#696969" }}>Subject :</h4>
                 </div>
@@ -275,7 +439,7 @@ const Exam = () => {
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Id</th>
+                    <th>Adm No</th>
                     <th>Name</th>
                     <th>Test</th>
                     <th>Exam</th>
@@ -287,16 +451,25 @@ const Exam = () => {
                   {studentData.map((student, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
-                      <td>{student._id}</td>
-                      <td id={`subjectId_${index}`} style={{ display: "none" }}>
+                      <td>{student.AdmNo}</td>
+                      {/*}  <td id={`subjectId_${index}`} style={{ display: "none" }}>
                         {subjectIdLookup[student.subjectName]}
-                      </td>
+                  </td>*/}
                       <td>{student.studentName}</td>
+
                       <td>
                         <TextField
                           type="number"
                           name={`testscore_${index}`}
                           id={`testscore_${index}`}
+                          value={student.testscore || ""}
+                          onChange={(e) =>
+                            handleScoreChange(
+                              index,
+                              "testscore",
+                              e.target.value
+                            )
+                          }
                         />
                       </td>
                       <td>
@@ -304,19 +477,26 @@ const Exam = () => {
                           type="number"
                           name={`examscore_${index}`}
                           id={`examscore_${index}`}
+                          value={student.examscore || ""}
+                          onChange={(e) =>
+                            handleScoreChange(
+                              index,
+                              "examscore",
+                              e.target.value
+                            )
+                          }
                         />
                       </td>
-                      <td>
-                        <TextField
-                          type="number"
-                          name={`marksObtained_${index}`}
-                          id={`marksObtained_${index}`}
-                        />
-                      </td>
+                      {/* Fix the nesting issue for marksObtained */}
+                      <td>{student.marksObtained || ""}</td>
                       <td>
                         <TextField
                           name={`comment_${index}`}
                           id={`comment_${index}`}
+                          value={student.comment || ""}
+                          onChange={(e) =>
+                            handleScoreChange(index, "comment", e.target.value)
+                          }
                         />
                       </td>
                     </tr>

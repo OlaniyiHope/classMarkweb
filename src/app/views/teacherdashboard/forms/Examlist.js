@@ -1,6 +1,6 @@
-import {} from '@mui/material';
-import { Fragment, React, useState } from 'react';
-import { Box } from '@mui/system';
+import {} from "@mui/material";
+import { Fragment, React, useState } from "react";
+import { Box } from "@mui/system";
 import {
   Card,
   Button,
@@ -15,42 +15,42 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-} from '@mui/material';
-import RowCards from '../shared/RowCards';
-import { Breadcrumb } from 'app/components';
-import FormDialog2 from 'app/views/material-kit/dialog/FormDialog2';
-import useFetch from 'hooks/useFetch';
-const ContentBox = styled('div')(({ theme }) => ({
-  margin: '30px',
-  [theme.breakpoints.down('sm')]: { margin: '16px' },
+} from "@mui/material";
+import RowCards from "../shared/RowCards";
+import { Breadcrumb } from "app/components";
+import FormDialog2 from "app/views/material-kit/dialog/FormDialog2";
+import useFetch from "hooks/useFetch";
+const ContentBox = styled("div")(({ theme }) => ({
+  margin: "30px",
+  [theme.breakpoints.down("sm")]: { margin: "16px" },
 }));
 
-const Title = styled('span')(() => ({
-  fontSize: '1rem',
-  fontWeight: '500',
-  marginRight: '.5rem',
-  textTransform: 'capitalize',
+const Title = styled("span")(() => ({
+  fontSize: "1rem",
+  fontWeight: "500",
+  marginRight: ".5rem",
+  textTransform: "capitalize",
 }));
 
-const SubTitle = styled('span')(({ theme }) => ({
-  fontSize: '0.875rem',
+const SubTitle = styled("span")(({ theme }) => ({
+  fontSize: "0.875rem",
   color: theme.palette.text.secondary,
 }));
 
-const H4 = styled('h4')(({ theme }) => ({
-  fontSize: '1rem',
-  fontWeight: '500',
-  marginBottom: '16px',
-  textTransform: 'capitalize',
+const H4 = styled("h4")(({ theme }) => ({
+  fontSize: "1rem",
+  fontWeight: "500",
+  marginBottom: "16px",
+  textTransform: "capitalize",
   color: theme.palette.text.secondary,
 }));
 const StyledTable = styled(Table)(() => ({
-  whiteSpace: 'pre',
-  '& thead': {
-    '& tr': { '& th': { paddingLeft: 0, paddingRight: 0 } },
+  whiteSpace: "pre",
+  "& thead": {
+    "& tr": { "& th": { paddingLeft: 0, paddingRight: 0 } },
   },
-  '& tbody': {
-    '& tr': { '& td': { paddingLeft: 0, textTransform: 'capitalize' } },
+  "& tbody": {
+    "& tr": { "& td": { paddingLeft: 0, textTransform: "capitalize" } },
   },
 }));
 
@@ -59,7 +59,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Examlist = () => {
-  const { data, loading, error } = useFetch('/examlist');
+  const { data, loading, error } = useFetch("/examlist");
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
@@ -79,7 +79,10 @@ const Examlist = () => {
       <ContentBox className="analytics">
         <Box className="breadcrumb">
           <Breadcrumb
-            routeSegments={[{ name: 'Material', path: '/material' }, { name: 'Class' }]}
+            routeSegments={[
+              { name: "Material", path: "/material" },
+              { name: "Class" },
+            ]}
           />
           <FormDialog2 />
         </Box>
@@ -102,7 +105,12 @@ const Examlist = () => {
                   <TableRow key={item._id}>
                     <TableCell align="center"></TableCell>
                     <TableCell align="left">{item.name}</TableCell>
-                    <TableCell align="center">{item.date}</TableCell>
+                    <TableCell align="center">
+                      {" "}
+                      {item.date
+                        ? new Date(item.date).toLocaleDateString()
+                        : ""}
+                    </TableCell>
                     <TableCell align="center">{item.comment}</TableCell>
 
                     <TableCell align="right">
@@ -124,8 +132,8 @@ const Examlist = () => {
             onPageChange={handleChangePage}
             rowsPerPageOptions={[5, 10, 25]}
             onRowsPerPageChange={handleChangeRowsPerPage}
-            nextIconButtonProps={{ 'aria-label': 'Next Page' }}
-            backIconButtonProps={{ 'aria-label': 'Previous Page' }}
+            nextIconButtonProps={{ "aria-label": "Next Page" }}
+            backIconButtonProps={{ "aria-label": "Previous Page" }}
           />
         </Box>
 

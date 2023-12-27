@@ -127,7 +127,7 @@ const Info2 = () => {
                         />
                       </th>
                       <th>S/N</th>
-                      <th>ID No</th>
+                      <th>Adm No</th>
                       <th>Photo</th>
                       <th> Name</th>
                       <th>Address</th>
@@ -163,7 +163,7 @@ const Info2 = () => {
                           </td>
                           <td>
                             <span class="text-primary font-w600">
-                              {item._id}
+                              {item.AdmNo}
                             </span>
                           </td>
                           <td>
