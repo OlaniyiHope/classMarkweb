@@ -58,6 +58,7 @@ const initialValues = {
   password: "",
   studentName: "",
   role: "",
+  AdmNo: "",
   classname: "",
   parentsName: "",
   date: "",
@@ -82,6 +83,7 @@ const JwtRegister = () => {
   const [loading, setLoading] = useState(false);
   // Declare variables and states here
   const [classData, setClassData] = useState([]); // To store the list of classes
+
   const [selectedClass, setSelectedClass] = useState(""); // To store the selected class
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -116,6 +118,7 @@ const JwtRegister = () => {
         values.password,
         values.role,
         values.studentName,
+        values.AdmNo,
         values.classname,
         values.parentsName,
         values.date
@@ -309,6 +312,21 @@ const JwtRegister = () => {
                               error={Boolean(
                                 errors.studentName && touched.studentName
                               )}
+                              sx={{ mb: 3 }}
+                            />
+                            <TextField
+                              fullWidth
+                              size="small"
+                              type="text"
+                              name="AdmNo"
+                              label="Admission No"
+                              variant="outlined"
+                              onBlur={handleBlur}
+                              value={values.AdmNo}
+                              id="studentName"
+                              onChange={handleChange}
+                              helperText={touched.AdmNo && errors.AdmNo}
+                              error={Boolean(errors.AdmNo && touched.AdmNo)}
                               sx={{ mb: 3 }}
                             />
                             <TextField

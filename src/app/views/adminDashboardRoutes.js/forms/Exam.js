@@ -51,6 +51,7 @@ const Exam = () => {
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedExam, setSelectedExam] = useState("");
+
   const [studentData, setStudentData] = useState([]);
   console.log("Current studentData state:", studentData);
   const [selectedStudentId, setSelectedStudentId] = useState("");
@@ -215,6 +216,20 @@ const Exam = () => {
     const selectedExamId = event.target.value;
     setSelectedExam(selectedExamId);
   };
+  const getExamNameById = (examId) => {
+    const selectedExam = examData.find((item) => item._id === examId);
+    return selectedExam ? selectedExam.name : "";
+  };
+
+  const getClassById = (classId) => {
+    const selectedClass = classData.find((item) => item.id === classId);
+    return selectedClass ? selectedClass.name : "";
+  };
+
+  const getSubjectById = (subjectId) => {
+    const selectedSubject = subjectData.find((item) => item._id === subjectId);
+    return selectedSubject ? selectedSubject.name : "";
+  };
 
   const handleSubjectChange = (event) => {
     setSelectedSubject(event.target.value);
@@ -222,20 +237,18 @@ const Exam = () => {
 
   const handleSaveChanges = async () => {
     try {
-      const marks = studentData.map((student, index) => {
-        const studentId = student.studentId;
-        const subjectId = subjectIdLookup[selectedSubject];
-        const subjectName = selectedSubject;
-
-        const testscore = student.testscore || 0;
-        const examscore = student.examscore || 0;
+      const marks = studentData.map((student) => {
+        const {
+          studentId,
+          testscore = 0,
+          examscore = 0,
+          comment = "",
+        } = student;
         const marksObtained = testscore + examscore;
-        const comment = student.comment || "";
 
         return {
           studentId,
-          subjectId,
-          subjectName,
+          subjectId: subjectIdLookup[selectedSubject],
           testscore,
           examscore,
           marksObtained,
@@ -249,85 +262,96 @@ const Exam = () => {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      // Check if marks exist for the selected exam and subject
-      const responseCheckMarks = await fetch(
-        `${apiUrl}/api/get-all-scores/${selectedExam}/${subjectIdLookup[selectedSubject]}`,
-        {
-          headers,
-        }
-      );
+      // Check if there are existing marks by verifying the examId and subjectId
+      if (selectedExam && subjectIdLookup[selectedSubject]) {
+        const responseCheckMarks = await fetch(
+          `${apiUrl}/api/get-all-scores/${selectedExam}/${subjectIdLookup[selectedSubject]}`,
+          {
+            headers,
+          }
+        );
 
-      console.log("Response from Check Marks:", responseCheckMarks);
+        console.log("Response from Check Marks:", responseCheckMarks);
 
-      if (responseCheckMarks.ok) {
-        // Marks exist, update them for each student
-        const updatePromises = marks.map(async (mark) => {
-          const responseUpdateMarks = await fetch(
-            `${apiUrl}/api/update-marks/${mark.studentId}`,
-            {
-              method: "PUT",
-              headers: { ...headers, "Content-Type": "application/json" },
+        if (responseCheckMarks.ok) {
+          const responseData = await responseCheckMarks.json();
+          const existingMarks = responseData.scores || [];
+
+          // Check if there are existing marks
+          if (existingMarks.length > 0) {
+            // Existing marks found, proceed with updating
+            const responseUpdateMarks = await fetch(
+              `${apiUrl}/api/update-all-marks`,
+              {
+                method: "PUT",
+                headers: {
+                  ...headers,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  examId: selectedExam,
+                  subjectId: subjectIdLookup[selectedSubject],
+                  updates: marks,
+                }),
+              }
+            );
+
+            console.log("Request Payload:", {
+              examId: selectedExam,
+              subjectId: subjectIdLookup[selectedSubject],
+              updates: marks,
+            });
+
+            console.log("Response from Update Marks:", responseUpdateMarks);
+
+            if (!responseUpdateMarks.ok) {
+              const errorMessage = await responseUpdateMarks.text();
+              console.error(
+                `Failed to update marks. Server response: ${errorMessage}`
+              );
+              throw new Error("Failed to update marks");
+            } else {
+              // Notify success using toast
+              toast.success("Marks updated successfully!");
+            }
+          } else {
+            // No existing marks found, proceed to create new marks
+            const responseSaveMarks = await fetch(`${apiUrl}/api/save-marks`, {
+              method: "POST",
+              headers: {
+                ...headers,
+                "Content-Type": "application/json",
+              },
               body: JSON.stringify({
                 examId: selectedExam,
                 subjectId: subjectIdLookup[selectedSubject],
-                testscore: mark.testscore,
-                examscore: mark.examscore,
-                marksObtained: mark.marksObtained,
-                comment: mark.comment,
+                updates: marks,
               }),
+            });
+
+            console.log("Response from Save Marks:", responseSaveMarks);
+
+            if (!responseSaveMarks.ok) {
+              const errorMessage = await responseSaveMarks.text();
+
+              console.error(
+                `Failed to save marks. Server response: ${errorMessage}`
+              );
+              throw new Error("Failed to save marks");
+            } else {
+              // Notify success using toast
+              toast.success("Marks saved successfully!");
             }
-          );
-
-          console.log("Response from Update Marks:", responseUpdateMarks);
-
-          if (!responseUpdateMarks.ok) {
-            throw new Error(
-              `Failed to update marks for student ${mark.studentId}`
-            );
           }
-        });
-
-        await Promise.all(updatePromises);
-      } else {
-        // Marks don't exist, save them for each student
-        const responseSaveMarks = await fetch(`${apiUrl}/api/save-marks`, {
-          method: "POST",
-          headers: { ...headers, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            examId: selectedExam,
-            subjectId: subjectIdLookup[selectedSubject],
-            marks,
-          }),
-        });
-
-        console.log("Response from Save Marks:", responseSaveMarks);
-
-        if (!responseSaveMarks.ok) {
-          throw new Error("Failed to save marks");
+        } else {
+          // Handle other response statuses
+          // ...
         }
       }
-
-      toast.success("Marks saved successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      // ... (remaining code)
     } catch (error) {
       console.error("Error saving marks:", error);
-
-      toast.error("Failed to save marks", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      // ... (error handling)
     }
   };
 
@@ -429,10 +453,15 @@ const Exam = () => {
                     <i className="entypo-chart-bar"></i>
                   </div>
                   <h3 style={{ color: "#696969" }}>
-                    Marks For: {selectedExam}{" "}
+                    Marks For: {getExamNameById(selectedExam)}
                   </h3>
-                  <h4 style={{ color: "#696969" }}>Class :</h4>
-                  <h4 style={{ color: "#696969" }}>Subject :</h4>
+
+                  <h4 style={{ color: "#696969" }}>
+                    Class: {getClassById(selectedClass)}
+                  </h4>
+                  <h4 style={{ color: "#696969" }}>
+                    Subject: {getSubjectById(subjectIdLookup[selectedSubject])}
+                  </h4>
                 </div>
               </div>
               <table className="table table-bordered">

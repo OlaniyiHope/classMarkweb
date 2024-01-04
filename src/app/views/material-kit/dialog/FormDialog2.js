@@ -16,7 +16,7 @@ export default function FormDialog2() {
   return (
     <Box>
       <Button variant="outlined" color="primary">
-        <Link to="/dashboard/classes"> Add new Class</Link>
+        <Link to="/dashboard/student_add"> Add new Student</Link>
       </Button>
     </Box>
   );

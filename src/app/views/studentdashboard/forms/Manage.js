@@ -12,10 +12,18 @@ import {
   ListItemIcon,
   Menu,
   Icon,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Button,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import axios from "axios"; // Import Axios for making API requests
 import { useTheme } from "@mui/material/styles"; // Import useTheme
 import FormDialog4 from "app/views/material-kit/dialog/FormDialog4";
+import moment from "moment-timezone";
+
 import useAuth from "app/hooks/useAuth";
 import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -34,6 +42,7 @@ const Manage = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});
   const apiUrl = process.env.REACT_APP_API_URL;
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   // Function to fetch exams
   const fetchExams = async () => {
@@ -69,11 +78,30 @@ const Manage = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  const handleOpenMenu = (event, examId) => {
-    setAnchorElMap((prev) => ({
-      ...prev,
-      [examId]: event.currentTarget,
-    }));
+  // const handleOpenMenu = (event, examId) => {
+  //   setAnchorElMap((prev) => ({
+  //     ...prev,
+  //     [examId]: event.currentTarget,
+  //   }));
+  // };
+  const handleOpenMenu = (event, examId, examTime) => {
+    const currentTime = moment();
+    const formattedExamTime = moment(examTime).tz("Africa/Lagos");
+
+    console.log("Current Time:", currentTime.format());
+    console.log("Exam Time:", formattedExamTime.format());
+
+    if (currentTime.isBefore(formattedExamTime)) {
+      // If it's not yet time for the exam, open the dialog
+      console.log("Not yet time for the exam. Opening dialog...");
+      setDialogOpen(true);
+    } else {
+      // If it's time for the exam, navigate to the Manage Questions page
+      console.log(
+        "It's time for the exam. Navigating to Manage Questions page..."
+      );
+      handleCloseMenu(examId); // Close the menu
+    }
   };
 
   // Function to handle closing the context menu for a specific exam
@@ -82,6 +110,9 @@ const Manage = () => {
       ...prev,
       [examId]: null,
     }));
+  };
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
   };
   return (
     <Fragment>
@@ -114,9 +145,10 @@ const Manage = () => {
                 <TableCell align="center">{item.title}</TableCell>
                 <TableCell align="center">{item.className}</TableCell>
                 <TableCell align="center">{item.subject}</TableCell>
-                <TableCell align="center">   {item.date
-                  ? new Date(item.date).toLocaleDateString()
-                  : ""}</TableCell>
+                <TableCell align="center">
+                  {" "}
+                  {item.date ? new Date(item.date).toLocaleDateString() : ""}
+                </TableCell>
                 <TableCell align="center">
                   {item.fromTime} - {item.toTime}
                 </TableCell>
@@ -125,7 +157,11 @@ const Manage = () => {
                   <IconButton
                     aria-controls={`action-menu-${item._id}`}
                     aria-haspopup="true"
-                    onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
+                    // onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
+
+                    onClick={(event) =>
+                      handleOpenMenu(event, item._id, item.fromTime)
+                    }
                   >
                     <MoreVertIcon /> {/* MoreVertIcon for the menu */}
                   </IconButton>
@@ -135,7 +171,11 @@ const Manage = () => {
                     open={Boolean(anchorElMap[item._id])}
                     onClose={() => handleCloseMenu(item._id)}
                   >
-                    <MenuItem>
+                    <MenuItem
+                      onClick={(event) =>
+                        handleOpenMenu(event, item._id, item.fromTime)
+                      }
+                    >
                       <ListItemIcon></ListItemIcon>
                       <Link
                         to={`/student/dashboard/manage-online-exam/${item._id} `}
@@ -151,7 +191,16 @@ const Manage = () => {
             ))}
         </TableBody>
       </Table>
-
+      {/* Dialog for displaying the message */}
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>{"Not Allowed"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>It's not yet time for the exam!</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>OK</Button>
+        </DialogActions>
+      </Dialog>
       <TablePagination
         sx={{ px: 2 }}
         page={page}

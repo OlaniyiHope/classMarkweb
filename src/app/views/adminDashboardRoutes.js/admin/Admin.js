@@ -1,22 +1,8 @@
 import { TextField } from "@mui/material";
-import { Fragment, React, useState } from "react";
+import { Fragment, React, useEffect, useState } from "react";
 import useFetch from "hooks/useFetch";
 import { Box } from "@mui/system";
-import {
-  Card,
-  Button,
-  Grid,
-  styled,
-  useTheme,
-  Icon,
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-} from "@mui/material";
+import { Typography, Button, styled, useTheme, Table } from "@mui/material";
 
 import PaginationTable from "app/views/material-kit/tables/PaginationTable";
 import FormDialog from "app/views/material-kit/dialog/FormDialog";
@@ -30,6 +16,7 @@ import Calendar from "react-calendar";
 import "./calendar.css";
 
 import "./style.css";
+import axios from "axios";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -68,7 +55,20 @@ const StyledTable = styled(Table)(() => ({
 const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(1),
 }));
-
+const NoticeList = styled("div")(() => ({
+  marginBottom: "20px",
+  "& .post-date": {
+    padding: "10px",
+    borderRadius: "5px",
+    display: "inline-block",
+    marginRight: "10px",
+  },
+}));
+const getRandomColor = () => {
+  const colors = ["skyblue", "yellow", "pink", "blue"];
+  const randomIndex = Math.floor(Math.random() * colors.length);
+  return colors[randomIndex];
+};
 const Admin = () => {
   const { data, loading, error } = useFetch("/get-admin");
   const { palette } = useTheme();
@@ -87,108 +87,124 @@ const Admin = () => {
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
+  const [notices, setNotices] = useState([]);
+
+  const apiUrl = process.env.REACT_APP_API_URL;
+
+  useEffect(() => {
+    const fetchNotices = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/api/get-all-notices`);
+        setNotices(response.data);
+      } catch (error) {
+        console.error("Error fetching notices:", error);
+
+        if (error.response) {
+          console.error("Server responded with:", error.response.data);
+        }
+      }
+    };
+
+    fetchNotices();
+  }, [apiUrl]);
+  // Fetch user counts
+  const [userCounts, setUserCounts] = useState({
+    students: 0,
+    teachers: 0,
+    parents: 0,
+    admins: 0,
+  });
+
+  useEffect(() => {
+    const fetchUserCounts = async () => {
+      try {
+        const roles = ["student", "teacher", "parent", "admin"];
+
+        const counts = await Promise.all(
+          roles.map(async (role) => {
+            const response = await axios.get(`${apiUrl}/api/users/${role}`);
+            return { role, count: response.data.length };
+          })
+        );
+
+        const newCounts = counts.reduce((acc, { role, count }) => {
+          acc[role + "s"] = count;
+          return acc;
+        }, {});
+
+        setUserCounts(newCounts);
+      } catch (error) {
+        console.error("Error fetching user counts:", error);
+
+        if (error.response) {
+          console.error("Server responded with:", error.response.data);
+        }
+      }
+    };
+
+    fetchUserCounts();
+  }, [apiUrl]);
 
   return (
     <div>
       <h2>Admin Dashboard</h2>
       <div className="row gutters-20" style={{ marginTop: "60px" }}>
-        <div className="col-xl-3 col-sm-6 col-12">
-          <div className="dashboard-summery-one mg-b-20">
-            <div className="row align-items-center">
-              <div className="col-6">
-                <div className="item-icon bg-light-green">
-                  <FontAwesomeIcon
-                    icon={faUser}
-                    className="flaticon-classmates text-green"
-                  />
+        {Object.entries(userCounts).map(([role, count]) => (
+          <div key={role} className="col-xl-3 col-sm-6 col-12">
+            <div className="dashboard-summery-one mg-b-20">
+              <div className="row align-items-center">
+                <div className="col-6">
+                  <div
+                    className={`item-icon bg-light-${
+                      role === "admins"
+                        ? "red"
+                        : role === "teachers"
+                        ? "blue"
+                        : role === "parents"
+                        ? "yellow"
+                        : "green"
+                    }`}
+                  >
+                    <FontAwesomeIcon
+                      icon={
+                        role === "admins"
+                          ? faUsers
+                          : role === "teachers"
+                          ? faUsers
+                          : role === "parents"
+                          ? faUserFriends
+                          : faUser
+                      }
+                      className={`flaticon-classmates text-${
+                        role === "admins"
+                          ? "red"
+                          : role === "teachers"
+                          ? "blue"
+                          : role === "parents"
+                          ? "yellow"
+                          : "green"
+                      }`}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="col-6">
-                <div className="item-content">
-                  <div className="item-title">Students</div>
-                  <div className="item-number">
-                    <span className="counter" data-num="150000">
-                      100
-                    </span>
+                <div className="col-6">
+                  <div className="item-content">
+                    <div className="item-title">
+                      {role.charAt(0).toUpperCase() + role.slice(1)}
+                    </div>
+                    <div className="item-number">
+                      <span className="counter" data-num={count}>
+                        {count}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="col-xl-3 col-sm-6 col-12">
-          <div className="dashboard-summery-one mg-b-20">
-            <div className="row align-items-center">
-              <div className="col-6">
-                <div className="item-icon bg-light-blue">
-                  <FontAwesomeIcon
-                    icon={faUsers}
-                    className="flaticon-multiple-users-silhouette text-blue"
-                  />
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="item-content">
-                  <div className="item-title">Teachers</div>
-                  <div className="item-number">
-                    <span className="counter" data-num="2250">
-                      20
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-xl-3 col-sm-6 col-12">
-          <div className="dashboard-summery-one mg-b-20">
-            <div className="row align-items-center">
-              <div className="col-6">
-                <div className="item-icon bg-light-yellow">
-                  <FontAwesomeIcon
-                    icon={faUserFriends}
-                    className="flaticon-couple text-orange"
-                  />
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="item-content">
-                  <div className="item-title">Parents</div>
-                  <div className="item-number">
-                    <span className="counter" data-num="5690">
-                      70
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-xl-3 col-sm-6 col-12">
-          <div className="dashboard-summery-one mg-b-20">
-            <div className="row align-items-center">
-              <div className="col-6">
-                <div className="item-icon bg-light-red">
-                  <FontAwesomeIcon
-                    icon={faUsers}
-                    className="flaticon-money text-red"
-                  />
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="item-content">
-                  <div className="item-title">Admin</div>
-                  <div className="item-number">
-                    <span className="counter" data-num="193000">
-                      5
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
+      <div className="row gutters-20" style={{ marginTop: "60px" }}></div>
       <div style={{ display: "flex" }}>
         <div style={{ flexBasis: "50%", width: "100%" }}>
           <div style={{ border: "1px solid #ddd", padding: "20px" }}>
@@ -207,87 +223,30 @@ const Admin = () => {
         </div>
         <div style={{ flexBasis: "50%" }}>
           <h2>Notice Board</h2>
-          <div class="notice-box-wrap m-height-660">
-            <div class="notice-list">
-              <div class="post-date bg-skyblue">16 June, 2024</div>
-              <h6 class="notice-title">
-                <a href="#">
-                  We will be having our Interhouse Sport coming up at Agege
-                  Statium.
-                </a>
-              </h6>
-              <div class="entry-meta">
-                {" "}
-                Head Mistress / <span>5 min ago</span>
-              </div>
-            </div>
-            <div class="notice-list">
-              <div class="post-date bg-yellow">16 June, 2023</div>
-              <h6 class="notice-title">
-                <a href="#">
-                  Our Interschool Debate will also be coming up along side quiz
-                </a>
-              </h6>
-              <div class="entry-meta">
-                {" "}
-                Jennyfar Lopez / <span>5 min ago</span>
-              </div>
-            </div>
-            <div class="notice-list">
-              <div class="post-date bg-pink">16 June, 2019</div>
-              <h6 class="notice-title">
-                <a href="#">
-                  Our cultural day and traditional day will take place at our
-                  mini hall
-                </a>
-              </h6>
-              <div class="entry-meta">
-                {" "}
-                Jennyfar Lopez / <span>5 min ago</span>
-              </div>
-            </div>
-            <div class="notice-list">
-              <div class="post-date bg-blue">16 June, 2019</div>
-              <h6 class="notice-title">
-                <a href="#">
-                  Great School manag mene esom text of the printing.
-                </a>
-              </h6>
-              <div class="entry-meta">
-                {" "}
-                Jennyfar Lopez / <span>5 min ago</span>
-              </div>
-            </div>
-            <div class="notice-list">
-              <div class="post-date bg-yellow">16 June, 2019</div>
-              <h6 class="notice-title">
-                <a href="#">Great School manag printing.</a>
-              </h6>
-              <div class="entry-meta">
-                {" "}
-                Jennyfar Lopez / <span>5 min ago</span>
-              </div>
-            </div>
-            <div class="notice-list">
-              <div class="post-date bg-blue">16 June, 2019</div>
-              <h6 class="notice-title">
-                <a href="#">Great School manag meneesom.</a>
-              </h6>
-              <div class="entry-meta">
-                {" "}
-                Jennyfar Lopez / <span>5 min ago</span>
-              </div>
-            </div>
-            <div class="notice-list">
-              <div class="post-date bg-pink">16 June, 2019</div>
-              <h6 class="notice-title">
-                <a href="#">Great School manag meneesom.</a>
-              </h6>
-              <div class="entry-meta">
-                {" "}
-                Jennyfar Lopez / <span>5 min ago</span>
-              </div>
-            </div>
+          <div
+            className="notice-box-wrap m-height-660"
+            style={{ display: "flex", flexWrap: "wrap" }}
+          >
+            {notices.map((notice) => (
+              <NoticeList
+                key={notice._id}
+                style={{ flexBasis: "48%", margin: "0 1%" }}
+              >
+                <div
+                  className={`post-date bg-${getRandomColor()}`}
+                  style={{ width: "100%" }}
+                >
+                  {new Date(notice.date).toLocaleDateString()}
+                </div>
+                <Typography variant="h6" className="notice-title">
+                  <a href="#">{notice.notice}</a>
+                </Typography>
+                <div className="entry-meta">
+                  {notice.posted_by} / <span>5 min ago</span>
+                </div>
+              </NoticeList>
+            ))}
+            {/* ... other notices ... */}
           </div>
         </div>
       </div>

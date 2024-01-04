@@ -7,16 +7,21 @@ import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import {
   Button,
   Checkbox,
-  FormControlLabel,
   Grid,
   Icon,
-  Radio,
   DialogTitle,
-  RadioGroup,
   styled,
+  IconButton,
+  InputAdornment,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
 } from "@mui/material";
 import { Span } from "app/components/Typography";
 import { useEffect, useState } from "react";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -34,37 +39,39 @@ const TextField = styled(TextValidator)(() => ({
   marginBottom: "16px",
 }));
 const initialState = {
-  student_name: "",
+  studentName: "",
   classname: "",
   address: "",
-  parentName: "",
+  parentsName: "",
   phone: "",
-  rollNo: "",
-  birthday: "",
-  gender: "",
-  age: "",
+
   email: "",
+  username: "",
+  date: "",
   password: "",
 };
+
 const Form = () => {
   const navigate = useNavigate();
   const [state, setState] = useState({ date: new Date() });
-  const [formData, setformData] = useState(initialState);
+  const [showPassword, setShowPassword] = useState(false);
+  const [classData, setClassData] = useState([]); // To store the list of classes
+
+  const [formData, setFormData] = useState(initialState);
   const {
     studentName,
     classname,
     address,
-    parentName,
+    parentsName,
     phone,
-    rollNo,
+    AdmNo,
     birthday,
-    gender,
-    age,
+    username,
+    date,
+
     email,
     password,
   } = formData;
-  const [classs, setClasss] = useState();
-  const [error, setError] = useState();
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -76,6 +83,24 @@ const Form = () => {
     });
     return () => ValidatorForm.removeValidationRule("isPasswordMatch");
   }, [state.password]);
+  useEffect(() => {
+    // Assuming you have the JWT token stored in localStorage
+    const token = localStorage.getItem("jwtToken");
+    // Fetch classes from your API
+    fetch(`${apiUrl}/api/class`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`, // Include your authentication token
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setClassData(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching classes:", error);
+      });
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,30 +108,31 @@ const Form = () => {
       studentName,
       classname,
       address,
-      parentName,
+      parentsName,
+      username,
       phone,
-      gender,
-      birthday,
-      rollNo,
-      age,
+      AdmNo,
       email,
       password,
     };
     try {
-      await axios.post(`${apiUrl}/api/userrs/register`, formData);
+      await axios.post(`${apiUrl}/api/register`, {
+        ...formData,
+        role: "student",
+      });
 
-      navigate("admin/dashboard");
-    } catch (err) {}
+      navigate("/dashboard/admin");
+    } catch (err) {
+      console.error("Error registering student:", err);
+    }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setformData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleDateChange = (date) => setState({ ...state, date });
-
-  const {} = state;
 
   return (
     <div>
@@ -121,162 +147,178 @@ const Form = () => {
         </Box>
 
         <Stack spacing={3}>
-          <SimpleCard title="Simple Form">
+          <SimpleCard>
             <DialogTitle id="form-dialog-title"> Add new Student</DialogTitle>
+
             <ValidatorForm onSubmit={handleSubmit}>
               <Grid container spacing={6}>
                 <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
                   <TextField
+                    fullWidth
                     autoFocus
                     margin="dense"
-                    name="studentName"
-                    value={studentName}
+                    size="small"
+                    type="text"
+                    name="username"
                     placeholder="Enter the name"
-                    type="text"
+                    label="Full Name"
+                    variant="outlined"
+                    value={username}
+                    id="username"
                     onChange={handleChange}
+                    // helperText={touched.fullname && errors.username}
+                    // error={Boolean(errors.fullname && touched.username)}
+                    sx={{ mb: 3 }}
+                  />
+                  <TextField
                     fullWidth
-                  />
-
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    type="text"
-                    name="parentName"
-                    value={parentName}
-                    onChange={handleChange}
-                    errorMessages={["this field is required"]}
-                    placeholder="Parent name"
-                  />
-
-                  <TextField
-                    type="text"
-                    name="rollNo"
-                    autoFocus
-                    margin="dense"
-                    onChange={handleChange}
-                    value={rollNo}
-                    placeholder="ID No"
-                    validators={["required"]}
-                    errorMessages={["this field is required"]}
-                  />
-                  <TextField
-                    type="date"
-                    name="birthday"
-                    autoFocus
-                    margin="dense"
-                    onChange={handleChange}
-                    value={birthday}
-                    placeholder="Birthday"
-                    validators={["required"]}
-                    errorMessages={["this field is required"]}
-                  />
-                  <RadioGroup
-                    row
-                    name="gender"
-                    value={gender}
-                    onChange={handleChange}
-                  >
-                    <FormControlLabel
-                      value="male"
-                      control={<Radio />}
-                      label="Male"
-                    />
-                    <FormControlLabel
-                      value="female"
-                      control={<Radio />}
-                      label="Female"
-                    />
-                  </RadioGroup>
-                  <TextField
-                    type="text"
-                    name="address"
-                    autoFocus
-                    margin="dense"
-                    onChange={handleChange}
-                    value={address}
-                    placeholder="Enter your address"
-                    validators={["required"]}
-                    errorMessages={["this field is required"]}
-                  />
-                  <Select
-                    autoFocus
-                    value={classname}
-                    onChange={handleChange}
-                    displayEmpty
-                    fullWidth
-                  >
-                    <MenuItem value="" disabled>
-                      Select a class
-                    </MenuItem>
-                    <MenuItem value="Class A">Class A</MenuItem>
-                    <MenuItem value="Class B">Class B</MenuItem>
-                    <MenuItem value="Class C">Class C</MenuItem>
-                    {/* Add more classes as needed */}
-                  </Select>
-
-                  <TextField
-                    autoFocus
-                    margin="dense"
+                    size="small"
                     type="email"
                     name="email"
-                    placeholder="Enter your email"
+                    label="Email"
+                    variant="outlined"
+                    id="email"
                     value={email}
                     onChange={handleChange}
-                    validators={["required", "isEmail"]}
-                    errorMessages={[
-                      "this field is required",
-                      "email is not valid",
-                    ]}
+                    // helperText={touched.email && errors.email}
+                    // error={Boolean(errors.email && touched.email)}
+                    sx={{ mb: 3 }}
+                  />
+
+                  <TextField
+                    fullWidth
+                    size="small"
+                    type="tel" // Use type "tel" to indicate a telephone number input
+                    name="phone"
+                    label="Phone Number"
+                    variant="outlined"
+                    value={phone}
+                    id="phone"
+                    onChange={handleChange}
+                    // helperText={touched.phone && errors.phone}
+                    // error={Boolean(errors.phone && touched.phone)}
+                    sx={{ mb: 3 }}
+                    inputProps={{ pattern: "[0-9]*" }} // Allow only numeric input
+                  />
+
+                  <TextField
+                    fullWidth
+                    size="small"
+                    type="text"
+                    name="address"
+                    label=" Address"
+                    variant="outlined"
+                    id="address"
+                    value={address}
+                    onChange={handleChange}
+                    // helperText={touched.address && errors.address}
+                    // error={Boolean(errors.address && touched.address)}
+                    sx={{ mb: 3 }}
+                  />
+                  <TextField
+                    fullWidth
+                    size="small"
+                    type="text"
+                    name="AdmNo"
+                    label=" Admission No"
+                    variant="outlined"
+                    id="AdmNo"
+                    value={AdmNo}
+                    onChange={handleChange}
+                    // helperText={touched.address && errors.address}
+                    // error={Boolean(errors.address && touched.address)}
+                    sx={{ mb: 3 }}
+                  />
+                  <TextField
+                    fullWidth
+                    size="small"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    label="Password"
+                    id="password"
+                    variant="outlined"
+                    value={password}
+                    onChange={handleChange}
+                    // helperText={touched.password && errors.password}
+                    // error={Boolean(errors.password && touched.password)}
+                    sx={{ mb: 2 }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+
+                  <TextField
+                    fullWidth
+                    size="small"
+                    type="text"
+                    name="studentName"
+                    label="Student Name"
+                    variant="outlined"
+                    value={studentName}
+                    id="studentName"
+                    onChange={handleChange}
+                    // helperText={touched.studentName && errors.studentName}
+                    // error={Boolean(errors.studentName && touched.studentName)}
+                    sx={{ mb: 3 }}
                   />
                 </Grid>
 
                 <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
                   <TextField
-                    autoFocus
-                    margin="dense"
-                    type="number"
-                    name="phone"
-                    value={phone}
-                    placeholder="Enter your phone number"
+                    fullWidth
+                    select
+                    label="Select a class"
+                    variant="outlined"
+                    name="classname" // Make sure the name matches your form field
+                    value={classname}
                     onChange={handleChange}
-                    validators={["required"]}
-                    errorMessages={["this field is required"]}
+                    sx={{ mb: 3 }}
+                  >
+                    {classData.map((classItem) => (
+                      <MenuItem key={classItem._id} value={classItem.name}>
+                        {classItem.name}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    type="text"
+                    name="parentsName"
+                    label="Parent Name"
+                    variant="outlined"
+                    value={parentsName}
+                    id="parentsName"
+                    onChange={handleChange}
+                    // helperText={touched.parentsName && errors.parentsName}
+                    // error={Boolean(errors.parentsName && touched.parentsName)}
+                    sx={{ mb: 3 }}
                   />
                   <TextField
-                    autoFocus
-                    margin="dense"
-                    name="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    value={password}
+                    fullWidth
+                    size="small"
+                    type="date"
+                    name="date"
+                    label="Date of birth"
+                    variant="outlined"
+                    value={date}
+                    id="date"
                     onChange={handleChange}
-                    validators={["required"]}
-                    errorMessages={["this field is required"]}
-                  />{" "}
-                  {/* <RadioGroup
-                    row
-                    name="gender"
-                    sx={{ mb: 2 }}
-                    value={gender || ""}
-                    onChange={handleChange}
-                  >
-                    <FormControlLabel
-                      value="Male"
-                      label="Male"
-                      labelPlacement="end"
-                      control={<Radio color="secondary" />}
-                    />
-
-                    <FormControlLabel
-                      value="Female"
-                      label="Female"
-                      labelPlacement="end"
-                      control={<Radio color="secondary" />}
-                    />
-                  </RadioGroup> */}
+                    // helperText={touched.date && errors.date}
+                    // error={Boolean(errors.date && touched.date)}
+                    sx={{ mb: 3 }}
+                  />
                 </Grid>
               </Grid>
-
               <Button color="primary" variant="contained" type="submit">
                 <Icon>send</Icon>
                 <Span sx={{ pl: 1, textTransform: "capitalize" }}>Submit</Span>

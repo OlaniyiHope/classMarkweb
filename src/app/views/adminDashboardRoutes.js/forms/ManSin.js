@@ -16,6 +16,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useLocation, useNavigate } from "react-router-dom";
 import DeleteConfirmationModal from "./DeleteConfirmationModal"; // Adjust the import path
+import IconButton from "@mui/material/IconButton";
 
 import useFetch from "hooks/useFetch";
 import EditQuestionModal from "./EditQuestionModal";
@@ -446,7 +447,7 @@ const ManSin = () => {
                       <TableCell style={{ textAlign: "center" }}>
                         <div>Type</div>
                       </TableCell>
-                      <TableCell style={{ textAlign: "center" }} width="55%">
+                      <TableCell style={{ textAlign: "center" }} width="50%">
                         <div>Question</div>
                       </TableCell>
                       <TableCell style={{ textAlign: "center" }} width="10%">
@@ -463,60 +464,53 @@ const ManSin = () => {
                         <TableCell style={{ textAlign: "center" }}>
                           {index + 1}
                         </TableCell>
-                        <TableCell>{question.questionType}</TableCell>
-                        <TableCell>{question.questionTitle}</TableCell>
+                        <TableCell
+                          style={{ textAlign: "center", whiteSpace: "normal" }}
+                        >
+                          {question.questionType}
+                        </TableCell>
+                        <TableCell style={{ whiteSpace: "normal" }}>
+                          {question.questionTitle}
+                        </TableCell>
                         <TableCell style={{ textAlign: "center" }}>
                           {question.mark}
                         </TableCell>
                         <TableCell style={{ textAlign: "center" }}>
-                          <a
-                            href="#"
-                            className="btn btn-primary btn-xs"
-                            data-toggle="tooltip"
-                            title=""
-                            data-original-title="Edit"
+                          <IconButton
+                            onClick={() => handleEditQuestion(question)}
+                            title="Edit"
                           >
-                            <EditIcon
-                              onClick={() => handleEditQuestion(question)}
-                            />
-                          </a>
-                          <a
-                            href="#"
-                            className="btn btn-danger btn-xs"
-                            data-toggle="tooltip"
-                            title=""
-                            data-original-title="Delete"
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            onClick={() => setDeleteQuestionId(question._id)}
+                            title="Delete"
                           >
-                            <DeleteIcon
-                              onClick={() => setDeleteQuestionId(question._id)}
-                              style={{ cursor: "pointer" }}
-                            />
-
-                            <DeleteConfirmationModal
-                              open={deleteQuestionId === question._id} // Open the modal for the specific question
-                              onClose={() => setDeleteQuestionId(null)}
-                              onConfirm={() =>
-                                handleDeleteQuestion(question._id)
-                              } // Pass the question ID to handleDeleteQuestion
-                            />
-                          </a>
+                            <DeleteIcon style={{ cursor: "pointer" }} />
+                          </IconButton>
+                          <DeleteConfirmationModal
+                            open={deleteQuestionId === question._id}
+                            onClose={() => setDeleteQuestionId(null)}
+                            onConfirm={() => handleDeleteQuestion(question._id)}
+                          />
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
-                  {editQuestion && (
-                    <EditQuestionModal
-                      open={!!editQuestion}
-                      onClose={() => setEditQuestion(null)}
-                      question={editQuestion}
-                      onUpdate={updateQuestion}
-                    />
-                  )}
                 </Table>
+                {editQuestion && (
+                  <EditQuestionModal
+                    open={!!editQuestion}
+                    onClose={() => setEditQuestion(null)}
+                    question={editQuestion}
+                    onUpdate={updateQuestion}
+                  />
+                )}
               </div>
             </div>
           </Paper>
         </Grid>
+
         <Grid item xs={12} md={6}>
           <Paper>
             <div className="panel panel-primary" data-collapsed="0">

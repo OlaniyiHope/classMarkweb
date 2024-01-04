@@ -38,6 +38,8 @@ import TermRepCont from "./forms/TermRepCont";
 import StuReceipt from "./forms/StuReceipt";
 
 import { ReceiptProvider } from "./forms/receiptContext";
+import NoticeBoard from "./forms/NoticeBoard";
+import ViewNotice from "./forms/ViewNotice";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -85,6 +87,8 @@ const adminDashboardRoutes = [
     auth: "admin",
   },
   { path: "/dashboard/teacher", element: <Teacher />, auth: "admin" },
+  { path: "/dashboard/add_notice", element: <NoticeBoard />, auth: "admin" },
+  { path: "/dashboard/noticeboard", element: <ViewNotice />, auth: "admin" },
   { path: "/dashboard/subject", element: <Subject />, auth: "admin" },
   { path: "/dashboard/class", element: <Class />, auth: "admin" },
   { path: "/dashboard/exam", element: <Exam />, auth: "admin" },

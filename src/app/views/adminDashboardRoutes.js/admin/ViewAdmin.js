@@ -86,16 +86,15 @@ const ViewAdmin = () => {
 
   return (
     <div>
-      <Box className="breadcrumb">
-        <Breadcrumb
-          routeSegments={[
-            // { name: "Material", path: "/material" },
-            { name: "All Admins" },
-          ]}
-        />
+      <Box
+        className="breadcrumb"
+        style={{ marginTop: "20px", marginLeft: "20px" }}
+      >
+        <Breadcrumb routeSegments={[{ name: "Manage Admin" }]} />
+      </Box>
+      <Box className="breadcrumb" style={{ marginLeft: "20px" }}>
         <FormDialog />
       </Box>
-
       <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
         <div class="table-responsive full-data">
           <table

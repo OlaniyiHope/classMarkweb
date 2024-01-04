@@ -58,11 +58,7 @@ export const navigations = [
 
         path: "/session/signup",
       },
-      {
-        name: "Forgot Password",
-        iconText: "FP",
-        path: "/session/forgot-password",
-      },
+
       { name: "Student Promotion", iconText: "404", path: "/session/404" },
     ],
   },
@@ -70,6 +66,11 @@ export const navigations = [
     name: "Teacher",
     path: "/dashboard/teacher",
     icon: <span style={{ color: "#ffc107" }}>person</span>,
+  },
+  {
+    name: "Noticeboard",
+    iconText: "SI",
+    path: "/dashboard/noticeboard",
   },
   {
     name: "Parents",
