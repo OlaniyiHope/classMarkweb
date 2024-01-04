@@ -45,7 +45,7 @@ const ViewNotice = () => {
   const [action, setAction] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [notices, setNotices] = useState([]); // Add or replace this line based on your component
-
+  const apiUrl = process.env.REACT_APP_API_URL;
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [noticeIdToDelete, setNoticeIdToDelete] = useState(null);
 
@@ -106,7 +106,7 @@ const ViewNotice = () => {
   const handleConfirmDelete = async () => {
     try {
       const response = await axios.delete(
-        `http://localhost:3003/api/delete-notice/${noticeIdToDelete}`
+        `${apiUrl}/api/delete-notice/${noticeIdToDelete}`
       );
 
       console.log("Response from delete API:", response.data);
@@ -129,9 +129,7 @@ const ViewNotice = () => {
   const refetchData = async () => {
     // Manually refetch data to trigger a re-render
     try {
-      const refetchedData = await axios.get(
-        "http://localhost:3003/api/get-all-notices"
-      );
+      const refetchedData = await axios.get(`${apiUrl}/api/get-all-notices`);
       // Update the data prop with the new data
       // This will trigger a re-render with the updated data
       setNotices(refetchedData.data);
