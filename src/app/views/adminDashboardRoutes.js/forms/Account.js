@@ -80,7 +80,10 @@ const Account = () => {
     }
 
     try {
-      await axios.post(`${apiUrl}/api/setting`, formDataToSend);
+      await axios.post(
+        `https://hlhs-ad6f9a00a210.herokuapp.com/api/setting`,
+        formDataToSend
+      );
 
       toast.success("School profile updated successfully");
     } catch (err) {
