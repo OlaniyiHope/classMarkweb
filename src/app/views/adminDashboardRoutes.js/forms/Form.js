@@ -23,6 +23,10 @@ import { Span } from "app/components/Typography";
 import { useEffect, useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { Navigate, useNavigate } from "react-router-dom";
 const Container = styled("div")(({ theme }) => ({
@@ -121,9 +125,11 @@ const Form = () => {
         role: "student",
       });
 
-      navigate("/dashboard/admin");
+      // navigate("/dashboard/admin");
+      toast.success("User successfully created");
     } catch (err) {
       console.error("Error registering student:", err);
+      toast.error("Unable to create user");
     }
   };
 
@@ -153,6 +159,7 @@ const Form = () => {
             <ValidatorForm onSubmit={handleSubmit}>
               <Grid container spacing={6}>
                 <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
+                  <label>Username</label>
                   <TextField
                     fullWidth
                     autoFocus
@@ -170,6 +177,7 @@ const Form = () => {
                     // error={Boolean(errors.fullname && touched.username)}
                     sx={{ mb: 3 }}
                   />
+                  <label>Email Address</label>
                   <TextField
                     fullWidth
                     size="small"
@@ -184,6 +192,7 @@ const Form = () => {
                     // error={Boolean(errors.email && touched.email)}
                     sx={{ mb: 3 }}
                   />
+                  <label>Phone Number</label>
 
                   <TextField
                     fullWidth
@@ -200,6 +209,7 @@ const Form = () => {
                     sx={{ mb: 3 }}
                     inputProps={{ pattern: "[0-9]*" }} // Allow only numeric input
                   />
+                  <label>Home Address</label>
 
                   <TextField
                     fullWidth
@@ -215,6 +225,7 @@ const Form = () => {
                     // error={Boolean(errors.address && touched.address)}
                     sx={{ mb: 3 }}
                   />
+                  <label>Admission No</label>
                   <TextField
                     fullWidth
                     size="small"
@@ -229,6 +240,7 @@ const Form = () => {
                     // error={Boolean(errors.address && touched.address)}
                     sx={{ mb: 3 }}
                   />
+                  <label>Password</label>
                   <TextField
                     fullWidth
                     size="small"
@@ -255,6 +267,7 @@ const Form = () => {
                       ),
                     }}
                   />
+                  <label>Student Name</label>
 
                   <TextField
                     fullWidth
@@ -273,6 +286,7 @@ const Form = () => {
                 </Grid>
 
                 <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
+                  <label>Class</label>
                   <TextField
                     fullWidth
                     select
@@ -289,6 +303,7 @@ const Form = () => {
                       </MenuItem>
                     ))}
                   </TextField>
+                  <label>Parent Name</label>
                   <TextField
                     fullWidth
                     size="small"
@@ -303,6 +318,7 @@ const Form = () => {
                     // error={Boolean(errors.parentsName && touched.parentsName)}
                     sx={{ mb: 3 }}
                   />
+                  <label>Date of Birth</label>
                   <TextField
                     fullWidth
                     size="small"
@@ -326,6 +342,7 @@ const Form = () => {
             </ValidatorForm>
           </SimpleCard>
         </Stack>
+        <ToastContainer />
       </Container>
     </div>
   );

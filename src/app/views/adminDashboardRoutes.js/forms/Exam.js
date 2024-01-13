@@ -60,6 +60,14 @@ const Exam = () => {
   const [showMarkManagement, setShowMarkManagement] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
 
+  const gradeDefinitions = [
+    { markfrom: 80, markupto: 100, comment: "Excellent" },
+    { markfrom: 70, markupto: 79, comment: "Very Good" },
+    { markfrom: 60, markupto: 69, comment: "Good" },
+    { markfrom: 55, markupto: 59, comment: "Fairly Good" },
+    { markfrom: 0, markupto: 49, comment: "Poor" },
+  ];
+
   const fetchStudentData = async (examId, subjectId) => {
     try {
       const token = localStorage.getItem("jwtToken");
@@ -146,6 +154,7 @@ const Exam = () => {
           return {
             studentId: student._id,
             studentName: student.studentName,
+            AdmNo: student.AdmNo, // Include AdmNo
             testscore: defaultTestScore,
             examscore: defaultExamScore,
             marksObtained: defaultTestScore + defaultExamScore,
@@ -355,6 +364,27 @@ const Exam = () => {
     }
   };
 
+  // const handleScoreChange = (index, scoreType, value) => {
+  //   // Assuming studentData is an array
+  //   const updatedStudents = [...studentData];
+
+  //   // Update the corresponding score
+  //   if (scoreType === "testscore") {
+  //     updatedStudents[index].testscore = parseInt(value, 10) || 0;
+  //   } else if (scoreType === "examscore") {
+  //     updatedStudents[index].examscore = parseInt(value, 10) || 0;
+  //   } else if (scoreType === "comment") {
+  //     updatedStudents[index].comment = value; // Update the comment field
+  //   }
+
+  //   // Update marksObtained by adding test score and exam score
+  //   updatedStudents[index].marksObtained =
+  //     (updatedStudents[index].testscore || 0) +
+  //     (updatedStudents[index].examscore || 0);
+
+  //   // Update state with the modified students
+  //   setStudentData(updatedStudents);
+  // };
   const handleScoreChange = (index, scoreType, value) => {
     // Assuming studentData is an array
     const updatedStudents = [...studentData];
@@ -373,8 +403,44 @@ const Exam = () => {
       (updatedStudents[index].testscore || 0) +
       (updatedStudents[index].examscore || 0);
 
+    // Calculate comment based on marks obtained and grade definitions
+    const comment = calculateComment(
+      updatedStudents[index].marksObtained,
+      gradeDefinitions
+    );
+
+    // Update the comment field
+    updatedStudents[index].comment = comment;
+
     // Update state with the modified students
     setStudentData(updatedStudents);
+  };
+
+  const calculateComment = (marksObtained, gradeDefinitions) => {
+    console.log("Calculating Comment for Marks:", marksObtained);
+
+    // Find the corresponding grade based on marksObtained
+    const matchingGrade = gradeDefinitions.find((grade) => {
+      console.log(
+        "Checking Grade:",
+        grade.markfrom,
+        grade.markupto,
+        marksObtained,
+        parseFloat(grade.markfrom),
+        parseFloat(grade.markupto),
+        parseFloat(marksObtained)
+      );
+
+      return (
+        marksObtained >= parseFloat(grade.markfrom) &&
+        marksObtained <= parseFloat(grade.markupto)
+      );
+    });
+
+    console.log("Matching Grade:", matchingGrade);
+
+    // Return the comment if a matching grade is found
+    return matchingGrade ? matchingGrade.comment : "-";
   };
 
   return (
@@ -481,6 +547,7 @@ const Exam = () => {
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{student.AdmNo}</td>
+
                       {/*}  <td id={`subjectId_${index}`} style={{ display: "none" }}>
                         {subjectIdLookup[student.subjectName]}
                   </td>*/}
@@ -518,7 +585,7 @@ const Exam = () => {
                       </td>
                       {/* Fix the nesting issue for marksObtained */}
                       <td>{student.marksObtained || ""}</td>
-                      <td>
+                      {/*} <td>
                         <TextField
                           name={`comment_${index}`}
                           id={`comment_${index}`}
@@ -526,6 +593,23 @@ const Exam = () => {
                           onChange={(e) =>
                             handleScoreChange(index, "comment", e.target.value)
                           }
+                        />
+                        </td>*/}
+
+                      <td style={{ color: "black", fontWeight: "800" }}>
+                        <TextField
+                          name={`comment_${index}`}
+                          id={`comment_${index}`}
+                          value={
+                            student.marksObtained
+                              ? calculateComment(
+                                  student.marksObtained,
+                                  gradeDefinitions
+                                ) || "-"
+                              : "" // Show an empty string if marksObtained is not available
+                          }
+                          disabled // To make it read-only
+                          style={{ color: "black", fontWeight: "800" }}
                         />
                       </td>
                     </tr>

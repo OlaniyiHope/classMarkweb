@@ -16,6 +16,10 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   TableCell,
   TableHead,
   TablePagination,
@@ -29,6 +33,7 @@ import { Container } from "@mui/material";
 import { Link } from "react-router-dom";
 import useFetch from "hooks/useFetch";
 import FormDialog2 from "app/views/material-kit/dialog/FormDialog2";
+import axios from "axios";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -68,12 +73,15 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Info4 = () => {
-  const { data, loading, error } = useFetch("/student/SS1");
+  const { data, loading, error, reFetch } = useFetch("/student/SS1");
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [anchorElMap, setAnchorElMap] = useState({});
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+  const apiUrl = process.env.REACT_APP_API_URL;
   const handleOpenMenu = (event, examId) => {
     setAnchorElMap((prev) => ({
       ...prev,
@@ -98,6 +106,37 @@ const Info4 = () => {
     setPage(0);
   };
 
+  const handleOpenDeleteConfirmation = (user) => {
+    setUserToDelete(user);
+    setDeleteConfirmationOpen(true);
+  };
+
+  const handleCloseDeleteConfirmation = () => {
+    setUserToDelete(null);
+    setDeleteConfirmationOpen(false);
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      const response = await axios.delete(
+        `${apiUrl}/api/users/${userToDelete._id}`
+      );
+
+      console.log("Response from delete API:", response.data);
+
+      if (response.status === 200) {
+        console.log("User deleted successfully");
+
+        // Manually trigger data refetch
+        reFetch();
+      } else {
+        console.error("Failed to delete User");
+      }
+    } catch (error) {
+      console.error("Error deleting User:", error);
+    }
+  };
+
   return (
     <Fragment>
       <ContentBox className="analytics">
@@ -118,17 +157,9 @@ const Info4 = () => {
                 >
                   <thead>
                     <tr>
-                      <th>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="checkAll"
-                          required=""
-                        />
-                      </th>
                       <th>S/N</th>
                       <th>Adm No</th>
-                      <th>Photo</th>
+
                       <th> Name</th>
                       <th>Address</th>
                       <th>Email</th>
@@ -140,22 +171,6 @@ const Info4 = () => {
                       <tbody>
                         <tr key={item._id}>
                           <td>
-                            <div class="checkbox me-0 align-self-center">
-                              <div class="custom-control custom-checkbox ">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="check16"
-                                  required=""
-                                />
-                                <label
-                                  class="custom-control-label"
-                                  for="check16"
-                                ></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
                             <div class="trans-list">
                               <h4>{index + 1}</h4>
                             </div>
@@ -165,16 +180,7 @@ const Info4 = () => {
                               {item.AdmNo}
                             </span>
                           </td>
-                          <td>
-                            <div class="date">
-                              {" "}
-                              <img
-                                src="images/trans/10.jpg"
-                                alt=""
-                                class="avatar me-3"
-                              />
-                            </div>
-                          </td>
+
                           <td>
                             <div class="date">{item.studentName}</div>
                           </td>
@@ -214,10 +220,8 @@ const Info4 = () => {
                                 <MenuItem>
                                   <ListItemIcon></ListItemIcon>
 
-                                  <Link
-                                    to={`/dashboard/view-result/${item._id}`}
-                                  >
-                                    View Result
+                                  <Link to="/dashboard/profile">
+                                    Student Profile
                                   </Link>
                                 </MenuItem>
                                 <MenuItem>
@@ -226,9 +230,13 @@ const Info4 = () => {
                                   </ListItemIcon>
                                   Edit
                                 </MenuItem>
-                                <MenuItem>
+                                <MenuItem
+                                  onClick={() =>
+                                    handleOpenDeleteConfirmation(item)
+                                  }
+                                >
                                   <ListItemIcon>
-                                    <DeleteIcon /> {/* Use a Delete icon */}
+                                    <DeleteIcon />
                                   </ListItemIcon>
                                   Delete
                                 </MenuItem>
@@ -246,6 +254,28 @@ const Info4 = () => {
                     </TableRow>
                   )}
                 </table>
+                <Dialog
+                  open={deleteConfirmationOpen}
+                  onClose={handleCloseDeleteConfirmation}
+                >
+                  <DialogTitle>Delete Confirmation</DialogTitle>
+                  <DialogContent>
+                    Are you sure you want to delete {userToDelete?.username}?
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleCloseDeleteConfirmation}>
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={async () => {
+                        await handleDeleteUser(); // Call the asynchronous function
+                        handleCloseDeleteConfirmation();
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </div>
             </div>
 

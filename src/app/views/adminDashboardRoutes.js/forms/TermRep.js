@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 import {
   Box,
   Button,
@@ -12,6 +12,7 @@ import {
   Paper,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
+import { useReactToPrint } from "react-to-print";
 import useFetch from "hooks/useFetch";
 import axios from "axios";
 import useAuth from "app/hooks/useAuth";
@@ -23,6 +24,19 @@ const ContentBox = styled("div")(({ theme }) => ({
 }));
 
 const TermRep = ({ studentId }) => {
+  const componentRef = useRef();
+  const gradeDefinitions = [
+    { markfrom: 80, markupto: 100, comment: "Excellent", grade: "A" },
+    { markfrom: 70, markupto: 79, comment: "Very Good", grade: "B" },
+    { markfrom: 60, markupto: 69, comment: "Good", grade: "C" },
+    { markfrom: 55, markupto: 59, comment: "Fairly Good", grade: "D" },
+    { markfrom: 0, markupto: 49, comment: "Poor", grade: "E" },
+  ];
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
   const [studentData, setStudentData] = useState(null);
   const { id } = useParams();
 
@@ -35,13 +49,23 @@ const TermRep = ({ studentId }) => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [schoolSettings, setSchoolSettings] = useState({
+    principalName: "",
+    resumptionDate: "",
+    signature: "",
+  });
+  const [accountSettings, setAccountSettings] = useState({
+    name: "",
+    motto: "",
+    address: "",
+    phone: "",
+    phonetwo: "",
+    email: "",
+    sessionStart: "",
+    sessionEnd: "",
+    schoolLogo: "",
+  });
   const apiUrl = process.env.REACT_APP_API_URL;
-
-  // useEffect(() => {
-  //   if (data && data.studentName && data.classname) {
-  //     setStudentData(data);
-  //   }
-  // }, [data]);
 
   const fetchStudentData = async (studentId) => {
     try {
@@ -74,7 +98,36 @@ const TermRep = ({ studentId }) => {
       throw new Error("Failed to fetch student data");
     }
   };
+  useEffect(() => {
+    const fetchSchoolSettings = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/api/setting`);
+        const { data } = response.data;
 
+        // Set the retrieved school settings to the state
+        setSchoolSettings(data);
+      } catch (error) {
+        console.error("Error fetching school settings:", error);
+      }
+    };
+
+    fetchSchoolSettings();
+  }, [apiUrl]);
+  useEffect(() => {
+    const fetchAccountSettings = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/api/account-setting`);
+        const { data } = response.data;
+
+        // Set the retrieved school settings to the state
+        setAccountSettings(data);
+      } catch (error) {
+        console.error("Error fetching school settings:", error);
+      }
+    };
+
+    fetchAccountSettings();
+  }, [apiUrl]);
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -82,6 +135,7 @@ const TermRep = ({ studentId }) => {
       try {
         const data = await fetchStudentData(studentId);
         setStudentData(data);
+
         setLoading(false);
       } catch (error) {
         setError("Failed to fetch student data");
@@ -120,224 +174,380 @@ const TermRep = ({ studentId }) => {
       ).toFixed(1)
     : 0;
 
+  const calculateGrade = (comment) => {
+    // Use your existing gradeDefinitions to find a grade with a similar comment
+    const matchingGrade = gradeDefinitions.find((grade) =>
+      comment.toLowerCase().includes(grade.comment.toLowerCase())
+    );
+
+    // Return the grade if a matching grade is found
+    return matchingGrade ? matchingGrade.grade : "-";
+  };
+
+  // ...
+  const calculateAverageGrade = () => {
+    const gradeToValueMap = {
+      A: 5,
+      B: 4,
+      C: 3,
+      D: 2,
+      E: 1,
+    };
+
+    let totalGradeValues = 0;
+    let totalMarksObtained = 0;
+    let totalSubjects = 0;
+
+    studentData?.scores.forEach((score) => {
+      const gradeValue = gradeToValueMap[calculateGrade(score?.comment)];
+      const marksObtained = score?.marksObtained;
+
+      if (
+        !isNaN(gradeValue) &&
+        gradeValue !== undefined &&
+        !isNaN(marksObtained) &&
+        marksObtained !== undefined
+      ) {
+        console.log("Grade Value:", gradeValue);
+        console.log("Marks Obtained:", marksObtained);
+
+        totalGradeValues += gradeValue;
+        totalMarksObtained += gradeValue * marksObtained;
+        totalSubjects += 1;
+      }
+    });
+
+    console.log("Total Grade Values:", totalGradeValues);
+    console.log("Total Marks Obtained:", totalMarksObtained);
+    console.log("Total Subjects:", totalSubjects);
+
+    if (
+      totalMarksObtained === 0 ||
+      totalGradeValues === 0 ||
+      totalSubjects === 0
+    ) {
+      return "N/A";
+    }
+
+    const averageGradeValue = totalGradeValues / totalSubjects;
+
+    console.log("average", averageGradeValue);
+
+    if (isNaN(averageGradeValue)) {
+      // Check if the result is NaN, return "N/A" to avoid displaying an invalid value
+      return "N/A";
+    }
+
+    // Map the average grade value to a grade (e.g., A, B, C, D, E) based on your criteria
+    const valueToGradeMap = {
+      5: "A",
+      4: "B",
+      3: "C",
+      2: "D",
+      1: "E",
+    };
+
+    const averageGrade = valueToGradeMap[Math.round(averageGradeValue)];
+
+    // Return the numeric value instead of a string
+    return parseFloat(averageGradeValue.toFixed(1)) || "N/A";
+    // const positions = calculatePositions(studentData?.scores);
+  };
+  const calculateAllPositions = (scores, examId) => {
+    // Filter out scores for the specific exam
+    const validScores = scores.filter(
+      (score) => score.marksObtained !== undefined && score.examId === examId
+    );
+
+    // Get unique subject IDs in the exam
+    const subjectIds = [
+      ...new Set(validScores.map((score) => score.subjectId)),
+    ];
+
+    // Create a map to store positions based on student IDs for each subject
+    const positionsMap = new Map();
+
+    // Calculate positions for each subject separately
+    subjectIds.forEach((subjectId) => {
+      const subjectScores = validScores
+        .filter((score) => score.subjectId === subjectId)
+        .sort((a, b) => b.marksObtained - a.marksObtained);
+
+      // Adding some console logs for debugging
+      console.log("Subject ID:", subjectId);
+      console.log("Sorted Scores:", subjectScores);
+
+      // Assign positions based on the order in the sorted array
+      subjectScores.forEach((score, index) => {
+        // Adding some console logs for debugging
+        console.log("Student ID:", score.studentId);
+        console.log("Current Position:", index + 1);
+
+        // Modify this line to use the correct property for studentId
+        const positionKey = `${subjectId}_${score.studentId}`;
+
+        positionsMap.set(positionKey, index + 1);
+      });
+    });
+
+    // Adding a console log to check the final positions map
+    console.log("Final Positions Map:", positionsMap);
+
+    return positionsMap;
+  };
+
+  // Inside your component, where you render the positions for each subject
+
+  // Inside your component, where you render the positions for each subject
+
   return (
     <Fragment>
       <ContentBox className="analytics">
         <Box width="100%" overflow="auto">
-          <body>
-            <div class="container">
-              <div class="header">
+          <body className="print-button-container">
+            <button onClick={handlePrint}> Print this out!</button>
+            <div class="container" ref={componentRef}>
+              <div
+                class="header"
+                style={{
+                  textAlign: "center",
+                  padding: "20px",
+                  backgroundColor: "#f0f0f0",
+                }}
+              >
                 <div class="logo">
                   <img
-                    src="https://hlhs.portalreport.org/uploads/1680762525Screenshot_20230405-172641.jpg"
-                    style={{ width: "30px", height: "30px" }}
+                    src={accountSettings.schoolLogo}
+                    style={{
+                      width: "130px",
+                      height: "130px",
+                      borderRadius: "50%",
+                    }}
                   />
                 </div>
                 <div class="bd_title">
-                  <h1 class="f20">
-                    <strong>HEAVENLY LOVE HIGH SCHOOL</strong>
+                  <h1
+                    style={{
+                      fontSize: "25px",
+                      fontWeight: "800",
+                      textTransform: "uppercase",
+                      margin: "10px 0",
+                    }}
+                  >
+                    {accountSettings.name || ""}
                   </h1>
-                  <h4 class="f18">
-                    {" "}
-                    14, Babs Ladipo Street, Agbe Road, Abule Egba, Lagos State.{" "}
+                  <h4 style={{ fontSize: "18px", margin: "5px 0" }}>
+                    {accountSettings.address || ""}
                   </h4>
-                  <p style={{ color: "#042954" }}> Report Card</p>
-                </div>
-                <div class="headrt">
-                  <p style={{ color: "#042954" }}>
-                    Telephone : +234 8028724575, +234 8165051826
+                  <p style={{ color: " #042954", margin: " 5px 0" }}>
+                    Tel: {accountSettings.phone || ""},{" "}
+                    {accountSettings.phonetwo || ""}, Email:
+                    {accountSettings.email || ""}
                   </p>
-                </div>
-              </div>
-              <div class="bd_detailssec">
-                <div class="bd_photo">
-                  <img
-                    class="profile-photo"
-                    alt="profile-photo"
-                    src="https://hlhs.portalreport.org/uploads/user.jpg"
-                  />
-                </div>
-                <div class="bd_detailsarea">
-                  <div class="bd_detailsareatop">
-                    <div class="bd_detailsareaon">
-                      <p style={{ color: "#042954" }}>
-                        <span>Student Name:</span>{" "}
-                        <input
-                          type="text"
-                          style={{
-                            border: 0,
-                            outline: 0,
-                            background: "transparent",
-                            borderBottom: "1px solid black",
-                            width: "50%",
-                            marginLeft: "30px",
-                            textAlign: "center",
-                          }}
-                          value={data?.studentName || ""}
-                        />
-                      </p>
-                    </div>
-                    <div class="bd_detailsareaon">
-                      <p style={{ color: "#042954" }}>
-                        <span>Session:</span>2023-2024
-                      </p>
-                      <p style={{ color: "#042954" }}>
-                        <span>Class Teacher:</span>
-                        <input
-                          type="text"
-                          style={{
-                            border: 0,
-                            outline: 0,
-                            background: "transparent",
-                            borderBottom: "1px solid black",
-                            width: "50%",
-                            marginLeft: "30px",
-                            textAlign: "center",
-                          }}
-                          value={studentData?.classTeacher || ""}
-                        />
-                      </p>
-                    </div>
-                  </div>
-
-                  <div class="bd_detailsareabtm">
-                    <div class="bd_detailsareaon">
-                      <p style={{ color: "#042954" }}>
-                        <span>Student Id No:</span>{" "}
-                        <input
-                          type="text"
-                          style={{
-                            border: 0,
-                            outline: 0,
-                            background: "transparent",
-                            borderBottom: "1px solid black",
-                            width: "50%",
-                            marginLeft: "30px",
-                            textAlign: "center",
-                          }}
-                          value={data?.AdmNo || ""}
-                        />
-                      </p>
-                      <p style={{ color: "#042954" }}>
-                        <span>Attendence:</span>{" "}
-                        <input
-                          type="text"
-                          style={{
-                            border: 0,
-                            outline: 0,
-                            background: "transparent",
-                            borderBottom: "1px solid black",
-                            width: "50%",
-                            marginLeft: "30px",
-                            textAlign: "center",
-                          }}
-                          value={studentData?.attendance || ""}
-                        />
-                      </p>
-                      <p style={{ color: "#042954" }}>
-                        <span>Class Position:</span>{" "}
-                        <input
-                          type="text"
-                          style={{
-                            border: 0,
-                            outline: 0,
-                            background: "transparent",
-                            borderBottom: "1px solid black",
-                            width: "50%",
-                            marginLeft: "30px",
-                            textAlign: "center",
-                          }}
-                          value={studentData?.position || ""}
-                        />
-                      </p>
-                      <p style={{ color: "#042954" }}>
-                        <span>Number in Class:</span>{" "}
-                        <input
-                          type="text"
-                          style={{
-                            border: 0,
-                            outline: 0,
-                            background: "transparent",
-                            borderBottom: "1px solid black",
-                            width: "50%",
-                            marginLeft: "30px",
-                            textAlign: "center",
-                          }}
-                          value={studentData?.noinclass || ""}
-                        />
-                      </p>
-                      <p style={{ color: "#042954" }}>
-                        <span>Total Marks:</span>{" "}
-                        <input
-                          type="text"
-                          style={{
-                            border: 0,
-                            outline: 0,
-                            background: "transparent",
-                            borderBottom: "1px solid black",
-                            width: "50%",
-                            marginLeft: "30px",
-                            textAlign: "center",
-                          }}
-                          value={totalMarks || ""}
-                        />
-                      </p>
-                    </div>
-
-                    <div class="bd_detailsareaon">
-                      <p style={{ color: "#042954" }}>
-                        <span>Marks Obtained:</span>{" "}
-                        <input
-                          type="text"
-                          style={{
-                            border: 0,
-                            outline: 0,
-                            background: "transparent",
-                            borderBottom: "1px solid black",
-                            width: "50%",
-                            marginLeft: "30px",
-                            textAlign: "center",
-                          }}
-                          value={totalMarksObtained || ""}
-                        />
-                      </p>
-                      <p style={{ color: "#042954" }}>
-                        <span>Average Marks:</span>{" "}
-                        <input
-                          type="text"
-                          style={{
-                            border: 0,
-                            outline: 0,
-                            background: "transparent",
-                            borderBottom: "1px solid black",
-                            width: "50%",
-                            marginLeft: "30px",
-                            textAlign: "center",
-                          }}
-                          value={averageMarks || ""}
-                        />
-                      </p>
-                      <p style={{ color: "#042954" }}>
-                        <span>Average Grade:</span>{" "}
-                        <input
-                          type="text"
-                          style={{
-                            border: 0,
-                            outline: 0,
-                            background: "transparent",
-                            borderBottom: "1px solid black",
-                            width: "50%",
-                            marginLeft: "30px",
-                            textAlign: "center",
-                          }}
-                          value={studentData?.grade || ""}
-                        />
-                      </p>
-                    </div>
-                  </div>
+                  <h3 style={{ color: "#042954", margin: "10px 0" }}>
+                    {data?.classname || ""} First Term Report Card
+                  </h3>
                 </div>
               </div>
 
+              <div
+                className="bd_detailssec"
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div style={{ flex: "0 0 auto" }}>
+                  <div className="bd_photo">
+                    <img
+                      className="profile-photo"
+                      alt="profile-photo"
+                      src="https://hlhs.portalreport.org/uploads/user.jpg"
+                      style={{ width: "100px", height: "100px" }}
+                    />
+                  </div>
+                </div>
+                <div
+                  style={{ flex: "1", padding: "0 20px", textAlign: "center" }}
+                >
+                  <div style={{ marginBottom: "20px" }}>
+                    <span>Student Name:</span>{" "}
+                    <input
+                      type="text"
+                      style={{
+                        border: 0,
+                        outline: 0,
+                        background: "transparent",
+                        borderBottom: "1px solid black",
+                        width: "50%",
+                        marginLeft: "30px",
+                        textAlign: "center",
+                      }}
+                      value={data?.studentName || ""}
+                    />
+                  </div>
+                  <div style={{ marginBottom: "20px" }}>
+                    <span>Session:</span>{" "}
+                    <p
+                      type="text"
+                      style={{
+                        border: 0,
+                        outline: 0,
+                        background: "transparent",
+                        borderBottom: "1px solid black",
+                        width: "50%",
+                        marginLeft: "30px",
+                        textAlign: "center",
+                      }}
+                    >
+                      {accountSettings.sessionStart}-
+                      {accountSettings.sessionEnd}
+                    </p>
+                  </div>
+                  <div style={{ marginBottom: "20px" }}>
+                    <span>Class Teacher:</span>{" "}
+                    <span
+                      type="text"
+                      style={{
+                        border: 0,
+                        outline: 0,
+                        background: "transparent",
+                        borderBottom: "1px solid black",
+                        width: "50%",
+                        marginLeft: "30px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Mrs Adebisi Emmanuel
+                    </span>
+                  </div>
+                </div>
+                <div
+                  style={{ flex: "1", padding: "0 20px", textAlign: "center" }}
+                >
+                  <div>
+                    <p style={{ color: "#042954" }}>
+                      <span>Student Id No:</span>{" "}
+                      <input
+                        type="text"
+                        style={{
+                          border: 0,
+                          outline: 0,
+                          background: "transparent",
+                          borderBottom: "1px solid black",
+                          width: "50%",
+                          marginLeft: "30px",
+                          textAlign: "center",
+                        }}
+                        value={data?.AdmNo || ""}
+                      />
+                    </p>
+                    <p style={{ color: "#042954" }}>
+                      <span>Class Position:</span>{" "}
+                      <input
+                        type="text"
+                        style={{
+                          border: 0,
+                          outline: 0,
+                          background: "transparent",
+                          borderBottom: "1px solid black",
+                          width: "50%",
+                          marginLeft: "30px",
+                          textAlign: "center",
+                        }}
+                        value={studentData?.position || ""}
+                      />
+                    </p>
+                    <p style={{ color: "#042954" }}>
+                      <span>Number in Class:</span>{" "}
+                      <input
+                        type="text"
+                        style={{
+                          border: 0,
+                          outline: 0,
+                          background: "transparent",
+                          borderBottom: "1px solid black",
+                          width: "50%",
+                          marginLeft: "30px",
+                          textAlign: "center",
+                        }}
+                        value={studentData?.noinclass || ""}
+                      />
+                    </p>
+                    <p style={{ color: "#042954" }}>
+                      <span>Total Marks:</span>{" "}
+                      <input
+                        type="text"
+                        style={{
+                          border: 0,
+                          outline: 0,
+                          background: "transparent",
+                          borderBottom: "1px solid black",
+                          width: "50%",
+                          marginLeft: "30px",
+                          textAlign: "center",
+                        }}
+                        value={totalMarks || ""}
+                      />
+                    </p>
+                  </div>
+                </div>
+                <div
+                  style={{ flex: "1", padding: "0 20px", textAlign: "center" }}
+                >
+                  <div>
+                    <p style={{ color: "#042954" }}>
+                      <span>Marks Obtained:</span>{" "}
+                      <input
+                        type="text"
+                        style={{
+                          border: 0,
+                          outline: 0,
+                          background: "transparent",
+                          borderBottom: "1px solid black",
+                          width: "50%",
+                          marginLeft: "30px",
+                          textAlign: "center",
+                        }}
+                        value={totalMarksObtained || ""}
+                      />
+                    </p>
+                    <p style={{ color: "#042954" }}>
+                      <span>Average Marks:</span>{" "}
+                      <input
+                        type="text"
+                        style={{
+                          border: 0,
+                          outline: 0,
+                          background: "transparent",
+                          borderBottom: "1px solid black",
+                          width: "50%",
+                          marginLeft: "30px",
+                          textAlign: "center",
+                        }}
+                        value={averageMarks || ""}
+                      />
+                    </p>
+                    <p style={{ color: "#042954" }}>
+                      <span>Average Grade:</span>{" "}
+                      <input
+                        type="text"
+                        style={{
+                          border: 0,
+                          outline: 0,
+                          background: "transparent",
+                          borderBottom: "1px solid black",
+                          width: "50%",
+                          marginLeft: "30px",
+                          textAlign: "center",
+                        }}
+                        value={calculateAverageGrade().toFixed(1)}
+                      />
+                    </p>
+                  </div>
+                </div>
+              </div>
               <div class="row">
                 <div class="col-md-12">
                   <div class="table-responsive bd_table">
@@ -355,7 +565,7 @@ const TermRep = ({ studentId }) => {
                                   <th scope="col">Test</th>
                                   <th scope="col">Exam</th>
                                   <th scope="col">Obtained Marks</th>
-                                  <th scope="col">Position</th>
+                                  {/*} <th scope="col">Position</th>*/}
                                   <th scope="col">Grade</th>
                                   <th scope="col">Remark</th>
                                 </tr>
@@ -366,23 +576,29 @@ const TermRep = ({ studentId }) => {
                                     .filter(
                                       (score) =>
                                         score.marksObtained !== undefined
-                                    ) // Filter out subjects without marks
+                                    )
                                     .map((score, index) => (
                                       <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{score?.subjectName || "-"}</td>
                                         <td>{score?.testscore || "-"}</td>
+                                        <td>{score?.examscore || "-"}</td>
+                                        <td>{score?.marksObtained || "-"}</td>
+
+                                        {/* Change here - Call calculatePositions for each subject and exam */}
+                                        {/*} <td>
+                                          {calculateAllPositions(
+                                            studentData.scores,
+                                            score.subjectId,
+                                            score.examId
+                                          ).get(score.studentId) || "-"}
+                                          </td>*/}
+
                                         <td>
-                                          <td>{score?.examscore || "-"}</td>
+                                          {calculateGrade(score?.comment) ||
+                                            "-"}
                                         </td>
-                                        <td>
-                                          <td>{score?.marksObtained || "-"}</td>
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>
-                                          <td>{score?.comment || "-"}</td>
-                                        </td>
+                                        <td>{score?.comment || "-"}</td>
                                       </tr>
                                     ))}
                               </tbody>
@@ -406,12 +622,12 @@ const TermRep = ({ studentId }) => {
                                 <tr>
                                   <td>1</td>
                                   <td>Following Instruction</td>
-                                  <td></td>
+                                  <td>5</td>
                                 </tr>
                                 <tr>
                                   <td>2</td>
                                   <td>Working Independently</td>
-                                  <td></td>
+                                  <td>5</td>
                                 </tr>
                                 <tr>
                                   <th></th>
@@ -421,7 +637,7 @@ const TermRep = ({ studentId }) => {
                                 <tr>
                                   <td>1</td>
                                   <td>Punctuality</td>
-                                  <td></td>
+                                  <td>5</td>
                                 </tr>
                                 <tr>
                                   <th></th>
@@ -431,12 +647,12 @@ const TermRep = ({ studentId }) => {
                                 <tr>
                                   <td>1</td>
                                   <td>Talking</td>
-                                  <td></td>
+                                  <td>5</td>
                                 </tr>
                                 <tr>
                                   <td>2</td>
                                   <td>Eye Contact</td>
-                                  <td></td>
+                                  <td>5</td>
                                 </tr>
                               </tbody>
                             </table>
@@ -464,18 +680,27 @@ const TermRep = ({ studentId }) => {
                     </tr>
                     <tr>
                       <th>PRINCIPAL'S NAME</th>
-                      <td>Odeyemi, Praise I.</td>
+                      <td>{schoolSettings.principalName}</td>
                       <td style={{ textAlign: "right" }}>
                         <img
-                          src="https://hlhs.portalreport.org/uploads/admin_image/25_sign.jpg"
+                          src={`https://hlhs-ad6f9a00a210.herokuapp.com/uploads/${schoolSettings.signature}`}
                           width="200"
+                          alt="Principal Signature"
                         />
                       </td>
                     </tr>
 
                     <tr>
                       <th>SCHOOL RESUMES</th>
-                      <td>September 4th 2023</td>
+
+                      <td>
+                        {" "}
+                        {schoolSettings.resumptionDate
+                          ? new Date(
+                              schoolSettings.resumptionDate
+                            ).toLocaleDateString()
+                          : ""}
+                      </td>
                       <td></td>
                     </tr>
                   </tbody>

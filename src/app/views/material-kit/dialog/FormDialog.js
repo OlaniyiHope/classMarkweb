@@ -8,6 +8,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import { React, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import axios from "axios";
 const initialState = {
@@ -17,7 +19,7 @@ const initialState = {
   phone: "",
   address: "",
 };
-export default function FormDialog({ history }) {
+export default function FormDialog() {
   const [formData, setformData] = useState(initialState);
   const { username, email, password, phone, address } = formData;
   const [open, setOpen] = useState(false);
@@ -25,6 +27,7 @@ export default function FormDialog({ history }) {
   function handleClickOpen() {
     setOpen(true);
   }
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   function handleClose() {
     setOpen(false);
@@ -44,12 +47,17 @@ export default function FormDialog({ history }) {
       address,
     };
     try {
-      await axios.post("http://localhost:5000/api/ad/register", userData);
-
-      navigate("/dashboard/default");
-    } catch (err) {}
+      await axios.post(`${apiUrl}/api/register`, {
+        ...formData,
+        role: "admin",
+      });
+      // navigate("/dashboard/admin");
+      toast.success("User successfully created");
+    } catch (err) {
+      console.error("Error registering student:", err);
+      toast.error("Unable to create user");
+    }
   };
-
   return (
     <Box>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
@@ -63,7 +71,7 @@ export default function FormDialog({ history }) {
       >
         <DialogTitle id="form-dialog-title"> Add new Admin</DialogTitle>
         <DialogContent>
-          <DialogContentText>Add Admin</DialogContentText>
+          <label>Username</label>
 
           <TextField
             autoFocus
@@ -75,6 +83,7 @@ export default function FormDialog({ history }) {
             onChange={handleChange}
             fullWidth
           />
+          <label>email</label>
           <TextField
             autoFocus
             margin="dense"
@@ -85,6 +94,7 @@ export default function FormDialog({ history }) {
             onChange={handleChange}
             fullWidth
           />
+          <label>Phone Number</label>
           <TextField
             autoFocus
             margin="dense"
@@ -95,6 +105,7 @@ export default function FormDialog({ history }) {
             type="number"
             fullWidth
           />
+          <label>Home Address</label>
           <TextField
             autoFocus
             margin="dense"
@@ -105,6 +116,7 @@ export default function FormDialog({ history }) {
             type="text"
             fullWidth
           />
+          <label>Password</label>
           <TextField
             autoFocus
             margin="dense"
@@ -125,6 +137,7 @@ export default function FormDialog({ history }) {
           </Button>
         </DialogActions>
       </Dialog>
+      <ToastContainer />
     </Box>
   );
 }

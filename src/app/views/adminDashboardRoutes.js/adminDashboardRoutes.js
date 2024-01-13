@@ -40,6 +40,9 @@ import StuReceipt from "./forms/StuReceipt";
 import { ReceiptProvider } from "./forms/receiptContext";
 import NoticeBoard from "./forms/NoticeBoard";
 import ViewNotice from "./forms/ViewNotice";
+import Parent from "./forms/Parent";
+import Setting from "./forms/Settings";
+import Account from "./forms/Account";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -87,6 +90,7 @@ const adminDashboardRoutes = [
     auth: "admin",
   },
   { path: "/dashboard/teacher", element: <Teacher />, auth: "admin" },
+  { path: "/dashboard/parent", element: <Parent />, auth: "admin" },
   { path: "/dashboard/add_notice", element: <NoticeBoard />, auth: "admin" },
   { path: "/dashboard/noticeboard", element: <ViewNotice />, auth: "admin" },
   { path: "/dashboard/subject", element: <Subject />, auth: "admin" },
@@ -155,6 +159,8 @@ const adminDashboardRoutes = [
   },
 
   { path: "/dashboard/profile", element: <Profile />, auth: "admin" },
+  { path: "/dashboard/setting", element: <Setting />, auth: "admin" },
+  { path: "/dashboard/account", element: <Account />, auth: "admin" },
 ];
 
 export default adminDashboardRoutes;

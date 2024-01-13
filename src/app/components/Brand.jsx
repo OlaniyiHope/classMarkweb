@@ -2,7 +2,7 @@ import { Box, styled } from "@mui/material";
 
 import useSettings from "app/hooks/useSettings";
 import { Span } from "./Typography";
-
+import logo from "./logohlhs.png";
 const BrandRoot = styled(Box)(() => ({
   display: "flex",
   alignItems: "center",
@@ -25,7 +25,7 @@ const Brand = ({ children }) => {
     <BrandRoot>
       <Box display="flex" alignItems="center">
         <StyledSpan mode={mode} className="sidenavHoverShow">
-          <b>EDU PRO</b>
+          <img src={logo} style={{ height: "100px" }} />
         </StyledSpan>
       </Box>
 

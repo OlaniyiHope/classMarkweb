@@ -63,10 +63,7 @@ export default function FormDialog9() {
       password,
     };
     try {
-      await axios.post(
-        "https://edu-3cb7e7c6ba61.herokuapp.com/api/userrs/register",
-        formData
-      );
+      await axios.post("http://localhost:3003/api/userrs/register", formData);
 
       navigate("/dashboard/default");
     } catch (err) {}

@@ -15,6 +15,10 @@ import {
   Menu,
   MenuItem,
   Table,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   TableBody,
   TableCell,
   TableHead,
@@ -26,6 +30,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import RowCards from "../shared/RowCards";
 import { Breadcrumb } from "app/components";
 import FormDialog2 from "app/views/material-kit/dialog/FormDialog2";
+import axios from "axios";
 import useFetch from "hooks/useFetch";
 import { Link } from "react-router-dom";
 const ContentBox = styled("div")(({ theme }) => ({
@@ -67,12 +72,14 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Info = () => {
-  const { data, loading, error } = useFetch("/student/JS1");
-
+  const { data, loading, error, reFetch } = useFetch("/student/JS1");
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [anchorElMap, setAnchorElMap] = useState({});
+  const apiUrl = process.env.REACT_APP_API_URL;
   const handleOpenMenu = (event, examId) => {
     setAnchorElMap((prev) => ({
       ...prev,
@@ -95,7 +102,36 @@ const Info = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  const handleOpenDeleteConfirmation = (user) => {
+    setUserToDelete(user);
+    setDeleteConfirmationOpen(true);
+  };
 
+  const handleCloseDeleteConfirmation = () => {
+    setUserToDelete(null);
+    setDeleteConfirmationOpen(false);
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      const response = await axios.delete(
+        `${apiUrl}/api/users/${userToDelete._id}`
+      );
+
+      console.log("Response from delete API:", response.data);
+
+      if (response.status === 200) {
+        console.log("User deleted successfully");
+
+        // Manually trigger data refetch
+        reFetch();
+      } else {
+        console.error("Failed to delete User");
+      }
+    } catch (error) {
+      console.error("Error deleting User:", error);
+    }
+  };
   return (
     <Fragment>
       <ContentBox className="analytics">
@@ -104,9 +140,7 @@ const Info = () => {
             <Breadcrumb routeSegments={[{ name: "Student Information" }]} />
           </Box>
           <Box className="breadcrumb">
-            <Link to="admin/dashboard/student_add">
-              <FormDialog2 />
-            </Link>
+            <FormDialog2 />
           </Box>
           <Box width="100%" overflow="auto">
             <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
@@ -117,17 +151,9 @@ const Info = () => {
                 >
                   <thead>
                     <tr>
-                      <th>
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="checkAll"
-                          required=""
-                        />
-                      </th>
                       <th>S/N</th>
                       <th>Adm No</th>
-                      <th>Photo</th>
+
                       <th>Name</th>
                       <th>Address</th>
                       <th>Email/Username</th>
@@ -140,22 +166,6 @@ const Info = () => {
                       <tbody>
                         <tr key={item._id}>
                           <td>
-                            <div class="checkbox me-0 align-self-center">
-                              <div class="custom-control custom-checkbox ">
-                                <input
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="check16"
-                                  required=""
-                                />
-                                <label
-                                  class="custom-control-label"
-                                  for="check16"
-                                ></label>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
                             <div class="trans-list">
                               <h4>{index + 1}</h4>
                             </div>
@@ -165,16 +175,7 @@ const Info = () => {
                               {item.AdmNo}
                             </span>
                           </td>
-                          <td>
-                            <div class="date">
-                              {" "}
-                              <img
-                                src="images/trans/10.jpg"
-                                alt=""
-                                class="avatar me-3"
-                              />
-                            </div>
-                          </td>
+
                           <td>
                             <div class="date">{item.studentName}</div>
                           </td>
@@ -186,54 +187,53 @@ const Info = () => {
                           </td>
 
                           <td>
-                            <TableCell align="right">
-                              <IconButton
-                                aria-controls={`action-menu-${item._id}`}
-                                aria-haspopup="true"
-                                onClick={(event) =>
-                                  handleOpenMenu(event, item._id)
-                                } // Pass item._id
-                              >
-                                <MoreVertIcon />{" "}
-                                {/* MoreVertIcon for the menu */}
-                              </IconButton>
-                              <Menu
-                                id={`action-menu-${item._id}`}
-                                anchorEl={anchorElMap[item._id]}
-                                open={Boolean(anchorElMap[item._id])}
-                                onClose={() => handleCloseMenu(item._id)}
-                              >
-                                <MenuItem>
-                                  <ListItemIcon></ListItemIcon>
-                                  <Link
-                                    to={`/dashboard/student_mark_sheet/${item._id}`}
-                                  >
-                                    Mark Sheet
-                                  </Link>
-                                </MenuItem>
-                                <MenuItem>
-                                  <ListItemIcon></ListItemIcon>
+                            <IconButton
+                              aria-controls={`action-menu-${item._id}`}
+                              aria-haspopup="true"
+                              onClick={(event) =>
+                                handleOpenMenu(event, item._id)
+                              } // Pass item._id
+                            >
+                              <MoreVertIcon /> {/* MoreVertIcon for the menu */}
+                            </IconButton>
+                            <Menu
+                              id={`action-menu-${item._id}`}
+                              anchorEl={anchorElMap[item._id]}
+                              open={Boolean(anchorElMap[item._id])}
+                              onClose={() => handleCloseMenu(item._id)}
+                            >
+                              <MenuItem>
+                                <ListItemIcon></ListItemIcon>
+                                <Link
+                                  to={`/dashboard/student_mark_sheet/${item._id}`}
+                                >
+                                  Mark Sheet
+                                </Link>
+                              </MenuItem>
+                              <MenuItem>
+                                <ListItemIcon></ListItemIcon>
 
-                                  <Link
-                                    to={`/dashboard/view-result/${item._id}`}
-                                  >
-                                    View Result
-                                  </Link>
-                                </MenuItem>
-                                <MenuItem>
-                                  <ListItemIcon>
-                                    <EditIcon /> {/* Use an Edit icon */}
-                                  </ListItemIcon>
-                                  Edit
-                                </MenuItem>
-                                <MenuItem>
-                                  <ListItemIcon>
-                                    <DeleteIcon /> {/* Use a Delete icon */}
-                                  </ListItemIcon>
-                                  Delete
-                                </MenuItem>
-                              </Menu>
-                            </TableCell>
+                                <Link to="/dashboard/profile">
+                                  Student Profile
+                                </Link>
+                              </MenuItem>
+                              <MenuItem>
+                                <ListItemIcon>
+                                  <EditIcon /> {/* Use an Edit icon */}
+                                </ListItemIcon>
+                                Edit
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() =>
+                                  handleOpenDeleteConfirmation(item)
+                                }
+                              >
+                                <ListItemIcon>
+                                  <DeleteIcon />
+                                </ListItemIcon>
+                                Delete
+                              </MenuItem>
+                            </Menu>
                           </td>
                         </tr>
                       </tbody>
@@ -246,6 +246,28 @@ const Info = () => {
                     </TableRow>
                   )}
                 </table>
+                <Dialog
+                  open={deleteConfirmationOpen}
+                  onClose={handleCloseDeleteConfirmation}
+                >
+                  <DialogTitle>Delete Confirmation</DialogTitle>
+                  <DialogContent>
+                    Are you sure you want to delete {userToDelete?.username}?
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleCloseDeleteConfirmation}>
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={async () => {
+                        await handleDeleteUser(); // Call the asynchronous function
+                        handleCloseDeleteConfirmation();
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </div>
             </div>
 

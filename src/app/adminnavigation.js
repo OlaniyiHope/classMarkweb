@@ -69,12 +69,12 @@ export const navigations = [
   },
   {
     name: "Noticeboard",
-    iconText: "SI",
+    icon: <span style={{ color: "#ffc107" }}>info</span>,
     path: "/dashboard/noticeboard",
   },
   {
     name: "Parents",
-    path: "/dashboard/teacher",
+    path: "/dashboard/parent",
     icon: <span style={{ color: "#ffc107" }}>person</span>,
   },
 
@@ -130,15 +130,16 @@ export const navigations = [
       { name: "Exam Grades", iconText: "SI", path: "/dashboard/grade" },
       { name: "Manage Marks", iconText: "SI", path: "/dashboard/exam" },
       {
-        name: "Manage Marks View",
+        name: "Test List",
         iconText: "SI",
-        path: "/dashboard/manage-mark-view",
+        path: "/dashboard/test-list",
       },
       {
         name: "Tabulation Sheet",
         iconText: "SI",
         path: "/dashboard/tabulation-sheet",
       },
+
       { name: "Question Paper", iconText: "SI", path: "/session/" },
     ],
   },
@@ -179,5 +180,15 @@ export const navigations = [
     name: "Profile",
     path: "/dashboard/profile",
     icon: <span style={{ color: "#ffc107" }}>person</span>,
+  },
+  {
+    name: "Setting",
+    path: "/dashboard/setting",
+    icon: <span style={{ color: "#ffc107" }}>settings</span>,
+  },
+  {
+    name: "Account",
+    path: "/dashboard/account",
+    icon: <span style={{ color: "#ffc107" }}>edit</span>,
   },
 ];

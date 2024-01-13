@@ -11,6 +11,8 @@ import React from "react";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const initialState = {
   grade_name: "",
   gradepoint: "",
@@ -18,46 +20,51 @@ const initialState = {
   markfrom: "",
   comment: "",
 };
-export default function FormDialog16() {
-  const [open, setOpen] = React.useState(false);
+const FormDialog16 = ({ setGradesData }) => {
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const [state, setState] = useState({ date: new Date() });
-  const [formData, setformData] = useState(initialState);
+  const [formData, setFormData] = useState(initialState);
+
   const { grade_name, gradepoint, markupto, markfrom, comment } = formData;
-  const [classs, setClasss] = useState();
-  const [error, setError] = useState();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = {
-      grade_name,
-      gradepoint,
-      markupto,
-      markfrom,
-      comment,
-    };
-    try {
-      await axios.post(
-        "https://edu-3cb7e7c6ba61.herokuapp.com/api/userrs/register",
-        formData
-      );
-
-      navigate("/dashboard/default");
-    } catch (err) {}
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setformData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: value });
   };
 
-  function handleClickOpen() {
-    setOpen(true);
-  }
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post(
+        "https://hlhs-ad6f9a00a210.herokuapp.com/api/grade",
+        formData
+      );
+      const newGrade = response.data;
+      toast.success(`Grade ${newGrade.grade_name} created successfully`);
 
-  function handleClose() {
+      // Reset the form and close the dialog
+      setFormData(initialState);
+      setOpen(false);
+
+      navigate("/dashboard/grade");
+
+      // Optionally, you can also update the gradesData state in Grade component
+      if (setGradesData) {
+        setGradesData((prevData) => [...prevData, newGrade]);
+      }
+    } catch (error) {
+      // Handle error and show an error notification
+      toast.error("Error creating grade. Please try again.");
+      console.error("Error creating grade:", error);
+    }
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
     setOpen(false);
-  }
+  };
 
   return (
     <Box>
@@ -75,7 +82,7 @@ export default function FormDialog16() {
           <TextField
             autoFocus
             margin="dense"
-            name="gradename"
+            name="grade_name"
             value={grade_name}
             placeholder="Grade name"
             type="text"
@@ -133,11 +140,12 @@ export default function FormDialog16() {
           <Button variant="outlined" color="secondary" onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleSubmit} color="primary">
             Add Grade
           </Button>
         </DialogActions>
       </Dialog>
     </Box>
   );
-}
+};
+export default FormDialog16;

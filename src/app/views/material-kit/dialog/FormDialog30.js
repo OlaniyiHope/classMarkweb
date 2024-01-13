@@ -9,8 +9,6 @@ import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 
 const initialState = {
@@ -36,18 +34,28 @@ export default function FormDialog3() {
       password,
       address,
       phone,
+      role: "parent", // Hardcode the role to "teacher"
     };
+
     try {
-      await axios.post(`${apiUrl}/api/register`, {
-        ...formData,
-        role: "teacher",
+      // Fetch the authentication token from local storage
+      const token = localStorage.getItem("jwtToken");
+
+      // Include the token in the request headers
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      // Make an API call to create a teacher
+      await axios.post(`${apiUrl}/api/create-parent`, formData, {
+        headers, // Include the headers in the request
       });
 
-      // navigate("/dashboard/admin");
-      toast.success("User successfully created");
+      // Handle successful teacher creation
+      navigate("/dashboard/parent");
     } catch (err) {
-      console.error("Error registering student:", err);
-      toast.error("Unable to create user");
+      // Handle errors
+      console.error("Error creating parent:", err);
     }
   };
 
@@ -67,7 +75,7 @@ export default function FormDialog3() {
   return (
     <Box>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Add new Teacher
+        Add new Parent
       </Button>
 
       <Dialog
@@ -75,9 +83,9 @@ export default function FormDialog3() {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title"> Add new teacher</DialogTitle>
+        <DialogTitle id="form-dialog-title"> Add new parent</DialogTitle>
         <DialogContent>
-          <label>Username</label>
+          <label>User name</label>
           <TextField
             autoFocus
             margin="dense"
@@ -88,7 +96,7 @@ export default function FormDialog3() {
             fullWidth
             onChange={handleChange}
           />
-          <label>Email Address</label>
+          <label>Email address</label>
           <TextField
             autoFocus
             margin="dense"
@@ -138,11 +146,10 @@ export default function FormDialog3() {
             Cancel
           </Button>
           <Button onClick={handleSubmit} color="primary">
-            Add Teacher
+            Add Parent
           </Button>
         </DialogActions>
       </Dialog>
-      <ToastContainer />
     </Box>
   );
 }

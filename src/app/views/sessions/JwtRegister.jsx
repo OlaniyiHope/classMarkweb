@@ -74,7 +74,7 @@ const validationSchema = Yup.object().shape({
     .email("Invalid Email address")
     .required("Email is required!"),
 });
-const roles = ["admin", "teacher", "student"]; // Define the available roles
+const roles = ["admin", "teacher", "parent", "student"]; // Define the available roles
 
 const JwtRegister = () => {
   const theme = useTheme();

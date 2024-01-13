@@ -1,54 +1,54 @@
-import { Box, MenuItem } from "@mui/material";
+import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
-import { Navigate, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
+import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
-import useFetch from "hooks/useFetch";
-
+import { useEffect } from "react";
 const initialState = {
   name: "",
-  date: "",
-  comment: "",
+  teacher: "",
 };
 
-export default function Examform() {
-  const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState(initialState);
-  const { name, comment, date } = formData;
-
+export default function FormClass() {
+  const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
+  const [formData, setFormData] = useState(initialState);
+  const { name, teacher } = formData;
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const formData = {
+      name,
+      teacher,
+    };
     try {
-      // Fetch the authentication token from wherever you've stored it (e.g., local storage)
-      const token = localStorage.getItem("jwtToken");
+      const response = await axios.post(`${apiUrl}/api/class`, formData);
 
-      // Include the token in the request headers
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
+      if (response.status === 200) {
+        // Class successfully created
+        toast.success("Class successfully created");
 
-      // Make an API call to create a subject
-      await axios.post(`${apiUrl}/api/offlineexam`, formData, {
-        headers, // Include the headers in the request
-      });
+        // Manually trigger data refetch or navigation logic
+        // Example: reFetch();
 
-      // Handle successful subject creation
-      toast.success("Exam successfully created");
-      navigate("/dashboard/examlist");
+        // Close the dialog
+        handleClose();
+      } else {
+        // Handle other status codes if necessary
+        toast.error("Failed to create class");
+      }
     } catch (err) {
-      // Handle errors
-      toast.error("Unable to create Exam");
+      console.error("Error creating class:", err);
+      toast.error("Unable to create class");
     }
   };
 
@@ -68,7 +68,7 @@ export default function Examform() {
   return (
     <Box>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Add Exam
+        Add new Class
       </Button>
 
       <Dialog
@@ -76,40 +76,35 @@ export default function Examform() {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title"> Add Exam</DialogTitle>
+        <DialogTitle id="form-dialog-title"> Add new Class </DialogTitle>
+        <DialogTitle id="form-dialog-title" style={{ fontSize: "14px" }}>
+          {" "}
+          ( Note: Use Capital Letter to create class and no space: e.g JS1,JS2,
+          SS1)
+        </DialogTitle>
+
         <DialogContent>
-          <label>Exam Name</label>
+          <label>Class Name</label>
           <TextField
             autoFocus
             margin="dense"
             name="name"
             value={name}
-            placeholder="Exam Name"
+            placeholder="Enter class name"
             type="text"
-            onChange={handleChange}
             fullWidth
+            onChange={handleChange}
           />
-          <label>Exam Date</label>
+          <label>Class Teacher</label>
           <TextField
             autoFocus
             margin="dense"
-            name="date"
-            value={date}
-            placeholder="Exam Date"
-            type="Date"
-            onChange={handleChange}
-            fullWidth
-          />
-          <label>Comment</label>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="comment"
-            value={comment}
-            placeholder="Comment"
             type="text"
-            onChange={handleChange}
+            name="teacher"
+            placeholder="Enter teacher's name"
+            value={teacher}
             fullWidth
+            onChange={handleChange}
           />
         </DialogContent>
         <DialogActions>
@@ -117,7 +112,7 @@ export default function Examform() {
             Cancel
           </Button>
           <Button onClick={handleSubmit} color="primary">
-            Add Exam
+            Add Class
           </Button>
         </DialogActions>
       </Dialog>

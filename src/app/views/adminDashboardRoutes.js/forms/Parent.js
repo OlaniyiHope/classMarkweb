@@ -19,7 +19,7 @@ import {
   ListItemIcon,
 } from "@mui/material";
 import useFetch from "hooks/useFetch";
-import FormDialog3 from "app/views/material-kit/dialog/FormDialog3";
+import FormDialog30 from "app/views/material-kit/dialog/FormDialog30";
 import { TablePagination } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
@@ -41,8 +41,8 @@ const StyledTable = styled(Table)(({ theme }) => ({
   },
 }));
 
-const Teacher = () => {
-  const { data, loading, error, reFetch } = useFetch("/get-teachers");
+const Parent = () => {
+  const { data, loading, error, reFetch } = useFetch("/get-parent");
   const [page, setPage] = useState(0);
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
@@ -56,7 +56,7 @@ const Teacher = () => {
     const token = localStorage.getItem("jwtToken");
 
     // Make an API call with the JWT token
-    fetch("/get-teachers", {
+    fetch("/get-parent", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`, // Include the JWT token in the headers
@@ -120,7 +120,7 @@ const Teacher = () => {
   return (
     <Fragment>
       <Box className="breadcrumb">
-        <FormDialog3 />
+        <FormDialog30 />
       </Box>
       <ContentBox className="analytics">
         <Box width="100%" overflow="auto">
@@ -203,7 +203,7 @@ const Teacher = () => {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={5} align="center">
-                      No Teacher to display.
+                      No Parent to display.
                     </TableCell>
                   </TableRow>
                 )}
@@ -251,4 +251,4 @@ const Teacher = () => {
   );
 };
 
-export default Teacher;
+export default Parent;

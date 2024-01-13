@@ -1,6 +1,8 @@
 import {} from "@mui/material";
 import { Fragment, React, useState } from "react";
 import { Box } from "@mui/system";
+import { Container } from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 import {
   Card,
   Button,
@@ -8,8 +10,15 @@ import {
   styled,
   useTheme,
   Icon,
+  ListItemIcon,
+  Menu,
+  MenuItem,
   IconButton,
   Table,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   TableBody,
   TableCell,
   TableHead,
@@ -18,8 +27,12 @@ import {
 } from "@mui/material";
 import RowCards from "../shared/RowCards";
 import { Breadcrumb } from "app/components";
+import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
+import DeleteIcon from "@mui/icons-material/Delete";
 import FormDialog2 from "app/views/material-kit/dialog/FormDialog2";
 import useFetch from "hooks/useFetch";
+import axios from "axios";
+import { Link } from "react-router-dom";
 import Examform from "./Examform";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -60,11 +73,15 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Examlist = () => {
-  const { data, loading, error } = useFetch("/getofflineexam");
+  const { data, loading, error, reFetch } = useFetch("/getofflineexam");
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const [anchorElMap, setAnchorElMap] = useState({});
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
@@ -74,71 +91,171 @@ const Examlist = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  const handleOpenDeleteConfirmation = (user) => {
+    setUserToDelete(user);
+    setDeleteConfirmationOpen(true);
+  };
+  const handleOpenMenu = (event, examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: event.currentTarget,
+    }));
+  };
 
+  // Function to handle closing the context menu for a specific exam
+  const handleCloseMenu = (examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: null,
+    }));
+  };
+
+  const handleCloseDeleteConfirmation = () => {
+    setUserToDelete(null);
+    setDeleteConfirmationOpen(false);
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      const response = await axios.delete(
+        `${apiUrl}/api/deleteexam/${userToDelete._id}`
+      );
+
+      console.log("Response from delete API:", response.data);
+
+      if (response.status === 200) {
+        console.log("Exam deleted successfully");
+
+        // Manually trigger data refetch
+        reFetch();
+      } else {
+        console.error("Failed to delete Exam");
+      }
+    } catch (error) {
+      console.error("Error deleting Exam:", error);
+    }
+  };
   return (
     <Fragment>
       <ContentBox className="analytics">
-        <Box className="breadcrumb">
-          <Breadcrumb
-            routeSegments={[
-              // { name: "Material", path: "/material" },
-              { name: "List of Exams" },
-            ]}
-          />
-          <Examform />
-        </Box>
+        <Container>
+          <Box className="breadcrumb">
+            <Examform />
+          </Box>
 
-        <Box width="100%" overflow="auto">
-          <StyledTable>
-            <TableHead>
-              <TableRow>
-                <TableCell align="center">S/N</TableCell>
-                <TableCell align="left">Exam Name</TableCell>
-                <TableCell align="left">Date</TableCell>
-                <TableCell align="left">Comment</TableCell>
+          <Box width="100%" overflow="auto">
+            <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
+              <div class="table-responsive full-data">
+                <table
+                  class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
+                  id="example-student"
+                >
+                  <thead>
+                    <tr>
+                      <th>S/N</th>
+                      <th>Exam Name</th>
+                      <th>Date</th>
+                      <th>Comment</th>
 
-                <TableCell align="right">Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data &&
-                data.map((item) => (
-                  <TableRow key={item._id}>
-                    <TableCell align="center"></TableCell>
-                    <TableCell align="left">{item.name}</TableCell>
-                    <TableCell align="center">
-                      {" "}
-                      {item.date
-                        ? new Date(item.date).toLocaleDateString()
-                        : ""}
-                    </TableCell>
-                    <TableCell align="center">{item.comment}</TableCell>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
 
-                    <TableCell align="right">
-                      <IconButton>
-                        <Icon color="error">close</Icon>
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </StyledTable>
+                  {data &&
+                    data.map((item, index) => (
+                      <tbody>
+                        <tr key={item._id}>
+                          <td>
+                            {" "}
+                            <h4>{index + 1}</h4>
+                          </td>
+                          <td>{item.name}</td>
+                          <td>
+                            {" "}
+                            {item.date
+                              ? new Date(item.date).toLocaleDateString()
+                              : ""}
+                          </td>
+                          <td>{item.comment}</td>
 
-          <TablePagination
-            sx={{ px: 2 }}
-            page={page}
-            component="div"
-            rowsPerPage={rowsPerPage}
-            count={data.length}
-            onPageChange={handleChangePage}
-            rowsPerPageOptions={[5, 10, 25]}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            nextIconButtonProps={{ "aria-label": "Next Page" }}
-            backIconButtonProps={{ "aria-label": "Previous Page" }}
-          />
-        </Box>
+                          <td>
+                            <TableCell align="right">
+                              <IconButton
+                                aria-controls={`action-menu-${item._id}`}
+                                aria-haspopup="true"
+                                onClick={(event) =>
+                                  handleOpenMenu(event, item._id)
+                                } // Pass item._id
+                              >
+                                <MoreVertIcon />{" "}
+                                {/* MoreVertIcon for the menu */}
+                              </IconButton>
+                              <Menu
+                                id={`action-menu-${item._id}`}
+                                anchorEl={anchorElMap[item._id]}
+                                open={Boolean(anchorElMap[item._id])}
+                                onClose={() => handleCloseMenu(item._id)}
+                              >
+                                <MenuItem>
+                                  <ListItemIcon>
+                                    <EditIcon /> {/* Use an Edit icon */}
+                                  </ListItemIcon>
+                                  Edit
+                                </MenuItem>
+                                <MenuItem
+                                  onClick={() =>
+                                    handleOpenDeleteConfirmation(item)
+                                  }
+                                >
+                                  <ListItemIcon>
+                                    <DeleteIcon />
+                                  </ListItemIcon>
+                                  Delete
+                                </MenuItem>
+                              </Menu>
+                            </TableCell>
+                          </td>
+                        </tr>
+                      </tbody>
+                    ))}
+                </table>
+              </div>
+            </div>
+            <Dialog
+              open={deleteConfirmationOpen}
+              onClose={handleCloseDeleteConfirmation}
+            >
+              <DialogTitle>Delete Confirmation</DialogTitle>
+              <DialogContent>
+                Are you sure you want to delete {userToDelete?.name}?
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleCloseDeleteConfirmation}>Cancel</Button>
+                <Button
+                  onClick={async () => {
+                    await handleDeleteUser(); // Call the asynchronous function
+                    handleCloseDeleteConfirmation();
+                  }}
+                >
+                  Delete
+                </Button>
+              </DialogActions>
+            </Dialog>
+            <TablePagination
+              sx={{ px: 2 }}
+              page={page}
+              component="div"
+              rowsPerPage={rowsPerPage}
+              count={data.length}
+              onPageChange={handleChangePage}
+              rowsPerPageOptions={[5, 10, 25]}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              nextIconButtonProps={{ "aria-label": "Next Page" }}
+              backIconButtonProps={{ "aria-label": "Previous Page" }}
+            />
+          </Box>
 
-        {/* <TopSellingTable />
+          {/* <TopSellingTable />
             <StatCards2 />
 
             <H4>Ongoing Projects</H4>
@@ -158,6 +275,7 @@ const Examlist = () => {
 
             <UpgradeCard />
             <Campaigns />*/}
+        </Container>
       </ContentBox>
     </Fragment>
   );

@@ -1,9 +1,10 @@
-import { DatePicker } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { Stack } from '@mui/material';
-import { Box } from '@mui/system';
-import { Breadcrumb, SimpleCard } from 'app/components';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { DatePicker } from "@mui/lab";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { Stack } from "@mui/material";
+import { Box } from "@mui/system";
+import { Breadcrumb, SimpleCard } from "app/components";
+import axios from "axios";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import {
   Button,
   Checkbox,
@@ -11,238 +12,532 @@ import {
   Grid,
   Icon,
   Radio,
+  MenuItem,
+  DialogTitle,
   RadioGroup,
   styled,
-} from '@mui/material';
-import { Span } from 'app/components/Typography';
-import { useEffect, useState } from 'react';
-import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
-const Container = styled('div')(({ theme }) => ({
-  margin: '30px',
-  [theme.breakpoints.down('sm')]: { margin: '16px' },
-  '& .breadcrumb': {
-    marginBottom: '30px',
-    [theme.breakpoints.down('sm')]: { marginBottom: '16px' },
+} from "@mui/material";
+import useFetch from "hooks/useFetch";
+import { Span } from "app/components/Typography";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./form.css";
+import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const Container = styled("div")(({ theme }) => ({
+  margin: "30px",
+  [theme.breakpoints.down("sm")]: { margin: "16px" },
+  "& .breadcrumb": {
+    marginBottom: "30px",
+    [theme.breakpoints.down("sm")]: { marginBottom: "16px" },
   },
 }));
 
 const TextField = styled(TextValidator)(() => ({
-  width: '100%',
-  marginBottom: '16px',
+  width: "100%",
+  marginBottom: "16px",
 }));
 
 const Tab = () => {
-  const [state, setState] = useState({ date: new Date() });
+  const {
+    data: classData,
+    loading: classLoading,
+    error: classError,
+  } = useFetch("/class");
+  const { data: examData } = useFetch("/getofflineexam");
+  const [subjectData, setSubjectData] = useState([]);
+  const [selectedClass, setSelectedClass] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const [selectedExam, setSelectedExam] = useState("");
+
+  const [studentData, setStudentData] = useState([]);
+  console.log("Current studentData state:", studentData);
+  const [selectedStudentId, setSelectedStudentId] = useState("");
+
+  const [subjectIdLookup, setSubjectIdLookup] = useState({});
+  const [showMarkManagement, setShowMarkManagement] = useState(false);
+  const apiUrl = process.env.REACT_APP_API_URL;
+
+  const fetchStudentData = async (examId, subjectId) => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      const headers = new Headers();
+      headers.append("Authorization", `Bearer ${token}`);
+
+      const response = await fetch(
+        `${apiUrl}/api/get-all-scores/${examId}/${subjectId}`,
+        {
+          headers,
+        }
+      );
+
+      if (!response.ok) {
+        console.error(
+          "Failed to fetch student data. Response details:",
+          response
+        );
+        throw new Error("Failed to fetch student data");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching student data:", error);
+      return { scores: [] }; // Return empty array if there's an error
+    }
+  };
+
+  const handleManageMarkClick = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      const headers = new Headers();
+      headers.append("Authorization", `Bearer ${token}`);
+
+      const response = await fetch(`${apiUrl}/api/student/${selectedClass}`, {
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch student data");
+      }
+
+      const students = await response.json();
+
+      // Handle the case where no students are found
+      if (students.length === 0) {
+        console.warn("No students found for the selected class.");
+        // Proceed with the logic for initializing the state, etc.
+        // You might want to show a message to the user or take appropriate action.
+      } else {
+        // Assuming you want to pick the first student for now
+        const firstStudentId = students[0]._id;
+        setSelectedStudentId(firstStudentId);
+
+        const existingData = await fetchStudentData(
+          selectedExam,
+          subjectIdLookup[selectedSubject]
+        );
+
+        console.log("Response from fetchStudentData:", existingData);
+        console.log("Existing scores:", existingData.scores);
+
+        // Ensure that the scores are properly set in the initial state
+        const initialState = students.map((student) => {
+          const studentScore = existingData.scores.find(
+            (score) => score.studentId && score.studentId._id === student._id
+          );
+
+          console.log(`Student ${student._id} - Existing Score:`, studentScore);
+
+          const defaultTestScore = studentScore
+            ? studentScore.testscore !== undefined
+              ? studentScore.testscore
+              : 0
+            : 0;
+
+          const defaultExamScore = studentScore
+            ? studentScore.examscore !== undefined
+              ? studentScore.examscore
+              : 0
+            : 0;
+
+          return {
+            studentId: student._id,
+            studentName: student.studentName,
+            testscore: defaultTestScore,
+            examscore: defaultExamScore,
+            marksObtained: defaultTestScore + defaultExamScore,
+            comment: studentScore ? studentScore.comment || "" : "",
+          };
+        });
+
+        console.log("Initial state:", initialState);
+
+        setStudentData(initialState);
+        setShowMarkManagement(true);
+      }
+    } catch (error) {
+      console.error("Error fetching student data:", error);
+    }
+  };
 
   useEffect(() => {
-    ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
-      if (value !== state.password) return false;
+    const fetchSubjectData = async () => {
+      try {
+        if (!selectedClass) {
+          setSubjectData([]);
+          setSubjectIdLookup({});
+          return;
+        }
 
-      return true;
-    });
-    return () => ValidatorForm.removeValidationRule('isPasswordMatch');
-  }, [state.password]);
+        const token = localStorage.getItem("jwtToken");
+        const headers = new Headers();
+        headers.append("Authorization", `Bearer ${token}`);
 
-  const handleSubmit = (event) => {
-    // console.log("submitted");
-    // console.log(event);
+        const response = await fetch(
+          `${apiUrl}/api/get-subject/${selectedClass}`,
+          {
+            headers,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch subjects");
+        }
+
+        const data = await response.json();
+
+        setSubjectData(data);
+
+        // Create a subjectId lookup
+        const lookup = {};
+        data.forEach((subject) => {
+          lookup[subject.name] = subject._id;
+        });
+        setSubjectIdLookup(lookup);
+      } catch (error) {
+        console.error("Error fetching subjects:", error);
+      }
+    };
+
+    // Call the fetchSubjectData function
+    fetchSubjectData();
+  }, [selectedClass, apiUrl]); // Include all dependencies used inside the useEffect
+
+  const handleClassChange = (event) => {
+    const newSelectedClass = event.target.value;
+    setSelectedClass(newSelectedClass);
+    setSelectedSubject("");
   };
 
-  const handleChange = (event) => {
-    event.persist();
-    setState({ ...state, [event.target.name]: event.target.value });
+  const handleExamChange = (event) => {
+    const selectedExamId = event.target.value;
+    setSelectedExam(selectedExamId);
+  };
+  const getExamNameById = (examId) => {
+    const selectedExam = examData.find((item) => item._id === examId);
+    return selectedExam ? selectedExam.name : "";
   };
 
-  const handleDateChange = (date) => setState({ ...state, date });
+  const getClassById = (classId) => {
+    const selectedClass = classData.find((item) => item.id === classId);
+    return selectedClass ? selectedClass.name : "";
+  };
 
-  const {
-    username,
-    firstName,
-    creditCard,
-    mobile,
-    password,
-    confirmPassword,
-    gender,
-    date,
-    email,
-  } = state;
+  const getSubjectById = (subjectId) => {
+    const selectedSubject = subjectData.find((item) => item._id === subjectId);
+    return selectedSubject ? selectedSubject.name : "";
+  };
+
+  const handleSubjectChange = (event) => {
+    setSelectedSubject(event.target.value);
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+      const marks = studentData.map((student) => {
+        const {
+          studentId,
+          testscore = 0,
+          examscore = 0,
+          comment = "",
+        } = student;
+        const marksObtained = testscore + examscore;
+
+        return {
+          studentId,
+          subjectId: subjectIdLookup[selectedSubject],
+          testscore,
+          examscore,
+          marksObtained,
+          comment,
+        };
+      });
+
+      console.log("Updated Marks:", marks);
+
+      const token = localStorage.getItem("jwtToken");
+      const headers = new Headers();
+      headers.append("Authorization", `Bearer ${token}`);
+
+      // Check if there are existing marks by verifying the examId and subjectId
+      if (selectedExam && subjectIdLookup[selectedSubject]) {
+        const responseCheckMarks = await fetch(
+          `${apiUrl}/api/get-all-scores/${selectedExam}/${subjectIdLookup[selectedSubject]}`,
+          {
+            headers,
+          }
+        );
+
+        console.log("Response from Check Marks:", responseCheckMarks);
+
+        if (responseCheckMarks.ok) {
+          const responseData = await responseCheckMarks.json();
+          const existingMarks = responseData.scores || [];
+
+          // Check if there are existing marks
+          if (existingMarks.length > 0) {
+            // Existing marks found, proceed with updating
+            const responseUpdateMarks = await fetch(
+              `${apiUrl}/api/update-all-marks`,
+              {
+                method: "PUT",
+                headers: {
+                  ...headers,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  examId: selectedExam,
+                  subjectId: subjectIdLookup[selectedSubject],
+                  updates: marks,
+                }),
+              }
+            );
+
+            console.log("Request Payload:", {
+              examId: selectedExam,
+              subjectId: subjectIdLookup[selectedSubject],
+              updates: marks,
+            });
+
+            console.log("Response from Update Marks:", responseUpdateMarks);
+
+            if (!responseUpdateMarks.ok) {
+              const errorMessage = await responseUpdateMarks.text();
+              console.error(
+                `Failed to update marks. Server response: ${errorMessage}`
+              );
+              throw new Error("Failed to update marks");
+            } else {
+              // Notify success using toast
+              toast.success("Marks updated successfully!");
+            }
+          } else {
+            // No existing marks found, proceed to create new marks
+            const responseSaveMarks = await fetch(`${apiUrl}/api/save-marks`, {
+              method: "POST",
+              headers: {
+                ...headers,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                examId: selectedExam,
+                subjectId: subjectIdLookup[selectedSubject],
+                updates: marks,
+              }),
+            });
+
+            console.log("Response from Save Marks:", responseSaveMarks);
+
+            if (!responseSaveMarks.ok) {
+              const errorMessage = await responseSaveMarks.text();
+
+              console.error(
+                `Failed to save marks. Server response: ${errorMessage}`
+              );
+              throw new Error("Failed to save marks");
+            } else {
+              // Notify success using toast
+              toast.success("Marks saved successfully!");
+            }
+          }
+        } else {
+          // Handle other response statuses
+          // ...
+        }
+      }
+      // ... (remaining code)
+    } catch (error) {
+      console.error("Error saving marks:", error);
+      // ... (error handling)
+    }
+  };
+
+  const handleScoreChange = (index, scoreType, value) => {
+    // Assuming studentData is an array
+    const updatedStudents = [...studentData];
+
+    // Update the corresponding score
+    if (scoreType === "testscore") {
+      updatedStudents[index].testscore = parseInt(value, 10) || 0;
+    } else if (scoreType === "examscore") {
+      updatedStudents[index].examscore = parseInt(value, 10) || 0;
+    } else if (scoreType === "comment") {
+      updatedStudents[index].comment = value; // Update the comment field
+    }
+
+    // Update marksObtained by adding test score and exam score
+    updatedStudents[index].marksObtained =
+      (updatedStudents[index].testscore || 0) +
+      (updatedStudents[index].examscore || 0);
+
+    // Update state with the modified students
+    setStudentData(updatedStudents);
+  };
 
   return (
     <div>
       <Container>
-        <Box className="breadcrumb">
-          <Breadcrumb routeSegments={[{ name: 'Material', path: '/material' }, { name: 'Form' }]} />
-        </Box>
+        <ValidatorForm onError={() => null}>
+          <Box className="breadcrumb">
+            <Breadcrumb routeSegments={[{ name: "Manage Exam Mark" }]} />
+          </Box>
+          <Grid container spacing={6}>
+            <Grid item xs={4}>
+              <TextField
+                select
+                label="Select an Exam"
+                variant="outlined"
+                value={selectedExam}
+                onChange={handleExamChange}
+              >
+                {examData &&
+                  examData.map((item) => (
+                    <MenuItem key={item._id} value={item._id}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                select
+                label="Select a class"
+                variant="outlined"
+                value={selectedClass}
+                onChange={handleClassChange}
+              >
+                {classData &&
+                  classData.map((item) => (
+                    <MenuItem key={item.id} value={item.name}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
+              </TextField>
+            </Grid>
 
-        <Stack spacing={3}>
-          <SimpleCard title="Simple Form">
-            <ValidatorForm onSubmit={handleSubmit} onError={() => null}>
-              <Grid container spacing={6}>
-                <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
-                  <TextField
-                    type="text"
-                    name="username"
-                    id="standard-basic"
-                    value={username || ''}
-                    onChange={handleChange}
-                    errorMessages={['this field is required']}
-                    label="Username (Min length 4, Max length 9)"
-                    validators={['required', 'minStringLength: 4', 'maxStringLength: 9']}
-                  />
-
-                  <TextField
-                    type="text"
-                    name="firstName"
-                    label="First Name"
-                    onChange={handleChange}
-                    value={firstName || ''}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
-                  />
-
-                  <TextField
-                    type="email"
-                    name="email"
-                    label="Email"
-                    value={email || ''}
-                    onChange={handleChange}
-                    validators={['required', 'isEmail']}
-                    errorMessages={['this field is required', 'email is not valid']}
-                  />
-
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker
-                      value={date}
-                      onChange={handleDateChange}
-                      renderInput={(props) => (
-                        <TextField
-                          {...props}
-                          label="Date picker"
-                          id="mui-pickers-date"
-                          sx={{ mb: 2, width: '100%' }}
-                        />
-                      )}
-                    />
-                  </LocalizationProvider>
-
-                  <TextField
-                    sx={{ mb: 4 }}
-                    type="number"
-                    name="creditCard"
-                    label="Credit Card"
-                    onChange={handleChange}
-                    value={creditCard || ''}
-                    errorMessages={['this field is required']}
-                    validators={['required', 'minStringLength:16', 'maxStringLength: 16']}
-                  />
-                </Grid>
-
-                <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
-                  <TextField
-                    type="text"
-                    name="mobile"
-                    value={mobile || ''}
-                    label="Mobile Nubmer"
-                    onChange={handleChange}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
-                  />
-                  <TextField
-                    name="password"
-                    type="password"
-                    label="Password"
-                    value={password || ''}
-                    onChange={handleChange}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
-                  />{' '}
-                  <TextField
-                    type="text"
-                    name="firstName"
-                    label="Section"
-                    onChange={handleChange}
-                    value={firstName || ''}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
-                  />
-                  <TextField
-                    type="text"
-                    name="firstName"
-                    label="Birthday"
-                    onChange={handleChange}
-                    value={firstName || ''}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
-                  />
-                  <TextField
-                    type="text"
-                    name="firstName"
-                    label="Address"
-                    onChange={handleChange}
-                    value={firstName || ''}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
-                  />
-                  <TextField
-                    type="text"
-                    name="firstName"
-                    label="Id No"
-                    onChange={handleChange}
-                    value={firstName || ''}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
-                  />
-                  <TextField
-                    type="password"
-                    name="confirmPassword"
-                    onChange={handleChange}
-                    label="Confirm Password"
-                    value={confirmPassword || ''}
-                    validators={['required', 'isPasswordMatch']}
-                    errorMessages={['this field is required', "password didn't match"]}
-                  />
-                  <RadioGroup
-                    row
-                    name="gender"
-                    sx={{ mb: 2 }}
-                    value={gender || ''}
-                    onChange={handleChange}
-                  >
-                    <FormControlLabel
-                      value="Male"
-                      label="Male"
-                      labelPlacement="end"
-                      control={<Radio color="secondary" />}
-                    />
-
-                    <FormControlLabel
-                      value="Female"
-                      label="Female"
-                      labelPlacement="end"
-                      control={<Radio color="secondary" />}
-                    />
-
-                    <FormControlLabel
-                      value="Others"
-                      label="Others"
-                      labelPlacement="end"
-                      control={<Radio color="secondary" />}
-                    />
-                  </RadioGroup>
-                  <FormControlLabel
-                    control={<Checkbox />}
-                    label="I have read and agree to the terms of service."
-                  />
-                </Grid>
-              </Grid>
-
-              <Button color="primary" variant="contained" type="submit">
-                <Icon>send</Icon>
-                <Span sx={{ pl: 1, textTransform: 'capitalize' }}>Submit</Span>
+            <Grid item xs={4}>
+              <Button
+                color="primary"
+                variant="contained"
+                type="submit"
+                onClick={handleManageMarkClick}
+              >
+                View Tabulation Sheet
               </Button>
-            </ValidatorForm>
-          </SimpleCard>
-        </Stack>
+            </Grid>
+          </Grid>
+
+          {showMarkManagement && (
+            <>
+              <div className="container">
+                <div class="header">
+                  <div class="logo">
+                    <img
+                      src="https://hlhs.portalreport.org/uploads/1680762525Screenshot_20230405-172641.jpg"
+                      style={{ width: "30px", height: "30px" }}
+                    />
+                  </div>
+                  <div class="bd_title">
+                    <h1 class="f20">
+                      <strong>HEAVENLY LOVE HIGH SCHOOL</strong>
+                    </h1>
+                    <h4 class="f18">
+                      {" "}
+                      14, Babs Ladipo Street, Agbe Road, Abule Egba, Lagos
+                      State.{" "}
+                    </h4>
+                    <p style={{ color: "#042954" }}> Report Card</p>
+                  </div>
+                  <div class="headrt">
+                    <p style={{ color: "#042954" }}>
+                      Telephone : +234 8028724575, +234 8165051826
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <table className="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>S/N</th>
+                    <th>Student Name</th>
+                    <th>English</th>
+                    <th>Math</th>
+                    <th>Crs </th>
+                    <th>Basic Tech</th>
+                    <th>Business Studies</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {studentData.map((student, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{student.AdmNo}</td>
+                      {/*}  <td id={`subjectId_${index}`} style={{ display: "none" }}>
+                        {subjectIdLookup[student.subjectName]}
+                  </td>*/}
+                      <td>{student.studentName}</td>
+
+                      <td>
+                        <TextField
+                          type="number"
+                          name={`testscore_${index}`}
+                          id={`testscore_${index}`}
+                          value={student.testscore || ""}
+                          onChange={(e) =>
+                            handleScoreChange(
+                              index,
+                              "testscore",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                      <td>
+                        <TextField
+                          type="number"
+                          name={`examscore_${index}`}
+                          id={`examscore_${index}`}
+                          value={student.examscore || ""}
+                          onChange={(e) =>
+                            handleScoreChange(
+                              index,
+                              "examscore",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                      {/* Fix the nesting issue for marksObtained */}
+                      <td>{student.marksObtained || ""}</td>
+                      <td>
+                        <TextField
+                          name={`comment_${index}`}
+                          id={`comment_${index}`}
+                          value={student.comment || ""}
+                          onChange={(e) =>
+                            handleScoreChange(index, "comment", e.target.value)
+                          }
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <Button
+                color="primary"
+                variant="contained"
+                type="button"
+                onClick={handleSaveChanges}
+              >
+                Save Changes
+              </Button>
+            </>
+          )}
+        </ValidatorForm>
+        <ToastContainer />
       </Container>
     </div>
   );

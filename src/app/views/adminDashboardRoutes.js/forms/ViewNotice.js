@@ -39,7 +39,7 @@ const StyledTable = styled(Table)(({ theme }) => ({
 }));
 
 const ViewNotice = () => {
-  const { data, loading, error } = useFetch("/get-all-notices");
+  const { data, loading, error, reFetch } = useFetch("/get-all-notices");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [action, setAction] = useState(null);
@@ -115,7 +115,7 @@ const ViewNotice = () => {
         console.log("Notice deleted successfully");
 
         // Manually refetch data to update the notices
-        refetchData();
+        reFetch();
       } else {
         console.error("Failed to delete notice");
       }

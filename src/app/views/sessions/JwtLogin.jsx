@@ -95,11 +95,15 @@ const JwtLogin = () => {
     <div className="authincation d-flex flex-column flex-lg-row flex-column-fluid">
       <div
         className="login-aside text-center d-flex flex-column flex-row-auto"
-        style={{ backgroundColor: "#000080 !important" }}
+        // style={{ backgroundColor: "#000080 !important" }}
       >
         <div className="d-flex flex-column-auto flex-column pt-lg-40 pt-15">
           <div className="text-center mb-lg-4 mb-2 pt-5 logo">
-            <img src={logo} alt="" style={{ height: "100px" }} />
+            <img
+              src={logo}
+              alt=""
+              style={{ margin: "auto", height: "100px" }}
+            />
           </div>
           <h3 className="mb-2 text-white">HEAVENLY LOVE HIGH SCHOOL</h3>
           <p className="mb-4" style={{ color: "white" }}>
@@ -213,16 +217,6 @@ const JwtLogin = () => {
                         </LoadingButton>
 
                         <Paragraph>
-                          Don't have an account?
-                          <NavLink
-                            to="/session/signup"
-                            style={{
-                              color: theme.palette.primary.main,
-                              marginLeft: 5,
-                            }}
-                          >
-                            Register
-                          </NavLink>
                           <br></br>
                           Do you want to the home page?
                           <NavLink
