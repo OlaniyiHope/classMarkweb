@@ -683,7 +683,7 @@ const TermRep = ({ studentId }) => {
                       <td>{schoolSettings.principalName}</td>
                       <td style={{ textAlign: "right" }}>
                         <img
-                          src={`https://hlhs-ad6f9a00a210.herokuapp.com/uploads/${schoolSettings.signature}`}
+                          src={`https://hlhs-679f1fd654ed.herokuapp.com/uploads/${schoolSettings.signature}`}
                           width="200"
                           alt="Principal Signature"
                         />

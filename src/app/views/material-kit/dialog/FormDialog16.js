@@ -35,7 +35,7 @@ const FormDialog16 = ({ setGradesData }) => {
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "https://hlhs-ad6f9a00a210.herokuapp.com/api/grade",
+        "https://hlhs-679f1fd654ed.herokuapp.com/api/grade",
         formData
       );
       const newGrade = response.data;

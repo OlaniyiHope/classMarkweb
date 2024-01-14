@@ -81,7 +81,7 @@ const Account = () => {
 
     try {
       await axios.post(
-        `https://hlhs-ad6f9a00a210.herokuapp.com/api/setting`,
+        `https://hlhs-679f1fd654ed.herokuapp.com/api/setting`,
         formDataToSend
       );
 

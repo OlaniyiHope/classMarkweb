@@ -21,7 +21,7 @@ const EditGradeDialog = ({ open, onClose, grade, gradeId, onSave }) => {
       try {
         if (gradeId) {
           const response = await fetch(
-            `https://hlhs-ad6f9a00a210.herokuapp.com/api/grade/find/${gradeId}`
+            `https://hlhs-679f1fd654ed.herokuapp.com/api/grade/find/${gradeId}`
           );
           const data = await response.json();
           setFormData(data);
