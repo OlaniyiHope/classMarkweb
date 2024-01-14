@@ -85,13 +85,15 @@ const AuthContext = createContext({
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const login = async (email, password, role) => {
+  const login = async (identifier, password, role) => {
     try {
       const response = await axios.post(`${apiUrl}/api/login`, {
-        email,
+        identifier,
         password,
+
         role,
       });
+
       console.log("Response data:", response.data);
 
       if (response.status === 200) {

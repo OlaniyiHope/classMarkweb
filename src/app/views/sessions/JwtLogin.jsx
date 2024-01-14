@@ -20,6 +20,8 @@ import jwtDecode from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import pic from "./one.jpg";
 import pic1 from "./two.jpg";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import logo from "./logohlhs.png";
 import pic3 from "./pic-2.png";
 import { faGoogle, faApple } from "@fortawesome/free-brands-svg-icons";
@@ -28,16 +30,19 @@ import "./style.css";
 
 // inital login credentials
 const initialValues = {
-  email: "",
+  identifier: "",
   password: "",
 };
 const validationSchema = Yup.object().shape({
   password: Yup.string()
     .min(6, "Password must be 6 character length")
     .required("Password is required!"),
-  email: Yup.string()
-    .email("Invalid Email address")
-    .required("Email is required!"),
+  // email: Yup.string()
+  //   .email("Invalid Email address")
+  //   .required("Email is required!"),
+  // username: Yup.string()
+  //   .email("Invalid Username")
+  //   .required("Username is required!"),
 });
 const JwtLogin = () => {
   const navigate = useNavigate();
@@ -53,7 +58,8 @@ const JwtLogin = () => {
 
     try {
       // Assuming your login function returns a JWT token upon successful login
-      const response = await login(values.email, values.password);
+      const response = await login(values.identifier, values.password);
+
       if (response.status === 200) {
         // Successful login
         // Redirect the user after successful login
@@ -61,9 +67,11 @@ const JwtLogin = () => {
       } else {
         // Handle other status codes (e.g., 401 for unauthorized)
         console.error("Login failed with status:", response.status);
+        toast.error("Invalid credentials"); // Display an error notification
       }
     } catch (error) {
       console.error("An error occurred during login:", error);
+      toast.error("An error occurred during login");
     }
   };
 
@@ -146,18 +154,19 @@ const JwtLogin = () => {
                         </div>
 
                         <div className="sepertor"></div>
-
                         <div className="mb-3">
                           <TextField
                             fullWidth
-                            type="email"
-                            name="email"
-                            label="Email"
+                            type="text"
+                            name="identifier"
+                            label="Email or Username"
                             onBlur={handleBlur}
-                            value={values.email}
+                            value={values.identifier}
                             onChange={handleChange}
-                            helperText={touched.email && errors.email}
-                            error={Boolean(errors.email && touched.email)}
+                            helperText={touched.identifier && errors.identifier}
+                            error={Boolean(
+                              errors.identifier && touched.identifier
+                            )}
                           />
                         </div>
                         <div className="mb-3">
@@ -238,6 +247,7 @@ const JwtLogin = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

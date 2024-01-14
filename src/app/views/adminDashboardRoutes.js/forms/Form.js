@@ -167,8 +167,8 @@ const Form = () => {
                     size="small"
                     type="text"
                     name="username"
-                    placeholder="Enter the name"
-                    label="Full Name"
+                    placeholder="Username"
+                    label="User Name"
                     variant="outlined"
                     value={username}
                     id="username"
