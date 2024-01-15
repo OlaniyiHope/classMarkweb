@@ -88,13 +88,19 @@ export const AuthProvider = ({ children }) => {
   const login = async (identifier, password, role) => {
     try {
       const response = await axios.post(
-        `https://hlhs-679f1fd654ed.herokuapp.com/api/login`,
+        `https://hlhs-961934e05258.herokuapp.com/api/login`,
         {
           identifier,
           password,
           role,
         },
-        { withCredentials: true }
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+            // Add any other custom headers if needed
+          },
+        }
       );
 
       console.log("Response data:", response.data);
@@ -148,7 +154,7 @@ export const AuthProvider = ({ children }) => {
     // birthday
   ) => {
     const response = await axios.post(
-      `https://hlhs-679f1fd654ed.herokuapp.com/api/register`,
+      `https://hlhs-961934e05258.herokuapp.com/api/register`,
       {
         username,
         email,
