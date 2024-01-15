@@ -88,18 +88,11 @@ export const AuthProvider = ({ children }) => {
   const login = async (identifier, password, role) => {
     try {
       const response = await axios.post(
-        `https://hlhs-98d6f8c9ac3a.herokuapp.com/api/login`,
+        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/login`,
         {
           identifier,
           password,
           role,
-        },
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-            // Add any other custom headers if needed
-          },
         }
       );
 
