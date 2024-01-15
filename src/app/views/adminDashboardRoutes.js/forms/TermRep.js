@@ -185,6 +185,74 @@ const TermRep = ({ studentId }) => {
   };
 
   // ...
+  // const calculateAverageGrade = () => {
+  //   const gradeToValueMap = {
+  //     A: 5,
+  //     B: 4,
+  //     C: 3,
+  //     D: 2,
+  //     E: 1,
+  //   };
+
+  //   let totalGradeValues = 0;
+  //   let totalMarksObtained = 0;
+  //   let totalSubjects = 0;
+
+  //   studentData?.scores.forEach((score) => {
+  //     const gradeValue = gradeToValueMap[calculateGrade(score?.comment)];
+  //     const marksObtained = score?.marksObtained;
+
+  //     if (
+  //       !isNaN(gradeValue) &&
+  //       gradeValue !== undefined &&
+  //       !isNaN(marksObtained) &&
+  //       marksObtained !== undefined
+  //     ) {
+  //       console.log("Grade Value:", gradeValue);
+  //       console.log("Marks Obtained:", marksObtained);
+
+  //       totalGradeValues += gradeValue;
+  //       totalMarksObtained += gradeValue * marksObtained;
+  //       totalSubjects += 1;
+  //     }
+  //   });
+
+  //   console.log("Total Grade Values:", totalGradeValues);
+  //   console.log("Total Marks Obtained:", totalMarksObtained);
+  //   console.log("Total Subjects:", totalSubjects);
+
+  //   if (
+  //     totalMarksObtained === 0 ||
+  //     totalGradeValues === 0 ||
+  //     totalSubjects === 0
+  //   ) {
+  //     return "N/A";
+  //   }
+
+  //   const averageGradeValue = totalGradeValues / totalSubjects;
+
+  //   console.log("average", averageGradeValue);
+
+  //   if (isNaN(averageGradeValue)) {
+  //     // Check if the result is NaN, return "N/A" to avoid displaying an invalid value
+  //     return "N/A";
+  //   }
+
+  //   // Map the average grade value to a grade (e.g., A, B, C, D, E) based on your criteria
+  //   const valueToGradeMap = {
+  //     5: "A",
+  //     4: "B",
+  //     3: "C",
+  //     2: "D",
+  //     1: "E",
+  //   };
+
+  //   const averageGrade = valueToGradeMap[Math.round(averageGradeValue)];
+
+  //   // Return the numeric value instead of a string
+  //   return parseFloat(averageGradeValue.toFixed(1)) || "N/A";
+  //   // const positions = calculatePositions(studentData?.scores);
+  // };
   const calculateAverageGrade = () => {
     const gradeToValueMap = {
       A: 5,
@@ -198,7 +266,16 @@ const TermRep = ({ studentId }) => {
     let totalMarksObtained = 0;
     let totalSubjects = 0;
 
-    studentData?.scores.forEach((score) => {
+    // Check if there are subjects with valid grades
+    const subjectsWithGrades = studentData?.scores?.filter(
+      (score) => score?.marksObtained !== undefined
+    );
+
+    if (!subjectsWithGrades || subjectsWithGrades.length === 0) {
+      return "N/A";
+    }
+
+    subjectsWithGrades.forEach((score) => {
       const gradeValue = gradeToValueMap[calculateGrade(score?.comment)];
       const marksObtained = score?.marksObtained;
 
@@ -249,10 +326,13 @@ const TermRep = ({ studentId }) => {
 
     const averageGrade = valueToGradeMap[Math.round(averageGradeValue)];
 
+    // Ensure the result is a numeric value
+    const result = parseFloat(averageGradeValue.toFixed(1));
+
     // Return the numeric value instead of a string
-    return parseFloat(averageGradeValue.toFixed(1)) || "N/A";
-    // const positions = calculatePositions(studentData?.scores);
+    return isNaN(result) ? "N/A" : result;
   };
+
   const calculateAllPositions = (scores, examId) => {
     // Filter out scores for the specific exam
     const validScores = scores.filter(
@@ -542,7 +622,13 @@ const TermRep = ({ studentId }) => {
                           marginLeft: "30px",
                           textAlign: "center",
                         }}
-                        value={calculateAverageGrade().toFixed(1)}
+                        // value={calculateAverageGrade().toFixed(1)}
+
+                        value={
+                          typeof calculateAverageGrade() === "number"
+                            ? calculateAverageGrade().toFixed(1)
+                            : calculateAverageGrade()
+                        }
                       />
                     </p>
                   </div>

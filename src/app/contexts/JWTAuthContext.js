@@ -88,13 +88,13 @@ export const AuthProvider = ({ children }) => {
   const login = async (identifier, password, role) => {
     try {
       const response = await axios.post(
-        `https://hlhs-679f1fd654ed.herokuapp.com/api/login`,
+        `${apiUrl}/api/login`,
         {
           identifier,
           password,
-
           role,
-        }
+        },
+        { withCredentials: true }
       );
 
       console.log("Response data:", response.data);
@@ -102,6 +102,8 @@ export const AuthProvider = ({ children }) => {
       if (response.status === 200) {
         const { token, user } = response.data;
         console.log("Retrieved JWT Token:", token);
+        console.error("Login failed with status:", response.status);
+        console.error("Response data:", response.data);
 
         try {
           await localStorage.setItem("jwtToken", token);
@@ -145,26 +147,23 @@ export const AuthProvider = ({ children }) => {
     date
     // birthday
   ) => {
-    const response = await axios.post(
-      `https://hlhs-679f1fd654ed.herokuapp.com/api/register`,
-      {
-        username,
-        email,
-        phone,
-        address,
-        password,
-        role,
-        studentName,
-        AdmNo,
-        classname,
-        // subjectTaught,
-        parentsName,
-        // gender,
-        date,
-        // contactNo,
-        // birthday,
-      }
-    );
+    const response = await axios.post(`${apiUrl}/api/register`, {
+      username,
+      email,
+      phone,
+      address,
+      password,
+      role,
+      studentName,
+      AdmNo,
+      classname,
+      // subjectTaught,
+      parentsName,
+      // gender,
+      date,
+      // contactNo,
+      // birthday,
+    });
 
     const { token, user } = response.data;
 

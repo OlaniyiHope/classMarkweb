@@ -25,6 +25,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert 
 import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
+import EditTeacher from "./EditTeacher";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -44,10 +45,13 @@ const StyledTable = styled(Table)(({ theme }) => ({
 const Teacher = () => {
   const { data, loading, error, reFetch } = useFetch("/get-teachers");
   const [page, setPage] = useState(0);
+  const [editTeacherData, setEditTeacherData] = useState(null);
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [action, setAction] = useState(null);
+  const [newPassword, setNewPassword] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -117,6 +121,62 @@ const Teacher = () => {
       console.error("Error deleting User:", error);
     }
   };
+  const handleEditTeacher = (teacherId) => {
+    // Find the selected student by ID
+    const selectedTeacher = data.find((teacher) => teacher?._id === teacherId);
+
+    if (!selectedTeacher) {
+      console.error("Selected student not found for ID:", teacherId);
+      // Optionally, you can choose to return or handle this error gracefully
+      return;
+    }
+
+    // Open the edit dialog with the selected student data
+    setEditTeacherData(selectedTeacher);
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveEdit = async (updatedData) => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+
+      // Check if editStudentData is not null and has the _id property
+      if (editTeacherData?._id) {
+        // Log the payload before sending the request
+        // console.log("Payload before sending:", {
+        //   studentName: updatedData.studentName,
+        //   address: updatedData.address,
+        //   // Add other fields as needed
+        // });
+
+        const response = await axios.put(
+          `${apiUrl}/api/teachers/${editTeacherData._id}`,
+          {
+            email: updatedData.email,
+            username: updatedData.username,
+            phone: updatedData.phone,
+            address: updatedData.address,
+            password: newPassword || updatedData.password,
+            // Add other fields as needed
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log("Teacher updated successfully:", response.data);
+        setEditDialogOpen(false);
+        reFetch(); // Manually trigger data refetch
+      } else {
+        console.error("Invalid or missing _id property in editTeacherData");
+      }
+    } catch (error) {
+      console.error("Error updating teacher:", error);
+    }
+  };
+
   return (
     <Fragment>
       <Box className="breadcrumb">
@@ -178,7 +238,9 @@ const Teacher = () => {
                               open={Boolean(anchorEl)}
                               onClose={handleCloseMenu}
                             >
-                              <MenuItem>
+                              <MenuItem
+                                onClick={() => handleEditTeacher(item._id)}
+                              >
                                 <ListItemIcon>
                                   <EditIcon /> {/* Use an Edit icon */}
                                 </ListItemIcon>
@@ -208,6 +270,15 @@ const Teacher = () => {
                   </TableRow>
                 )}
               </table>
+              {editTeacherData && (
+                <EditTeacher
+                  open={editDialogOpen}
+                  onClose={() => setEditDialogOpen(false)}
+                  teacherId={editTeacherData._id}
+                  onSave={handleSaveEdit}
+                />
+              )}
+
               <Dialog
                 open={deleteConfirmationOpen}
                 onClose={handleCloseDeleteConfirmation}

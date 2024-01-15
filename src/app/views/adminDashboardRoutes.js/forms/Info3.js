@@ -1,5 +1,5 @@
 import {} from "@mui/material";
-import { Fragment, React, useState } from "react";
+import { Fragment, React, useState, useEffect } from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 
@@ -34,6 +34,7 @@ import FormDialog2 from "app/views/material-kit/dialog/FormDialog2";
 import useFetch from "hooks/useFetch";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import EditStudent from "./EditStudent";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -74,19 +75,37 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 const Info3 = () => {
   const { data, loading, error, reFetch } = useFetch("/student/JS3");
+  console.log("Data:", data);
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [editStudentData, setEditStudentData] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});
+  const [newPassword, setNewPassword] = useState("");
+
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL;
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const handleOpenMenu = (event, examId) => {
     setAnchorElMap((prev) => ({
       ...prev,
       [examId]: event.currentTarget,
     }));
+  };
+
+  useEffect(() => {
+    // Fetch data when the component mounts
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/grade`);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   // Function to handle closing the context menu for a specific exam
@@ -135,6 +154,65 @@ const Info3 = () => {
       console.error("Error deleting User:", error);
     }
   };
+
+  const handleEditStudent = (studentId) => {
+    // Find the selected student by ID
+    const selectedStudent = data.find((student) => student?._id === studentId);
+
+    if (!selectedStudent) {
+      console.error("Selected student not found for ID:", studentId);
+      // Optionally, you can choose to return or handle this error gracefully
+      return;
+    }
+
+    // Open the edit dialog with the selected student data
+    setEditStudentData(selectedStudent);
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveEdit = async (updatedData) => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+
+      // Check if editStudentData is not null and has the _id property
+      if (editStudentData?._id) {
+        // Log the payload before sending the request
+        console.log("Payload before sending:", {
+          studentName: updatedData.studentName,
+          address: updatedData.address,
+          // Add other fields as needed
+        });
+
+        const response = await axios.put(
+          `${apiUrl}/api/students/${editStudentData._id}`,
+          {
+            studentName: updatedData.studentName,
+            address: updatedData.address,
+            AdmNo: updatedData.AdmNo,
+            email: updatedData.email,
+            username: updatedData.username,
+            phone: updatedData.phone,
+            password: newPassword || updatedData.password,
+            // Add other fields as needed
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log("Student updated successfully:", response.data);
+        setEditDialogOpen(false);
+        reFetch(); // Manually trigger data refetch
+      } else {
+        console.error("Invalid or missing _id property in editStudentData");
+      }
+    } catch (error) {
+      console.error("Error updating student:", error);
+    }
+  };
+
   return (
     <Fragment>
       <ContentBox className="analytics">
@@ -160,14 +238,14 @@ const Info3 = () => {
 
                       <th>Name</th>
                       <th>Address</th>
-                      <th>Email/Username</th>
+                      <th>Email</th>
 
                       <th class="text-end">Action</th>
                     </tr>
                   </thead>
                   {data && data.length > 0 ? (
-                    data.map((item, index) => (
-                      <tbody>
+                    <tbody>
+                      {data.map((item, index) => (
                         <tr key={item._id}>
                           <td>
                             <div class="trans-list">
@@ -223,7 +301,9 @@ const Info3 = () => {
                                     Student Profile
                                   </Link>
                                 </MenuItem>
-                                <MenuItem>
+                                <MenuItem
+                                  onClick={() => handleEditStudent(item._id)}
+                                >
                                   <ListItemIcon>
                                     <EditIcon /> {/* Use an Edit icon */}
                                   </ListItemIcon>
@@ -243,8 +323,8 @@ const Info3 = () => {
                             </TableCell>
                           </td>
                         </tr>
-                      </tbody>
-                    ))
+                      ))}
+                    </tbody>
                   ) : (
                     <TableRow>
                       <TableCell colSpan={5} align="center">
@@ -253,6 +333,15 @@ const Info3 = () => {
                     </TableRow>
                   )}
                 </table>
+                {editStudentData && (
+                  <EditStudent
+                    open={editDialogOpen}
+                    onClose={() => setEditDialogOpen(false)}
+                    studentId={editStudentData._id}
+                    onSave={handleSaveEdit}
+                  />
+                )}
+
                 <Dialog
                   open={deleteConfirmationOpen}
                   onClose={handleCloseDeleteConfirmation}
