@@ -44,7 +44,7 @@ const studentDashboardRoutes = [
     auth: "student",
   },
   {
-    path: "/student/dashboard/js1-subject",
+    path: "/student/dashboard/subject",
     element: <Sub1 />,
     auth: "student",
   },

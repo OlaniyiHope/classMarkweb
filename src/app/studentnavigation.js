@@ -12,7 +12,7 @@ export const navigations = [
 
   {
     name: "Subject",
-    path: "/student/dashboard/js1-subject",
+    path: "/student/dashboard/subject",
     icon: <span style={{ color: "#ffc107" }}>book</span>,
   },
 
