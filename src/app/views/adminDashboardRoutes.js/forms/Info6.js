@@ -74,7 +74,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Info6 = () => {
-  const { data, loading, error, reFetch } = useFetch("/student/SS3");
+  const { data, loading, error, reFetch } = useFetch("/student/S.S.1.C");
   console.log("Data:", data);
 
   const { palette } = useTheme();

@@ -73,8 +73,8 @@ const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(1),
 }));
 
-const Info4 = () => {
-  const { data, loading, error, reFetch } = useFetch("/student/S.S.1.S");
+const Info11 = () => {
+  const { data, loading, error, reFetch } = useFetch("/student/S.S.3.A");
   console.log("Data:", data);
 
   const { palette } = useTheme();
@@ -409,4 +409,4 @@ const Info4 = () => {
   );
 };
 
-export default Info4;
+export default Info11;

@@ -43,6 +43,13 @@ import ViewNotice from "./forms/ViewNotice";
 import Parent from "./forms/Parent";
 import Setting from "./forms/Settings";
 import Account from "./forms/Account";
+import Info7 from "./forms/Info7";
+
+import Info9 from "./forms/Info9";
+import Info8 from "./forms/Info8";
+import Info10 from "./forms/Info10";
+import Info11 from "./forms/Info11";
+import Info12 from "./forms/Info12";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -75,20 +82,51 @@ const adminDashboardRoutes = [
     auth: "admin",
   },
   {
-    path: "/dashboard/ss1-student_information",
+    path: "/dashboard/ss1-science-student_information",
     element: <Info4 />,
     auth: "admin",
   },
   {
-    path: "/dashboard/ss2-student_information",
+    path: "/dashboard/ss1-art-student_information",
     element: <Info5 />,
     auth: "admin",
   },
   {
-    path: "/dashboard/ss3-student_information",
+    path: "/dashboard/ss1-commercial-student_information",
     element: <Info6 />,
     auth: "admin",
   },
+  {
+    path: "/dashboard/ss2-science-student_information",
+    element: <Info7 />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/ss2-art-student_information",
+    element: <Info8 />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/ss2-commercial-student_information",
+    element: <Info9 />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/ss3-science-student_information",
+    element: <Info10 />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/ss3-art-student_information",
+    element: <Info11 />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/ss3-commercial-student_information",
+    element: <Info12 />,
+    auth: "admin",
+  },
+
   { path: "/dashboard/teacher", element: <Teacher />, auth: "admin" },
   { path: "/dashboard/parent", element: <Parent />, auth: "admin" },
   { path: "/dashboard/add_notice", element: <NoticeBoard />, auth: "admin" },

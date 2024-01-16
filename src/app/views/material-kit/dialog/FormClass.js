@@ -83,7 +83,7 @@ export default function FormClass() {
         <DialogTitle id="form-dialog-title" style={{ fontSize: "14px" }}>
           {" "}
           ( Note: Use Capital Letter to create class and no space: e.g JS1,JS2,
-          SS1)
+          S.S.1.A, S.S.3.C)
         </DialogTitle>
 
         <DialogContent>

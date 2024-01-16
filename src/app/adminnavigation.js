@@ -40,19 +40,49 @@ export const navigations = [
             path: "/dashboard/jss3-student_information",
           },
           {
-            name: "Class S.S.S 1",
+            name: "Class S.S.1.S",
             iconText: "SI",
-            path: "/dashboard/ss1-student_information",
+            path: "/dashboard/ss1-science-student_information",
           },
           {
-            name: "Class S.S.S 2",
+            name: "Class S.S.1.A",
             iconText: "SI",
-            path: "/dashboard/ss2-student_information",
+            path: "/dashboard/ss1-art-student_information",
           },
           {
-            name: "Class S.S.S 3",
+            name: "Class S.S.1.C",
             iconText: "SI",
-            path: "/dashboard/ss3-student_information",
+            path: "/dashboard/ss1-commercial-student_information",
+          },
+          {
+            name: "Class S.S.2.S",
+            iconText: "SI",
+            path: "/dashboard/ss2-science-student_information",
+          },
+          {
+            name: "Class S.S.2.A",
+            iconText: "SI",
+            path: "/dashboard/ss2-art-student_information",
+          },
+          {
+            name: "Class S.S.2.C",
+            iconText: "SI",
+            path: "/dashboard/ss2-commercial-student_information",
+          },
+          {
+            name: "Class S.S.3.S",
+            iconText: "SI",
+            path: "/dashboard/ss3-science-student_information",
+          },
+          {
+            name: "Class S.S.3.A",
+            iconText: "SI",
+            path: "/dashboard/ss3-art-student_information",
+          },
+          {
+            name: "Class S.S.3.C",
+            iconText: "SI",
+            path: "/dashboard/ss3-commercial-student_information",
           },
         ],
 
