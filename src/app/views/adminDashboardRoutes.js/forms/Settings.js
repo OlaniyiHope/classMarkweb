@@ -48,12 +48,14 @@ const Settings = () => {
   const [formData, setFormData] = useState({
     name: "",
     motto: "",
-    principalName: "",
-    resumptionDate: "",
-    schoolLogo: null, // File field
+    address: "", // Change to match the server's expected field name
+    phone: "",
+    phonetwo: "",
+    currency: "",
+    email: "",
     sessionStart: "",
     sessionEnd: "",
-    currency: "",
+    schoolLogo: null,
   });
 
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -83,6 +85,7 @@ const Settings = () => {
     formDataToSend.append("email", formData.email);
     formDataToSend.append("sessionStart", formData.sessionStart); // Adjusted field name
     formDataToSend.append("sessionEnd", formData.sessionEnd); // Adjusted field name
+    console.log("FormData before append:", formDataToSend);
 
     if (formData.schoolLogo) {
       formDataToSend.append("schoolLogo", formData.schoolLogo);
@@ -93,6 +96,7 @@ const Settings = () => {
         `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/account-setting`,
         formDataToSend
       );
+      console.log("FormData after append:", formDataToSend);
 
       toast.success("School profile updated successfully");
     } catch (err) {
@@ -106,7 +110,7 @@ const Settings = () => {
 
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: files ? files[0] : value,
+      [name]: files ? files[0] : value, // Handle files separately
     }));
   };
 
@@ -247,6 +251,7 @@ const Settings = () => {
                   <input
                     type="file"
                     name="schoolLogo"
+                    // value={formData.schoolLogo}
                     onChange={handleChange}
                     sx={{ mb: 3 }}
                   />

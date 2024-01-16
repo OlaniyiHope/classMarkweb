@@ -401,7 +401,8 @@ const TermRep = ({ studentId }) => {
               >
                 <div class="logo">
                   <img
-                    src={accountSettings.schoolLogo}
+                    // src={accountSettings.schoolLogo}
+                    src={`http://localhost:5000/uploads/${accountSettings.schoolLogo}`}
                     style={{
                       width: "130px",
                       height: "130px",
