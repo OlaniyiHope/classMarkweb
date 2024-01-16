@@ -402,7 +402,7 @@ const TermRep = ({ studentId }) => {
                 <div class="logo">
                   <img
                     // src={accountSettings.schoolLogo}
-                    src={`http://localhost:5000/uploads/${accountSettings.schoolLogo}`}
+                    src={`https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/uploads/${accountSettings.schoolLogo}`}
                     style={{
                       width: "200px",
                       height: "130px",
@@ -775,7 +775,7 @@ const TermRep = ({ studentId }) => {
                       <td style={{ textAlign: "right" }}>
                         <img
                           // src={`https://hlhs-98d6f8c9ac3a.herokuapp.com/uploads/${schoolSettings.signature}`}
-                          src={`http://localhost:5000/uploads/${schoolSettings.signature}`}
+                          src={`https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/uploads/${schoolSettings.signature}`}
                           width="200"
                           alt="Principal Signature"
                         />
