@@ -1,5 +1,5 @@
 import {} from "@mui/material";
-import { Fragment, React, useState } from "react";
+import { Fragment, React, useState, useEffect } from "react";
 import { Box } from "@mui/system";
 import {
   Card,
@@ -21,6 +21,7 @@ import { Breadcrumb } from "app/components";
 
 import useFetch from "hooks/useFetch";
 import FormDialog4 from "app/views/material-kit/dialog/FormDialog4";
+import useAuth from "app/hooks/useAuth";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -59,10 +60,12 @@ const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(1),
 }));
 
-const Sub1 = () => {
-  const className = "JS1"; // Specify the class name here
-
-  const { data, loading, error } = useFetch(`/get-subject/${className}`); // Use the specified class name in the URL
+const Sub1 = ({ classname }) => {
+  const { user } = useAuth();
+  // const { data, loading, error, reFetch } = useFetch(
+  //   `/get-subject/${classname}`
+  // ); // Use the specified class name in the URL
+  const { data, loading, error } = useFetch(`/get-subject/${user.classname}`);
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
@@ -71,6 +74,10 @@ const Sub1 = () => {
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
   };
+  // useEffect(() => {
+  //   // When classname changes, refetch the data
+  //   reFetch(`/get-subject/${classname}`);
+  // }, [classname, reFetch]);
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
@@ -84,7 +91,7 @@ const Sub1 = () => {
           <Breadcrumb
             routeSegments={[
               // { name: "Material", path: "/material" },
-              { name: "Subject" },
+              { name: "Manage Subject" },
             ]}
           />
         </Box>
@@ -98,20 +105,10 @@ const Sub1 = () => {
               >
                 <thead>
                   <tr>
-                    <th>
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="checkAll"
-                        required=""
-                      />
-                    </th>
                     <th>S/N</th>
+                    <th>Class</th>
                     <th>Subject Name</th>
                     <th>Teacher</th>
-                    <th>Class</th>
-
-                    <th class="text-end">Action</th>
                   </tr>
                 </thead>
                 {data && data.length > 0 ? (
@@ -119,35 +116,18 @@ const Sub1 = () => {
                     <tbody>
                       <tr key={item._id}>
                         <td>
-                          <div class="checkbox me-0 align-self-center">
-                            <div class="custom-control custom-checkbox ">
-                              <input
-                                type="checkbox"
-                                class="form-check-input"
-                                id="check16"
-                                required=""
-                              />
-                              <label
-                                class="custom-control-label"
-                                for="check16"
-                              ></label>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
                           <div class="trans-list">
                             <h4>{index + 1}</h4>
                           </div>
                         </td>
-
                         <td>
-                          <div class="date">{item.name}</div>
+                          <h6>{item.classname}</h6>
                         </td>
                         <td>
-                          <h6 class="mb-0">{item.teacher}</h6>
+                          <div>{item.name}</div>
                         </td>
                         <td>
-                          <h6 class="mb-0">{item.classname}</h6>
+                          <h6>{item.teacher}</h6>
                         </td>
                       </tr>
                     </tbody>

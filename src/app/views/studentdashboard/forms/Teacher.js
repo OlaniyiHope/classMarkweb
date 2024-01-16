@@ -8,7 +8,12 @@ import {
   TableBody,
   MenuItem,
   Menu,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   TableCell,
+  Button,
   TableHead,
   TableRow,
   ListItemIcon,
@@ -18,7 +23,6 @@ import FormDialog3 from "app/views/material-kit/dialog/FormDialog3";
 import { TablePagination } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
-import DeleteIcon from "@mui/icons-material/Delete";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -36,11 +40,17 @@ const StyledTable = styled(Table)(({ theme }) => ({
 }));
 
 const Teacher = () => {
-  const { data, loading, error } = useFetch("/get-teachers");
+  const { data, loading, error, reFetch } = useFetch("/get-teachers");
   const [page, setPage] = useState(0);
+  const [editTeacherData, setEditTeacherData] = useState(null);
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [action, setAction] = useState(null);
+  const [newPassword, setNewPassword] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     // Fetch the JWT token from your storage (localStorage or cookies)
@@ -78,9 +88,16 @@ const Teacher = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  const handleOpenDeleteConfirmation = (user) => {
+    setUserToDelete(user);
+    setDeleteConfirmationOpen(true);
+  };
 
   return (
     <Fragment>
+      <Box className="breadcrumb">
+        <h2>Manage Teacher</h2>
+      </Box>
       <ContentBox className="analytics">
         <Box width="100%" overflow="auto">
           <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
@@ -91,21 +108,11 @@ const Teacher = () => {
               >
                 <thead>
                   <tr>
-                    <th>
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="checkAll"
-                        required=""
-                      />
-                    </th>
                     <th>S/N</th>
-                    <th>Photo</th>
+
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
-
-                    <th class="text-end">Action</th>
                   </tr>
                 </thead>
                 {data && data.length > 0 ? (
@@ -113,35 +120,11 @@ const Teacher = () => {
                     <tbody>
                       <tr key={item._id}>
                         <td>
-                          <div class="checkbox me-0 align-self-center">
-                            <div class="custom-control custom-checkbox ">
-                              <input
-                                type="checkbox"
-                                class="form-check-input"
-                                id="check16"
-                                required=""
-                              />
-                              <label
-                                class="custom-control-label"
-                                for="check16"
-                              ></label>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
                           <div class="trans-list">
                             <h4>{index + 1}</h4>
                           </div>
                         </td>
-                        <td>
-                          <span class="text-primary font-w600">
-                            <img
-                              src="images/trans/10.jpg"
-                              alt=""
-                              class="avatar me-3"
-                            />
-                          </span>
-                        </td>
+
                         <td>
                           <span class="text-primary font-w600">
                             {item.username}
@@ -152,37 +135,6 @@ const Teacher = () => {
                         </td>
                         <td>
                           <h6 class="mb-0">{item.phone}</h6>
-                        </td>
-
-                        <td>
-                          <TableCell align="right">
-                            <IconButton
-                              aria-controls="action-menu"
-                              aria-haspopup="true"
-                              onClick={handleOpenMenu}
-                            >
-                              <MoreVertIcon /> {/* MoreVertIcon for the menu */}
-                            </IconButton>
-                            <Menu
-                              id="action-menu"
-                              anchorEl={anchorEl}
-                              open={Boolean(anchorEl)}
-                              onClose={handleCloseMenu}
-                            >
-                              <MenuItem>
-                                <ListItemIcon>
-                                  <EditIcon /> {/* Use an Edit icon */}
-                                </ListItemIcon>
-                                Edit
-                              </MenuItem>
-                              <MenuItem>
-                                <ListItemIcon>
-                                  <DeleteIcon /> {/* Use a Delete icon */}
-                                </ListItemIcon>
-                                Delete
-                              </MenuItem>
-                            </Menu>
-                          </TableCell>
                         </td>
                       </tr>
                     </tbody>

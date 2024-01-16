@@ -14,8 +14,7 @@ import Online from "./forms/Online";
 import Payment from "./forms/Payment";
 import Profile from "./forms/Profile";
 import Sub1 from "./forms/Sub1";
-import Sub2 from "./forms/Sub2";
-import Sub3 from "./forms/Sub3";
+
 import Subject from "./forms/Subject";
 import Tab from "./forms/Tab";
 import Teacher from "./forms/Teacher";
@@ -24,9 +23,7 @@ import Info3 from "./forms/Info3";
 import Info4 from "./forms/Info4";
 import Info5 from "./forms/Info5";
 import Info6 from "./forms/Info6";
-import Sub4 from "./forms/Sub4";
-import Sub5 from "./forms/Sub5";
-import Sub6 from "./forms/Sub6";
+
 import ExamDetail from "./forms/ExamDetail";
 import ManageResult from "./forms/ManageResult";
 import MarkSheet from "./forms/MarkSheet";
@@ -56,31 +53,7 @@ const studentDashboardRoutes = [
     element: <Examlist />,
     auth: "student",
   },
-  {
-    path: "/student/dashboard/js3-subject",
-    element: <Sub3 />,
-    auth: "student",
-  },
-  {
-    path: "/student/dashboard/js2-subject",
-    element: <Sub2 />,
-    auth: "student",
-  },
-  {
-    path: "/student/dashboard/ss1-subject",
-    element: <Sub4 />,
-    auth: "student",
-  },
-  {
-    path: "/student/dashboard/ss2-subject",
-    element: <Sub5 />,
-    auth: "student",
-  },
-  {
-    path: "/student/dashboard/ss3-subject",
-    element: <Sub6 />,
-    auth: "student",
-  },
+
   {
     path: "/student/dashboard/manage-mark-view",
     element: <ManagemarkView />,

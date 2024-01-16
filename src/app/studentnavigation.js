@@ -9,49 +9,11 @@ export const navigations = [
     path: "/student/dashboard/teacher",
     icon: <span style={{ color: "#ffc107" }}>person</span>,
   },
-  {
-    name: "Subject",
-    icon: "book",
-    children: [
-      {
-        name: "Class J.S.S 1",
-        iconText: "SI",
-        path: "student/dashboard/js1-subject",
-      },
-      {
-        name: "Class J.S.S 2",
-        iconText: "SI",
-        path: "/student/dashboard/js2-subject",
-      },
-      {
-        name: "Class J.S.S 3",
-        iconText: "SI",
-        path: "/student/dashboard/js3-subject",
-      },
-      {
-        name: "Class S.S.S 1",
-        iconText: "SI",
-        path: "/student/dashboard/ss1-subject",
-      },
-      {
-        name: "Class S.S.S 2",
-        iconText: "SI",
-        path: "/student/dashboard/ss2-subject",
-      },
-      {
-        name: "Class S.S.S 3",
-        iconText: "SI",
-        path: "/student/dashboard/ss3-subject",
-      },
-    ],
-  },
 
   {
-    name: "Class Routine",
-    icon: "school",
-    children: [
-      { name: "Manage Class", iconText: "SI", path: "dashboard/class" },
-    ],
+    name: "Subject",
+    path: "/student/dashboard/js1-subject",
+    icon: <span style={{ color: "#ffc107" }}>book</span>,
   },
 
   {
