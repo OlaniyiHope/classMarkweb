@@ -67,7 +67,9 @@ const ExamDetail = () => {
 
   const fetchExamAndQuestions = async () => {
     try {
-      const examResponse = await axios.get(`${apiUrl}/api/get-exam/${id}`);
+      const examResponse = await axios.get(
+        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/get-exam/${id}`
+      );
       setExam(examResponse.data);
 
       const token = localStorage.getItem("jwtToken");
@@ -76,7 +78,7 @@ const ExamDetail = () => {
       };
 
       const questionsResponse = await axios.get(
-        `${apiUrl}/api/questions/${id}`,
+        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/questions/${id}`,
         { headers }
       );
       const questionsData = questionsResponse.data;
@@ -164,9 +166,13 @@ const ExamDetail = () => {
 
       console.log("Data before submitting:", data); // Log the data before submitting
 
-      const response = await axios.post(`${apiUrl}/api/exams/submit`, data, {
-        headers,
-      });
+      const response = await axios.post(
+        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/exams/submit`,
+        data,
+        {
+          headers,
+        }
+      );
 
       if (response.status === 200) {
         setExamFinished(true);

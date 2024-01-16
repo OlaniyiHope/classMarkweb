@@ -89,10 +89,13 @@ const ManSin2 = () => {
           Authorization: `Bearer ${token}`,
         };
 
-        const response = await fetch(`${apiUrl}/api/questions/${id}`, {
-          method: "GET",
-          headers, // Include the headers in the request
-        });
+        const response = await fetch(
+          `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/questions/${id}`,
+          {
+            method: "GET",
+            headers, // Include the headers in the request
+          }
+        );
 
         if (response.ok) {
           const questionsData = await response.json();
@@ -142,14 +145,17 @@ const ManSin2 = () => {
         ).value;
       }
 
-      const response = await fetch(`${apiUrl}/api/questions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Include the JWT token in the headers
-        },
-        body: JSON.stringify(questionData),
-      });
+      const response = await fetch(
+        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/questions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Include the JWT token in the headers
+          },
+          body: JSON.stringify(questionData),
+        }
+      );
 
       if (response.ok) {
         // Question submitted successfully, you can handle the response here

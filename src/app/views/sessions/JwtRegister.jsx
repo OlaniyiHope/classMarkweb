@@ -91,7 +91,7 @@ const JwtRegister = () => {
     // Assuming you have the JWT token stored in localStorage
     const token = localStorage.getItem("jwtToken");
     // Fetch classes from your API
-    fetch(`${apiUrl}/api/class`, {
+    fetch(`https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/class`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`, // Include your authentication token

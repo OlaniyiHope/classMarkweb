@@ -120,7 +120,7 @@ const ViewAdmin = () => {
   const handleDeleteUser = async () => {
     try {
       const response = await axios.delete(
-        `${apiUrl}/api/users/${userToDelete._id}`
+        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/users/${userToDelete._id}`
       );
 
       console.log("Response from delete API:", response.data);

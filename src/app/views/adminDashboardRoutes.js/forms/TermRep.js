@@ -75,7 +75,7 @@ const TermRep = ({ studentId }) => {
       };
 
       const response = await axios.get(
-        `${apiUrl}/api/get-scores-by-student/${studentId}`,
+        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/get-scores-by-student/${studentId}`,
         { headers }
       );
 
@@ -101,7 +101,9 @@ const TermRep = ({ studentId }) => {
   useEffect(() => {
     const fetchSchoolSettings = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/setting`);
+        const response = await axios.get(
+          `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/setting`
+        );
         const { data } = response.data;
 
         // Set the retrieved school settings to the state
@@ -116,7 +118,9 @@ const TermRep = ({ studentId }) => {
   useEffect(() => {
     const fetchAccountSettings = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/account-setting`);
+        const response = await axios.get(
+          `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/account-setting`
+        );
         const { data } = response.data;
 
         // Set the retrieved school settings to the state

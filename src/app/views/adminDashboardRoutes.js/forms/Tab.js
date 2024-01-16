@@ -67,7 +67,7 @@ const Tab = () => {
       headers.append("Authorization", `Bearer ${token}`);
 
       const response = await fetch(
-        `${apiUrl}/api/get-all-scores/${examId}/${subjectId}`,
+        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/get-all-scores/${examId}/${subjectId}`,
         {
           headers,
         }
@@ -95,9 +95,12 @@ const Tab = () => {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      const response = await fetch(`${apiUrl}/api/student/${selectedClass}`, {
-        headers,
-      });
+      const response = await fetch(
+        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/student/${selectedClass}`,
+        {
+          headers,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch student data");
@@ -177,7 +180,7 @@ const Tab = () => {
         headers.append("Authorization", `Bearer ${token}`);
 
         const response = await fetch(
-          `${apiUrl}/api/get-subject/${selectedClass}`,
+          `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/get-subject/${selectedClass}`,
           {
             headers,
           }
@@ -265,7 +268,7 @@ const Tab = () => {
       // Check if there are existing marks by verifying the examId and subjectId
       if (selectedExam && subjectIdLookup[selectedSubject]) {
         const responseCheckMarks = await fetch(
-          `${apiUrl}/api/get-all-scores/${selectedExam}/${subjectIdLookup[selectedSubject]}`,
+          `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/get-all-scores/${selectedExam}/${subjectIdLookup[selectedSubject]}`,
           {
             headers,
           }
@@ -281,7 +284,7 @@ const Tab = () => {
           if (existingMarks.length > 0) {
             // Existing marks found, proceed with updating
             const responseUpdateMarks = await fetch(
-              `${apiUrl}/api/update-all-marks`,
+              `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/update-all-marks`,
               {
                 method: "PUT",
                 headers: {
@@ -316,18 +319,21 @@ const Tab = () => {
             }
           } else {
             // No existing marks found, proceed to create new marks
-            const responseSaveMarks = await fetch(`${apiUrl}/api/save-marks`, {
-              method: "POST",
-              headers: {
-                ...headers,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                examId: selectedExam,
-                subjectId: subjectIdLookup[selectedSubject],
-                updates: marks,
-              }),
-            });
+            const responseSaveMarks = await fetch(
+              `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/save-marks`,
+              {
+                method: "POST",
+                headers: {
+                  ...headers,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  examId: selectedExam,
+                  subjectId: subjectIdLookup[selectedSubject],
+                  updates: marks,
+                }),
+              }
+            );
 
             console.log("Response from Save Marks:", responseSaveMarks);
 

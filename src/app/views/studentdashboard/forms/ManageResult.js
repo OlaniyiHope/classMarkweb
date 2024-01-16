@@ -175,7 +175,7 @@ const ManageResult = () => {
         };
 
         const response = await axios.get(
-          `${apiUrl}/api/students/all-scores/${user._id}`, // Use user._id instead of user.id
+          `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/students/all-scores/${user._id}`, // Use user._id instead of user.id
           {
             headers,
           }

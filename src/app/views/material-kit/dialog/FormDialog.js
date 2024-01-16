@@ -47,10 +47,13 @@ export default function FormDialog() {
       address,
     };
     try {
-      await axios.post(`${apiUrl}/api/register`, {
-        ...formData,
-        role: "admin",
-      });
+      await axios.post(
+        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/register`,
+        {
+          ...formData,
+          role: "admin",
+        }
+      );
       // navigate("/dashboard/admin");
       toast.success("User successfully created");
     } catch (err) {

@@ -60,7 +60,7 @@ const Settings = () => {
 
   useEffect(() => {
     // Fetch classes from your API
-    fetch(`${apiUrl}/api/class`)
+    fetch(`https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/class`)
       .then((response) => response.json())
       .then((data) => {
         // Handle class data if needed

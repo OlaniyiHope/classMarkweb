@@ -124,7 +124,9 @@ const Admin = () => {
 
         const counts = await Promise.all(
           roles.map(async (role) => {
-            const response = await axios.get(`${apiUrl}/api/users/${role}`);
+            const response = await axios.get(
+              `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/users/${role}`
+            );
             return { role, count: response.data.length };
           })
         );
