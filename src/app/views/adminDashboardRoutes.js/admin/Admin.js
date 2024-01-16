@@ -94,7 +94,9 @@ const Admin = () => {
   useEffect(() => {
     const fetchNotices = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/get-all-notices`);
+        const response = await axios.get(
+          `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/get-all-notices`
+        );
         setNotices(response.data);
       } catch (error) {
         console.error("Error fetching notices:", error);
