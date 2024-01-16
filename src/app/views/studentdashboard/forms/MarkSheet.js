@@ -112,13 +112,13 @@ const MarkSheet = () => {
         </h2>
 
         <Box width="100%" overflow="auto">
-          <Link to={`/dashboard/term_report_card/`}>
+          <Link to={`/dashboard/term_report_card/${user._id}`}>
             <Button
               color="primary"
               variant="contained"
               style={{ width: "100%", marginTop: "100px" }}
             >
-              First Term Report Card
+              Second Term Report Card
             </Button>
           </Link>
 

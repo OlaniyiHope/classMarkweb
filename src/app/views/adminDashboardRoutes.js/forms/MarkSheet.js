@@ -108,7 +108,7 @@ const MarkSheet = () => {
               variant="contained"
               style={{ width: "100%", marginTop: "100px" }}
             >
-              First Term Report Card
+              Second Term Report Card
             </Button>
           </Link>
           {/* Use id for "Cumulative Result" link */}

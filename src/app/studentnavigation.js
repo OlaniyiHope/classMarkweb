@@ -17,9 +17,9 @@ export const navigations = [
   },
 
   {
-    name: "Mark View",
+    name: "Exam Mark/Report Card",
     path: "/student/dashboard/student_mark_sheet",
-    icon: "assignment",
+    icon: <span style={{ color: "#ffc107" }}>assignment</span>,
   },
   {
     name: "Online Exam",
