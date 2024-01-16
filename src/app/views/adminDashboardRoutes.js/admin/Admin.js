@@ -14,6 +14,7 @@ import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons";
 import Calendar from "react-calendar";
 import "./calendar.css";
+import "./newcss.css";
 
 import "./style.css";
 import axios from "axios";
@@ -209,8 +210,8 @@ const Admin = () => {
         ))}
       </div>
       <div className="row gutters-20" style={{ marginTop: "60px" }}></div>
-      <div style={{ display: "flex" }}>
-        <div style={{ flexBasis: "50%", width: "100%" }}>
+      <div className="cald">
+        <div className="one">
           <div style={{ border: "1px solid #ddd", padding: "20px" }}>
             <h2 style={{ marginBottom: "20px" }}>Event Calendar</h2>
             <Calendar
@@ -225,7 +226,7 @@ const Admin = () => {
             />
           </div>
         </div>
-        <div style={{ flexBasis: "50%" }}>
+        <div className="two">
           <h2>Notice Board</h2>
           <div
             className="notice-box-wrap m-height-660"
