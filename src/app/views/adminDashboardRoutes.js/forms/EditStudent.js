@@ -29,7 +29,7 @@ const EditStudent = ({ open, onClose, studentId, onSave }) => {
           const token = localStorage.getItem("jwtToken");
 
           const response = await fetch(
-            `https://hlhs-98d6f8c9ac3a.herokuapp.com/api/students/${studentId}`,
+            `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/students/${studentId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`, // Include your authentication token
