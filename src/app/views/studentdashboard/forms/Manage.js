@@ -78,31 +78,31 @@ const Manage = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  // const handleOpenMenu = (event, examId) => {
-  //   setAnchorElMap((prev) => ({
-  //     ...prev,
-  //     [examId]: event.currentTarget,
-  //   }));
-  // };
-  const handleOpenMenu = (event, examId, examTime) => {
-    const currentTime = moment();
-    const formattedExamTime = moment(examTime).tz("Africa/Lagos");
-
-    console.log("Current Time:", currentTime.format());
-    console.log("Exam Time:", formattedExamTime.format());
-
-    if (currentTime.isBefore(formattedExamTime)) {
-      // If it's not yet time for the exam, open the dialog
-      console.log("Not yet time for the exam. Opening dialog...");
-      setDialogOpen(true);
-    } else {
-      // If it's time for the exam, navigate to the Manage Questions page
-      console.log(
-        "It's time for the exam. Navigating to Manage Questions page..."
-      );
-      handleCloseMenu(examId); // Close the menu
-    }
+  const handleOpenMenu = (event, examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: event.currentTarget,
+    }));
   };
+  // const handleOpenMenu = (event, examId, examTime) => {
+  //   const currentTime = moment();
+  //   const formattedExamTime = moment(examTime).tz("Africa/Lagos");
+
+  //   console.log("Current Time:", currentTime.format());
+  //   console.log("Exam Time:", formattedExamTime.format());
+
+  //   if (currentTime.isBefore(formattedExamTime)) {
+  //     // If it's not yet time for the exam, open the dialog
+  //     console.log("Not yet time for the exam. Opening dialog...");
+  //     setDialogOpen(true);
+  //   } else {
+  //     // If it's time for the exam, navigate to the Manage Questions page
+  //     console.log(
+  //       "It's time for the exam. Navigating to Manage Questions page..."
+  //     );
+  //     handleCloseMenu(examId); // Close the menu
+  //   }
+  // };
 
   // Function to handle closing the context menu for a specific exam
   const handleCloseMenu = (examId) => {
@@ -157,11 +157,11 @@ const Manage = () => {
                   <IconButton
                     aria-controls={`action-menu-${item._id}`}
                     aria-haspopup="true"
-                    // onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
+                    onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
 
-                    onClick={(event) =>
-                      handleOpenMenu(event, item._id, item.fromTime)
-                    }
+                    // onClick={(event) =>
+                    //   handleOpenMenu(event, item._id, item.fromTime)
+                    // }
                   >
                     <MoreVertIcon /> {/* MoreVertIcon for the menu */}
                   </IconButton>
@@ -172,9 +172,9 @@ const Manage = () => {
                     onClose={() => handleCloseMenu(item._id)}
                   >
                     <MenuItem
-                      onClick={(event) =>
-                        handleOpenMenu(event, item._id, item.fromTime)
-                      }
+                    // onClick={(event) =>
+                    //   handleOpenMenu(event, item._id, item.fromTime)
+                    // }
                     >
                       <ListItemIcon></ListItemIcon>
                       <Link
