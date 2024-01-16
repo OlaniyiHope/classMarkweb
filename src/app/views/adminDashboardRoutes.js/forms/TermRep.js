@@ -404,7 +404,7 @@ const TermRep = ({ studentId }) => {
                     // src={accountSettings.schoolLogo}
                     src={`http://localhost:5000/uploads/${accountSettings.schoolLogo}`}
                     style={{
-                      width: "130px",
+                      width: "200px",
                       height: "130px",
                       borderRadius: "50%",
                     }}
