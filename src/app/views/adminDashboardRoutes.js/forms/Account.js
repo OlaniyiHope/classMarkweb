@@ -80,11 +80,14 @@ const Account = () => {
     }
 
     try {
+      // await axios.post(
+      //   `https://hlhs-98d6f8c9ac3a.herokuapp.com/api/setting`,
+      //   formDataToSend
+      // );
       await axios.post(
-        `https://hlhs-98d6f8c9ac3a.herokuapp.com/api/setting`,
+        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/setting`,
         formDataToSend
       );
-
       toast.success("School profile updated successfully");
     } catch (err) {
       console.error("Error updating school profile:", err);

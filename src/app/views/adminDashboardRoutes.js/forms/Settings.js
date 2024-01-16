@@ -113,6 +113,25 @@ const Settings = () => {
       [name]: files ? files[0] : value, // Handle files separately
     }));
   };
+  // const handleChange = (e) => {
+  //   const { name, value, files } = e.target;
+
+  //   if (name === "schoolLogo") {
+  //     const logoFile = files[0];
+  //     const newFormData = new FormData();
+  //     newFormData.append("schoolLogo", logoFile);
+
+  //     setFormData((prevFormData) => ({
+  //       ...prevFormData,
+  //       [name]: logoFile,
+  //     }));
+  //   } else {
+  //     setFormData((prevFormData) => ({
+  //       ...prevFormData,
+  //       [name]: value,
+  //     }));
+  //   }
+  // };
 
   return (
     <div>
