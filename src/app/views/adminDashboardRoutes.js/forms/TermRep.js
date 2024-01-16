@@ -401,8 +401,11 @@ const TermRep = ({ studentId }) => {
               >
                 <div class="logo">
                   <img
-                    // src={accountSettings.schoolLogo}
-                    src={`https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/uploads/${accountSettings.schoolLogo}`}
+                    src={`${
+                      process.env.NODE_ENV === "production"
+                        ? "https://hlhsapi-ecaf5e7a2f6f.herokuapp.com"
+                        : "http://localhost:5000"
+                    }/uploads/${accountSettings.schoolLogo}`}
                     style={{
                       width: "200px",
                       height: "130px",
