@@ -66,6 +66,7 @@ const TermRep = ({ studentId }) => {
     schoolLogo: "",
   });
   const apiUrl = process.env.REACT_APP_API_URL;
+  console.log("School Logo:", accountSettings.schoolLogo);
 
   const fetchStudentData = async (studentId) => {
     try {
@@ -401,11 +402,7 @@ const TermRep = ({ studentId }) => {
               >
                 <div class="logo">
                   <img
-                    src={`${
-                      process.env.NODE_ENV === "production"
-                        ? "https://hlhsapi-ecaf5e7a2f6f.herokuapp.com"
-                        : "http://localhost:5000"
-                    }/uploads/${accountSettings.schoolLogo}`}
+                    src={`https://edupros.s3.amazonaws.com/${accountSettings.schoolLogo}`}
                     style={{
                       width: "200px",
                       height: "130px",
