@@ -82,7 +82,7 @@ const MarkSheet = () => {
   console.log("Student ID:", id);
 
   const { data, loading, error } = useFetch(`/students/${id}`); // Fetch data using the correct URL
-
+  console.log("student data", data);
   useEffect(() => {
     // Check if the data is available before updating the state
     console.log("Data from useFetch:", data);
