@@ -62,7 +62,7 @@ const Settings = () => {
 
   useEffect(() => {
     // Fetch classes from your API
-    fetch(`https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/class`)
+    fetch(`https://hlhs-3ff6501095d6.herokuapp.com/api/class`)
       .then((response) => response.json())
       .then((data) => {
         // Handle class data if needed
@@ -93,8 +93,13 @@ const Settings = () => {
 
     try {
       await axios.post(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/account-setting`,
-        formDataToSend
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/account-setting`,
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Important for file uploads
+          },
+        }
       );
       console.log("FormData after append:", formDataToSend);
 

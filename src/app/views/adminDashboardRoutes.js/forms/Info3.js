@@ -103,7 +103,7 @@ const Info3 = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/grade`
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/grade`
       );
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -139,7 +139,7 @@ const Info3 = () => {
   const handleDeleteUser = async () => {
     try {
       const response = await axios.delete(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/users/${userToDelete._id}`
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/users/${userToDelete._id}`
       );
 
       console.log("Response from delete API:", response.data);
@@ -186,7 +186,7 @@ const Info3 = () => {
         });
 
         const response = await axios.put(
-          `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/students/${editStudentData._id}`,
+          `https://hlhs-3ff6501095d6.herokuapp.com/api/students/${editStudentData._id}`,
           {
             studentName: updatedData.studentName,
             address: updatedData.address,

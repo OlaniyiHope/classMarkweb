@@ -96,7 +96,7 @@ const Admin = () => {
     const fetchNotices = async () => {
       try {
         const response = await axios.get(
-          `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/get-all-notices`
+          `https://hlhs-3ff6501095d6.herokuapp.com/api/get-all-notices`
         );
         setNotices(response.data);
       } catch (error) {
@@ -126,7 +126,7 @@ const Admin = () => {
         const counts = await Promise.all(
           roles.map(async (role) => {
             const response = await axios.get(
-              `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/users/${role}`
+              `https://hlhs-3ff6501095d6.herokuapp.com/api/users/${role}`
             );
             return { role, count: response.data.length };
           })

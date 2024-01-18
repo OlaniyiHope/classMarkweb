@@ -35,7 +35,7 @@ export default function FormDialog6() {
     };
     try {
       await axios.post(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/userrs/register`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/userrs/register`,
         formData
       );
 

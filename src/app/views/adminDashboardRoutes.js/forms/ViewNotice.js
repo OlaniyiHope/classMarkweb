@@ -106,7 +106,7 @@ const ViewNotice = () => {
   const handleConfirmDelete = async () => {
     try {
       const response = await axios.delete(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/delete-notice/${noticeIdToDelete}`
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/delete-notice/${noticeIdToDelete}`
       );
 
       console.log("Response from delete API:", response.data);
@@ -130,7 +130,7 @@ const ViewNotice = () => {
     // Manually refetch data to trigger a re-render
     try {
       const refetchedData = await axios.get(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/get-all-notices`
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/get-all-notices`
       );
       // Update the data prop with the new data
       // This will trigger a re-render with the updated data

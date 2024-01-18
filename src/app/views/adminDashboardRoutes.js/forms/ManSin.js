@@ -110,7 +110,7 @@ const ManSin = () => {
       const token = localStorage.getItem("jwtToken");
 
       const response = await fetch(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/questions/${questionId}`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/questions/${questionId}`,
         {
           method: "DELETE",
           headers: {
@@ -151,7 +151,7 @@ const ManSin = () => {
         };
 
         const response = await fetch(
-          `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/questions/${id}`,
+          `https://hlhs-3ff6501095d6.herokuapp.com/api/questions/${id}`,
           {
             method: "GET",
             headers, // Include the headers in the request
@@ -200,14 +200,17 @@ const ManSin = () => {
         ).value;
       }
 
-      const response = await fetch(`https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/questions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Include the JWT token in the headers
-        },
-        body: JSON.stringify(questionData),
-      });
+      const response = await fetch(
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/questions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Include the JWT token in the headers
+          },
+          body: JSON.stringify(questionData),
+        }
+      );
 
       if (response.ok) {
         // Question submitted successfully, you can handle the response here

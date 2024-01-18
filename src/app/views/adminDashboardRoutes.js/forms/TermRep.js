@@ -76,7 +76,7 @@ const TermRep = ({ studentId }) => {
       };
 
       const response = await axios.get(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/get-scores-by-student/${studentId}`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/get-scores-by-student/${studentId}`,
         { headers }
       );
 
@@ -103,7 +103,7 @@ const TermRep = ({ studentId }) => {
     const fetchSchoolSettings = async () => {
       try {
         const response = await axios.get(
-          `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/setting`
+          `https://hlhs-3ff6501095d6.herokuapp.com/api/setting`
         );
         const { data } = response.data;
 
@@ -120,7 +120,7 @@ const TermRep = ({ studentId }) => {
     const fetchAccountSettings = async () => {
       try {
         const response = await axios.get(
-          `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/account-setting`
+          `https://hlhs-3ff6501095d6.herokuapp.com/api/account-setting`
         );
         const { data } = response.data;
 
@@ -775,7 +775,7 @@ const TermRep = ({ studentId }) => {
                       <td style={{ textAlign: "right" }}>
                         <img
                           // src={`https://hlhs-98d6f8c9ac3a.herokuapp.com/uploads/${schoolSettings.signature}`}
-                          src={`https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/uploads/${schoolSettings.signature}`}
+                          src={`https://hlhs-3ff6501095d6.herokuapp.com/uploads/${schoolSettings.signature}`}
                           width="200"
                           alt="Principal Signature"
                         />

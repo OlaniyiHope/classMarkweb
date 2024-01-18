@@ -56,7 +56,7 @@ const Account = () => {
 
   useEffect(() => {
     // Fetch classes from your API
-    fetch(`https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/class`)
+    fetch(`https://hlhs-3ff6501095d6.herokuapp.com/api/class`)
       .then((response) => response.json())
       .then((data) => {
         // Handle class data if needed
@@ -85,7 +85,7 @@ const Account = () => {
       //   formDataToSend
       // );
       await axios.post(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/setting`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/setting`,
         formDataToSend
       );
       toast.success("School profile updated successfully");

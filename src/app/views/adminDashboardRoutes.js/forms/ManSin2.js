@@ -90,7 +90,7 @@ const ManSin2 = () => {
         };
 
         const response = await fetch(
-          `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/questions/${id}`,
+          `https://hlhs-3ff6501095d6.herokuapp.com/api/questions/${id}`,
           {
             method: "GET",
             headers, // Include the headers in the request
@@ -146,7 +146,7 @@ const ManSin2 = () => {
       }
 
       const response = await fetch(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/questions`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/questions`,
         {
           method: "POST",
           headers: {

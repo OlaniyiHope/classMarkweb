@@ -68,7 +68,7 @@ const ExamDetail = () => {
   const fetchExamAndQuestions = async () => {
     try {
       const examResponse = await axios.get(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/get-exam/${id}`
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/get-exam/${id}`
       );
       setExam(examResponse.data);
 
@@ -78,7 +78,7 @@ const ExamDetail = () => {
       };
 
       const questionsResponse = await axios.get(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/questions/${id}`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/questions/${id}`,
         { headers }
       );
       const questionsData = questionsResponse.data;
@@ -167,7 +167,7 @@ const ExamDetail = () => {
       console.log("Data before submitting:", data); // Log the data before submitting
 
       const response = await axios.post(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/exams/submit`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/exams/submit`,
         data,
         {
           headers,

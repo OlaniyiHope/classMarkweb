@@ -127,7 +127,7 @@ const Class = () => {
   const handleDeleteClass = async () => {
     try {
       const response = await axios.delete(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/class/${userToDelete._id}`
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/class/${userToDelete._id}`
       );
 
       console.log("Response from delete API:", response.data);

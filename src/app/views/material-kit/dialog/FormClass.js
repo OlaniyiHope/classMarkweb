@@ -32,7 +32,7 @@ export default function FormClass() {
     };
     try {
       const response = await axios.post(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/class`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/class`,
         formData
       );
 

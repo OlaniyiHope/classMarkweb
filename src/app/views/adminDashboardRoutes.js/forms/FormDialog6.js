@@ -39,7 +39,7 @@ export default function FormDialog6() {
 
       // Make an API call to create a subject
       await axios.post(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/create-subject`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/create-subject`,
         formData,
         {
           headers, // Include the headers in the request

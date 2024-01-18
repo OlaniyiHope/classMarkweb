@@ -40,7 +40,7 @@ export default function Examform() {
 
       // Make an API call to create a subject
       await axios.post(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/offlineexam`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/offlineexam`,
         formData,
         {
           headers, // Include the headers in the request

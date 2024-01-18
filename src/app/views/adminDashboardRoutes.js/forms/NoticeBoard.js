@@ -45,7 +45,7 @@ export default function NoticeBoard() {
       console.log("Inside try block...");
 
       const response = await axios.post(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/create-notice`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/create-notice`,
         {
           ...formData,
           date: new Date(),

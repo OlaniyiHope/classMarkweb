@@ -75,7 +75,7 @@ const Exam = () => {
       headers.append("Authorization", `Bearer ${token}`);
 
       const response = await fetch(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/get-all-scores/${examId}/${subjectId}`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/get-all-scores/${examId}/${subjectId}`,
         {
           headers,
         }
@@ -104,7 +104,7 @@ const Exam = () => {
       headers.append("Authorization", `Bearer ${token}`);
 
       const response = await fetch(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/student/${selectedClass}`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/student/${selectedClass}`,
         {
           headers,
         }
@@ -189,7 +189,7 @@ const Exam = () => {
         headers.append("Authorization", `Bearer ${token}`);
 
         const response = await fetch(
-          `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/get-subject/${selectedClass}`,
+          `https://hlhs-3ff6501095d6.herokuapp.com/api/get-subject/${selectedClass}`,
           {
             headers,
           }
@@ -277,7 +277,7 @@ const Exam = () => {
       // Check if there are existing marks by verifying the examId and subjectId
       if (selectedExam && subjectIdLookup[selectedSubject]) {
         const responseCheckMarks = await fetch(
-          `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/get-all-scores/${selectedExam}/${subjectIdLookup[selectedSubject]}`,
+          `https://hlhs-3ff6501095d6.herokuapp.com/api/get-all-scores/${selectedExam}/${subjectIdLookup[selectedSubject]}`,
           {
             headers,
           }
@@ -293,7 +293,7 @@ const Exam = () => {
           if (existingMarks.length > 0) {
             // Existing marks found, proceed with updating
             const responseUpdateMarks = await fetch(
-              `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/update-all-marks`,
+              `https://hlhs-3ff6501095d6.herokuapp.com/api/update-all-marks`,
               {
                 method: "PUT",
                 headers: {
@@ -329,7 +329,7 @@ const Exam = () => {
           } else {
             // No existing marks found, proceed to create new marks
             const responseSaveMarks = await fetch(
-              `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/save-marks`,
+              `https://hlhs-3ff6501095d6.herokuapp.com/api/save-marks`,
               {
                 method: "POST",
                 headers: {
