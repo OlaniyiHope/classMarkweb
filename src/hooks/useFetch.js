@@ -25,7 +25,6 @@ const useFetch = (url) => {
             headers, // Include the headers in the request
           }
         );
-
         setData(res.data);
       } catch (err) {
         setError(err);
