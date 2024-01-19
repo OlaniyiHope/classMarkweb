@@ -50,6 +50,7 @@ import Info8 from "./forms/Info8";
 import Info10 from "./forms/Info10";
 import Info11 from "./forms/Info11";
 import Info12 from "./forms/Info12";
+import ManagePsy from "./forms/ManagePsy";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -199,6 +200,16 @@ const adminDashboardRoutes = [
   { path: "/dashboard/profile", element: <Profile />, auth: "admin" },
   { path: "/dashboard/setting", element: <Setting />, auth: "admin" },
   { path: "/dashboard/account", element: <Account />, auth: "admin" },
+  {
+    path: "/dashboard/psychomotor_report_cat",
+    element: <Account />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/manage_psychomotor",
+    element: <ManagePsy />,
+    auth: "admin",
+  },
 ];
 
 export default adminDashboardRoutes;

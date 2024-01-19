@@ -40,14 +40,14 @@ const TextField = styled(TextValidator)(() => ({
   marginBottom: "16px",
 }));
 
-const Exam = () => {
+const ManagePsy = () => {
   const {
     data: classData,
     loading: classLoading,
     error: classError,
   } = useFetch("/class");
   const { data: examData } = useFetch("/getofflineexam");
-  const [subjectData, setSubjectData] = useState([]);
+
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedExam, setSelectedExam] = useState("");
@@ -56,7 +56,6 @@ const Exam = () => {
   console.log("Current studentData state:", studentData);
   const [selectedStudentId, setSelectedStudentId] = useState("");
 
-  const [subjectIdLookup, setSubjectIdLookup] = useState({});
   const [showMarkManagement, setShowMarkManagement] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -68,14 +67,14 @@ const Exam = () => {
     { markfrom: 0, markupto: 49, comment: "Poor" },
   ];
 
-  const fetchStudentData = async (examId, subjectId) => {
+  const fetchStudentData = async (examId) => {
     try {
       const token = localStorage.getItem("jwtToken");
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
       const response = await fetch(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/get-all-scores/${examId}/${subjectId}`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/get-all-scores/${examId}`,
         {
           headers,
         }
@@ -97,14 +96,14 @@ const Exam = () => {
     }
   };
 
-  const handleManageMarkClick = async () => {
+  const handleManagePsyClick = async () => {
     try {
       const token = localStorage.getItem("jwtToken");
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
       const response = await fetch(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/student/${selectedClass}`,
+        `http://localhost:5000/api/student/${selectedClass}`,
         {
           headers,
         }
@@ -126,10 +125,7 @@ const Exam = () => {
         const firstStudentId = students[0]._id;
         setSelectedStudentId(firstStudentId);
 
-        const existingData = await fetchStudentData(
-          selectedExam,
-          subjectIdLookup[selectedSubject]
-        );
+        const existingData = await fetchStudentData(selectedExam);
 
         console.log("Response from fetchStudentData:", existingData);
         console.log("Existing scores:", existingData.scores);
@@ -142,26 +138,29 @@ const Exam = () => {
 
           console.log(`Student ${student._id} - Existing Score:`, studentScore);
 
-          const defaultTestScore = studentScore
-            ? studentScore.testscore !== undefined
-              ? studentScore.testscore
-              : 0
-            : 0;
+          // const defaultTestScore = studentScore
+          //   ? studentScore.instruction !== undefined
+          //     ? studentScore.instruction
+          //     : 0
+          //   : 0;
 
-          const defaultExamScore = studentScore
-            ? studentScore.examscore !== undefined
-              ? studentScore.examscore
-              : 0
-            : 0;
+          // const defaultExamScore = studentScore
+          //   ? studentScore.independently !== undefined
+          //     ? studentScore.independently
+          //     : 0
+          //   : 0;
 
           return {
             studentId: student._id,
             studentName: student.studentName,
             AdmNo: student.AdmNo, // Include AdmNo
-            testscore: defaultTestScore,
-            examscore: defaultExamScore,
-            marksObtained: defaultTestScore + defaultExamScore,
-            comment: studentScore ? studentScore.comment || "" : "",
+            instruction: student.instruction,
+            independently: student.independently,
+            punctuality: student.punctuality,
+            talking: student.talking,
+            eyecontact: student.eyecontact,
+            remarks: student.remarks,
+            premarks: student.premarks,
           };
         });
 
@@ -174,49 +173,6 @@ const Exam = () => {
       console.error("Error fetching student data:", error);
     }
   };
-
-  useEffect(() => {
-    const fetchSubjectData = async () => {
-      try {
-        if (!selectedClass) {
-          setSubjectData([]);
-          setSubjectIdLookup({});
-          return;
-        }
-
-        const token = localStorage.getItem("jwtToken");
-        const headers = new Headers();
-        headers.append("Authorization", `Bearer ${token}`);
-
-        const response = await fetch(
-          `https://hlhs-3ff6501095d6.herokuapp.com/api/get-subject/${selectedClass}`,
-          {
-            headers,
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch subjects");
-        }
-
-        const data = await response.json();
-
-        setSubjectData(data);
-
-        // Create a subjectId lookup
-        const lookup = {};
-        data.forEach((subject) => {
-          lookup[subject.name] = subject._id;
-        });
-        setSubjectIdLookup(lookup);
-      } catch (error) {
-        console.error("Error fetching subjects:", error);
-      }
-    };
-
-    // Call the fetchSubjectData function
-    fetchSubjectData();
-  }, [selectedClass, apiUrl]); // Include all dependencies used inside the useEffect
 
   const handleClassChange = (event) => {
     const newSelectedClass = event.target.value;
@@ -237,11 +193,7 @@ const Exam = () => {
     const selectedClass = classData.find((item) => item.id === classId);
     return selectedClass ? selectedClass.name : "";
   };
-
-  const getSubjectById = (subjectId) => {
-    const selectedSubject = subjectData.find((item) => item._id === subjectId);
-    return selectedSubject ? selectedSubject.name : "";
-  };
+  console.log("class id", selectedClass);
 
   const handleSubjectChange = (event) => {
     setSelectedSubject(event.target.value);
@@ -252,19 +204,25 @@ const Exam = () => {
       const marks = studentData.map((student) => {
         const {
           studentId,
-          testscore = 0,
-          examscore = 0,
-          comment = "",
+          instruction = 5,
+          independently = 5,
+          punctuality = 5,
+          talking = 5,
+          eyecontact = 5,
+          remarks = 5,
+          premarks = 5,
         } = student;
-        const marksObtained = testscore + examscore;
 
         return {
           studentId,
-          subjectId: subjectIdLookup[selectedSubject],
-          testscore,
-          examscore,
-          marksObtained,
-          comment,
+
+          instruction,
+          independently,
+          punctuality,
+          talking,
+          eyecontact,
+          remarks,
+          premarks,
         };
       });
 
@@ -275,9 +233,9 @@ const Exam = () => {
       headers.append("Authorization", `Bearer ${token}`);
 
       // Check if there are existing marks by verifying the examId and subjectId
-      if (selectedExam && subjectIdLookup[selectedSubject]) {
+      if (selectedExam) {
         const responseCheckMarks = await fetch(
-          `https://hlhs-3ff6501095d6.herokuapp.com/api/get-all-scores/${selectedExam}/${subjectIdLookup[selectedSubject]}`,
+          `http://localhost:5000/api/get-all-scores/${selectedExam}`,
           {
             headers,
           }
@@ -293,7 +251,7 @@ const Exam = () => {
           if (existingMarks.length > 0) {
             // Existing marks found, proceed with updating
             const responseUpdateMarks = await fetch(
-              `https://hlhs-3ff6501095d6.herokuapp.com/api/update-all-marks`,
+              `http://localhost:5000/api/update-all-psy`,
               {
                 method: "PUT",
                 headers: {
@@ -302,7 +260,7 @@ const Exam = () => {
                 },
                 body: JSON.stringify({
                   examId: selectedExam,
-                  subjectId: subjectIdLookup[selectedSubject],
+
                   updates: marks,
                 }),
               }
@@ -310,7 +268,7 @@ const Exam = () => {
 
             console.log("Request Payload:", {
               examId: selectedExam,
-              subjectId: subjectIdLookup[selectedSubject],
+
               updates: marks,
             });
 
@@ -329,7 +287,7 @@ const Exam = () => {
           } else {
             // No existing marks found, proceed to create new marks
             const responseSaveMarks = await fetch(
-              `https://hlhs-3ff6501095d6.herokuapp.com/api/save-marks`,
+              `http://localhost:5000/api/save-psy`,
               {
                 method: "POST",
                 headers: {
@@ -338,7 +296,7 @@ const Exam = () => {
                 },
                 body: JSON.stringify({
                   examId: selectedExam,
-                  subjectId: subjectIdLookup[selectedSubject],
+
                   updates: marks,
                 }),
               }
@@ -375,18 +333,18 @@ const Exam = () => {
   //   const updatedStudents = [...studentData];
 
   //   // Update the corresponding score
-  //   if (scoreType === "testscore") {
-  //     updatedStudents[index].testscore = parseInt(value, 10) || 0;
-  //   } else if (scoreType === "examscore") {
-  //     updatedStudents[index].examscore = parseInt(value, 10) || 0;
+  //   if (scoreType === "instructionre") {
+  //     updatedStudents[index].instructionre = parseInt(value, 10) || 0;
+  //   } else if (scoreType === "independently") {
+  //     updatedStudents[index].independently = parseInt(value, 10) || 0;
   //   } else if (scoreType === "comment") {
   //     updatedStudents[index].comment = value; // Update the comment field
   //   }
 
-  //   // Update marksObtained by adding test score and exam score
-  //   updatedStudents[index].marksObtained =
-  //     (updatedStudents[index].testscore || 0) +
-  //     (updatedStudents[index].examscore || 0);
+  //   // Update punctuality by adding test score and exam score
+  //   updatedStudents[index].punctuality =
+  //     (updatedStudents[index].instructionre || 0) +
+  //     (updatedStudents[index].independently || 0);
 
   //   // Update state with the modified students
   //   setStudentData(updatedStudents);
@@ -396,57 +354,24 @@ const Exam = () => {
     const updatedStudents = [...studentData];
 
     // Update the corresponding score
-    if (scoreType === "testscore") {
-      updatedStudents[index].testscore = parseInt(value, 10) || 0;
-    } else if (scoreType === "examscore") {
-      updatedStudents[index].examscore = parseInt(value, 10) || 0;
-    } else if (scoreType === "comment") {
-      updatedStudents[index].comment = value; // Update the comment field
+    if (scoreType === "instruction") {
+      updatedStudents[index].instruction = parseInt(value, 10) || 0;
+    } else if (scoreType === "independently") {
+      updatedStudents[index].independently = parseInt(value, 10) || 0;
+    } else if (scoreType === "punctuality") {
+      updatedStudents[index].punctuality = parseInt(value, 10) || 0;
+    } else if (scoreType === "talking") {
+      updatedStudents[index].talking = parseInt(value, 10) || 0;
+    } else if (scoreType === "eyecontact") {
+      updatedStudents[index].eyecontact = parseInt(value, 10) || 0;
+    } else if (scoreType === "remarks") {
+      updatedStudents[index].remarks = parseInt(value, 10) || 0;
+    } else if (scoreType === "premarks") {
+      updatedStudents[index].premarks = parseInt(value, 10) || 0;
     }
-
-    // Update marksObtained by adding test score and exam score
-    updatedStudents[index].marksObtained =
-      (updatedStudents[index].testscore || 0) +
-      (updatedStudents[index].examscore || 0);
-
-    // Calculate comment based on marks obtained and grade definitions
-    const comment = calculateComment(
-      updatedStudents[index].marksObtained,
-      gradeDefinitions
-    );
-
-    // Update the comment field
-    updatedStudents[index].comment = comment;
 
     // Update state with the modified students
     setStudentData(updatedStudents);
-  };
-
-  const calculateComment = (marksObtained, gradeDefinitions) => {
-    console.log("Calculating Comment for Marks:", marksObtained);
-
-    // Find the corresponding grade based on marksObtained
-    const matchingGrade = gradeDefinitions.find((grade) => {
-      console.log(
-        "Checking Grade:",
-        grade.markfrom,
-        grade.markupto,
-        marksObtained,
-        parseFloat(grade.markfrom),
-        parseFloat(grade.markupto),
-        parseFloat(marksObtained)
-      );
-
-      return (
-        marksObtained >= parseFloat(grade.markfrom) &&
-        marksObtained <= parseFloat(grade.markupto)
-      );
-    });
-
-    console.log("Matching Grade:", matchingGrade);
-
-    // Return the comment if a matching grade is found
-    return matchingGrade ? matchingGrade.comment : "-";
   };
 
   return (
@@ -454,7 +379,11 @@ const Exam = () => {
       <Container>
         <ValidatorForm onError={() => null}>
           <Box className="breadcrumb">
-            <Breadcrumb routeSegments={[{ name: "Manage Exam Mark" }]} />
+            <Breadcrumb
+              routeSegments={[
+                { name: " Manage Affective & Psychomotor Report : Section" },
+              ]}
+            />
           </Box>
           <Grid container spacing={6}>
             <Grid item xs={4}>
@@ -489,30 +418,15 @@ const Exam = () => {
                   ))}
               </TextField>
             </Grid>
-            <Grid item xs={4}>
-              <TextField
-                select
-                label="Select the subject"
-                variant="outlined"
-                value={selectedSubject}
-                onChange={handleSubjectChange}
-              >
-                {subjectData &&
-                  subjectData.map((item) => (
-                    <MenuItem key={item.id} value={item.name}>
-                      {item.name}
-                    </MenuItem>
-                  ))}
-              </TextField>
-            </Grid>
+
             <Grid item xs={4}>
               <Button
                 color="primary"
                 variant="contained"
                 type="submit"
-                onClick={handleManageMarkClick}
+                onClick={handleManagePsyClick}
               >
-                Manage Mark
+                Get Student
               </Button>
             </Grid>
           </Grid>
@@ -524,14 +438,8 @@ const Exam = () => {
                   <div className="icon">
                     <i className="entypo-chart-bar"></i>
                   </div>
-                  <h3 style={{ color: "#696969" }}>
-                    Marks For: {getExamNameById(selectedExam)}
-                  </h3>
-
-                  <h4 style={{ color: "#696969" }}>Class: {selectedClass}</h4>
-                  <h4 style={{ color: "#696969" }}>
-                    Subject: {getSubjectById(subjectIdLookup[selectedSubject])}
-                  </h4>
+                  <h3>Extracurricular Marks for {selectedClass} </h3>
+                  <h4>Term: {getExamNameById(selectedExam)}</h4>
                 </div>
               </div>
               <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
@@ -545,10 +453,13 @@ const Exam = () => {
                         <th>#</th>
                         <th>Adm No</th>
                         <th>Name</th>
-                        <th>Test</th>
-                        <th>Exam</th>
-                        <th>Marks Obtained</th>
-                        <th>Comment</th>
+                        <th>Following Instruction(Work Habits)</th>
+                        <th>Working Independently (Work Habits)</th>
+                        <th> Punctuality (Behaviour)</th>
+                        <th>Talking (Communication)</th>
+                        <th>Eye Contact (Communication)</th>
+                        <th>Remarks</th>
+                        <th> Principal Remarks</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -565,13 +476,13 @@ const Exam = () => {
                           <td>
                             <TextField
                               type="number"
-                              name={`testscore_${index}`}
-                              id={`testscore_${index}`}
-                              value={student.testscore || ""}
+                              name={`instruction_${index}`}
+                              id={`instruction_${index}`}
+                              value={student.instruction || ""}
                               onChange={(e) =>
                                 handleScoreChange(
                                   index,
-                                  "testscore",
+                                  "instruction",
                                   e.target.value
                                 )
                               }
@@ -580,45 +491,96 @@ const Exam = () => {
                           <td>
                             <TextField
                               type="number"
-                              name={`examscore_${index}`}
-                              id={`examscore_${index}`}
-                              value={student.examscore || ""}
+                              name={`independently_${index}`}
+                              id={`independently_${index}`}
+                              value={student.independently || ""}
                               onChange={(e) =>
                                 handleScoreChange(
                                   index,
-                                  "examscore",
+                                  "independently",
                                   e.target.value
                                 )
                               }
                             />
                           </td>
-                          {/* Fix the nesting issue for marksObtained */}
-                          <td>{student.marksObtained || ""}</td>
-                          {/*} <td>
-                        <TextField
-                          name={`comment_${index}`}
-                          id={`comment_${index}`}
-                          value={student.comment || ""}
-                          onChange={(e) =>
-                            handleScoreChange(index, "comment", e.target.value)
-                          }
-                        />
-                        </td>*/}
 
-                          <td style={{ color: "black", fontWeight: "800" }}>
+                          <td>
                             <TextField
-                              name={`comment_${index}`}
-                              id={`comment_${index}`}
-                              value={
-                                student.marksObtained
-                                  ? calculateComment(
-                                      student.marksObtained,
-                                      gradeDefinitions
-                                    ) || "-"
-                                  : "" // Show an empty string if marksObtained is not available
+                              type="number"
+                              name={`punctuality_${index}`}
+                              id={`punctuality_${index}`}
+                              value={student.punctuality || ""}
+                              onChange={(e) =>
+                                handleScoreChange(
+                                  index,
+                                  "punctuality",
+                                  e.target.value
+                                )
                               }
-                              disabled // To make it read-only
-                              style={{ color: "black", fontWeight: "800" }}
+                            />
+                          </td>
+
+                          <td>
+                            <TextField
+                              type="number"
+                              name={`talking_${index}`}
+                              id={`talking_${index}`}
+                              value={student.talking || ""}
+                              onChange={(e) =>
+                                handleScoreChange(
+                                  index,
+                                  "talking",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+
+                          <td>
+                            <TextField
+                              type="number"
+                              name={`eyecontact_${index}`}
+                              id={`eyecontact_${index}`}
+                              value={student.eyecontact || ""}
+                              onChange={(e) =>
+                                handleScoreChange(
+                                  index,
+                                  "eyecontact",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+
+                          <td>
+                            <TextField
+                              type="text"
+                              name={`remarks_${index}`}
+                              id={`remarks_${index}`}
+                              value={student.remarks || ""}
+                              onChange={(e) =>
+                                handleScoreChange(
+                                  index,
+                                  "remarks",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+
+                          <td>
+                            <TextField
+                              type="text"
+                              name={`premarks_${index}`}
+                              id={`premarks_${index}`}
+                              value={student.premarks || ""}
+                              onChange={(e) =>
+                                handleScoreChange(
+                                  index,
+                                  "premarks",
+                                  e.target.value
+                                )
+                              }
                             />
                           </td>
                         </tr>
@@ -644,4 +606,4 @@ const Exam = () => {
   );
 };
 
-export default Exam;
+export default ManagePsy;

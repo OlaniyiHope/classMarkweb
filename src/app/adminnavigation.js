@@ -93,6 +93,22 @@ export const navigations = [
     ],
   },
   {
+    name: "Affective Psychomotor",
+    icon: "person",
+    children: [
+      {
+        name: "Manage Category",
+        iconText: "SI",
+        path: "/dashboard/psychomotor_report_cat",
+      },
+      {
+        name: "Manage Student Report",
+        iconText: "SI",
+        path: "/dashboard/manage_psychomotor",
+      },
+    ],
+  },
+  {
     name: "Teacher",
     path: "/dashboard/teacher",
     icon: <span style={{ color: "#ffc107" }}>person</span>,
