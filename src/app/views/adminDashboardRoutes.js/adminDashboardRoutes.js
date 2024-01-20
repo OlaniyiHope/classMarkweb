@@ -51,6 +51,12 @@ import Info10 from "./forms/Info10";
 import Info11 from "./forms/Info11";
 import Info12 from "./forms/Info12";
 import ManagePsy from "./forms/ManagePsy";
+import Sub7 from "./forms/Sub7";
+import Sub8 from "./forms/Sub8";
+import Sub9 from "./forms/Sub9";
+import Sub10 from "./forms/Sub10";
+import Sub11 from "./forms/Sub11";
+import Sub12 from "./forms/Sub12";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -63,9 +69,44 @@ const adminDashboardRoutes = [
   { path: "/dashboard/examlist", element: <Examlist />, auth: "admin" },
   { path: "/dashboard/js3-subject", element: <Sub3 />, auth: "admin" },
   { path: "/dashboard/js2-subject", element: <Sub2 />, auth: "admin" },
-  { path: "/dashboard/ss1-subject", element: <Sub4 />, auth: "admin" },
-  { path: "/dashboard/ss2-subject", element: <Sub5 />, auth: "admin" },
-  { path: "/dashboard/ss3-subject", element: <Sub6 />, auth: "admin" },
+  { path: "/dashboard/ss1-science-subject", element: <Sub4 />, auth: "admin" },
+  { path: "/dashboard/ss1-art-subject", element: <Sub5 />, auth: "admin" },
+  {
+    path: "/dashboard/ss1-commercial-subject",
+    element: <Sub6 />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/ss2-science-subject",
+    element: <Sub7 />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/ss2-art-subject",
+    element: <Sub8 />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/ss2-commercial-subject",
+    element: <Sub9 />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/ss3-science-subject",
+    element: <Sub10 />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/ss3-art-subject",
+    element: <Sub11 />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/ss3-commercial-subject",
+    element: <Sub12 />,
+    auth: "admin",
+  },
+
   { path: "/dashboard/manage-mark-view", element: <ManagemarkView /> },
   {
     path: "/dashboard/jss1-student_information",

@@ -70,8 +70,8 @@ const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(1),
 }));
 
-const Sub1 = () => {
-  const className = "SS2"; // Specify the class name here
+const Sub5 = () => {
+  const className = "S.S.1.A"; // Specify the class name here
 
   const { data, loading, error, reFetch } = useFetch(
     `/get-subject/${className}`
@@ -292,4 +292,4 @@ const Sub1 = () => {
   );
 };
 
-export default Sub1;
+export default Sub5;

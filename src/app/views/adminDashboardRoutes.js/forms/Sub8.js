@@ -37,41 +37,8 @@ const ContentBox = styled("div")(({ theme }) => ({
   [theme.breakpoints.down("sm")]: { margin: "16px" },
 }));
 
-const Title = styled("span")(() => ({
-  fontSize: "1rem",
-  fontWeight: "500",
-  marginRight: ".5rem",
-  textTransform: "capitalize",
-}));
-
-const SubTitle = styled("span")(({ theme }) => ({
-  fontSize: "0.875rem",
-  color: theme.palette.text.secondary,
-}));
-
-const H4 = styled("h4")(({ theme }) => ({
-  fontSize: "1rem",
-  fontWeight: "500",
-  marginBottom: "16px",
-  textTransform: "capitalize",
-  color: theme.palette.text.secondary,
-}));
-const StyledTable = styled(Table)(() => ({
-  whiteSpace: "pre",
-  "& thead": {
-    "& tr": { "& th": { paddingLeft: 0, paddingRight: 0 } },
-  },
-  "& tbody": {
-    "& tr": { "& td": { paddingLeft: 0, textTransform: "capitalize" } },
-  },
-}));
-
-const StyledButton = styled(Button)(({ theme }) => ({
-  margin: theme.spacing(1),
-}));
-
-const Sub4 = () => {
-  const className = "S.S.1.S"; // Specify the class name here
+const Sub8 = () => {
+  const className = "S.S.2.A"; // Specify the class name here
 
   const { data, loading, error, reFetch } = useFetch(
     `/get-subject/${className}`
@@ -292,4 +259,4 @@ const Sub4 = () => {
   );
 };
 
-export default Sub4;
+export default Sub8;

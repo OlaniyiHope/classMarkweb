@@ -419,7 +419,7 @@ const ManagePsy = () => {
                         <th> Punctuality (Behaviour)</th>
                         <th>Talking (Communication)</th>
                         <th>Eye Contact (Communication)</th>
-                        <th>Remarks</th>
+                        <th> Class Teacher Remarks</th>
                         <th> Principal Remarks</th>
                       </tr>
                     </thead>
