@@ -38,12 +38,14 @@ const TermRep = ({ studentId }) => {
   });
 
   const [studentData, setStudentData] = useState(null);
+  const [psyData, setPsyData] = useState(null);
+
   const { id } = useParams();
 
   // const { data } = useFetch(`/students/${id}`);
 
   const { data } = useFetch(`/students/${studentId}`);
-  console.log("Data from useFetch:", data);
+
   // const { data,  } = useFetch(`/students/${user._id}`); // Fetch data using the correct URL
 
   const { user } = useAuth();
@@ -99,6 +101,38 @@ const TermRep = ({ studentId }) => {
       throw new Error("Failed to fetch student data");
     }
   };
+
+  const fetchPsyData = async (studentId) => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      const response = await axios.get(
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/get-psy-by-student/${studentId}`,
+        { headers }
+      );
+
+      console.log("Original data:", response.data);
+
+      // Filter out subjects without marks
+      // const filteredScores = response.data.scores.filter(
+      //   (score) => score.marksObtained !== undefined
+      // );
+
+      // console.log("Filtered data:", {
+      //   ...response.data,
+      //   scores: filteredScores,
+      // });
+
+      // Return the data with the filtered scores
+      return { ...response.data };
+    } catch (error) {
+      console.error("Error fetching student data:", error);
+      throw new Error("Failed to fetch student data");
+    }
+  };
   useEffect(() => {
     const fetchSchoolSettings = async () => {
       try {
@@ -133,6 +167,7 @@ const TermRep = ({ studentId }) => {
 
     fetchAccountSettings();
   }, [apiUrl]);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -140,6 +175,27 @@ const TermRep = ({ studentId }) => {
       try {
         const data = await fetchStudentData(studentId);
         setStudentData(data);
+
+        setLoading(false);
+      } catch (error) {
+        setError("Failed to fetch student data");
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+
+    console.log("Student ID in useEffect:", studentId);
+  }, [studentId]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+
+      try {
+        const data = await fetchPsyData(studentId);
+        console.log("PsyData:", data); // Add this line to check the data
+        setPsyData(data);
 
         setLoading(false);
       } catch (error) {
@@ -704,47 +760,52 @@ const TermRep = ({ studentId }) => {
                                   </th>
                                 </tr>
                               </thead>
+
                               <tbody>
-                                <tr>
-                                  <th></th>
-                                  <th>Work Habits</th>
-                                  <th>RATINGS</th>
-                                </tr>
-                                <tr>
-                                  <td>1</td>
-                                  <td>Following Instruction</td>
-                                  <td>5</td>
-                                </tr>
-                                <tr>
-                                  <td>2</td>
-                                  <td>Working Independently</td>
-                                  <td>5</td>
-                                </tr>
-                                <tr>
-                                  <th></th>
-                                  <th>Behaviour</th>
-                                  <th>RATINGS</th>
-                                </tr>
-                                <tr>
-                                  <td>1</td>
-                                  <td>Punctuality</td>
-                                  <td>5</td>
-                                </tr>
-                                <tr>
-                                  <th></th>
-                                  <th>Communication</th>
-                                  <th>RATINGS</th>
-                                </tr>
-                                <tr>
-                                  <td>1</td>
-                                  <td>Talking</td>
-                                  <td>5</td>
-                                </tr>
-                                <tr>
-                                  <td>2</td>
-                                  <td>Eye Contact</td>
-                                  <td>5</td>
-                                </tr>
+                                {psyData?.scores?.map((score, index) => (
+                                  <div key={index}>
+                                    <tr>
+                                      <th></th>
+                                      <th>Work Habits</th>
+                                      <th>RATINGS</th>
+                                    </tr>
+                                    <tr>
+                                      <td>{index + 1}</td>
+                                      <td>Following Instruction</td>
+                                      <td> {score?.instruction || "0"}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>{index + 2}</td>
+                                      <td>Working Independently</td>
+                                      <td>{score?.independently || "0"}</td>
+                                    </tr>
+                                    <tr>
+                                      <th></th>
+                                      <th>Behaviour</th>
+                                      <th>RATINGS</th>
+                                    </tr>
+                                    <tr>
+                                      <td>1</td>
+                                      <td>Punctuality</td>
+                                      <td>{score?.punctuality || "0"}</td>
+                                    </tr>
+                                    <tr>
+                                      <th></th>
+                                      <th>Communication</th>
+                                      <th>RATINGS</th>
+                                    </tr>
+                                    <tr>
+                                      <td>1</td>
+                                      <td>Talking</td>
+                                      <td>{score?.talking || "0"}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>2</td>
+                                      <td>Eye Contact</td>
+                                      <td>{score?.eyecontact || "0"}</td>
+                                    </tr>
+                                  </div>
+                                ))}
                               </tbody>
                             </table>
                           </td>
@@ -763,11 +824,19 @@ const TermRep = ({ studentId }) => {
                   <tbody>
                     <tr>
                       <th>CLASS TEACHER'S REMARK</th>
-                      <td colspan="2"></td>
+                      {psyData?.scores?.map((score, index) => (
+                        <div key={index}>
+                          <td colspan="2">{score.remarks}</td>
+                        </div>
+                      ))}
                     </tr>
                     <tr>
                       <th>PRINCIPAL'S REMARK</th>
-                      <td colspan="2"></td>
+                      {psyData?.scores?.map((score, index) => (
+                        <div key={index}>
+                          <td colspan="2">{score.premarks}</td>
+                        </div>
+                      ))}
                     </tr>
                     <tr>
                       <th>PRINCIPAL'S NAME</th>

@@ -59,14 +59,6 @@ const ManagePsy = () => {
   const [showMarkManagement, setShowMarkManagement] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
 
-  const gradeDefinitions = [
-    { markfrom: 80, markupto: 100, comment: "Excellent" },
-    { markfrom: 70, markupto: 79, comment: "Very Good" },
-    { markfrom: 60, markupto: 69, comment: "Good" },
-    { markfrom: 55, markupto: 59, comment: "Fairly Good" },
-    { markfrom: 0, markupto: 49, comment: "Poor" },
-  ];
-
   const fetchStudentData = async (examId) => {
     try {
       const token = localStorage.getItem("jwtToken");
@@ -74,7 +66,7 @@ const ManagePsy = () => {
       headers.append("Authorization", `Bearer ${token}`);
 
       const response = await fetch(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/get-all-scores/${examId}`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/get-all-psy/${examId}`,
         {
           headers,
         }
@@ -103,7 +95,7 @@ const ManagePsy = () => {
       headers.append("Authorization", `Bearer ${token}`);
 
       const response = await fetch(
-        `http://localhost:5000/api/student/${selectedClass}`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/student/${selectedClass}`,
         {
           headers,
         }
@@ -153,14 +145,14 @@ const ManagePsy = () => {
           return {
             studentId: student._id,
             studentName: student.studentName,
-            AdmNo: student.AdmNo, // Include AdmNo
-            instruction: student.instruction,
-            independently: student.independently,
-            punctuality: student.punctuality,
-            talking: student.talking,
-            eyecontact: student.eyecontact,
-            remarks: student.remarks,
-            premarks: student.premarks,
+            AdmNo: student.AdmNo,
+            instruction: studentScore ? studentScore.instruction || 0 : 0,
+            independently: studentScore ? studentScore.independently || 0 : 0,
+            punctuality: studentScore ? studentScore.punctuality || 0 : 0,
+            talking: studentScore ? studentScore.talking || 0 : 0,
+            eyecontact: studentScore ? studentScore.eyecontact || 0 : 0,
+            remarks: studentScore ? studentScore.remarks || "" : "",
+            premarks: studentScore ? studentScore.premarks || "" : "",
           };
         });
 
@@ -187,16 +179,6 @@ const ManagePsy = () => {
   const getExamNameById = (examId) => {
     const selectedExam = examData.find((item) => item._id === examId);
     return selectedExam ? selectedExam.name : "";
-  };
-
-  const getClassById = (classId) => {
-    const selectedClass = classData.find((item) => item.id === classId);
-    return selectedClass ? selectedClass.name : "";
-  };
-  console.log("class id", selectedClass);
-
-  const handleSubjectChange = (event) => {
-    setSelectedSubject(event.target.value);
   };
 
   const handleSaveChanges = async () => {
@@ -235,7 +217,7 @@ const ManagePsy = () => {
       // Check if there are existing marks by verifying the examId and subjectId
       if (selectedExam) {
         const responseCheckMarks = await fetch(
-          `http://localhost:5000/api/get-all-scores/${selectedExam}`,
+          `https://hlhs-3ff6501095d6.herokuapp.com/api/get-all-psy/${selectedExam}`,
           {
             headers,
           }
@@ -251,7 +233,7 @@ const ManagePsy = () => {
           if (existingMarks.length > 0) {
             // Existing marks found, proceed with updating
             const responseUpdateMarks = await fetch(
-              `http://localhost:5000/api/update-all-psy`,
+              `https://hlhs-3ff6501095d6.herokuapp.com/api/update-all-psy`,
               {
                 method: "PUT",
                 headers: {
@@ -287,7 +269,7 @@ const ManagePsy = () => {
           } else {
             // No existing marks found, proceed to create new marks
             const responseSaveMarks = await fetch(
-              `http://localhost:5000/api/save-psy`,
+              `https://hlhs-3ff6501095d6.herokuapp.com/api/save-psy`,
               {
                 method: "POST",
                 headers: {
@@ -328,27 +310,6 @@ const ManagePsy = () => {
     }
   };
 
-  // const handleScoreChange = (index, scoreType, value) => {
-  //   // Assuming studentData is an array
-  //   const updatedStudents = [...studentData];
-
-  //   // Update the corresponding score
-  //   if (scoreType === "instructionre") {
-  //     updatedStudents[index].instructionre = parseInt(value, 10) || 0;
-  //   } else if (scoreType === "independently") {
-  //     updatedStudents[index].independently = parseInt(value, 10) || 0;
-  //   } else if (scoreType === "comment") {
-  //     updatedStudents[index].comment = value; // Update the comment field
-  //   }
-
-  //   // Update punctuality by adding test score and exam score
-  //   updatedStudents[index].punctuality =
-  //     (updatedStudents[index].instructionre || 0) +
-  //     (updatedStudents[index].independently || 0);
-
-  //   // Update state with the modified students
-  //   setStudentData(updatedStudents);
-  // };
   const handleScoreChange = (index, scoreType, value) => {
     // Assuming studentData is an array
     const updatedStudents = [...studentData];
@@ -365,9 +326,9 @@ const ManagePsy = () => {
     } else if (scoreType === "eyecontact") {
       updatedStudents[index].eyecontact = parseInt(value, 10) || 0;
     } else if (scoreType === "remarks") {
-      updatedStudents[index].remarks = parseInt(value, 10) || 0;
+      updatedStudents[index].remarks = String(value) || 0;
     } else if (scoreType === "premarks") {
-      updatedStudents[index].premarks = parseInt(value, 10) || 0;
+      updatedStudents[index].premarks = String(value) || 0;
     }
 
     // Update state with the modified students
