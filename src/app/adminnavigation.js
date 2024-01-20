@@ -89,7 +89,11 @@ export const navigations = [
         path: "/session/signup",
       },
 
-      { name: "Student Promotion", iconText: "404", path: "/session/404" },
+      {
+        name: "Student Promotion",
+        iconText: "404",
+        path: "/dashboard/promotion",
+      },
     ],
   },
   {
@@ -221,7 +225,7 @@ export const navigations = [
   },
   {
     name: "Online Exam",
-    icon: "assignment",
+    icon: "computer",
     children: [
       {
         name: "Create Online Exam",
@@ -252,6 +256,16 @@ export const navigations = [
     ],
   },
 
+  {
+    name: "Study Material",
+    path: "/dashboard/study-material",
+    icon: <span style={{ color: "#ffc107" }}>group_work</span>,
+  },
+  {
+    name: "Daily Attendance",
+    path: "/dashboard/attendance",
+    icon: <span style={{ color: "#ffc107" }}>access_alarm</span>,
+  },
   {
     name: "Profile",
     path: "/dashboard/profile",

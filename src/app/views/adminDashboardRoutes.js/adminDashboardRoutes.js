@@ -57,6 +57,9 @@ import Sub9 from "./forms/Sub9";
 import Sub10 from "./forms/Sub10";
 import Sub11 from "./forms/Sub11";
 import Sub12 from "./forms/Sub12";
+import StudyMat from "./forms/StudyMat";
+import Attendance from "./admin/Attendance";
+import Promotion from "./forms/Promotion";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -249,6 +252,21 @@ const adminDashboardRoutes = [
   {
     path: "/dashboard/manage_psychomotor",
     element: <ManagePsy />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/study-material",
+    element: <StudyMat />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/attendance",
+    element: <Attendance />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/promotion",
+    element: <Promotion />,
     auth: "admin",
   },
 ];
