@@ -16,6 +16,7 @@ import {
   IconButton,
   Dialog,
   DialogActions,
+  Container,
   DialogContent,
   DialogTitle,
   ListItemIcon,
@@ -139,135 +140,144 @@ const ViewAdmin = () => {
   };
 
   return (
-    <div>
-      <Box
-        className="breadcrumb"
-        style={{ marginTop: "20px", marginLeft: "20px" }}
-      >
-        <Breadcrumb routeSegments={[{ name: "Manage Admin" }]} />
-      </Box>
-      <Box className="breadcrumb" style={{ marginLeft: "20px" }}>
-        <FormDialog />
-      </Box>
-      <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
-        <div class="table-responsive full-data">
-          <table
-            class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
-            id="example-student"
-          >
-            <thead>
-              <tr>
-                <th></th>
-                <th>S/N</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Address</th>
-
-                <th class="text-end">Action</th>
-              </tr>
-            </thead>
-            {data &&
-              data.map((item, index) => (
-                <tbody>
-                  <tr key={item?._id}>
-                    <td>
-                      <div class="checkbox me-0 align-self-center"></div>
-                    </td>
-
-                    <td>{index + 1}</td>
-                    <td>
-                      <div class="trans-list">
-                        <h4>{item.username}</h4>
-                      </div>
-                    </td>
-                    <td>
-                      <span class="text-primary font-w600">{item.email}</span>
-                    </td>
-                    <td>
-                      <div class="date">{item.phone}</div>
-                    </td>
-                    <td>
-                      <h6 class="mb-0">{item.address}</h6>
-                    </td>
-
-                    <td>
-                      <TableCell align="right">
-                        <IconButton
-                          aria-controls={`action-menu-${item._id}`}
-                          aria-haspopup="true"
-                          onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
-                        >
-                          <MoreVertIcon /> {/* MoreVertIcon for the menu */}
-                        </IconButton>
-                        <Menu
-                          id={`action-menu-${item._id}`}
-                          anchorEl={anchorElMap[item._id]}
-                          open={Boolean(anchorElMap[item._id])}
-                          onClose={() => handleCloseMenu(item._id)}
-                        >
-                          <MenuItem>
-                            <ListItemIcon>
-                              <EditIcon /> {/* Use an Edit icon */}
-                            </ListItemIcon>
-                            Edit
-                          </MenuItem>
-                          <MenuItem
-                            onClick={() => handleOpenDeleteConfirmation(item)}
-                          >
-                            <ListItemIcon>
-                              <DeleteIcon />
-                            </ListItemIcon>
-                            Delete
-                          </MenuItem>
-                        </Menu>
-                      </TableCell>
-                    </td>
-                  </tr>
-                </tbody>
-              ))}
-          </table>
-          <Dialog
-            open={deleteConfirmationOpen}
-            onClose={handleCloseDeleteConfirmation}
-          >
-            <DialogTitle>Delete Confirmation</DialogTitle>
-            <DialogContent>
-              Are you sure you want to delete {userToDelete?.username}?
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCloseDeleteConfirmation}>Cancel</Button>
-              <Button
-                onClick={async () => {
-                  await handleDeleteUser(); // Call the asynchronous function
-                  handleCloseDeleteConfirmation();
-                }}
-              >
-                Delete
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
-      </div>
-      <Fragment>
-        <ContentBox className="analytics">
-          <Box width="100%" overflow="auto">
-            <TablePagination
-              sx={{ px: 2 }}
-              page={page}
-              component="div"
-              rowsPerPage={rowsPerPage}
-              count={data.length}
-              onPageChange={handleChangePage}
-              rowsPerPageOptions={[5, 10, 25]}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              nextIconButtonProps={{ "aria-label": "Next Page" }}
-              backIconButtonProps={{ "aria-label": "Previous Page" }}
-            />
+    <Fragment>
+      <ContentBox className="analytics">
+        <Container>
+          <Box className="breadcrumb">
+            <Breadcrumb routeSegments={[{ name: "Manage Admin" }]} />
           </Box>
-        </ContentBox>
-      </Fragment>
-    </div>
+          <Box className="breadcrumb">
+            <FormDialog />
+          </Box>
+          <div>
+            <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
+              <div class="table-responsive full-data">
+                <table
+                  class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
+                  id="example-student"
+                >
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>S/N</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Address</th>
+
+                      <th class="text-end">Action</th>
+                    </tr>
+                  </thead>
+                  {data &&
+                    data.map((item, index) => (
+                      <tbody>
+                        <tr key={item?._id}>
+                          <td>
+                            <div class="checkbox me-0 align-self-center"></div>
+                          </td>
+
+                          <td>{index + 1}</td>
+                          <td>
+                            <div class="trans-list">
+                              <h4>{item.username}</h4>
+                            </div>
+                          </td>
+                          <td>
+                            <span class="text-primary font-w600">
+                              {item.email}
+                            </span>
+                          </td>
+                          <td>
+                            <div class="date">{item.phone}</div>
+                          </td>
+                          <td>
+                            <h6 class="mb-0">{item.address}</h6>
+                          </td>
+
+                          <td>
+                            <TableCell align="right">
+                              <IconButton
+                                aria-controls={`action-menu-${item._id}`}
+                                aria-haspopup="true"
+                                onClick={(event) =>
+                                  handleOpenMenu(event, item._id)
+                                } // Pass item._id
+                              >
+                                <MoreVertIcon />{" "}
+                                {/* MoreVertIcon for the menu */}
+                              </IconButton>
+                              <Menu
+                                id={`action-menu-${item._id}`}
+                                anchorEl={anchorElMap[item._id]}
+                                open={Boolean(anchorElMap[item._id])}
+                                onClose={() => handleCloseMenu(item._id)}
+                              >
+                                <MenuItem>
+                                  <ListItemIcon>
+                                    <EditIcon /> {/* Use an Edit icon */}
+                                  </ListItemIcon>
+                                  Edit
+                                </MenuItem>
+                                <MenuItem
+                                  onClick={() =>
+                                    handleOpenDeleteConfirmation(item)
+                                  }
+                                >
+                                  <ListItemIcon>
+                                    <DeleteIcon />
+                                  </ListItemIcon>
+                                  Delete
+                                </MenuItem>
+                              </Menu>
+                            </TableCell>
+                          </td>
+                        </tr>
+                      </tbody>
+                    ))}
+                </table>
+                <Dialog
+                  open={deleteConfirmationOpen}
+                  onClose={handleCloseDeleteConfirmation}
+                >
+                  <DialogTitle>Delete Confirmation</DialogTitle>
+                  <DialogContent>
+                    Are you sure you want to delete {userToDelete?.username}?
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleCloseDeleteConfirmation}>
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={async () => {
+                        await handleDeleteUser(); // Call the asynchronous function
+                        handleCloseDeleteConfirmation();
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </div>
+            </div>
+
+            <Box width="100%" overflow="auto">
+              <TablePagination
+                sx={{ px: 2 }}
+                page={page}
+                component="div"
+                rowsPerPage={rowsPerPage}
+                count={data.length}
+                onPageChange={handleChangePage}
+                rowsPerPageOptions={[5, 10, 25]}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                nextIconButtonProps={{ "aria-label": "Next Page" }}
+                backIconButtonProps={{ "aria-label": "Previous Page" }}
+              />
+            </Box>
+          </div>
+        </Container>
+      </ContentBox>
+    </Fragment>
   );
 };
 
