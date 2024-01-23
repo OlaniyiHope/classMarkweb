@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Container, styled } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -8,11 +8,16 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
+import { Fragment } from "react";
 import axios from "axios";
+import { Breadcrumb } from "app/components";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
-
+const ContentBox = styled("div")(({ theme }) => ({
+  margin: "30px",
+  [theme.breakpoints.down("sm")]: { margin: "16px" },
+}));
 export default function NoticeBoard() {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
@@ -80,51 +85,63 @@ export default function NoticeBoard() {
   }
 
   return (
-    <Box>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Add new Notice
-      </Button>
-
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title"> Add Notice</DialogTitle>
-        <DialogContent>
-          <label>Notice</label>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="notice"
-            value={formData.notice}
-            placeholder="Enter a notice"
-            type="text"
-            fullWidth
-            onChange={handleChange}
-          />
-          <label>Posted By</label>
-          <TextField
-            autoFocus
-            margin="dense"
-            type="text"
-            name="posted_by"
-            placeholder="Your name"
-            value={formData.posted_by}
-            fullWidth
-            onChange={handleChange}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" color="secondary" onClick={handleClose}>
-            Cancel
+    <Fragment>
+      <ContentBox className="analytics">
+        <Container>
+          <Box className="breadcrumb">
+            <Breadcrumb routeSegments={[{ name: "Notice Board" }]} />
+          </Box>
+          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+            Add new Notice
           </Button>
-          <Button onClick={handleSubmit} color="primary">
-            Add Notice
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <ToastContainer />
-    </Box>
+          <Box>
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="form-dialog-title"
+            >
+              <DialogTitle id="form-dialog-title"> Add Notice</DialogTitle>
+              <DialogContent>
+                <label>Notice</label>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  name="notice"
+                  value={formData.notice}
+                  placeholder="Enter a notice"
+                  type="text"
+                  fullWidth
+                  onChange={handleChange}
+                />
+                <label>Posted By</label>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  type="text"
+                  name="posted_by"
+                  placeholder="Your name"
+                  value={formData.posted_by}
+                  fullWidth
+                  onChange={handleChange}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={handleClose}
+                >
+                  Cancel
+                </Button>
+                <Button onClick={handleSubmit} color="primary">
+                  Add Notice
+                </Button>
+              </DialogActions>
+            </Dialog>
+            <ToastContainer />
+          </Box>
+        </Container>
+      </ContentBox>
+    </Fragment>
   );
 }

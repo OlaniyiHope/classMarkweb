@@ -166,7 +166,7 @@ const Class = () => {
                     <th>Class Name</th>
                     <th>Class Teacher</th>
 
-                    <th class="text-end">Action</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 {data && data.length > 0 ? (
