@@ -152,8 +152,10 @@ const Admin = () => {
 
   return (
     <div>
-      <h2>Admin Dashboard</h2>
-      <div className="row gutters-20" style={{ marginTop: "60px" }}>
+      <h2 style={{ paddingTop: "15px", paddingLeft: "10px" }}>
+        Admin Dashboard
+      </h2>
+      <div className="row gutters-20" style={{ marginTop: "10px" }}>
         {Object.entries(userCounts).map(([role, count]) => (
           <div key={role} className="col-xl-3 col-sm-6 col-12">
             <div className="dashboard-summery-one mg-b-20">
