@@ -14,6 +14,7 @@ import {
   DialogTitle,
   TableCell,
   Button,
+  Container,
   TableHead,
   TableRow,
   ListItemIcon,
@@ -21,6 +22,7 @@ import {
 import useFetch from "hooks/useFetch";
 import FormDialog3 from "app/views/material-kit/dialog/FormDialog3";
 import { TablePagination } from "@mui/material";
+import { Breadcrumb } from "app/components";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -48,6 +50,7 @@ const Teacher = () => {
   const [editTeacherData, setEditTeacherData] = useState(null);
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [anchorElMap, setAnchorElMap] = useState({});
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [action, setAction] = useState(null);
@@ -179,144 +182,156 @@ const Teacher = () => {
 
   return (
     <Fragment>
-      <Box className="breadcrumb">
-        <FormDialog3 />
-      </Box>
       <ContentBox className="analytics">
-        <Box width="100%" overflow="auto">
-          <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
-            <div class="table-responsive full-data">
-              <table
-                class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
-                id="example-student"
-              >
-                <thead>
-                  <tr>
-                    <th>S/N</th>
+        <Container>
+          <Box className="breadcrumb">
+            <Breadcrumb routeSegments={[{ name: "Manage Teachers" }]} />
+          </Box>
+          <Box className="breadcrumb">
+            <FormDialog3 />
+          </Box>
 
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
+          <div>
+            <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
+              <div class="table-responsive full-data">
+                <table
+                  class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
+                  id="example-student"
+                >
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>S/N</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Address</th>
 
-                    <th class="text-end">Action</th>
-                  </tr>
-                </thead>
-                {data && data.length > 0 ? (
-                  data.map((item, index) => (
-                    <tbody>
-                      <tr key={item._id}>
-                        <td>
-                          <div class="trans-list">
-                            <h4>{index + 1}</h4>
-                          </div>
-                        </td>
+                      <th class="text-end">Action</th>
+                    </tr>
+                  </thead>
+                  {data && data.length > 0 ? (
+                    data.map((item, index) => (
+                      <tbody>
+                        <tr key={item._id}>
+                          <td></td>
+                          <td>
+                            <div class="trans-list">
+                              <h4>{index + 1}</h4>
+                            </div>
+                          </td>
 
-                        <td>
-                          <span class="text-primary font-w600">
-                            {item.username}
-                          </span>
-                        </td>
-                        <td>
-                          <div class="date">{item.email}</div>
-                        </td>
-                        <td>
-                          <h6 class="mb-0">{item.phone}</h6>
-                        </td>
+                          <td>
+                            <span class="text-primary font-w600">
+                              {item.username}
+                            </span>
+                          </td>
+                          <td>
+                            <div class="date">{item.email}</div>
+                          </td>
+                          <td>
+                            <h6 class="mb-0">{item.phone}</h6>
+                          </td>
+                          <td>
+                            <h6 class="mb-0">{item.address}</h6>
+                          </td>
 
-                        <td>
-                          <TableCell align="right">
-                            <IconButton
-                              aria-controls="action-menu"
-                              aria-haspopup="true"
-                              onClick={handleOpenMenu}
-                            >
-                              <MoreVertIcon /> {/* MoreVertIcon for the menu */}
-                            </IconButton>
-                            <Menu
-                              id="action-menu"
-                              anchorEl={anchorEl}
-                              open={Boolean(anchorEl)}
-                              onClose={handleCloseMenu}
-                            >
-                              <MenuItem
-                                onClick={() => handleEditTeacher(item._id)}
+                          <td>
+                            <TableCell align="right">
+                              <IconButton
+                                aria-controls="action-menu"
+                                aria-haspopup="true"
+                                onClick={handleOpenMenu}
                               >
-                                <ListItemIcon>
-                                  <EditIcon /> {/* Use an Edit icon */}
-                                </ListItemIcon>
-                                Edit
-                              </MenuItem>
-                              <MenuItem
-                                onClick={() =>
-                                  handleOpenDeleteConfirmation(item)
-                                }
+                                <MoreVertIcon />{" "}
+                                {/* MoreVertIcon for the menu */}
+                              </IconButton>
+                              <Menu
+                                id="action-menu"
+                                anchorEl={anchorEl}
+                                open={Boolean(anchorEl)}
+                                onClose={handleCloseMenu}
                               >
-                                <ListItemIcon>
-                                  <DeleteIcon />
-                                </ListItemIcon>
-                                Delete
-                              </MenuItem>
-                            </Menu>
-                          </TableCell>
-                        </td>
-                      </tr>
-                    </tbody>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={5} align="center">
-                      No Teacher to display.
-                    </TableCell>
-                  </TableRow>
+                                <MenuItem
+                                  onClick={() => handleEditTeacher(item._id)}
+                                >
+                                  <ListItemIcon>
+                                    <EditIcon /> {/* Use an Edit icon */}
+                                  </ListItemIcon>
+                                  Edit
+                                </MenuItem>
+                                <MenuItem
+                                  onClick={() =>
+                                    handleOpenDeleteConfirmation(item)
+                                  }
+                                >
+                                  <ListItemIcon>
+                                    <DeleteIcon />
+                                  </ListItemIcon>
+                                  Delete
+                                </MenuItem>
+                              </Menu>
+                            </TableCell>
+                          </td>
+                        </tr>
+                      </tbody>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={5} align="center">
+                        No Teacher to display.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </table>
+                {editTeacherData && (
+                  <EditTeacher
+                    open={editDialogOpen}
+                    onClose={() => setEditDialogOpen(false)}
+                    teacherId={editTeacherData._id}
+                    onSave={handleSaveEdit}
+                  />
                 )}
-              </table>
-              {editTeacherData && (
-                <EditTeacher
-                  open={editDialogOpen}
-                  onClose={() => setEditDialogOpen(false)}
-                  teacherId={editTeacherData._id}
-                  onSave={handleSaveEdit}
-                />
-              )}
 
-              <Dialog
-                open={deleteConfirmationOpen}
-                onClose={handleCloseDeleteConfirmation}
-              >
-                <DialogTitle>Delete Confirmation</DialogTitle>
-                <DialogContent>
-                  Are you sure you want to delete {userToDelete?.username}?
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleCloseDeleteConfirmation}>
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={async () => {
-                      await handleDeleteUser(); // Call the asynchronous function
-                      handleCloseDeleteConfirmation();
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </DialogActions>
-              </Dialog>
+                <Dialog
+                  open={deleteConfirmationOpen}
+                  onClose={handleCloseDeleteConfirmation}
+                >
+                  <DialogTitle>Delete Confirmation</DialogTitle>
+                  <DialogContent>
+                    Are you sure you want to delete {userToDelete?.username}?
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleCloseDeleteConfirmation}>
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={async () => {
+                        await handleDeleteUser(); // Call the asynchronous function
+                        handleCloseDeleteConfirmation();
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </div>
             </div>
-          </div>
 
-          <TablePagination
-            sx={{ px: 2 }}
-            page={page}
-            component="div"
-            rowsPerPage={rowsPerPage}
-            count={data ? data.length : 0}
-            onPageChange={handleChangePage}
-            rowsPerPageOptions={[5, 10, 25]}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            nextIconButtonProps={{ "aria-label": "Next Page" }}
-            backIconButtonProps={{ "aria-label": "Previous Page" }}
-          />
-        </Box>
+            <TablePagination
+              sx={{ px: 2 }}
+              page={page}
+              component="div"
+              rowsPerPage={rowsPerPage}
+              count={data ? data.length : 0}
+              onPageChange={handleChangePage}
+              rowsPerPageOptions={[5, 10, 25]}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              nextIconButtonProps={{ "aria-label": "Next Page" }}
+              backIconButtonProps={{ "aria-label": "Previous Page" }}
+            />
+          </div>
+        </Container>
       </ContentBox>
     </Fragment>
   );
