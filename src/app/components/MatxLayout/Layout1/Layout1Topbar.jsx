@@ -163,7 +163,7 @@ const Layout1Topbar = () => {
               </StyledItem>
 
               <StyledItem>
-                <Link to="/page-layouts/user-profile">
+                <Link>
                   <Icon> person </Icon>
                   <Span> Profile </Span>
                 </Link>

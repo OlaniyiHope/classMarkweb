@@ -235,8 +235,8 @@ const Info6 = () => {
                 >
                   <thead>
                     <tr>
-                      <th>Adm No</th>
                       <th>S/N</th>
+                      <th>Adm No</th>
 
                       <th>Name</th>
                       <th>Address</th>
