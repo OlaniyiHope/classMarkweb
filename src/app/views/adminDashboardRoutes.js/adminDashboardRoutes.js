@@ -60,6 +60,7 @@ import Sub12 from "./forms/Sub12";
 import StudyMat from "./forms/StudyMat";
 import Attendance from "./admin/Attendance";
 import Promotion from "./forms/Promotion";
+import PsyCat from "./forms/PsyCat";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -246,7 +247,7 @@ const adminDashboardRoutes = [
   { path: "/dashboard/account", element: <Account />, auth: "admin" },
   {
     path: "/dashboard/psychomotor_report_cat",
-    element: <Account />,
+    element: <PsyCat />,
     auth: "admin",
   },
   {
