@@ -199,6 +199,9 @@ const ManSin = () => {
         questionData.correctAnswer = document.querySelector(
           'input[name="answer"]:checked'
         ).value;
+      } else if (questionType === "fill_in_the_blanks") {
+        // Additional logic for fill in the blanks questions
+        questionData.possible_answers = possibleAnswers;
       }
 
       const response = await fetch(
