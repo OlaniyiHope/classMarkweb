@@ -118,7 +118,10 @@ const Manage = () => {
     <Fragment>
       {/* ... your other JSX for Breadcrumb and FormDialog4 ... */}
 
-      <Box className="breadcrumb">
+      <Box
+        className="breadcrumb"
+        style={{ marginTop: "40px", marginBottom: "30px", paddingLeft: "20px" }}
+      >
         <Breadcrumb
           routeSegments={[
             // { name: "Material", path: "/material" },
@@ -126,81 +129,117 @@ const Manage = () => {
           ]}
         />
       </Box>
+      <div class="table-responsive full-data">
+        <table
+          class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
+          id="example-student"
+        >
+          <thead>
+            <tr>
+              <th>S/N</th>
+              <th>Exam Name</th>
+              <th>Class Name</th>
+              <th>Subject</th>
+              <th>Exam Date</th>
+              <th>Time</th>
+              <th>Action</th>
+            </tr>
+          </thead>
 
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell align="left">Exam Name</TableCell>
-            <TableCell align="center">ClassName</TableCell>
-            <TableCell align="center">Subject</TableCell>
-            <TableCell align="center">Exam Date</TableCell>
-            <TableCell align="center">Time</TableCell>
-            <TableCell align="right">Action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data &&
-            data.map((item) => (
-              <TableRow key={item._id}>
-                <TableCell align="center">{item.title}</TableCell>
-                <TableCell align="center">{item.className}</TableCell>
-                <TableCell align="center">{item.subject}</TableCell>
-                <TableCell align="center">
-                  {" "}
-                  {item.date ? new Date(item.date).toLocaleDateString() : ""}
-                </TableCell>
-                <TableCell align="center">
-                  {item.fromTime} - {item.toTime}
-                </TableCell>
+          {data && data.length > 0 ? (
+            data.map((item, index) => (
+              <tbody>
+                <tr key={item._id}>
+                  <td>
+                    <div class="trans-list">
+                      <h4>{index + 1}</h4>
+                    </div>
+                  </td>
 
-                <TableCell align="right">
-                  <IconButton
-                    aria-controls={`action-menu-${item._id}`}
-                    aria-haspopup="true"
-                    onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
+                  <td>
+                    <div class="date">{item.title}</div>
+                  </td>
+                  <td>
+                    <h6 class="mb-0">{item.className}</h6>
+                  </td>
+                  <td>
+                    <h6 class="mb-0">{item.subject}</h6>
+                  </td>
+                  <td>
+                    <h6 class="mb-0">
+                      {item.date
+                        ? new Date(item.date).toLocaleDateString()
+                        : ""}
+                    </h6>
+                  </td>
+                  <td>
+                    <h6 class="mb-0">
+                      {" "}
+                      {item.fromTime} --
+                      {item.toTime}
+                    </h6>
+                  </td>
 
-                    // onClick={(event) =>
-                    //   handleOpenMenu(event, item._id, item.fromTime)
-                    // }
-                  >
-                    <MoreVertIcon /> {/* MoreVertIcon for the menu */}
-                  </IconButton>
-                  <Menu
-                    id={`action-menu-${item._id}`}
-                    anchorEl={anchorElMap[item._id]}
-                    open={Boolean(anchorElMap[item._id])}
-                    onClose={() => handleCloseMenu(item._id)}
-                  >
-                    <MenuItem
-                    // onClick={(event) =>
-                    //   handleOpenMenu(event, item._id, item.fromTime)
-                    // }
-                    >
-                      <ListItemIcon></ListItemIcon>
-                      <Link
-                        to={`/student/dashboard/manage-online-exam/${item._id} `}
+                  <td>
+                    <TableCell align="right">
+                      <IconButton
+                        aria-controls={`action-menu-${item._id}`}
+                        aria-haspopup="true"
+                        onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
+
+                        // onClick={(event) =>
+                        //   handleOpenMenu(event, item._id, item.fromTime)
+                        // }
                       >
-                        {" "}
-                        {/* Provide the relative path */}
-                        Manage Questions
-                      </Link>
-                    </MenuItem>
-                  </Menu>
-                </TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
-      {/* Dialog for displaying the message */}
-      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>{"Not Allowed"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>It's not yet time for the exam!</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>OK</Button>
-        </DialogActions>
-      </Dialog>
+                        <MoreVertIcon /> {/* MoreVertIcon for the menu */}
+                      </IconButton>
+                      <Menu
+                        id={`action-menu-${item._id}`}
+                        anchorEl={anchorElMap[item._id]}
+                        open={Boolean(anchorElMap[item._id])}
+                        onClose={() => handleCloseMenu(item._id)}
+                      >
+                        <MenuItem
+                        // onClick={(event) =>
+                        //   handleOpenMenu(event, item._id, item.fromTime)
+                        // }
+                        >
+                          <ListItemIcon></ListItemIcon>
+                          <Link
+                            to={`/student/dashboard/manage-online-exam/${item._id} `}
+                          >
+                            {" "}
+                            {/* Provide the relative path */}
+                            Manage Questions
+                          </Link>
+                        </MenuItem>
+                      </Menu>
+                    </TableCell>
+                  </td>
+                </tr>
+              </tbody>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={5} align="center">
+                No Exam to display.
+              </TableCell>
+            </TableRow>
+          )}
+        </table>
+        {/* Dialog for displaying the message */}
+        <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+          <DialogTitle>{"Not Allowed"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              It's not yet time for the exam!
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>OK</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
       <TablePagination
         sx={{ px: 2 }}
         page={page}

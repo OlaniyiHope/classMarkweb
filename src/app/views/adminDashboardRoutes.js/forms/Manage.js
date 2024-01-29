@@ -21,6 +21,10 @@ import {
   Table,
   TableBody,
   TableCell,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   TableHead,
   TablePagination,
   TableRow,
@@ -31,6 +35,7 @@ import FormDialog2 from "app/views/material-kit/dialog/FormDialog2";
 import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
 import useFetch from "hooks/useFetch";
+import axios from "axios";
 import { Link } from "react-router-dom";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -71,7 +76,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Manage = () => {
-  const { data, loading, error } = useFetch("/get-exam");
+  const { data, loading, error, reFetch } = useFetch("/get-exam");
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
@@ -79,6 +84,11 @@ const Manage = () => {
   const [action, setAction] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+
+  const apiUrl = process.env.REACT_APP_API_URL;
+
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
   };
@@ -87,24 +97,52 @@ const Manage = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  // Function to handle opening the context menu for a specific exam
-  const handleOpenMenu = (event, examId) => {
+  const handleOpenMenu = (event, itemId) => {
+    // Rename examId to itemId
     setAnchorElMap((prev) => ({
       ...prev,
-      [examId]: event.currentTarget,
+      [itemId]: event.currentTarget,
     }));
   };
 
-  // Function to handle closing the context menu for a specific exam
-  const handleCloseMenu = (examId) => {
+  const handleCloseMenu = (itemId) => {
+    // Rename examId to itemId
     setAnchorElMap((prev) => ({
       ...prev,
-      [examId]: null,
+      [itemId]: null,
     }));
   };
   const handleAction = (value) => {
     setAction(value);
     handleCloseMenu();
+  };
+  const handleOpenDeleteConfirmation = (item) => {
+    // Rename exam to item
+    setItemToDelete(item);
+    setDeleteConfirmationOpen(true);
+  };
+
+  const handleCloseDeleteConfirmation = () => {
+    setItemToDelete(null);
+    setDeleteConfirmationOpen(false);
+  };
+
+  const handleDeleteItem = async () => {
+    // Rename handleDeleteExam to handleDeleteItem
+    try {
+      const response = await axios.delete(
+        `${apiUrl}/api/exam/${itemToDelete._id}`
+      );
+
+      if (response.status === 200) {
+        console.log("Item deleted successfully");
+        reFetch();
+      } else {
+        console.error("Failed to delete item");
+      }
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
   };
 
   return (
@@ -229,7 +267,11 @@ const Manage = () => {
                                 </ListItemIcon>
                                 Edit
                               </MenuItem>
-                              <MenuItem>
+                              <MenuItem
+                                onClick={() =>
+                                  handleOpenDeleteConfirmation(item)
+                                }
+                              >
                                 <ListItemIcon>
                                   <DeleteIcon /> {/* Use a Delete icon */}
                                 </ListItemIcon>
@@ -244,11 +286,27 @@ const Manage = () => {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={5} align="center">
-                      No Class to display.
+                      No Exam to display.
                     </TableCell>
                   </TableRow>
                 )}
               </table>
+              <Dialog
+                open={deleteConfirmationOpen}
+                onClose={handleCloseDeleteConfirmation}
+              >
+                <DialogTitle>Delete Confirmation</DialogTitle>
+                <DialogContent>
+                  Are you sure you want to delete the exam "
+                  {itemToDelete?.title}"?
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleCloseDeleteConfirmation}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleDeleteItem}>Delete</Button>
+                </DialogActions>
+              </Dialog>
             </div>
           </div>
 

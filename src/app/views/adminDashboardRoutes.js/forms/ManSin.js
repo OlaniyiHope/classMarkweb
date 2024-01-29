@@ -296,7 +296,7 @@ const ManSin = () => {
           </div>
 
           <div className="form-group">
-            <label className="col-sm-3 control-label">Number Options</label>
+            <label className="col-sm-3 control-label">Number of Options</label>
             <div className="col-sm-8">
               <div className="input-group">
                 <TextField
@@ -540,57 +540,77 @@ const ManSin = () => {
                 <Table className="table table-bordered">
                   <TableBody>
                     <TableRow>
-                      <TableCell>
+                      <TableCell
+                        style={{ width: "25%", whiteSpace: "pre-line" }}
+                      >
                         <b>Exam Title</b>
                       </TableCell>
-                      <TableCell>{data.title}</TableCell>
-                      <TableCell>
+                      <TableCell
+                        style={{ width: "25%", whiteSpace: "pre-line" }}
+                      >
+                        {data.title}
+                      </TableCell>
+                      <TableCell
+                        style={{ width: "25%", whiteSpace: "pre-line" }}
+                      >
                         <b>Date</b>
                       </TableCell>
-                      <TableCell>
-                        {" "}
+                      <TableCell
+                        style={{ width: "25%", whiteSpace: "pre-line" }}
+                      >
                         {data.date
                           ? new Date(data.date).toLocaleDateString()
                           : ""}
                       </TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>
+                      <TableCell style={{ whiteSpace: "pre-line" }}>
                         <b>Class</b>
                       </TableCell>
-                      <TableCell>{data?.className}</TableCell>
-                      <TableCell>
+                      <TableCell style={{ whiteSpace: "pre-line" }}>
+                        {data?.className}
+                      </TableCell>
+                      <TableCell style={{ whiteSpace: "pre-line" }}>
                         <b>Time</b>
                       </TableCell>
-                      <TableCell>
+                      <TableCell style={{ whiteSpace: "pre-line" }}>
                         {data.fromTime} - {data.toTime}
                       </TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>
+                      <TableCell style={{ whiteSpace: "pre-line" }}>
                         <b>Section</b>
                       </TableCell>
-                      <TableCell>A</TableCell>
-                      <TableCell>
+                      <TableCell style={{ whiteSpace: "pre-line" }}>
+                        A
+                      </TableCell>
+                      <TableCell style={{ whiteSpace: "pre-line" }}>
                         <b>Passing Percentage</b>
                       </TableCell>
-                      <TableCell>{data.percent}%</TableCell>
+                      <TableCell style={{ whiteSpace: "pre-line" }}>
+                        {data.percent}%
+                      </TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>
+                      <TableCell style={{ whiteSpace: "pre-line" }}>
                         <b>Subject</b>
                       </TableCell>
-                      <TableCell>{data?.subject}</TableCell>
-                      <TableCell>
+                      <TableCell style={{ whiteSpace: "pre-line" }}>
+                        {data?.subject}
+                      </TableCell>
+                      <TableCell style={{ whiteSpace: "pre-line" }}>
                         <b>Total Marks</b>
                       </TableCell>
-                      <TableCell>{totalMark}</TableCell>
+                      <TableCell style={{ whiteSpace: "pre-line" }}>
+                        {totalMark}
+                      </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
               </div>
             </div>
           </Paper>
+
           <Paper>
             <div className="panel panel-primary" data-collapsed="0">
               <div className="panel-heading">
