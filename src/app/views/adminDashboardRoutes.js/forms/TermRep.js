@@ -514,7 +514,7 @@ const TermRep = ({ studentId }) => {
                 >
                   <div style={{ marginBottom: "20px" }}>
                     <span>Student Name:</span>{" "}
-                    <input
+                    <span
                       type="text"
                       style={{
                         border: 0,
@@ -525,8 +525,9 @@ const TermRep = ({ studentId }) => {
                         marginLeft: "30px",
                         textAlign: "center",
                       }}
-                      value={data?.studentName || ""}
-                    />
+                    >
+                      {data?.studentName || ""}
+                    </span>
                   </div>
                   <div style={{ marginBottom: "20px" }}>
                     <span>Session:</span>{" "}
