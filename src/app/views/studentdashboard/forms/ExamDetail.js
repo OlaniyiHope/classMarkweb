@@ -14,6 +14,7 @@ import {
   RadioGroup,
   Card,
   CardContent,
+  TextField,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -128,21 +129,62 @@ const ExamDetail = () => {
     fetchExamAndQuestions();
   }, [id]);
 
+  // const calculateScore = () => {
+  //   const calculatedScore = questions.reduce((totalScore, question) => {
+  //     const questionId = question._id;
+  //     const studentAnswer = answers[questionId] || "";
+  //     const correctAnswer = correctAnswers[questionId] || "";
+
+  //     if (studentAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+  //       return totalScore + question.mark;
+  //     }
+
+  //     return totalScore;
+  //   }, 0);
+
+  //   setScore(calculatedScore); // Set the calculated score
+  //   handleSubmitExam(calculatedScore); // Call handleSubmitExam with the calculated score
+  // };
   const calculateScore = () => {
     const calculatedScore = questions.reduce((totalScore, question) => {
       const questionId = question._id;
       const studentAnswer = answers[questionId] || "";
       const correctAnswer = correctAnswers[questionId] || "";
+      let questionScore = 0;
 
-      if (studentAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-        return totalScore + question.mark;
+      console.log("Question ID:", questionId);
+      console.log("Student Answer:", studentAnswer);
+      console.log("Correct Answer:", correctAnswer);
+
+      if (question.questionType === "fill_in_the_blanks") {
+        // If it's a Fill In The Blanks question
+        const possibleAnswers = question.possibleAnswers.map((answer) =>
+          answer.toLowerCase()
+        );
+
+        console.log("Possible Answers:", possibleAnswers);
+
+        // Check if the student's answer matches any of the possible answers (case insensitive)
+        if (possibleAnswers.includes(studentAnswer.toLowerCase())) {
+          console.log("Matched Answer!");
+          questionScore = question.mark; // Set questionScore to full mark if the answer is correct
+        }
+      } else {
+        // For other question types (True/False, Multiple Choice)
+        if (studentAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+          questionScore = question.mark;
+        }
       }
 
-      return totalScore;
+      console.log("Question Score:", questionScore);
+
+      return totalScore + questionScore; // Add questionScore to totalScore
     }, 0);
 
-    setScore(calculatedScore); // Set the calculated score
-    handleSubmitExam(calculatedScore); // Call handleSubmitExam with the calculated score
+    console.log("Calculated Score:", calculatedScore);
+
+    setScore(calculatedScore);
+    handleSubmitExam(calculatedScore);
   };
 
   const handleSubmitExam = async (calculatedScore) => {
@@ -284,6 +326,26 @@ const ExamDetail = () => {
                             label="False"
                           />
                         </RadioGroup>
+                      </div>
+                    )}
+
+                    {question.questionType === "fill_in_the_blanks" && (
+                      <div>
+                        <Typography variant="subtitle1">
+                          Fill in the blank:
+                        </Typography>
+                        <TextField
+                          name={`question_${question._id}`}
+                          value={answers[question._id] || ""}
+                          onChange={(e) =>
+                            handleOptionChange(question._id, e.target.value)
+                          }
+                          variant="outlined"
+                          fullWidth
+                          margin="normal"
+                          label="Your Answer"
+                          placeholder="Type your answer here"
+                        />
                       </div>
                     )}
                   </CardContent>
