@@ -37,6 +37,7 @@ const ManSin = () => {
 
   const [numberOfOptions, setNumberOfOptions] = useState(0);
   const [optionFields, setOptionFields] = useState([]);
+  const [possibleAnswers, setPossibleAnswers] = useState();
   const [mark, setMark] = useState("");
   const [questionTitle, setQuestionTitle] = useState("");
   const [deleteQuestionId, setDeleteQuestionId] = useState(null);
@@ -425,6 +426,88 @@ const ManSin = () => {
         </form>
       );
     }
+
+    // Inside the renderQuestionFields() function
+    else if (questionType === "fill_in_the_blanks") {
+      return (
+        <form
+          className="form-horizontal form-groups-bordered validate"
+          target="_top"
+          accept-charset="utf-8"
+        >
+          <input type="hidden" name="type" value="fill_in_the_blanks" />
+          <div className="form-group">
+            <label className="col-sm-3 control-label">Mark</label>
+            <div className="col-sm-8">
+              <TextField
+                type="number"
+                variant="outlined"
+                fullWidth
+                name="mark"
+                required
+                value={mark}
+                onChange={(e) => setMark(e.target.value)}
+                inputProps={{ min: "0" }}
+              />
+            </div>
+          </div>
+          <div className="form-group">
+            <label className="col-sm-3 control-label">Question Title</label>
+            <div className="col-sm-8">
+              <textarea
+                name="question_title"
+                className="form-control"
+                rows="4"
+                value={questionTitle}
+                onChange={(e) => setQuestionTitle(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+          <div className="form-group">
+            <label className="col-sm-3 control-label">Possible Answers</label>
+            <div className="col-sm-8">
+              <TextField
+                type="text"
+                variant="outlined"
+                fullWidth
+                name="possible_answers"
+                required
+                multiline
+                rows={4}
+                value={possibleAnswers}
+                onChange={(e) => setPossibleAnswers(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="form-group">
+            <div className="col-sm-12">
+              <Button
+                type="submit"
+                variant="contained"
+                onClick={(event) => {
+                  event.preventDefault();
+                  const questionData = {
+                    type: questionType,
+                    mark: mark,
+                    question_title: questionTitle,
+                    possible_answers: possibleAnswers,
+                  };
+                  console.log("Question Type:", questionType);
+                  console.log("question Data:", questionData);
+                  submitQuestion(questionData);
+                  console.log("question Data:", questionData);
+                }}
+              >
+                Add Question
+              </Button>
+            </div>
+          </div>
+        </form>
+      );
+    }
+
+    // Inside the submitQuestion() function
   };
 
   return (
