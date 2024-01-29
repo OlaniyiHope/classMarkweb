@@ -186,6 +186,7 @@ const ManSin = () => {
         // question_title: questionTitle, // Set the question title
         questionTitle,
         examId: id, // Set the examId
+        possibleAnswers: possibleAnswers,
       };
 
       if (questionType === "multiple_choice") {
