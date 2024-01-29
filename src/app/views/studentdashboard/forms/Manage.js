@@ -10,6 +10,7 @@ import {
   IconButton,
   MenuItem,
   ListItemIcon,
+  Tooltip,
   Menu,
   Icon,
   Dialog,
@@ -31,6 +32,48 @@ import { Link, useParams } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 import { Breadcrumb } from "app/components";
 // ... other imports ...
+const isWithinExamTimeRange = (fromTimeStr, toTimeStr) => {
+  const currentDateTime = new Date();
+  const fromTime = parseTimeString(fromTimeStr);
+  const toTime = parseTimeString(toTimeStr);
+
+  console.log("Current DateTime:", currentDateTime);
+  console.log("Start Time:", fromTime);
+  console.log("End Time:", toTime);
+
+  if (!fromTime || !toTime) {
+    console.error("Invalid time format");
+    return false;
+  }
+
+  const isWithinRange =
+    currentDateTime >= fromTime && currentDateTime <= toTime;
+  console.log("Is Within Exam Time Range:", isWithinRange);
+
+  return isWithinRange;
+};
+
+const parseTimeString = (timeStr) => {
+  // Extract hours, minutes, and AM/PM from the time string
+  const [timePart, meridiem] = timeStr.split(" ");
+  const [hours, minutes] = timePart.split(":").map(Number);
+
+  // Convert hours to 24-hour format if necessary
+  const formattedHours = meridiem === "PM" && hours < 12 ? hours + 12 : hours;
+
+  // Create a new Date object with the parsed time
+  const currentTime = new Date();
+  currentTime.setHours(formattedHours);
+  currentTime.setMinutes(minutes);
+  currentTime.setSeconds(0);
+
+  // Set the timezone offset to West Africa Standard Time (WAT)
+  const offsetInMinutes = -60; // WAT is UTC+1
+  const timeZoneOffset = offsetInMinutes * 60000; // Convert minutes to milliseconds
+  const parsedTime = new Date(currentTime.getTime() + timeZoneOffset);
+
+  return parsedTime;
+};
 
 const Manage = () => {
   const { palette } = useTheme(); // Define palette from useTheme
@@ -43,7 +86,7 @@ const Manage = () => {
   const [anchorElMap, setAnchorElMap] = useState({});
   const apiUrl = process.env.REACT_APP_API_URL;
   const [dialogOpen, setDialogOpen] = useState(false);
-
+  console.log("Data:", data);
   // Function to fetch exams
   const fetchExams = async () => {
     try {
@@ -65,6 +108,7 @@ const Manage = () => {
       console.error("Error fetching exams:", error);
     }
   };
+  console.log("Data:", data);
 
   useEffect(() => {
     fetchExams(); // Fetch exams when the component mounts
@@ -114,6 +158,7 @@ const Manage = () => {
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };
+
   return (
     <Fragment>
       {/* ... your other JSX for Breadcrumb and FormDialog4 ... */}
@@ -182,34 +227,34 @@ const Manage = () => {
 
                   <td>
                     <TableCell align="right">
-                      <IconButton
-                        aria-controls={`action-menu-${item._id}`}
-                        aria-haspopup="true"
-                        onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
-
-                        // onClick={(event) =>
-                        //   handleOpenMenu(event, item._id, item.fromTime)
-                        // }
-                      >
-                        <MoreVertIcon /> {/* MoreVertIcon for the menu */}
-                      </IconButton>
+                      {isWithinExamTimeRange(item.fromTime, item.toTime) ? ( // Check if it's time for the exam
+                        <IconButton
+                          aria-controls={`action-menu-${item._id}`}
+                          aria-haspopup="true"
+                          onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
+                        >
+                          <MoreVertIcon /> {/* MoreVertIcon for the menu */}
+                        </IconButton>
+                      ) : (
+                        <Tooltip title="Not yet time for the exam">
+                          <span>
+                            <IconButton disabled>
+                              <MoreVertIcon />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                      )}
                       <Menu
                         id={`action-menu-${item._id}`}
                         anchorEl={anchorElMap[item._id]}
                         open={Boolean(anchorElMap[item._id])}
                         onClose={() => handleCloseMenu(item._id)}
                       >
-                        <MenuItem
-                        // onClick={(event) =>
-                        //   handleOpenMenu(event, item._id, item.fromTime)
-                        // }
-                        >
+                        <MenuItem>
                           <ListItemIcon></ListItemIcon>
                           <Link
                             to={`/student/dashboard/manage-online-exam/${item._id} `}
                           >
-                            {" "}
-                            {/* Provide the relative path */}
                             Manage Questions
                           </Link>
                         </MenuItem>
