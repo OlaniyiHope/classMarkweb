@@ -470,6 +470,9 @@ const ManSin = () => {
           </div>
           <div className="form-group">
             <label className="col-sm-3 control-label">Possible Answers</label>
+            <p style={{ color: "black" }}>
+              (use commas to separate the possible answers)
+            </p>
             <div className="col-sm-8">
               <TextField
                 type="text"
