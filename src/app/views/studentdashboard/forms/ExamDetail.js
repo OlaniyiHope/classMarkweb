@@ -146,45 +146,47 @@ const ExamDetail = () => {
   //   handleSubmitExam(calculatedScore); // Call handleSubmitExam with the calculated score
   // };
   const calculateScore = () => {
-    const calculatedScore = questions.reduce((totalScore, question) => {
-      const questionId = question._id;
-      const studentAnswer = answers[questionId] || "";
-      const correctAnswer = correctAnswers[questionId] || "";
-      let questionScore = 0;
+    try {
+      const calculatedScore = questions.reduce((totalScore, question) => {
+        const questionId = question._id;
+        const studentAnswer = answers[questionId] || "";
+        const correctAnswer = correctAnswers[questionId] || "";
+        let questionScore = 0;
 
-      console.log("Question ID:", questionId);
-      console.log("Student Answer:", studentAnswer);
-      console.log("Correct Answer:", correctAnswer);
+        if (question.questionType === "fill_in_the_blanks") {
+          // If it's a Fill In The Blanks question
+          const possibleAnswers = new Set(
+            question.possibleAnswers
+              .flatMap((answers) => answers.toLowerCase().split(","))
+              .map((answer) => answer.trim())
+          );
 
-      if (question.questionType === "fill_in_the_blanks") {
-        // If it's a Fill In The Blanks question
-        const possibleAnswers = question.possibleAnswers.map((answer) =>
-          answer.toLowerCase()
-        );
+          // Normalize student's answer
+          const normalizedStudentAnswer = studentAnswer.toLowerCase().trim();
 
-        console.log("Possible Answers:", possibleAnswers);
-
-        // Check if the student's answer matches any of the possible answers (case insensitive)
-        if (possibleAnswers.includes(studentAnswer.toLowerCase())) {
-          console.log("Matched Answer!");
-          questionScore = question.mark; // Set questionScore to full mark if the answer is correct
+          // Check if the student's answer matches any of the possible answers
+          if (possibleAnswers.has(normalizedStudentAnswer)) {
+            questionScore = question.mark;
+          }
+        } else {
+          // For other question types (True/False, Multiple Choice)
+          if (
+            studentAnswer.toLowerCase().trim() ===
+            correctAnswer.toLowerCase().trim()
+          ) {
+            questionScore = question.mark;
+          }
         }
-      } else {
-        // For other question types (True/False, Multiple Choice)
-        if (studentAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-          questionScore = question.mark;
-        }
-      }
 
-      console.log("Question Score:", questionScore);
+        return totalScore + questionScore;
+      }, 0);
 
-      return totalScore + questionScore; // Add questionScore to totalScore
-    }, 0);
-
-    console.log("Calculated Score:", calculatedScore);
-
-    setScore(calculatedScore);
-    handleSubmitExam(calculatedScore);
+      setScore(calculatedScore);
+      handleSubmitExam(calculatedScore);
+    } catch (error) {
+      console.error("Error calculating score:", error);
+      // Handle any errors
+    }
   };
 
   const handleSubmitExam = async (calculatedScore) => {

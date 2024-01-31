@@ -32,26 +32,6 @@ import { Link, useParams } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 import { Breadcrumb } from "app/components";
 // ... other imports ...
-const isWithinExamTimeRange = (fromTimeStr, toTimeStr) => {
-  const currentDateTime = new Date();
-  const fromTime = parseTimeString(fromTimeStr);
-  const toTime = parseTimeString(toTimeStr);
-
-  console.log("Current DateTime:", currentDateTime);
-  console.log("Start Time:", fromTime);
-  console.log("End Time:", toTime);
-
-  if (!fromTime || !toTime) {
-    console.error("Invalid time format");
-    return false;
-  }
-
-  const isWithinRange =
-    currentDateTime >= fromTime && currentDateTime <= toTime;
-  console.log("Is Within Exam Time Range:", isWithinRange);
-
-  return isWithinRange;
-};
 
 const parseTimeString = (timeStr) => {
   // Extract hours, minutes, and AM/PM from the time string
@@ -227,23 +207,14 @@ const Manage = () => {
 
                   <td>
                     <TableCell align="right">
-                      {isWithinExamTimeRange(item.fromTime, item.toTime) ? ( // Check if it's time for the exam
-                        <IconButton
-                          aria-controls={`action-menu-${item._id}`}
-                          aria-haspopup="true"
-                          onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
-                        >
-                          <MoreVertIcon /> {/* MoreVertIcon for the menu */}
-                        </IconButton>
-                      ) : (
-                        <Tooltip title="Not yet time for the exam">
-                          <span>
-                            <IconButton disabled>
-                              <MoreVertIcon />
-                            </IconButton>
-                          </span>
-                        </Tooltip>
-                      )}
+                      <IconButton
+                        aria-controls={`action-menu-${item._id}`}
+                        aria-haspopup="true"
+                        onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
+                      >
+                        <MoreVertIcon /> {/* MoreVertIcon for the menu */}
+                      </IconButton>
+
                       <Menu
                         id={`action-menu-${item._id}`}
                         anchorEl={anchorElMap[item._id]}
@@ -272,18 +243,6 @@ const Manage = () => {
             </TableRow>
           )}
         </table>
-        {/* Dialog for displaying the message */}
-        <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-          <DialogTitle>{"Not Allowed"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              It's not yet time for the exam!
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>OK</Button>
-          </DialogActions>
-        </Dialog>
       </div>
       <TablePagination
         sx={{ px: 2 }}
