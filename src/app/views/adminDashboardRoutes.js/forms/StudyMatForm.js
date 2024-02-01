@@ -158,108 +158,111 @@ const StudyMatForm = () => {
   };
 
   return (
-    <Box>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Add Study Material
-      </Button>
+    <>
+      <Box>
+        <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+          Add Study Material
+        </Button>
 
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title"> Add Study Material</DialogTitle>
-        <DialogContent>
-          <label>Date</label>
-          <TextField
-            fullWidth
-            size="small"
-            type="date"
-            label="Date"
-            variant="outlined"
-            sx={{ mb: 3 }}
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)} // Update the selectedDate when the user selects a date
-          />
-          <label>Title</label>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="title"
-            value={formData.title}
-            placeholder="Title"
-            type="text"
-            onChange={handleChange}
-            fullWidth
-          />
-          <label>Description</label>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="desc"
-            value={formData.desc}
-            placeholder="Description"
-            type="text"
-            onChange={handleChange}
-            fullWidth
-          />
-          <label>Select a class</label>
-          <TextField
-            select
-            autoFocus
-            margin="dense"
-            label="Select a class"
-            variant="outlined"
-            value={selectedClass} // Bind the selected value
-            onChange={handleClassChange} // Handle the change
-            fullWidth
-          >
-            {classData &&
-              classData.map((item) => (
-                <MenuItem key={item.id} value={item.name}>
-                  {item.name}
-                </MenuItem>
-              ))}
-          </TextField>
-          <TextField
-            autoFocus
-            margin="dense"
-            select
-            label="Select the subject"
-            variant="outlined"
-            value={selectedSubject}
-            onChange={handleSubjectChange}
-            fullWidth
-          >
-            {Array.isArray(subjectData) &&
-              subjectData.map((item) => (
-                <MenuItem key={item.id} value={item.name}>
-                  {item.name}
-                </MenuItem>
-              ))}
-          </TextField>
-
-          <label>Study Material File </label>
-          <div>
-            <input
-              type="file"
-              name="Download"
-              // value={formData.schoolLogo}
-              onChange={handleChange}
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title"> Add Study Material</DialogTitle>
+          <DialogContent>
+            <label>Date</label>
+            <TextField
+              fullWidth
+              size="small"
+              type="date"
+              label="Date"
+              variant="outlined"
               sx={{ mb: 3 }}
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)} // Update the selectedDate when the user selects a date
             />
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" color="secondary" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit} color="primary">
-            Add File
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+            <label>Title</label>
+            <TextField
+              autoFocus
+              margin="dense"
+              name="title"
+              value={formData.title}
+              placeholder="Title"
+              type="text"
+              onChange={handleChange}
+              fullWidth
+            />
+            <label>Description</label>
+            <TextField
+              autoFocus
+              margin="dense"
+              name="desc"
+              value={formData.desc}
+              placeholder="Description"
+              type="text"
+              onChange={handleChange}
+              fullWidth
+            />
+            <label>Select a class</label>
+            <TextField
+              select
+              autoFocus
+              margin="dense"
+              label="Select a class"
+              variant="outlined"
+              value={selectedClass} // Bind the selected value
+              onChange={handleClassChange} // Handle the change
+              fullWidth
+            >
+              {classData &&
+                classData.map((item) => (
+                  <MenuItem key={item.id} value={item.name}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+            </TextField>
+            <TextField
+              autoFocus
+              margin="dense"
+              select
+              label="Select the subject"
+              variant="outlined"
+              value={selectedSubject}
+              onChange={handleSubjectChange}
+              fullWidth
+            >
+              {Array.isArray(subjectData) &&
+                subjectData.map((item) => (
+                  <MenuItem key={item.id} value={item.name}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+            </TextField>
+
+            <label>Study Material File </label>
+            <div>
+              <input
+                type="file"
+                name="Download"
+                // value={formData.schoolLogo}
+                onChange={handleChange}
+                sx={{ mb: 3 }}
+              />
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="outlined" color="secondary" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit} color="primary">
+              Add File
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
+      <ToastContainer />
+    </>
   );
 };
 export default StudyMatForm;
