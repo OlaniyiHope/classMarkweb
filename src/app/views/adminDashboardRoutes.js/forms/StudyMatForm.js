@@ -88,7 +88,7 @@ const StudyMatForm = () => {
 
     try {
       await axios.post(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/account-setting`,
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/download`,
         formDataToSend,
         {
           headers: {
