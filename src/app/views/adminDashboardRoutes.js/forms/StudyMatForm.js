@@ -29,21 +29,30 @@ const StudyMatForm = () => {
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedDate, setSelectedDate] = useState(""); // Initialize selectedDate state
 
+  // const [formData, setFormData] = useState({
+  //   className: selectedClass,
+  //   subject: selectedSubject,
+  //   date: selectedDate,
+  //   title: "",
+  //   desc: "", // Change to match the server's expected field name
+  //   class: "",
+  //   subject: "",
+  //   Download: null,
+  // });
   const [formData, setFormData] = useState({
-    className: selectedClass,
-    subject: selectedSubject,
-    date: selectedDate,
-    title: "",
-    desc: "", // Change to match the server's expected field name
-    class: "",
+    className: "",
     subject: "",
+    date: "",
+    title: "",
+    desc: "",
     Download: null,
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData({ ...formData, [name]: value });
+  // };
+
   useEffect(() => {
     if (selectedClass) {
       // Fetch the authentication token from wherever you've stored it (e.g., local storage)
@@ -72,18 +81,49 @@ const StudyMatForm = () => {
       setSubjectData([]);
     }
   }, [selectedClass]);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+
+    // Update the formData state based on the input field name
+    if (name === "Download" && files.length > 0) {
+      setFormData({ ...formData, [name]: files[0] }); // Update formData with the file object
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+
+    // Update the selectedClass or selectedSubject state if applicable
+    if (name === "className") {
+      setSelectedClass(value);
+      setSelectedSubject(""); // Clear selectedSubject when className changes
+    } else if (name === "selectedClass") {
+      setSelectedClass(value);
+      setSelectedSubject(""); // Clear selectedSubject when selectedClass changes
+    } else if (name === "selectedSubject") {
+      setSelectedSubject(value);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formDataToSend = new FormData();
-    formDataToSend.append("date", formData.date);
+    formDataToSend.append("date", selectedDate);
     formDataToSend.append("title", formData.title);
     formDataToSend.append("desc", formData.desc);
-    formDataToSend.append("className", formData.className);
-    formDataToSend.append("subject", formData.subject);
+    formDataToSend.append("className", selectedClass);
+    formDataToSend.append("subject", selectedSubject);
 
+    // Append the file to formDataToSend
     if (formData.Download) {
-      formDataToSend.append("Download", formData.Download);
+      formDataToSend.append("Download", formData.Download); // Append the file object directly
     }
 
     try {
@@ -92,25 +132,17 @@ const StudyMatForm = () => {
         formDataToSend,
         {
           headers: {
-            "Content-Type": "multipart/form-data", // Important for file uploads
+            "Content-Type": "multipart/form-data",
           },
         }
       );
       console.log("FormData after append:", formDataToSend);
 
-      toast.success("School profile updated successfully");
+      toast.success("Study material added successfully");
     } catch (err) {
-      console.error("Error updating school profile:", err);
-      toast.error("Unable to update school profile");
+      console.error("Error adding study material:", err);
+      toast.error("Failed to add study material");
     }
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
   };
 
   const handleClassChange = (event) => {
