@@ -39,7 +39,7 @@ export const navigations = [
   },
   {
     name: " Payment History",
-    icon: "payment",
+    icon: <span style={{ color: "#ffc107" }}>payment</span>,
     path: "/student/dashboard/student-payment",
   },
   {
