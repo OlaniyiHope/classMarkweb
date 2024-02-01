@@ -49,7 +49,7 @@ export const navigations = [
   },
   {
     name: "Study Material",
-    iconText: "SI",
+    icon: <span style={{ color: "#ffc107" }}>group_work</span>,
     path: "/student/dashboard/student-payment",
   },
 
