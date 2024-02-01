@@ -34,22 +34,20 @@ import { Breadcrumb } from "app/components";
 // ... other imports ...
 
 const parseTimeString = (timeStr) => {
-  // Extract hours, minutes, and AM/PM from the time string
   const [timePart, meridiem] = timeStr.split(" ");
-  const [hours, minutes] = timePart.split(":").map(Number);
+  let [hours, minutes] = timePart.split(":").map(Number);
 
-  // Convert hours to 24-hour format if necessary
-  const formattedHours = meridiem === "PM" && hours < 12 ? hours + 12 : hours;
+  if (meridiem === "PM" && hours < 12) {
+    hours += 12;
+  } else if (meridiem === "AM" && hours === 12) {
+    hours = 0;
+  }
 
-  // Create a new Date object with the parsed time
   const currentTime = new Date();
-  currentTime.setHours(formattedHours);
-  currentTime.setMinutes(minutes);
-  currentTime.setSeconds(0);
+  currentTime.setHours(hours, minutes, 0, 0);
 
-  // Set the timezone offset to West Africa Standard Time (WAT)
   const offsetInMinutes = -60; // WAT is UTC+1
-  const timeZoneOffset = offsetInMinutes * 60000; // Convert minutes to milliseconds
+  const timeZoneOffset = offsetInMinutes * 60000;
   const parsedTime = new Date(currentTime.getTime() + timeZoneOffset);
 
   return parsedTime;
@@ -102,12 +100,51 @@ const Manage = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  const handleOpenMenu = (event, examId) => {
-    setAnchorElMap((prev) => ({
-      ...prev,
-      [examId]: event.currentTarget,
-    }));
+  // const handleOpenMenu = (event, examId) => {
+  //   setAnchorElMap((prev) => ({
+  //     ...prev,
+  //     [examId]: event.currentTarget,
+  //   }));
+  // };
+
+  const handleOpenMenu = (
+    event,
+    examId,
+    examDate,
+    examStartTime,
+    examEndTime
+  ) => {
+    const currentDateTimeNigeria = new Date(); // Get the current date and time in Nigeria time zone (UTC+1)
+
+    // Parse the exam date, start time, and end time
+    const parsedExamDate = new Date(examDate);
+    const parsedStartTime = parseTimeString(examStartTime);
+    const parsedEndTime = parseTimeString(examEndTime);
+
+    // Check if the current date matches the exam date
+    if (
+      currentDateTimeNigeria.toDateString() === parsedExamDate.toDateString()
+    ) {
+      // Check if the current time is within the time range of the exam
+      if (
+        currentDateTimeNigeria >= parsedStartTime &&
+        currentDateTimeNigeria <= parsedEndTime
+      ) {
+        // If it's within the time range, open the action menu
+        setAnchorElMap((prev) => ({
+          ...prev,
+          [examId]: event.currentTarget,
+        }));
+      } else {
+        // If it's outside the time range, show a message that it's not yet time for the exam
+        alert("It's not yet time for this exam.");
+      }
+    } else {
+      // If it's not the exam date, show a message that it's not the exam date
+      alert("It's not the date for this exam.");
+    }
   };
+
   // const handleOpenMenu = (event, examId, examTime) => {
   //   const currentTime = moment();
   //   const formattedExamTime = moment(examTime).tz("Africa/Lagos");
@@ -210,7 +247,16 @@ const Manage = () => {
                       <IconButton
                         aria-controls={`action-menu-${item._id}`}
                         aria-haspopup="true"
-                        onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
+                        // onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
+                        onClick={(event) =>
+                          handleOpenMenu(
+                            event,
+                            item._id,
+                            new Date(item.date), // Pass exam date as Date object
+                            item.fromTime,
+                            item.toTime
+                          )
+                        }
                       >
                         <MoreVertIcon /> {/* MoreVertIcon for the menu */}
                       </IconButton>

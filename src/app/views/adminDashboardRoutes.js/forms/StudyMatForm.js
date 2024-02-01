@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -13,48 +13,95 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const initialState = {
-  grade_name: "",
-  gradepoint: "",
-  markupto: "",
-  markfrom: "",
-  comment: "",
-};
-const StudyMatForm = ({ setGradesData }) => {
+import useFetch from "hooks/useFetch";
+import { Diversity2Outlined } from "@mui/icons-material";
+
+const StudyMatForm = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState(initialState);
+  const {
+    data: classData,
+    loading: classLoading,
+    error: classError,
+  } = useFetch("/class");
+  const [subjectData, setSubjectData] = useState([]); // Initialize subject data as an empty array
+  const [selectedClass, setSelectedClass] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const [selectedDate, setSelectedDate] = useState(""); // Initialize selectedDate state
 
-  const { grade_name, gradepoint, markupto, markfrom, comment } = formData;
+  const [formData, setFormData] = useState({
+    className: selectedClass,
+    subject: selectedSubject,
+    date: selectedDate,
+    title: "",
+    desc: "", // Change to match the server's expected field name
+    class: "",
+    subject: "",
+    Download: null,
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+  useEffect(() => {
+    if (selectedClass) {
+      // Fetch the authentication token from wherever you've stored it (e.g., local storage)
+      const token = localStorage.getItem("jwtToken");
 
-  const handleSubmit = async () => {
+      // Include the token in the request headers
+      const headers = new Headers();
+      headers.append("Authorization", `Bearer ${token}`);
+
+      // Make an API call to fetch subjects for the selected class with the authorization token
+      fetch(
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/get-subject/${selectedClass}`,
+        {
+          headers,
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setSubjectData(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching subjects:", error);
+        });
+    } else {
+      // Clear the subjects if no class is selected
+      setSubjectData([]);
+    }
+  }, [selectedClass]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("date", formData.date);
+    formDataToSend.append("title", formData.title);
+    formDataToSend.append("desc", formData.desc);
+    formDataToSend.append("className", formData.className);
+    formDataToSend.append("subject", formData.subject);
+
+    if (formData.Download) {
+      formDataToSend.append("Download", formData.Download);
+    }
+
     try {
-      const response = await axios.post(
-        "https://hlhs-679f1fd654ed.herokuapp.com/api/grade",
-        formData
+      await axios.post(
+        `https://hlhs-3ff6501095d6.herokuapp.com/api/account-setting`,
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Important for file uploads
+          },
+        }
       );
-      const newGrade = response.data;
-      toast.success(`Grade ${newGrade.grade_name} created successfully`);
+      console.log("FormData after append:", formDataToSend);
 
-      // Reset the form and close the dialog
-      setFormData(initialState);
-      setOpen(false);
-
-      navigate("/dashboard/grade");
-
-      // Optionally, you can also update the gradesData state in Grade component
-      if (setGradesData) {
-        setGradesData((prevData) => [...prevData, newGrade]);
-      }
-    } catch (error) {
-      // Handle error and show an error notification
-      toast.error("Error creating grade. Please try again.");
-      console.error("Error creating grade:", error);
+      toast.success("School profile updated successfully");
+    } catch (err) {
+      console.error("Error updating school profile:", err);
+      toast.error("Unable to update school profile");
     }
   };
 
@@ -64,6 +111,18 @@ const StudyMatForm = ({ setGradesData }) => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleClassChange = (event) => {
+    const newSelectedClass = event.target.value;
+    setSelectedClass(newSelectedClass);
+
+    // Clear the selected subject when the class changes
+    setSelectedSubject("");
+  };
+
+  const handleSubjectChange = (event) => {
+    setSelectedSubject(event.target.value);
   };
 
   return (
@@ -77,71 +136,94 @@ const StudyMatForm = ({ setGradesData }) => {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title"> Add new grade</DialogTitle>
+        <DialogTitle id="form-dialog-title"> Add Study Material</DialogTitle>
         <DialogContent>
+          <label>Date</label>
+          <TextField
+            fullWidth
+            size="small"
+            type="date"
+            label="Date"
+            variant="outlined"
+            sx={{ mb: 3 }}
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)} // Update the selectedDate when the user selects a date
+          />
+          <label>Title</label>
           <TextField
             autoFocus
             margin="dense"
-            name="grade_name"
-            value={grade_name}
-            placeholder="Grade name"
+            name="title"
+            value={formData.title}
+            placeholder="Title"
             type="text"
             onChange={handleChange}
             fullWidth
           />
+          <label>Description</label>
           <TextField
             autoFocus
             margin="dense"
-            name="gradepoint"
-            value={gradepoint}
-            placeholder="Enter grade point"
-            type="number"
-            onChange={handleChange}
-            fullWidth
-          />
-          <TextField
-            type="number"
-            name="markfrom"
-            autoFocus
-            margin="dense"
-            onChange={handleChange}
-            value={markfrom}
-            placeholder="Enter Mark from"
-            validators={["required"]}
-            errorMessages={["this field is required"]}
-            fullWidth
-          />
-          <TextField
-            type="number"
-            name="markupto"
-            autoFocus
-            margin="dense"
-            onChange={handleChange}
-            value={markupto}
-            placeholder="Enter Mark Up to"
-            validators={["required"]}
-            errorMessages={["this field is required"]}
-            fullWidth
-          />
-          <TextField
+            name="desc"
+            value={formData.desc}
+            placeholder="Description"
             type="text"
-            name="comment"
-            autoFocus
-            margin="dense"
             onChange={handleChange}
-            value={comment}
-            placeholder="Enter Comment"
-            validators={["required"]}
-            errorMessages={["this field is required"]}
             fullWidth
           />
+          <label>Select a class</label>
+          <TextField
+            select
+            autoFocus
+            margin="dense"
+            label="Select a class"
+            variant="outlined"
+            value={selectedClass} // Bind the selected value
+            onChange={handleClassChange} // Handle the change
+            fullWidth
+          >
+            {classData &&
+              classData.map((item) => (
+                <MenuItem key={item.id} value={item.name}>
+                  {item.name}
+                </MenuItem>
+              ))}
+          </TextField>
+          <TextField
+            autoFocus
+            margin="dense"
+            select
+            label="Select the subject"
+            variant="outlined"
+            value={selectedSubject}
+            onChange={handleSubjectChange}
+            fullWidth
+          >
+            {Array.isArray(subjectData) &&
+              subjectData.map((item) => (
+                <MenuItem key={item.id} value={item.name}>
+                  {item.name}
+                </MenuItem>
+              ))}
+          </TextField>
+
+          <label>Study Material File </label>
+          <div>
+            <input
+              type="file"
+              name="Download"
+              // value={formData.schoolLogo}
+              onChange={handleChange}
+              sx={{ mb: 3 }}
+            />
+          </div>
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" color="secondary" onClick={handleClose}>
             Cancel
           </Button>
           <Button onClick={handleSubmit} color="primary">
-            Add Grade
+            Add File
           </Button>
         </DialogActions>
       </Dialog>
