@@ -16,9 +16,11 @@ import {
   Button,
   TableHead,
   TableRow,
+  Container,
   ListItemIcon,
 } from "@mui/material";
 import useFetch from "hooks/useFetch";
+import { Breadcrumb } from "app/components";
 import FormDialog30 from "app/views/material-kit/dialog/FormDialog30";
 import { TablePagination } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
@@ -62,7 +64,15 @@ const StudyMat = () => {
 
   const [selectedGradeId, setSelectedGradeId] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [download, setDownload] = useState({
+    date: "",
+    title: "",
+    desc: "",
+    class: "",
+    subject: "",
 
+    Download: "",
+  });
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const [action, setAction] = useState(null);
@@ -73,6 +83,23 @@ const StudyMat = () => {
     // Fetch data when the component mounts
     fetchData();
   }, []);
+  useEffect(() => {
+    const fetchSchoolSettings = async () => {
+      try {
+        const response = await axios.get(
+          `https://hlhs-3ff6501095d6.herokuapp.com/api/download`
+        );
+        const { data } = response.data;
+
+        // Set the retrieved school settings to the state
+        setDownload(data);
+      } catch (error) {
+        console.error("Error fetching school settings:", error);
+      }
+    };
+
+    fetchSchoolSettings();
+  }, [apiUrl]);
 
   const fetchData = async () => {
     try {
@@ -160,157 +187,160 @@ const StudyMat = () => {
   };
   return (
     <Fragment>
-      <Box className="breadcrumb">
-        <StudyMatForm setGradesData={setGradesData} />
-      </Box>
       <ContentBox className="analytics">
-        <Box width="100%" overflow="auto">
-          <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
-            <div class="table-responsive full-data">
-              <table
-                class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
-                id="example-student"
-              >
-                <thead>
-                  <tr>
-                    <th>S/N</th>
+        <Container>
+          <Box className="breadcrumb">
+            <Breadcrumb routeSegments={[{ name: "Manage Study Material" }]} />
+          </Box>
+          <Box className="breadcrumb">
+            <StudyMatForm />
+          </Box>
 
-                    <th>Date</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Class</th>
-                    <th>Subject</th>
-                    <th>Download</th>
+          <Box width="100%" overflow="auto">
+            <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
+              <div class="table-responsive full-data">
+                <table
+                  class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
+                  id="example-student"
+                >
+                  <thead>
+                    <tr>
+                      <th>S/N</th>
 
-                    <th class="text-end">Action</th>
-                  </tr>
-                </thead>
-                {gradesData && gradesData.length > 0 ? (
+                      <th>Date</th>
+                      <th>Title</th>
+                      <th>Description</th>
+                      <th>Class</th>
+                      <th>Subject</th>
+                      <th>Download</th>
+
+                      <th class="text-end">Action</th>
+                    </tr>
+                  </thead>
+
                   <tbody>
-                    {gradesData.map((item, index) => (
-                      <tr key={item._id}>
-                        <td>
-                          <div class="trans-list">
-                            <h4>{index + 1}</h4>
-                          </div>
-                        </td>
+                    <tr key={download._id}>
+                      <td>
+                        <div class="trans-list">
+                          <h4>{}</h4>
+                        </div>
+                      </td>
 
-                        <td>
-                          <span class="text-primary font-w600">
-                            {item.date}
-                          </span>
-                        </td>
-                        <td>
-                          <div class="date">{item.title}</div>
-                        </td>
-                        <td>
-                          <h6 class="mb-0">{item.description}</h6>
-                        </td>
-                        <td>
-                          <h6 class="mb-0">{item.class}</h6>
-                        </td>
-                        <td>
-                          <h6 class="mb-0">{item.subject}</h6>
-                        </td>
-                        <td>
-                          <h6 class="mb-0">{item.download}</h6>
-                        </td>
+                      <td>
+                        <span class="text-primary font-w600">
+                          {download.date}
+                        </span>
+                      </td>
+                      <td>
+                        <div class="date">{download.title}</div>
+                      </td>
+                      <td>
+                        <h6 class="mb-0">{download.desc}</h6>
+                      </td>
+                      <td>
+                        <h6 class="mb-0">{download.className}</h6>
+                      </td>
+                      <td>
+                        <h6 class="mb-0">{download.subject}</h6>
+                      </td>
+                      <td>
+                        <h6 class="mb-0">{`https://edupros.s3.amazonaws.com/${download.Download}`}</h6>
+                      </td>
 
-                        <td>
-                          <TableCell align="right">
-                            <IconButton
-                              aria-controls="action-menu"
-                              aria-haspopup="true"
-                              onClick={handleOpenMenu}
+                      <td>
+                        <TableCell align="right">
+                          <IconButton
+                            aria-controls="action-menu"
+                            aria-haspopup="true"
+                            onClick={handleOpenMenu}
+                          >
+                            <MoreVertIcon /> {/* MoreVertIcon for the menu */}
+                          </IconButton>
+                          <Menu
+                            id="action-menu"
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleCloseMenu}
+                          >
+                            <MenuItem
+                              onClick={() => handleEditGrade(download._id)}
                             >
-                              <MoreVertIcon /> {/* MoreVertIcon for the menu */}
-                            </IconButton>
-                            <Menu
-                              id="action-menu"
-                              anchorEl={anchorEl}
-                              open={Boolean(anchorEl)}
-                              onClose={handleCloseMenu}
+                              <ListItemIcon>
+                                <EditIcon /> {/* Use an Edit icon */}
+                              </ListItemIcon>
+                              Edit
+                            </MenuItem>
+                            <MenuItem
+                              onClick={() =>
+                                handleOpenDeleteConfirmation(download)
+                              }
                             >
-                              <MenuItem
-                                onClick={() => handleEditGrade(item._id)}
-                              >
-                                <ListItemIcon>
-                                  <EditIcon /> {/* Use an Edit icon */}
-                                </ListItemIcon>
-                                Edit
-                              </MenuItem>
-                              <MenuItem
-                                onClick={() =>
-                                  handleOpenDeleteConfirmation(item)
-                                }
-                              >
-                                <ListItemIcon>
-                                  <DeleteIcon />
-                                </ListItemIcon>
-                                Delete
-                              </MenuItem>
-                            </Menu>
-                          </TableCell>
-                        </td>
-                      </tr>
-                    ))}
+                              <ListItemIcon>
+                                <DeleteIcon />
+                              </ListItemIcon>
+                              Delete
+                            </MenuItem>
+                          </Menu>
+                        </TableCell>
+                      </td>
+                    </tr>
                   </tbody>
-                ) : (
+
                   <TableRow>
                     <TableCell colSpan={5} align="center">
                       No Study Material to display.
                     </TableCell>
                   </TableRow>
-                )}
-              </table>
-              {/* Edit Grade Dialog */}
-              <EditGradeDialog
-                open={editDialogOpen}
-                onClose={() => {
-                  setEditGradeData(null);
-                  setEditDialogOpen(false);
-                }}
-                gradeId={editGradeData} // Pass gradeId instead of grade object
-                onSave={handleSaveEdit}
-              />
-              <Dialog
-                open={deleteConfirmationOpen}
-                onClose={handleCloseDeleteConfirmation}
-              >
-                <DialogTitle>Delete Confirmation</DialogTitle>
-                <DialogContent>
-                  Are you sure you want to delete {userToDelete?.username}?
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleCloseDeleteConfirmation}>
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={async () => {
-                      await handleDeleteUser(); // Call the asynchronous function
-                      handleCloseDeleteConfirmation();
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </DialogActions>
-              </Dialog>
+                </table>
+                {/* Edit Grade Dialog */}
+                <EditGradeDialog
+                  open={editDialogOpen}
+                  onClose={() => {
+                    setEditGradeData(null);
+                    setEditDialogOpen(false);
+                  }}
+                  gradeId={editGradeData} // Pass gradeId instead of grade object
+                  onSave={handleSaveEdit}
+                />
+                <Dialog
+                  open={deleteConfirmationOpen}
+                  onClose={handleCloseDeleteConfirmation}
+                >
+                  <DialogTitle>Delete Confirmation</DialogTitle>
+                  <DialogContent>
+                    Are you sure you want to delete {userToDelete?.username}?
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleCloseDeleteConfirmation}>
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={async () => {
+                        await handleDeleteUser(); // Call the asynchronous function
+                        handleCloseDeleteConfirmation();
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </div>
             </div>
-          </div>
 
-          <TablePagination
-            sx={{ px: 2 }}
-            page={page}
-            component="div"
-            rowsPerPage={rowsPerPage}
-            // count={data ? data.length : 0}
-            onPageChange={handleChangePage}
-            rowsPerPageOptions={[5, 10, 25]}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            nextIconButtonProps={{ "aria-label": "Next Page" }}
-            backIconButtonProps={{ "aria-label": "Previous Page" }}
-          />
-        </Box>
+            <TablePagination
+              sx={{ px: 2 }}
+              page={page}
+              component="div"
+              rowsPerPage={rowsPerPage}
+              // count={data ? data.length : 0}
+              onPageChange={handleChangePage}
+              rowsPerPageOptions={[5, 10, 25]}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              nextIconButtonProps={{ "aria-label": "Next Page" }}
+              backIconButtonProps={{ "aria-label": "Previous Page" }}
+            />
+          </Box>
+        </Container>
       </ContentBox>
     </Fragment>
   );
