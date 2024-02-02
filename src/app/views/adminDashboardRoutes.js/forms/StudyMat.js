@@ -242,7 +242,9 @@ const StudyMat = () => {
 
                           <td>
                             <span class="text-primary font-w600">
-                              {download.date}
+                              {download.date
+                                ? new Date(download.date).toLocaleDateString()
+                                : ""}
                             </span>
                           </td>
                           <td>
@@ -258,7 +260,16 @@ const StudyMat = () => {
                             <h6 class="mb-0">{download.subject}</h6>
                           </td>
                           <td>
-                            <h6 class="mb-0">{`https://edupros.s3.amazonaws.com/${download.Download}`}</h6>
+                            <Button
+                              variant="contained"
+                              component="a"
+                              href={`https://edupros.s3.amazonaws.com/${download.Download}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              download // Add the download attribute here
+                            >
+                              Download
+                            </Button>
                           </td>
 
                           <td>
