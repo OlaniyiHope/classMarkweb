@@ -47,9 +47,9 @@ const StyledTable = styled(Table)(({ theme }) => ({
 }));
 
 const StudyMat = () => {
-  const { data: fetchedData, loading, error, reFetch } = useFetch("/");
+  const { data: fetchedData, error, reFetch } = useFetch("/");
   const [gradesData, setGradesData] = useState([]);
-
+  const [downloads, setDownloads] = useState([]);
   useEffect(() => {
     // Set the fetched data to the state
     setGradesData(fetchedData || []);
@@ -60,6 +60,7 @@ const StudyMat = () => {
   const [userToDelete, setUserToDelete] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editGradeData, setEditGradeData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [selectedGradeId, setSelectedGradeId] = useState(null);
@@ -84,22 +85,21 @@ const StudyMat = () => {
     fetchData();
   }, []);
   useEffect(() => {
-    const fetchSchoolSettings = async () => {
+    const fetchDownloads = async () => {
       try {
         const response = await axios.get(
           `https://hlhs-3ff6501095d6.herokuapp.com/api/download`
         );
-        const { data } = response.data;
-
-        // Set the retrieved school settings to the state
-        setDownload(data);
+        setDownloads(response.data.data); // Update downloads state with fetched data
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching school settings:", error);
+        console.error("Error fetching downloads:", error);
+        setLoading(false);
       }
     };
 
-    fetchSchoolSettings();
-  }, [apiUrl]);
+    fetchDownloads();
+  }, []); // Fetch downloads on component mount
 
   const fetchData = async () => {
     try {
@@ -219,78 +219,89 @@ const StudyMat = () => {
                   </thead>
 
                   <tbody>
-                    <tr key={download._id}>
-                      <td>
-                        <div class="trans-list">
-                          <h4>{}</h4>
-                        </div>
-                      </td>
-
-                      <td>
-                        <span class="text-primary font-w600">
-                          {download.date}
-                        </span>
-                      </td>
-                      <td>
-                        <div class="date">{download.title}</div>
-                      </td>
-                      <td>
-                        <h6 class="mb-0">{download.desc}</h6>
-                      </td>
-                      <td>
-                        <h6 class="mb-0">{download.className}</h6>
-                      </td>
-                      <td>
-                        <h6 class="mb-0">{download.subject}</h6>
-                      </td>
-                      <td>
-                        <h6 class="mb-0">{`https://edupros.s3.amazonaws.com/${download.Download}`}</h6>
-                      </td>
-
-                      <td>
-                        <TableCell align="right">
-                          <IconButton
-                            aria-controls="action-menu"
-                            aria-haspopup="true"
-                            onClick={handleOpenMenu}
-                          >
-                            <MoreVertIcon /> {/* MoreVertIcon for the menu */}
-                          </IconButton>
-                          <Menu
-                            id="action-menu"
-                            anchorEl={anchorEl}
-                            open={Boolean(anchorEl)}
-                            onClose={handleCloseMenu}
-                          >
-                            <MenuItem
-                              onClick={() => handleEditGrade(download._id)}
-                            >
-                              <ListItemIcon>
-                                <EditIcon /> {/* Use an Edit icon */}
-                              </ListItemIcon>
-                              Edit
-                            </MenuItem>
-                            <MenuItem
-                              onClick={() =>
-                                handleOpenDeleteConfirmation(download)
-                              }
-                            >
-                              <ListItemIcon>
-                                <DeleteIcon />
-                              </ListItemIcon>
-                              Delete
-                            </MenuItem>
-                          </Menu>
+                    {loading ? (
+                      <TableRow>
+                        <TableCell colSpan={8} align="center">
+                          Loading...
                         </TableCell>
-                      </td>
-                    </tr>
-                  </tbody>
+                      </TableRow>
+                    ) : downloads.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={8} align="center">
+                          No Study Material to display.
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      downloads.map((download, index) => (
+                        <tr key={download._id}>
+                          <td>
+                            <div class="trans-list">
+                              <h4>{index + 1}</h4>
+                            </div>
+                          </td>
 
-                  <TableRow>
-                    <TableCell colSpan={5} align="center">
-                      No Study Material to display.
-                    </TableCell>
-                  </TableRow>
+                          <td>
+                            <span class="text-primary font-w600">
+                              {download.date}
+                            </span>
+                          </td>
+                          <td>
+                            <div class="date">{download.title}</div>
+                          </td>
+                          <td>
+                            <h6 class="mb-0">{download.desc}</h6>
+                          </td>
+                          <td>
+                            <h6 class="mb-0">{download.className}</h6>
+                          </td>
+                          <td>
+                            <h6 class="mb-0">{download.subject}</h6>
+                          </td>
+                          <td>
+                            <h6 class="mb-0">{`https://edupros.s3.amazonaws.com/${download.Download}`}</h6>
+                          </td>
+
+                          <td>
+                            <TableCell align="right">
+                              <IconButton
+                                aria-controls="action-menu"
+                                aria-haspopup="true"
+                                onClick={handleOpenMenu}
+                              >
+                                <MoreVertIcon />{" "}
+                                {/* MoreVertIcon for the menu */}
+                              </IconButton>
+                              <Menu
+                                id="action-menu"
+                                anchorEl={anchorEl}
+                                open={Boolean(anchorEl)}
+                                onClose={handleCloseMenu}
+                              >
+                                <MenuItem
+                                  onClick={() => handleEditGrade(download._id)}
+                                >
+                                  <ListItemIcon>
+                                    <EditIcon /> {/* Use an Edit icon */}
+                                  </ListItemIcon>
+                                  Edit
+                                </MenuItem>
+                                <MenuItem
+                                  onClick={() =>
+                                    handleOpenDeleteConfirmation(download)
+                                  }
+                                >
+                                  <ListItemIcon>
+                                    <DeleteIcon />
+                                  </ListItemIcon>
+                                  Delete
+                                </MenuItem>
+                              </Menu>
+                            </TableCell>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
                 </table>
                 {/* Edit Grade Dialog */}
                 <EditGradeDialog
