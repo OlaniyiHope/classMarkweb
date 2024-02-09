@@ -36,6 +36,9 @@ const ExamDetail = () => {
   const [score, setScore] = useState(null);
   const [correctAnswers, setCorrectAnswers] = useState({});
 
+  const [remainingTime, setRemainingTime] = useState(0); // Initialize with 0 instead of null
+  const [timerInterval, setTimerInterval] = useState(null);
+
   const [examFinished, setExamFinished] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -80,6 +83,81 @@ const ExamDetail = () => {
 
   // };
 
+  const handleLogout = () => {
+    // Perform logout action here
+    // For example, clear localStorage and navigate to login page
+    localStorage.clear();
+    navigate("/student/dashboard/manage-online-exam");
+  };
+  const startTimer = () => {
+    if (!exam || !exam.fromTime || !exam.toTime) {
+      console.error("Exam details are not available.");
+      return;
+    }
+
+    const defaultDate = new Date(); // Get today's date
+    const examStartTimeStr = `${defaultDate.toDateString()} ${exam.fromTime}`;
+    const examEndTimeStr = `${defaultDate.toDateString()} ${exam.toTime}`;
+
+    // Convert exam.fromTime to the correct format
+    const examStartTime = new Date(
+      examStartTimeStr.replace(/-/g, "/").replace("T", " ").replace("Z", "")
+    );
+    // Convert exam.toTime to the correct format
+    const examEndTime = new Date(
+      examEndTimeStr.replace(/-/g, "/").replace("T", " ").replace("Z", "")
+    );
+
+    console.log("Exam start time:", examStartTime);
+    console.log("Exam end time:", examEndTime);
+
+    let examDuration = 0;
+
+    const currentTime = new Date();
+
+    if (currentTime < examStartTime) {
+      examDuration = (examEndTime - examStartTime) / 1000; // Convert milliseconds to seconds
+    } else if (currentTime > examEndTime) {
+      examDuration = 0; // Exam has ended
+    } else {
+      examDuration = (examEndTime - currentTime) / 1000; // Convert milliseconds to seconds
+    }
+
+    console.log("Exam duration:", examDuration); // Debugging output
+
+    // Handle unexpected values for examDuration
+    if (isNaN(examDuration) || examDuration < 0) {
+      console.error("Invalid exam duration:", examDuration);
+      return;
+    }
+
+    setRemainingTime(Math.floor(examDuration));
+
+    const interval = setInterval(() => {
+      setRemainingTime((prevTime) => {
+        if (prevTime <= 0) {
+          clearInterval(interval);
+          handleLogout(); // Logout when time is up
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    setTimerInterval(interval);
+  };
+
+  useEffect(() => {
+    startTimer();
+    return () => {
+      clearInterval(timerInterval);
+    };
+  }, [exam]);
+
+  // Display remaining time
+
+  // Display remaining time
+
   const getLoggedInUserId = () => {
     const jwtToken = localStorage.getItem("jwtToken");
 
@@ -96,6 +174,8 @@ const ExamDetail = () => {
         `https://hlhs-3ff6501095d6.herokuapp.com/api/get-exam/${id}`
       );
       setExam(examResponse.data);
+      // Set the exam object before calling startTimer
+      console.log("Exam details:", examResponse.data);
 
       const token = localStorage.getItem("jwtToken");
       const headers = {
@@ -144,15 +224,22 @@ const ExamDetail = () => {
         0
       );
       setTotalMark(calculatedTotalMark);
+      startTimer();
     } catch (error) {
       console.error("Error fetching exam or questions:", error);
     }
   };
 
+  // useEffect(() => {
+  //   fetchExamAndQuestions();
+  // }, [id]);
+
   useEffect(() => {
     fetchExamAndQuestions();
+    return () => {
+      clearInterval(timerInterval); // Clear the timer interval on component unmount
+    };
   }, [id]);
-
   const calculateScore = () => {
     try {
       const calculatedScore = questions.reduce((totalScore, question) => {
@@ -282,6 +369,19 @@ const ExamDetail = () => {
         </Table>
       </TableContainer>
       <CameraFeed />
+      <Typography
+        variant="h6"
+        style={{
+          backgroundColor: "#f0f0f0",
+          padding: "8px",
+          borderRadius: "4px",
+          fontSize: "2rem",
+          color: "#ff0000",
+        }}
+      >
+        Time Remaining: {formatTime(remainingTime)}
+      </Typography>
+
       <Button onClick={() => setShowQuestions(true)}>Start Exam</Button>
       {showQuestions && (
         <div>
@@ -403,6 +503,12 @@ const ExamDetail = () => {
       </Dialog>
     </div>
   );
+};
+const formatTime = (timeInSeconds) => {
+  const hours = Math.floor(timeInSeconds / 3600);
+  const minutes = Math.floor((timeInSeconds % 3600) / 60);
+  const seconds = timeInSeconds % 60;
+  return `${hours}h ${minutes}m ${seconds}s`;
 };
 
 export default ExamDetail;
