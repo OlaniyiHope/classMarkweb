@@ -52,8 +52,13 @@ const ExamDetail = () => {
     setIsDialogOpen(true);
   };
 
+  // const handleCloseDialog = () => {
+  //   setIsDialogOpen(false);
+  // };
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
+    // Navigate back to /student/dashboard/manage-online-exam
+    navigate("/student/dashboard/manage-online-exam");
   };
 
   const getLoggedInUserId = () => {
@@ -129,22 +134,6 @@ const ExamDetail = () => {
     fetchExamAndQuestions();
   }, [id]);
 
-  // const calculateScore = () => {
-  //   const calculatedScore = questions.reduce((totalScore, question) => {
-  //     const questionId = question._id;
-  //     const studentAnswer = answers[questionId] || "";
-  //     const correctAnswer = correctAnswers[questionId] || "";
-
-  //     if (studentAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-  //       return totalScore + question.mark;
-  //     }
-
-  //     return totalScore;
-  //   }, 0);
-
-  //   setScore(calculatedScore); // Set the calculated score
-  //   handleSubmitExam(calculatedScore); // Call handleSubmitExam with the calculated score
-  // };
   const calculateScore = () => {
     try {
       const calculatedScore = questions.reduce((totalScore, question) => {
@@ -360,7 +349,7 @@ const ExamDetail = () => {
           </Button>
         </div>
       )}
-      {examFinished && (
+      {/*} {examFinished && (
         <Button variant="contained" color="primary" onClick={handleOpenDialog}>
           View Score
         </Button>
@@ -371,6 +360,20 @@ const ExamDetail = () => {
         <DialogContent>
           <Typography variant="h6">
             Your Score: {score} out of {totalMark}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+     </Dialog>*/}
+
+      <Dialog open={examFinished} onClose={handleCloseDialog}>
+        <DialogTitle>Exam Completed</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">
+            You have successfully completed the exam. Thank you!
           </Typography>
         </DialogContent>
         <DialogActions>
