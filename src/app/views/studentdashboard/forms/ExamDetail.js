@@ -23,6 +23,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
+import CameraFeed from "./CameraFeed";
 
 const ExamDetail = () => {
   const { id } = useParams(); // Get the id parameter from the route
@@ -39,7 +40,15 @@ const ExamDetail = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const navigate = useNavigate();
+  const [cheatingDetected, setCheatingDetected] = useState(false);
 
+  // Function to handle cheating detection
+  const handleCheatingDetection = () => {
+    // Implement your cheating detection logic here
+    // For example, analyze the webcam feed or use face recognition
+    // If cheating is detected, set cheatingDetected to true
+    setCheatingDetected(true);
+  };
   const handleOptionChange = (questionId, option) => {
     setAnswers({ ...answers, [questionId]: option });
   };
@@ -60,6 +69,16 @@ const ExamDetail = () => {
     // Navigate back to /student/dashboard/manage-online-exam
     navigate("/student/dashboard/manage-online-exam");
   };
+
+  // const handleCloseDialog = () => {
+
+  //   if (cheatingDetected) {
+  //     setIsDialogOpen(false);
+  //     // Cancel the exam if cheating is detected
+  //     navigate("/student/dashboard/manage-online-exam");
+  //   }
+
+  // };
 
   const getLoggedInUserId = () => {
     const jwtToken = localStorage.getItem("jwtToken");
@@ -262,7 +281,7 @@ const ExamDetail = () => {
           </TableBody>
         </Table>
       </TableContainer>
-
+      <CameraFeed />
       <Button onClick={() => setShowQuestions(true)}>Start Exam</Button>
       {showQuestions && (
         <div>
