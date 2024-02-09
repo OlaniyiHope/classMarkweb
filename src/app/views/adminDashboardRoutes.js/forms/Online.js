@@ -75,8 +75,58 @@ const Online = () => {
     return () => ValidatorForm.removeValidationRule("isPasswordMatch");
   }, [state.password]);
 
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   const formattedDate = selectedDate.toISOString().split("T")[0];
+
+  //   // Assuming you have the JWT token stored in localStorage
+  //   const token = localStorage.getItem("jwtToken");
+
+  //   if (!token) {
+  //     // Handle the case where the token is missing or expired, e.g., redirect to login
+  //     return;
+  //   }
+
+  //   const examData = {
+  //     title: title,
+  //     className: selectedClass,
+  //     subject: selectedSubject,
+  //     date: selectedDate, // Format the date
+  //     // fromTime: fromTime,
+  //     // toTime: toTime,
+
+  //     fromTime: formatTime(fromTime), // Format the time
+  //     toTime: formatTime(toTime),
+
+  //     percent: percent,
+  //     instruction: instruction,
+  //   };
+
+  //   // Make a POST request to your backend to create the exam with the JWT token
+  //   fetch(`https://hlhs-3ff6501095d6.herokuapp.com/api/create-exam`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
+  //     },
+  //     body: JSON.stringify(examData),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       // Handle the response from the server (e.g., show success message)
+  //       navigate("/dashboard/manage-online-exam");
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error creating exam:", error);
+  //       // Handle the error (e.g., show an error message)
+  //     });
+  // };
+
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    // Convert selectedDate to a Date object
+    const formattedDate = new Date(selectedDate).toISOString().split("T")[0];
 
     // Assuming you have the JWT token stored in localStorage
     const token = localStorage.getItem("jwtToken");
@@ -86,16 +136,17 @@ const Online = () => {
       return;
     }
 
+    // Format fromTime and toTime to "HH:mm AM/PM" format
+    const formattedFromTime = formatTime(fromTime);
+    const formattedToTime = formatTime(toTime);
+
     const examData = {
       title: title,
       className: selectedClass,
       subject: selectedSubject,
-      date: selectedDate, // Format the date
-      // fromTime: fromTime,
-      // toTime: toTime,
-
-      fromTime: formatTime(fromTime), // Format the time
-      toTime: formatTime(toTime),
+      date: formattedDate, // Use formattedDate instead of selectedDate
+      fromTime: formattedFromTime, // Use formattedFromTime instead of formatTime(fromTime)
+      toTime: formattedToTime, // Use formattedToTime instead of formatTime(toTime)
       percent: percent,
       instruction: instruction,
     };
