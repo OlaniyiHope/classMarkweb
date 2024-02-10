@@ -43,15 +43,61 @@ const ExamDetail = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const navigate = useNavigate();
-  const [cheatingDetected, setCheatingDetected] = useState(false);
 
-  // Function to handle cheating detection
-  const handleCheatingDetection = () => {
-    // Implement your cheating detection logic here
-    // For example, analyze the webcam feed or use face recognition
-    // If cheating is detected, set cheatingDetected to true
-    setCheatingDetected(true);
+  // useEffect(() => {
+  //   document.documentElement.requestFullscreen();
+
+  //   const handleKeyDown = (event) => {
+  //     if (event.key === "Escape" && !examFinished) {
+  //       event.preventDefault();
+  //     }
+  //   };
+  //   document.addEventListener("keydown", handleKeyDown);
+
+  //   return () => {
+  //     document.exitFullscreen();
+  //     document.removeEventListener("keydown", handleKeyDown);
+  //   };
+  // }, [examFinished]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape" && !examFinished && remainingTime > 0) {
+        event.preventDefault();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [examFinished, remainingTime]);
+
+  const enterFullscreen = () => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    } else if (document.documentElement.webkitRequestFullscreen) {
+      /* Safari */
+      document.documentElement.webkitRequestFullscreen();
+    } else if (document.documentElement.msRequestFullscreen) {
+      /* IE11 */
+      document.documentElement.msRequestFullscreen();
+    }
   };
+
+  const exitFullscreen = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      /* Safari */
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      /* IE11 */
+      document.msExitFullscreen();
+    }
+  };
+
   const handleOptionChange = (questionId, option) => {
     setAnswers({ ...answers, [questionId]: option });
   };
@@ -153,10 +199,7 @@ const ExamDetail = () => {
       clearInterval(timerInterval);
     };
   }, [exam]);
-
-  // Display remaining time
-
-  // Display remaining time
+  // Event listeners to prevent navigation, context menu, and keyboard shortcuts
 
   const getLoggedInUserId = () => {
     const jwtToken = localStorage.getItem("jwtToken");
@@ -341,7 +384,10 @@ const ExamDetail = () => {
               <TableCell>
                 <b>Date</b>
               </TableCell>
-              <TableCell>{exam ? exam.date : "Loading..."}</TableCell>
+              {/*<TableCell>{exam ? exam.date : "Loading..."}</TableCell>*/}
+              <TableCell>
+                {exam ? new Date(exam.date).toLocaleDateString() : "Loading..."}
+              </TableCell>
             </TableRow>
             <TableRow>
               <TableCell>
@@ -382,7 +428,14 @@ const ExamDetail = () => {
         Time Remaining: {formatTime(remainingTime)}
       </Typography>
 
-      <Button onClick={() => setShowQuestions(true)}>Start Exam</Button>
+      <Button
+        onClick={() => {
+          setShowQuestions(true);
+          enterFullscreen();
+        }}
+      >
+        Start Exam
+      </Button>
       {showQuestions && (
         <div>
           <Grid container spacing={2}>
