@@ -60,41 +60,45 @@ const ExamDetail = () => {
   //   };
   // }, [examFinished]);
 
+  const enterFullscreen = () => {
+    const element = document.documentElement;
+
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) {
+      // For Safari
+      element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+      // For IE11
+      element.msRequestFullscreen();
+    }
+  };
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape" && !examFinished && remainingTime > 0) {
+        console.log("Escape key pressed. Fullscreen mode will not exit.");
         event.preventDefault();
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
+    if (showQuestions) {
+      document.addEventListener("keydown", handleKeyDown);
+    } else {
+      document.removeEventListener("keydown", handleKeyDown);
+    }
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [examFinished, remainingTime]);
+  }, [showQuestions, examFinished, remainingTime]);
+  const handleKeyDown = (event) => {
+    console.log("Key pressed:", event.key);
+    console.log("Exam finished:", examFinished);
+    console.log("Remaining time:", remainingTime);
 
-  const enterFullscreen = () => {
-    if (document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen();
-    } else if (document.documentElement.webkitRequestFullscreen) {
-      /* Safari */
-      document.documentElement.webkitRequestFullscreen();
-    } else if (document.documentElement.msRequestFullscreen) {
-      /* IE11 */
-      document.documentElement.msRequestFullscreen();
-    }
-  };
-
-  const exitFullscreen = () => {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      /* Safari */
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      /* IE11 */
-      document.msExitFullscreen();
+    if (event.key === "Escape" && !examFinished && remainingTime > 0) {
+      console.log("Escape key pressed. Fullscreen mode will not exit.");
+      event.preventDefault();
     }
   };
 
@@ -414,7 +418,7 @@ const ExamDetail = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <CameraFeed />
+      {/*} <CameraFeed />*/}
       <Typography
         variant="h6"
         style={{
