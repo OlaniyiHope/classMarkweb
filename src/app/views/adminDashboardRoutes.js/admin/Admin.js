@@ -90,7 +90,7 @@ const Admin = () => {
   };
   const [notices, setNotices] = useState([]);
 
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   useEffect(() => {
     const fetchNotices = async () => {

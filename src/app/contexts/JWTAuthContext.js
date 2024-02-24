@@ -9,7 +9,7 @@ const initialState = {
   user: null,
 };
 
-const apiUrl = process.env.REACT_APP_API_URL;
+const apiUrl = process.env.REACT_APP_API_URL.trim();
 
 const isValidToken = (jwtToken) => {
   if (!jwtToken) {

@@ -20,7 +20,7 @@ const EditStudent = ({ open, onClose, studentId, onSave }) => {
     email: "",
     password: "",
   });
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   useEffect(() => {
     const fetchStudentById = async () => {

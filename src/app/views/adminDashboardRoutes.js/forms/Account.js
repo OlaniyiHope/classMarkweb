@@ -52,7 +52,7 @@ const Account = () => {
     signature: null, // File field
   });
 
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   useEffect(() => {
     // Fetch classes from your API

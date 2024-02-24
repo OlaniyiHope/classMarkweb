@@ -178,7 +178,7 @@ const EditTeacher = ({ open, onClose, teacherId, onSave }) => {
     address: "",
     password: "", // Set an initial value (e.g., an empty string)
   });
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   useEffect(() => {
     const fetchTeacherById = async () => {

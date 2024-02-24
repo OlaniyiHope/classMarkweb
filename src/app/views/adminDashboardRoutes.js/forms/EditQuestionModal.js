@@ -16,7 +16,7 @@ const EditQuestionModal = ({ open, onClose, question, onUpdate }) => {
     setEditedQuestion(question);
   }, [open, question]);
 
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   const handleUpdate = async () => {
     try {

@@ -16,7 +16,7 @@ const EditGradeDialog = ({ open, onClose, grade, gradeId, onSave }) => {
     markupto: "",
     comment: "",
   });
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   useEffect(() => {
     const fetchGradeById = async () => {
