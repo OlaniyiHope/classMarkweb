@@ -390,7 +390,7 @@ const Manage = () => {
   const [anchorElMap, setAnchorElMap] = useState({});
   const { logout, user } = useAuth();
   const navigate = useNavigate();
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   useEffect(() => {
     const fetchExams = async () => {

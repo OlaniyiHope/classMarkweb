@@ -49,7 +49,7 @@ const Sub8 = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [anchorElMap, setAnchorElMap] = useState({});
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);

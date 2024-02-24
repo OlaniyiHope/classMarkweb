@@ -34,7 +34,7 @@ const ManSin2 = () => {
 
   const [totalMark, setTotalMark] = useState(0);
   const [questions, setQuestions] = useState([]);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   // Function to calculate total marks
   const calculateTotalMarks = () => {

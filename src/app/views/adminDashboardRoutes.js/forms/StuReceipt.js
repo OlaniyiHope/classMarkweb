@@ -40,7 +40,7 @@ const StuReceipt = () => {
   const [selectedName, setSelectedName] = useState("");
   const [typeOfPayment, setTypeOfPayment] = useState("");
   const [studentData, setStudentData] = useState([]);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   useEffect(() => {
     ValidatorForm.addValidationRule("isPasswordMatch", (value) => {

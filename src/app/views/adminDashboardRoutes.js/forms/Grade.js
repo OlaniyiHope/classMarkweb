@@ -66,7 +66,7 @@ const Grade = () => {
 
   const [action, setAction] = useState(null);
 
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   useEffect(() => {
     // Fetch data when the component mounts

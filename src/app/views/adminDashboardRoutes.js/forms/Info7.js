@@ -86,7 +86,7 @@ const Info7 = () => {
 
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const handleOpenMenu = (event, examId) => {
     setAnchorElMap((prev) => ({

@@ -70,7 +70,7 @@ const Form = () => {
     });
     return () => ValidatorForm.removeValidationRule("isPasswordMatch");
   }, [state.password]);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

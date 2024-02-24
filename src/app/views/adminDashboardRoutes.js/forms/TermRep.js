@@ -67,7 +67,7 @@ const TermRep = ({ studentId }) => {
     sessionEnd: "",
     schoolLogo: "",
   });
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
   console.log("School Logo:", accountSettings.schoolLogo);
 
   const fetchStudentData = async (studentId) => {

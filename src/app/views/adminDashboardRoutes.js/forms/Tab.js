@@ -58,7 +58,7 @@ const Tab = () => {
 
   const [subjectIdLookup, setSubjectIdLookup] = useState({});
   const [showMarkManagement, setShowMarkManagement] = useState(false);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   const fetchStudentData = async (examId, subjectId) => {
     try {

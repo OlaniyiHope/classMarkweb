@@ -87,7 +87,7 @@ const Manage = () => {
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);

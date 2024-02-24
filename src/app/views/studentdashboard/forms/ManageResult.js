@@ -156,7 +156,7 @@ const ManageResult = () => {
   const [scores, setScores] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   // Import useNavigate
   const navigate = useNavigate();

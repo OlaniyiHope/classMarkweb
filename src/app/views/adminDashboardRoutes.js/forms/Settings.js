@@ -58,8 +58,7 @@ const Settings = () => {
     schoolLogo: null,
   });
 
-  const apiUrl = process.env.REACT_APP_API_URL;
-
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
   useEffect(() => {
     // Fetch classes from your API
     fetch(`${apiUrl}/api/class`)

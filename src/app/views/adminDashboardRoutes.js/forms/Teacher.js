@@ -56,7 +56,7 @@ const Teacher = () => {
   const [action, setAction] = useState(null);
   const [newPassword, setNewPassword] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   useEffect(() => {
     // Fetch the JWT token from your storage (localStorage or cookies)

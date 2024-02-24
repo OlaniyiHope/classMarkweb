@@ -45,7 +45,7 @@ const ViewNotice = () => {
   const [action, setAction] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [notices, setNotices] = useState([]); // Add or replace this line based on your component
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [noticeIdToDelete, setNoticeIdToDelete] = useState(null);
 

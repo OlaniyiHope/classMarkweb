@@ -24,7 +24,7 @@ export default function FormDialog5() {
   const { teachers_name, subject_name, classname } = formData;
   const [classs, setClasss] = useState();
   const [error, setError] = useState();
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = {

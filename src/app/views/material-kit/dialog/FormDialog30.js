@@ -24,7 +24,7 @@ export default function FormDialog3() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(initialState);
   const { username, email, password, address, phone } = formData;
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

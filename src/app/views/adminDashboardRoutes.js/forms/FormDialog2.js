@@ -24,7 +24,7 @@ export default function FormDialog2() {
   const [selectedClass, setSelectedClass] = useState("");
   const navigate = useNavigate();
 
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

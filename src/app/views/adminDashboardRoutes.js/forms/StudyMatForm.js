@@ -52,7 +52,7 @@ const StudyMatForm = () => {
   //   const { name, value } = e.target;
   //   setFormData({ ...formData, [name]: value });
   // };
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   useEffect(() => {
     if (selectedClass) {

@@ -96,7 +96,7 @@ const Analytics = () => {
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
   useEffect(() => {
     const fetchNotices = async () => {
       try {
