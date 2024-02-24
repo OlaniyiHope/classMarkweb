@@ -39,13 +39,9 @@ export default function FormDialog2() {
       };
 
       // Make an API call to create a subject
-      await axios.post(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/create-subject`,
-        formData,
-        {
-          headers, // Include the headers in the request
-        }
-      );
+      await axios.post(`${apiUrl}/api/create-subject`, formData, {
+        headers, // Include the headers in the request
+      });
 
       // Handle successful subject creation
       navigate("/dashboard/js2-subject");

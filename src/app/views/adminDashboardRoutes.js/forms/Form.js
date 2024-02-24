@@ -91,7 +91,7 @@ const Form = () => {
     // Assuming you have the JWT token stored in localStorage
     const token = localStorage.getItem("jwtToken");
     // Fetch classes from your API
-    fetch(`https://hlhs-3ff6501095d6.herokuapp.com/api/class`, {
+    fetch(`${apiUrl}/api/class`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`, // Include your authentication token
@@ -120,7 +120,7 @@ const Form = () => {
       password,
     };
     try {
-      await axios.post(`https://hlhs-3ff6501095d6.herokuapp.com/api/register`, {
+      await axios.post(`${apiUrl}/api/register`, {
         ...formData,
         role: "student",
       });

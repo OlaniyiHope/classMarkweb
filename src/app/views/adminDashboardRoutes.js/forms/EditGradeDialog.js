@@ -16,13 +16,13 @@ const EditGradeDialog = ({ open, onClose, grade, gradeId, onSave }) => {
     markupto: "",
     comment: "",
   });
+  const apiUrl = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     const fetchGradeById = async () => {
       try {
         if (gradeId) {
-          const response = await fetch(
-            `https://hlhs-3ff6501095d6.herokuapp.com/api/grade/find/${gradeId}`
-          );
+          const response = await fetch(`${apiUrl}/api/grade/find/${gradeId}`);
           const data = await response.json();
           setFormData(data);
         }

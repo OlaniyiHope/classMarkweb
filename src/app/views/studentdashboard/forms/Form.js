@@ -70,6 +70,7 @@ const Form = () => {
     });
     return () => ValidatorForm.removeValidationRule("isPasswordMatch");
   }, [state.password]);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -85,10 +86,7 @@ const Form = () => {
       password,
     };
     try {
-      await axios.post(
-        "https://hlhs-98d6f8c9ac3a.herokuapp.com/api/userrs/register",
-        formData
-      );
+      await axios.post(`${apiUrl}/api/userrs/register`, formData);
 
       navigate("/dashboard/default");
     } catch (err) {}

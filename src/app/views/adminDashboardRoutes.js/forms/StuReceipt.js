@@ -67,12 +67,9 @@ const StuReceipt = () => {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      fetch(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/student/${selectedClass}`,
-        {
-          headers,
-        }
-      )
+      fetch(`${apiUrl}/api/student/${selectedClass}`, {
+        headers,
+      })
         .then((response) => response.json())
         .then((data) => {
           setStudentData(data);
@@ -122,15 +119,12 @@ const StuReceipt = () => {
     try {
       dispatch({ type: "CREATE_RECEIPT_START" });
 
-      const response = await axios.post(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/receipt`,
-        {
-          ...formData,
-          studentName: selectedName,
-          classname: selectedClass,
-          date: selectedDate, // Set the date field
-        }
-      );
+      const response = await axios.post(`${apiUrl}/api/receipt`, {
+        ...formData,
+        studentName: selectedName,
+        classname: selectedClass,
+        date: selectedDate, // Set the date field
+      });
 
       console.log("Receipt created:", response.data);
 

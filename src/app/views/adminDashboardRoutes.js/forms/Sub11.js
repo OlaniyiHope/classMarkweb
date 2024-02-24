@@ -87,7 +87,7 @@ const Sub11 = () => {
   const handleDeleteUser = async () => {
     try {
       const response = await axios.delete(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/delete-subject/${userToDelete._id}`
+        `${apiUrl}/api/delete-subject/${userToDelete._id}`
       );
 
       console.log("Response from delete API:", response.data);

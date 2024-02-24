@@ -75,9 +75,7 @@ const Grade = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/grade`
-      );
+      const response = await axios.get(`${apiUrl}/api/grade`);
       setGradesData(response.data || []);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -118,7 +116,7 @@ const Grade = () => {
   const handleDeleteUser = async () => {
     try {
       const response = await axios.delete(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/grade/${userToDelete._id}`
+        `${apiUrl}/api/grade/${userToDelete._id}`
       );
 
       console.log("Response from delete API:", response.data);
@@ -145,7 +143,7 @@ const Grade = () => {
     // Save the edited grade data
     try {
       const response = await axios.put(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/grade/${updatedGrade._id}`,
+        `${apiUrl}/api/grade/${updatedGrade._id}`,
         updatedGrade
       );
       console.log("Grade updated successfully:", response.data);

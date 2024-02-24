@@ -102,9 +102,7 @@ const Info8 = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/grade`
-      );
+      const response = await axios.get(`${apiUrl}/api/grade`);
     } catch (error) {
       console.error("Error fetching data:", error);
     }

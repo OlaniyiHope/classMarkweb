@@ -62,7 +62,7 @@ const Settings = () => {
 
   useEffect(() => {
     // Fetch classes from your API
-    fetch(`https://hlhs-3ff6501095d6.herokuapp.com/api/class`)
+    fetch(`${apiUrl}/api/class`)
       .then((response) => response.json())
       .then((data) => {
         // Handle class data if needed
@@ -92,15 +92,11 @@ const Settings = () => {
     }
 
     try {
-      await axios.post(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/account-setting`,
-        formDataToSend,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data", // Important for file uploads
-          },
-        }
-      );
+      await axios.post(`${apiUrl}/api/account-setting`, formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Important for file uploads
+        },
+      });
       console.log("FormData after append:", formDataToSend);
 
       toast.success("School profile updated successfully");

@@ -87,14 +87,11 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (identifier, password, role) => {
     try {
-      const response = await axios.post(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/login`,
-        {
-          identifier,
-          password,
-          role,
-        }
-      );
+      const response = await axios.post(`${apiUrl}/api/login`, {
+        identifier,
+        password,
+        role,
+      });
 
       console.log("Response data:", response.data);
 
@@ -146,26 +143,23 @@ export const AuthProvider = ({ children }) => {
     date
     // birthday
   ) => {
-    const response = await axios.post(
-      `https://hlhs-3ff6501095d6.herokuapp.com/api/register`,
-      {
-        username,
-        email,
-        phone,
-        address,
-        password,
-        role,
-        studentName,
-        AdmNo,
-        classname,
-        // subjectTaught,
-        parentsName,
-        // gender,
-        date,
-        // contactNo,
-        // birthday,
-      }
-    );
+    const response = await axios.post(`${apiUrl}/api/register`, {
+      username,
+      email,
+      phone,
+      address,
+      password,
+      role,
+      studentName,
+      AdmNo,
+      classname,
+      // subjectTaught,
+      parentsName,
+      // gender,
+      date,
+      // contactNo,
+      // birthday,
+    });
 
     const { token, user } = response.data;
 

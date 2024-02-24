@@ -42,6 +42,7 @@ const Exam = (term, classname, subject) => {
   const navigate = useNavigate();
   // const [classs, setClasss] = useState();
   // const [subject, setSubject] = useState();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   {
     /*const handleClick = () => {
@@ -59,9 +60,7 @@ const Exam = (term, classname, subject) => {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const res = await axios.get(
-            `https://hlhs-3ff6501095d6.herokuapp.com/api/examlist`
-          );
+          const res = await axios.get(`${apiUrl}/api/examlist`);
           setExam(res.data);
         } catch (err) {
           setError(err);
@@ -72,9 +71,7 @@ const Exam = (term, classname, subject) => {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const res = await axios.get(
-            `https://hlhs-3ff6501095d6.herokuapp.com/api/class`
-          );
+          const res = await axios.get(`${apiUrl}/api/class`);
           setClasss(res.data);
         } catch (err) {
           setError(err);
@@ -85,9 +82,7 @@ const Exam = (term, classname, subject) => {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const res = await axios.get(
-            `https://hlhs-3ff6501095d6.herokuapp.com/api/subject`
-          );
+          const res = await axios.get(`${apiUrl}/api/subject`);
           setSubject(res.data);
         } catch (err) {
           setError(err);

@@ -52,6 +52,7 @@ const StudyMatForm = () => {
   //   const { name, value } = e.target;
   //   setFormData({ ...formData, [name]: value });
   // };
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     if (selectedClass) {
@@ -63,12 +64,9 @@ const StudyMatForm = () => {
       headers.append("Authorization", `Bearer ${token}`);
 
       // Make an API call to fetch subjects for the selected class with the authorization token
-      fetch(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/get-subject/${selectedClass}`,
-        {
-          headers,
-        }
-      )
+      fetch(`${apiUrl}/api/get-subject/${selectedClass}`, {
+        headers,
+      })
         .then((response) => response.json())
         .then((data) => {
           setSubjectData(data);
@@ -127,15 +125,11 @@ const StudyMatForm = () => {
     }
 
     try {
-      await axios.post(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/download`,
-        formDataToSend,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await axios.post(`${apiUrl}/api/download`, formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       console.log("FormData after append:", formDataToSend);
 
       toast.success("Study material added successfully");

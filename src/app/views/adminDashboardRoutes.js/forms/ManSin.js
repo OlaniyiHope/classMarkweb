@@ -42,6 +42,7 @@ const ManSin = () => {
   const [questionTitle, setQuestionTitle] = useState("");
   const [deleteQuestionId, setDeleteQuestionId] = useState(null);
   const [editQuestion, setEditQuestion] = useState(null);
+  const [onscreenMarking, setOnscreenMarking] = useState(""); // Add this line to declare onscreenMarking and setOnscreenMarking
 
   const [options, setOptions] = useState([]);
   const navigate = useNavigate();
@@ -106,19 +107,18 @@ const ManSin = () => {
   };
 
   const handleDeleteQuestion = async (questionId) => {
+    console.log("Deleting question with ID:", questionId); // Add this line for debugging
+
     try {
       // Fetch the JWT token from local storage
       const token = localStorage.getItem("jwtToken");
 
-      const response = await fetch(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/questions/${questionId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${apiUrl}/api/questions/${questionId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
         // Question deleted successfully
@@ -151,13 +151,10 @@ const ManSin = () => {
           Authorization: `Bearer ${token}`,
         };
 
-        const response = await fetch(
-          `https://hlhs-3ff6501095d6.herokuapp.com/api/questions/${id}`,
-          {
-            method: "GET",
-            headers, // Include the headers in the request
-          }
-        );
+        const response = await fetch(`${apiUrl}/api/questions/${id}`, {
+          method: "GET",
+          headers, // Include the headers in the request
+        });
 
         if (response.ok) {
           const questionsData = await response.json();
@@ -173,6 +170,60 @@ const ManSin = () => {
     fetchQuestions();
   }, [id]);
 
+  // const submitQuestion = async () => {
+  //   try {
+  //     // Fetch the JWT token from wherever you've stored it (e.g., local storage)
+  //     const token = localStorage.getItem("jwtToken");
+
+  //     // Construct the questionData object based on questionType
+  //     const questionData = {
+  //       questionType: questionType,
+  //       // type: questionType,
+  //       mark, // Set the mark
+  //       // question_title: questionTitle, // Set the question title
+  //       questionTitle,
+  //       examId: id, // Set the examId
+  //       possibleAnswers: possibleAnswers,
+
+  //     };
+
+  //     if (questionType === "multiple_choice") {
+  //       // For multiple-choice questions, add options
+  //       questionData.options = optionFields.map((option, i) => ({
+  //         option: document.getElementById(`option${i + 1}`).value,
+  //         isCorrect: document.getElementById(`correct${i + 1}`).checked,
+  //       }));
+  //     } else if (questionType === "true_false") {
+  //       // For True/False questions, add the correctAnswer
+  //       questionData.correctAnswer = document.querySelector(
+  //         'input[name="answer"]:checked'
+  //       ).value;
+  //     } else if (questionType === "fill_in_the_blanks") {
+  //       // Additional logic for fill in the blanks questions
+  //       questionData.possible_answers = possibleAnswers;
+  //     }
+
+  //     const response = await fetch(`${apiUrl}/api/questions`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`, // Include the JWT token in the headers
+  //       },
+  //       body: JSON.stringify(questionData),
+  //     });
+
+  //     if (response.ok) {
+  //       // Question submitted successfully, you can handle the response here
+  //       console.log("Question submitted successfully");
+  //       addQuestion(questionData);
+  //     } else {
+  //       // Handle errors
+  //       console.error("Failed to submit the question");
+  //     }
+  //   } catch (error) {
+  //     console.error("An error occurred while submitting the question:", error);
+  //   }
+  // };
   const submitQuestion = async () => {
     try {
       // Fetch the JWT token from wherever you've stored it (e.g., local storage)
@@ -181,9 +232,7 @@ const ManSin = () => {
       // Construct the questionData object based on questionType
       const questionData = {
         questionType: questionType,
-        // type: questionType,
         mark, // Set the mark
-        // question_title: questionTitle, // Set the question title
         questionTitle,
         examId: id, // Set the examId
         possibleAnswers: possibleAnswers,
@@ -203,19 +252,19 @@ const ManSin = () => {
       } else if (questionType === "fill_in_the_blanks") {
         // Additional logic for fill in the blanks questions
         questionData.possible_answers = possibleAnswers;
+      } else if (questionType === "theory") {
+        // Additional logic for theory questions
+        questionData.onscreenMarking = onscreenMarking;
       }
 
-      const response = await fetch(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/questions`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Include the JWT token in the headers
-          },
-          body: JSON.stringify(questionData),
-        }
-      );
+      const response = await fetch(`${apiUrl}/api/questions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include the JWT token in the headers
+        },
+        body: JSON.stringify(questionData),
+      });
 
       if (response.ok) {
         // Question submitted successfully, you can handle the response here
@@ -513,6 +562,80 @@ const ManSin = () => {
         </form>
       );
     }
+    // Inside the renderQuestionFields() function
+    else if (questionType === "theory") {
+      return (
+        <form
+          className="form-horizontal form-groups-bordered validate"
+          target="_top"
+          accept-charset="utf-8"
+        >
+          <input type="hidden" name="type" value="theory" />
+          <div className="form-group">
+            <label className="col-sm-3 control-label">Mark</label>
+            <div className="col-sm-8">
+              <TextField
+                type="number"
+                variant="outlined"
+                fullWidth
+                name="mark"
+                required
+                value={mark}
+                onChange={(e) => setMark(e.target.value)}
+                inputProps={{ min: "0" }}
+              />
+            </div>
+          </div>
+          <div className="form-group">
+            <label className="col-sm-3 control-label">Question Title</label>
+            <div className="col-sm-8">
+              <textarea
+                name="question_title"
+                className="form-control"
+                rows="4"
+                value={questionTitle}
+                onChange={(e) => setQuestionTitle(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+          <div className="form-group">
+            <label className="col-sm-3 control-label">Onscreen Marking</label>
+            <div className="col-sm-8">
+              <TextField
+                type="text"
+                variant="outlined"
+                fullWidth
+                name="onscreen_marking"
+                required
+                value={onscreenMarking}
+                onChange={(e) => setOnscreenMarking(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="form-group">
+            <div className="col-sm-12">
+              <Button
+                type="submit"
+                variant="contained"
+                onClick={(event) => {
+                  event.preventDefault();
+                  const questionData = {
+                    type: questionType,
+                    mark: mark,
+                    question_title: questionTitle,
+                    onscreen_marking: onscreenMarking,
+                  };
+                  submitQuestion(questionData);
+                }}
+              >
+                Add Question
+              </Button>
+            </div>
+          </div>
+        </form>
+      );
+    }
 
     // Inside the submitQuestion() function
   };
@@ -738,6 +861,7 @@ const ManSin = () => {
                       <MenuItem value="fill_in_the_blanks">
                         Fill In The Blanks
                       </MenuItem>
+                      <MenuItem value="theory">Theory</MenuItem>
                     </Select>
                   </div>
                 </div>

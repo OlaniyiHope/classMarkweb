@@ -65,12 +65,9 @@ const ManagePsy = () => {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      const response = await fetch(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/get-all-psy/${examId}`,
-        {
-          headers,
-        }
-      );
+      const response = await fetch(`${apiUrl}/api/get-all-psy/${examId}`, {
+        headers,
+      });
 
       if (!response.ok) {
         console.error(
@@ -94,12 +91,9 @@ const ManagePsy = () => {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      const response = await fetch(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/student/${selectedClass}`,
-        {
-          headers,
-        }
-      );
+      const response = await fetch(`${apiUrl}/api/student/${selectedClass}`, {
+        headers,
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch student data");
@@ -217,7 +211,7 @@ const ManagePsy = () => {
       // Check if there are existing marks by verifying the examId and subjectId
       if (selectedExam) {
         const responseCheckMarks = await fetch(
-          `https://hlhs-3ff6501095d6.herokuapp.com/api/get-all-psy/${selectedExam}`,
+          `${apiUrl}/api/get-all-psy/${selectedExam}`,
           {
             headers,
           }
@@ -233,7 +227,7 @@ const ManagePsy = () => {
           if (existingMarks.length > 0) {
             // Existing marks found, proceed with updating
             const responseUpdateMarks = await fetch(
-              `https://hlhs-3ff6501095d6.herokuapp.com/api/update-all-psy`,
+              `${apiUrl}/api/update-all-psy`,
               {
                 method: "PUT",
                 headers: {
@@ -268,21 +262,18 @@ const ManagePsy = () => {
             }
           } else {
             // No existing marks found, proceed to create new marks
-            const responseSaveMarks = await fetch(
-              `https://hlhs-3ff6501095d6.herokuapp.com/api/save-psy`,
-              {
-                method: "POST",
-                headers: {
-                  ...headers,
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  examId: selectedExam,
+            const responseSaveMarks = await fetch(`${apiUrl}/api/save-psy`, {
+              method: "POST",
+              headers: {
+                ...headers,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                examId: selectedExam,
 
-                  updates: marks,
-                }),
-              }
-            );
+                updates: marks,
+              }),
+            });
 
             console.log("Response from Save Marks:", responseSaveMarks);
 

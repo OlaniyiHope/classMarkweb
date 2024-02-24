@@ -20,6 +20,7 @@ const EditStudent = ({ open, onClose, studentId, onSave }) => {
     email: "",
     password: "",
   });
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchStudentById = async () => {
@@ -28,14 +29,11 @@ const EditStudent = ({ open, onClose, studentId, onSave }) => {
           // Assuming you have the JWT token stored in localStorage
           const token = localStorage.getItem("jwtToken");
 
-          const response = await fetch(
-            `https://hlhs-3ff6501095d6.herokuapp.com/api/students/${studentId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`, // Include your authentication token
-              },
-            }
-          );
+          const response = await fetch(`${apiUrl}api/students/${studentId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`, // Include your authentication token
+            },
+          });
 
           if (response.ok) {
             const data = await response.json();

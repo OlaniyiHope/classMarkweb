@@ -390,6 +390,7 @@ const Manage = () => {
   const [anchorElMap, setAnchorElMap] = useState({});
   const { logout, user } = useAuth();
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchExams = async () => {
@@ -397,7 +398,7 @@ const Manage = () => {
         const token = localStorage.getItem("jwtToken");
         const headers = { Authorization: `Bearer ${token}` };
         const response = await axios.get(
-          `https://hlhs-3ff6501095d6.herokuapp.com/api/get-exams-by-class/${user.classname}`,
+          `${apiUrl}/api/get-exams-by-class/${user.classname}`,
           { headers }
         );
         setData(response.data);

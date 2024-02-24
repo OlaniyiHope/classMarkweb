@@ -55,13 +55,9 @@ const AddClass = () => {
       };
 
       // Make an API call to create a class
-      await axios.post(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/class`,
-        formData,
-        {
-          headers, // Include the headers in the request
-        }
-      );
+      await axios.post(`${apiUrl}/api/class`, formData, {
+        headers, // Include the headers in the request
+      });
 
       // Handle successful class creation
       navigate("/dashboard/class");

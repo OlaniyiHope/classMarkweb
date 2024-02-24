@@ -78,7 +78,7 @@ const TermRep = ({ studentId }) => {
       };
 
       const response = await axios.get(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/get-scores-by-student/${studentId}`,
+        `${apiUrl}/api/get-scores-by-student/${studentId}`,
         { headers }
       );
 
@@ -110,7 +110,7 @@ const TermRep = ({ studentId }) => {
       };
 
       const response = await axios.get(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/get-psy-by-student/${studentId}`,
+        `${apiUrl}/api/get-psy-by-student/${studentId}`,
         { headers }
       );
 
@@ -136,9 +136,7 @@ const TermRep = ({ studentId }) => {
   useEffect(() => {
     const fetchSchoolSettings = async () => {
       try {
-        const response = await axios.get(
-          `https://hlhs-3ff6501095d6.herokuapp.com/api/setting`
-        );
+        const response = await axios.get(`${apiUrl}/api/setting`);
         const { data } = response.data;
 
         // Set the retrieved school settings to the state
@@ -153,9 +151,7 @@ const TermRep = ({ studentId }) => {
   useEffect(() => {
     const fetchAccountSettings = async () => {
       try {
-        const response = await axios.get(
-          `https://hlhs-3ff6501095d6.herokuapp.com/api/account-setting`
-        );
+        const response = await axios.get(`${apiUrl}/api/account-setting`);
         const { data } = response.data;
 
         // Set the retrieved school settings to the state
@@ -845,7 +841,7 @@ const TermRep = ({ studentId }) => {
                       <td style={{ textAlign: "right" }}>
                         <img
                           // src={`https://hlhs-98d6f8c9ac3a.herokuapp.com/uploads/${schoolSettings.signature}`}
-                          src={`https://hlhs-3ff6501095d6.herokuapp.com/uploads/${schoolSettings.signature}`}
+                          src={`${apiUrl}/uploads/${schoolSettings.signature}`}
                           width="200"
                           alt="Principal Signature"
                         />

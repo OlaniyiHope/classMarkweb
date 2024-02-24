@@ -87,9 +87,7 @@ const StudyMat = () => {
   useEffect(() => {
     const fetchDownloads = async () => {
       try {
-        const response = await axios.get(
-          `https://hlhs-3ff6501095d6.herokuapp.com/api/download`
-        );
+        const response = await axios.get(`${apiUrl}/api/download`);
         setDownloads(response.data.data); // Update downloads state with fetched data
         setLoading(false);
       } catch (error) {

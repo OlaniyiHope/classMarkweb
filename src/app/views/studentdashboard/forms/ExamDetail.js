@@ -44,22 +44,6 @@ const ExamDetail = () => {
 
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   document.documentElement.requestFullscreen();
-
-  //   const handleKeyDown = (event) => {
-  //     if (event.key === "Escape" && !examFinished) {
-  //       event.preventDefault();
-  //     }
-  //   };
-  //   document.addEventListener("keydown", handleKeyDown);
-
-  //   return () => {
-  //     document.exitFullscreen();
-  //     document.removeEventListener("keydown", handleKeyDown);
-  //   };
-  // }, [examFinished]);
-
   const enterFullscreen = () => {
     const element = document.documentElement;
 
@@ -122,16 +106,6 @@ const ExamDetail = () => {
     // Navigate back to /student/dashboard/manage-online-exam
     navigate("/student/dashboard/manage-online-exam");
   };
-
-  // const handleCloseDialog = () => {
-
-  //   if (cheatingDetected) {
-  //     setIsDialogOpen(false);
-  //     // Cancel the exam if cheating is detected
-  //     navigate("/student/dashboard/manage-online-exam");
-  //   }
-
-  // };
 
   const handleLogout = () => {
     // Perform logout action here
@@ -217,9 +191,7 @@ const ExamDetail = () => {
 
   const fetchExamAndQuestions = async () => {
     try {
-      const examResponse = await axios.get(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/get-exam/${id}`
-      );
+      const examResponse = await axios.get(`${apiUrl}/api/get-exam/${id}`);
       setExam(examResponse.data);
       // Set the exam object before calling startTimer
       console.log("Exam details:", examResponse.data);
@@ -230,30 +202,23 @@ const ExamDetail = () => {
       };
 
       const questionsResponse = await axios.get(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/questions/${id}`,
+        `${apiUrl}/api/questions/${id}`,
         { headers }
       );
       const questionsData = questionsResponse.data;
       console.log("Fetched questions:", questionsData);
 
-      // const correctAnswersData = {};
-
-      // questionsData.forEach((question) => {
-      //   if (question.questionType === "true_false") {
-      //     correctAnswersData[question._id] = question.correctAnswer;
-      //   } else {
-      //     correctAnswersData[question._id] =
-      //       question.options.find((option) => option.isCorrect)?.option || "";
-      //   }
-      // });
-
-      // setCorrectAnswers(correctAnswersData);
       const correctAnswersData = {};
 
       questionsData.forEach((question) => {
         if (question.questionType === "true_false") {
           correctAnswersData[question._id] =
             question.correctAnswer.toLowerCase(); // Convert to lowercase
+        } else if (question.questionType === "theory") {
+          // Handle theory questions
+          // For theory questions, correctAnswer might not be available
+          // You can set it to an empty string or handle it differently based on your requirements
+          correctAnswersData[question._id] = "";
         } else {
           correctAnswersData[question._id] =
             question.options
@@ -287,6 +252,49 @@ const ExamDetail = () => {
       clearInterval(timerInterval); // Clear the timer interval on component unmount
     };
   }, [id]);
+  // const calculateScore = () => {
+  //   try {
+  //     const calculatedScore = questions.reduce((totalScore, question) => {
+  //       const questionId = question._id;
+  //       const studentAnswer = answers[questionId] || "";
+  //       const correctAnswer = correctAnswers[questionId] || "";
+  //       let questionScore = 0;
+
+  //       if (question.questionType === "fill_in_the_blanks") {
+  //         // If it's a Fill In The Blanks question
+  //         const possibleAnswers = new Set(
+  //           question.possibleAnswers
+  //             .flatMap((answers) => answers.toLowerCase().split(","))
+  //             .map((answer) => answer.trim())
+  //         );
+
+  //         // Normalize student's answer
+  //         const normalizedStudentAnswer = studentAnswer.toLowerCase().trim();
+
+  //         // Check if the student's answer matches any of the possible answers
+  //         if (possibleAnswers.has(normalizedStudentAnswer)) {
+  //           questionScore = question.mark;
+  //         }
+  //       } else {
+  //         // For other question types (True/False, Multiple Choice)
+  //         if (
+  //           studentAnswer.toLowerCase().trim() ===
+  //           correctAnswer.toLowerCase().trim()
+  //         ) {
+  //           questionScore = question.mark;
+  //         }
+  //       }
+
+  //       return totalScore + questionScore;
+  //     }, 0);
+
+  //     setScore(calculatedScore);
+  //     handleSubmitExam(calculatedScore);
+  //   } catch (error) {
+  //     console.error("Error calculating score:", error);
+  //     // Handle any errors
+  //   }
+  // };
   const calculateScore = () => {
     try {
       const calculatedScore = questions.reduce((totalScore, question) => {
@@ -308,6 +316,13 @@ const ExamDetail = () => {
 
           // Check if the student's answer matches any of the possible answers
           if (possibleAnswers.has(normalizedStudentAnswer)) {
+            questionScore = question.mark;
+          }
+        } else if (question.questionType === "theory") {
+          // For theory questions, you need to define custom scoring logic
+          // For example, you can manually grade theory questions later
+          // Here, I'm assuming that theory questions are scored as full marks if answered
+          if (studentAnswer.trim() !== "") {
             questionScore = question.mark;
           }
         } else {
@@ -352,13 +367,9 @@ const ExamDetail = () => {
 
       console.log("Data before submitting:", data); // Log the data before submitting
 
-      const response = await axios.post(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/exams/submit`,
-        data,
-        {
-          headers,
-        }
-      );
+      const response = await axios.post(`${apiUrl}/api/exams/submit`, data, {
+        headers,
+      });
 
       if (response.status === 200) {
         setExamFinished(true);
@@ -512,6 +523,28 @@ const ExamDetail = () => {
                           margin="normal"
                           label="Your Answer"
                           placeholder="Type your answer here"
+                        />
+                      </div>
+                    )}
+
+                    {question.questionType === "theory" && (
+                      <div>
+                        <Typography variant="subtitle1">
+                          Theory Question:
+                        </Typography>
+                        <TextField
+                          name={`question_${question._id}`}
+                          value={answers[question._id] || ""}
+                          onChange={(e) =>
+                            handleOptionChange(question._id, e.target.value)
+                          }
+                          variant="outlined"
+                          fullWidth
+                          margin="normal"
+                          label="Your Answer"
+                          placeholder="Type your answer here"
+                          multiline // Allow multiline input for theory questions
+                          rows={4} // Set the number of rows for multiline input
                         />
                       </div>
                     )}
