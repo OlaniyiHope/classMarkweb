@@ -209,7 +209,7 @@ const ExamDetail = () => {
       console.log("Fetched questions:", questionsData);
 
       const correctAnswersData = {};
-      let questionScore = 0;
+
       questionsData.forEach((question) => {
         if (question.questionType === "true_false") {
           correctAnswersData[question._id] =
@@ -218,9 +218,7 @@ const ExamDetail = () => {
           // Handle theory questions
           // For theory questions, correctAnswer might not be available
           // You can set it to an empty string or handle it differently based on your requirements
-          // correctAnswersData[question._id] = "";
-
-          questionScore = 0;
+          correctAnswersData[question._id] = "";
         } else {
           correctAnswersData[question._id] =
             question.options
@@ -279,9 +277,11 @@ const ExamDetail = () => {
             questionScore = question.mark;
           }
         } else if (question.questionType === "theory") {
-          if (studentAnswer.trim() !== "") {
-            questionScore = question.mark;
-          }
+          // if (studentAnswer.trim() !== "") {
+          //   questionScore = question.mark;
+          // }
+
+          questionScore = 0;
         } else {
           // For other question types (True/False, Multiple Choice)
           if (
