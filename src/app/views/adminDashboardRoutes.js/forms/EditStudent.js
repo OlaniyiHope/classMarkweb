@@ -29,7 +29,7 @@ const EditStudent = ({ open, onClose, studentId, onSave }) => {
           // Assuming you have the JWT token stored in localStorage
           const token = localStorage.getItem("jwtToken");
 
-          const response = await fetch(`${apiUrl}api/students/${studentId}`, {
+          const response = await fetch(`${apiUrl}/api/students/${studentId}`, {
             headers: {
               Authorization: `Bearer ${token}`, // Include your authentication token
             },
