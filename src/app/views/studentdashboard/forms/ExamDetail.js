@@ -209,7 +209,7 @@ const ExamDetail = () => {
       console.log("Fetched questions:", questionsData);
 
       const correctAnswersData = {};
-
+      let questionScore = 0;
       questionsData.forEach((question) => {
         if (question.questionType === "true_false") {
           correctAnswersData[question._id] =
@@ -218,7 +218,9 @@ const ExamDetail = () => {
           // Handle theory questions
           // For theory questions, correctAnswer might not be available
           // You can set it to an empty string or handle it differently based on your requirements
-          correctAnswersData[question._id] = "";
+          // correctAnswersData[question._id] = "";
+
+          questionScore = 0;
         } else {
           correctAnswersData[question._id] =
             question.options
@@ -252,49 +254,7 @@ const ExamDetail = () => {
       clearInterval(timerInterval); // Clear the timer interval on component unmount
     };
   }, [id]);
-  // const calculateScore = () => {
-  //   try {
-  //     const calculatedScore = questions.reduce((totalScore, question) => {
-  //       const questionId = question._id;
-  //       const studentAnswer = answers[questionId] || "";
-  //       const correctAnswer = correctAnswers[questionId] || "";
-  //       let questionScore = 0;
 
-  //       if (question.questionType === "fill_in_the_blanks") {
-  //         // If it's a Fill In The Blanks question
-  //         const possibleAnswers = new Set(
-  //           question.possibleAnswers
-  //             .flatMap((answers) => answers.toLowerCase().split(","))
-  //             .map((answer) => answer.trim())
-  //         );
-
-  //         // Normalize student's answer
-  //         const normalizedStudentAnswer = studentAnswer.toLowerCase().trim();
-
-  //         // Check if the student's answer matches any of the possible answers
-  //         if (possibleAnswers.has(normalizedStudentAnswer)) {
-  //           questionScore = question.mark;
-  //         }
-  //       } else {
-  //         // For other question types (True/False, Multiple Choice)
-  //         if (
-  //           studentAnswer.toLowerCase().trim() ===
-  //           correctAnswer.toLowerCase().trim()
-  //         ) {
-  //           questionScore = question.mark;
-  //         }
-  //       }
-
-  //       return totalScore + questionScore;
-  //     }, 0);
-
-  //     setScore(calculatedScore);
-  //     handleSubmitExam(calculatedScore);
-  //   } catch (error) {
-  //     console.error("Error calculating score:", error);
-  //     // Handle any errors
-  //   }
-  // };
   const calculateScore = () => {
     try {
       const calculatedScore = questions.reduce((totalScore, question) => {
@@ -319,9 +279,6 @@ const ExamDetail = () => {
             questionScore = question.mark;
           }
         } else if (question.questionType === "theory") {
-          // For theory questions, you need to define custom scoring logic
-          // For example, you can manually grade theory questions later
-          // Here, I'm assuming that theory questions are scored as full marks if answered
           if (studentAnswer.trim() !== "") {
             questionScore = question.mark;
           }
@@ -558,25 +515,6 @@ const ExamDetail = () => {
           </Button>
         </div>
       )}
-      {/*} {examFinished && (
-        <Button variant="contained" color="primary" onClick={handleOpenDialog}>
-          View Score
-        </Button>
-      )}
-
-      <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Your Score</DialogTitle>
-        <DialogContent>
-          <Typography variant="h6">
-            Your Score: {score} out of {totalMark}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-     </Dialog>*/}
 
       <Dialog open={examFinished} onClose={handleCloseDialog}>
         <DialogTitle>Exam Completed</DialogTitle>
