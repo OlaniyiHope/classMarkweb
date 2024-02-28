@@ -296,6 +296,14 @@ const Info = () => {
                                 </MenuItem>
                                 <MenuItem>
                                   <ListItemIcon></ListItemIcon>
+                                  <Link
+                                    to={`/dashboard/onscreen-marking/${item._id}`}
+                                  >
+                                    OnScreen Marking
+                                  </Link>
+                                </MenuItem>
+                                <MenuItem>
+                                  <ListItemIcon></ListItemIcon>
 
                                   <Link to="/dashboard/profile">
                                     Student Profile

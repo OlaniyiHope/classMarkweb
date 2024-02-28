@@ -61,6 +61,7 @@ import StudyMat from "./forms/StudyMat";
 import Attendance from "./admin/Attendance";
 import Promotion from "./forms/Promotion";
 import PsyCat from "./forms/PsyCat";
+import OnScreen from "./forms/OnScreen";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -115,6 +116,12 @@ const adminDashboardRoutes = [
   {
     path: "/dashboard/jss1-student_information",
     element: <Info />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/onscreen-marking",
+
+    element: <OnScreen />,
     auth: "admin",
   },
   {

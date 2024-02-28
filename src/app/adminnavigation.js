@@ -210,6 +210,11 @@ export const navigations = [
       { name: "Exam Grades", iconText: "SI", path: "/dashboard/grade" },
       { name: "Manage Marks", iconText: "SI", path: "/dashboard/exam" },
       {
+        name: "On-Screen Marking",
+        iconText: "SI",
+        path: "/dashboard/onscreen-marking",
+      },
+      {
         name: "Test List",
         iconText: "SI",
         path: "/dashboard/test-list",
