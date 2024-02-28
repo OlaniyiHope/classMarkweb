@@ -599,7 +599,7 @@ const ManSin = () => {
               />
             </div>
           </div>
-          <div className="form-group">
+          {/*}   <div className="form-group">
             <label className="col-sm-3 control-label">Onscreen Marking</label>
             <div className="col-sm-8">
               <TextField
@@ -612,7 +612,7 @@ const ManSin = () => {
                 onChange={(e) => setOnscreenMarking(e.target.value)}
               />
             </div>
-          </div>
+      </div>*/}
           <div className="form-group">
             <div className="col-sm-12">
               <Button
