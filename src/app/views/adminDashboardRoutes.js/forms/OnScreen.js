@@ -666,7 +666,7 @@
 // };
 
 // export default OnScreen;
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Container, Grid, TextField, MenuItem, Button } from "@mui/material";
 import { ValidatorForm } from "react-material-ui-form-validator";
 import { ToastContainer, toast } from "react-toastify";
@@ -682,6 +682,9 @@ import {
   ArrowForward,
   RadioButtonUnchecked,
   CloseOutlined,
+  Clear,
+  Create,
+  Undo,
   Star,
 } from "@material-ui/icons";
 
@@ -693,12 +696,30 @@ const OnScreen = () => {
     error: classError,
   } = useFetch("/class"); // Assuming useFetch is correctly implemented
 
+  const canvasRef = useRef(null);
+  const [ctx, setCtx] = useState(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [startPoint, setStartPoint] = useState({ x: 0, y: 0 });
+
   const [subjectData, setSubjectData] = useState([]);
   const [studentData, setStudentData] = useState([]);
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedName, setSelectedName] = useState("");
   const [selectedStudentId, setSelectedStudentId] = useState("");
+  const [currentTool, setCurrentTool] = useState("");
+  const [currentMousePosition, setCurrentMousePosition] = useState({
+    x: 0,
+    y: 0,
+  });
+
+  const [correctSymbolPosition, setCorrectSymbolPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+
+  const [correctColor, setCorrectColor] = useState("green");
+
   const [questionDetails, setQuestionDetails] = useState([]);
 
   const [theoryAnswer, setTheoryAnswer] = useState(null);
@@ -749,9 +770,6 @@ const OnScreen = () => {
     const newSelectedClass = event.target.value;
     setSelectedClass(newSelectedClass);
     setStudentData([]);
-  };
-  const handleMarkingToolClick = (tool) => {
-    // Handle marking tool click
   };
 
   const handleMarkSelection = (mark) => {
@@ -848,6 +866,150 @@ const OnScreen = () => {
       // Handle error
     }
   };
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    setCtx(context);
+  }, []);
+  const handleMarkingToolClick = (tool) => {
+    setCurrentTool(tool);
+    // Remove event listeners for all tools
+    canvasRef.current.removeEventListener("mousedown", handleMouseDown);
+    canvasRef.current.removeEventListener("mousemove", handleMouseMove);
+    canvasRef.current.removeEventListener("mouseup", handleMouseUp);
+
+    if (tool === "ruler" || tool === "correct") {
+      // Attach event listeners for drawing tool
+      canvasRef.current.addEventListener("mousedown", handleMouseDown);
+      canvasRef.current.addEventListener("mousemove", handleMouseMove);
+      canvasRef.current.addEventListener("mouseup", handleMouseUp);
+    }
+    // if (tool === "correct") {
+    //   setCorrectColor("green");
+    // } else {
+    //   setCorrectColor(""); // Reset color for other tools
+    // }
+  };
+
+  // const handleMouseDown = (event) => {
+  //   const rect = canvasRef.current.getBoundingClientRect();
+  //   const x = event.clientX - rect.left;
+  //   const y = event.clientY - rect.top;
+  //   setIsDrawing(true);
+  //   setStartPoint({ x, y });
+  //   if (currentTool === "correct") {
+  //     const rect = canvasRef.current.getBoundingClientRect();
+  //     const x = event.clientX - rect.left;
+  //     const y = event.clientY - rect.top;
+  //     setCorrectSymbolPosition({ x, y });
+  //   }
+  // };
+
+  const handleMouseMove = (event) => {
+    if (!isDrawing || !ctx) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    setCurrentMousePosition({ x, y });
+    ctx.strokeStyle = "red";
+
+    switch (currentTool) {
+      case "ruler":
+        ctx.beginPath();
+        ctx.moveTo(startPoint.x, startPoint.y);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        setStartPoint({ x, y });
+        break;
+      case "correct":
+        setCorrectSymbolPosition({ x, y }); // Update the position of the correct symbol
+        break;
+
+      // Add cases for other drawing tools if needed
+
+      default:
+        break;
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDrawing(false);
+  };
+
+  const handleMouseDown = (event) => {
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    if (currentTool === "correct") {
+      setCorrectSymbolPosition({ x, y });
+    } else {
+      // Handle ruler/drawing tool
+      setIsDrawing(true);
+      setStartPoint({ x, y });
+    }
+  };
+  useEffect(() => {
+    if (ctx && currentTool === "correct") {
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+      // Draw the check icon
+      ctx.fillStyle = "green";
+      ctx.font = "30px FontAwesome"; // Assuming FontAwesome is used for the check icon
+      ctx.fillText("\uf00c", correctSymbolPosition.x, correctSymbolPosition.y);
+    }
+  }, [ctx, currentTool, correctSymbolPosition]);
+
+  // useEffect(() => {
+  //   if (ctx) {
+  //     // Clear the canvas before drawing
+  //     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  //     // Draw text
+  //     if (theoryAnswer) {
+  //       Object.entries(theoryAnswer.answers).forEach(([questionId, answer]) => {
+  //         const questionTitle =
+  //           questionDetails.find((detail) => detail.id === questionId)?.title ||
+  //           "N/A";
+  //         ctx.fillStyle = "black";
+  //         ctx.font = "12px Arial";
+  //         ctx.fillText(`Question Title: ${questionTitle}`, 20, 20);
+  //         ctx.fillText(`Answer: ${answer}`, 20, 40);
+  //       });
+  //     }
+  //   }
+  // }, [ctx, theoryAnswer, questionDetails]);
+
+  useEffect(() => {
+    if (ctx) {
+      // Clear the canvas before drawing
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      // Draw text
+      if (theoryAnswer) {
+        Object.entries(theoryAnswer.answers).forEach(([questionId, answer]) => {
+          const questionTitle =
+            questionDetails.find((detail) => detail.id === questionId)?.title ||
+            "N/A";
+          ctx.fillStyle = "black";
+          ctx.font = "12px Arial";
+          ctx.fillText(`Question Title: ${questionTitle}`, 20, 20);
+          ctx.fillText(`Answer: ${answer}`, 20, 40);
+        });
+      }
+      // Draw correct symbol
+      if (currentTool === "correct") {
+        ctx.fillStyle = correctColor;
+        ctx.beginPath();
+        ctx.arc(
+          correctSymbolPosition.x,
+          correctSymbolPosition.y,
+          5,
+          0,
+          Math.PI * 2
+        );
+        ctx.fill();
+      }
+    }
+  }, [ctx, theoryAnswer, questionDetails, correctSymbolPosition, correctColor]);
 
   return (
     <div>
@@ -1073,10 +1235,10 @@ const OnScreen = () => {
                 <div style={{ display: "flex", marginBottom: "20px" }}>
                   <div style={{ marginRight: "10px" }}>
                     <Button
-                      onClick={() => handleMarkingToolClick("text")}
+                      onClick={() => handleMarkingToolClick("ruler")}
                       style={{ border: "3px solid #042954" }}
                     >
-                      <Edit />
+                      <Create />
                     </Button>
                   </div>
                   <div style={{ marginRight: "10px" }}>
@@ -1099,6 +1261,43 @@ const OnScreen = () => {
                   </div>
                   <div style={{ marginRight: "10px" }}>
                     <Button
+                      onClick={() => handleMarkingToolClick("star")}
+                      style={{ border: "3px solid #042954" }}
+                    >
+                      <Star />
+                    </Button>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", marginBottom: "20px" }}>
+                  <div style={{ marginRight: "10px" }}>
+                    <Button
+                      onClick={() => handleMarkingToolClick("draw")}
+                      style={{ border: "3px solid #042954" }}
+                    >
+                      <Clear />
+                    </Button>
+                  </div>
+                  <div style={{ marginRight: "10px" }}>
+                    <Button
+                      onClick={() => handleMarkingToolClick("na")}
+                      style={{ border: "3px solid #042954" }}
+                    >
+                      N/A
+                    </Button>
+                  </div>
+                </div>
+                <div style={{ display: "flex", marginBottom: "20px" }}>
+                  <div style={{ marginRight: "10px" }}>
+                    <Button
+                      onClick={() => handleMarkingToolClick("undo")}
+                      style={{ border: "3px solid #042954" }}
+                    >
+                      <Undo />
+                    </Button>
+                  </div>
+                  <div style={{ marginRight: "10px" }}>
+                    <Button
                       onClick={() => handleMarkingToolClick("arrow")}
                       style={{ border: "3px solid #042954" }}
                     >
@@ -1106,6 +1305,7 @@ const OnScreen = () => {
                     </Button>
                   </div>
                 </div>
+
                 <div style={{ display: "flex", marginBottom: "20px" }}>
                   <div style={{ marginRight: "10px" }}>
                     <Button
@@ -1124,39 +1324,39 @@ const OnScreen = () => {
                     </Button>
                   </div>
                 </div>
-                <div style={{ display: "flex", marginBottom: "20px" }}>
-                  <div style={{ marginRight: "10px" }}>
-                    <Button
-                      onClick={() => handleMarkingToolClick("star")}
-                      style={{ border: "3px solid #042954" }}
-                    >
-                      <Star />
-                    </Button>
-                  </div>
-                  {/* Add more marking tools here */}
-                </div>
               </div>
             </div>
             <div style={{ flex: "60%", padding: "20px" }}>
-              <Container>
-                {theoryAnswer && (
-                  <div>
-                    {Object.entries(theoryAnswer.answers).map(
-                      ([questionId, answer]) => (
-                        <div key={questionId}>
-                          <p>
-                            Question Title:{" "}
-                            {questionDetails.find(
-                              (detail) => detail.id === questionId
-                            )?.title || "N/A"}
-                          </p>
-                          <p>Answer: {answer}</p>
-                        </div>
-                      )
-                    )}
-                  </div>
-                )}
-              </Container>
+              <canvas
+                ref={canvasRef}
+                width="800"
+                height="600"
+                style={{ border: "1px solid #000" }}
+                onMouseDown={(event) => {
+                  if (currentTool === "ruler" || currentTool === "correct") {
+                    handleMouseDown(event);
+                  }
+                }}
+                onMouseMove={(event) => {
+                  if (currentTool === "ruler" || currentTool === "correct") {
+                    handleMouseMove(event);
+                  }
+                }}
+                onMouseUp={() => {
+                  if (currentTool === "ruler") {
+                    handleMouseUp();
+                  }
+                }}
+              />
+              {currentTool === "correct" && (
+                <Check
+                  style={{
+                    position: "absolute",
+                    left: correctSymbolPosition.x,
+                    top: correctSymbolPosition.y,
+                  }}
+                />
+              )}
             </div>
             <div>
               <div
