@@ -1,13 +1,17 @@
 export const navigations = [
   {
-    name: "Teacher Dashboard",
-    path: "/dashboard/admin",
+    name: " Dashboard",
+    path: "/teacher/dashboard/teacher",
     icon: <span style={{ color: "#ffc107" }}>dashboard</span>,
   },
-  { label: "PAGES", type: "label" },
+  {
+    name: " Admin",
+    path: "/teacher/dashboard/admin",
+    icon: <span style={{ color: "#ffc107" }}>Admin</span>,
+  },
   {
     name: "Student",
-    icon: "person",
+    icon: "people",
     children: [
       {
         name: "Student information",
@@ -17,32 +21,62 @@ export const navigations = [
           {
             name: "Class J.S.S 1",
             iconText: "SI",
-            path: "/dashboard/jss1-student_information",
+            path: "/teacher/dashboard/jss1-student_information",
           },
           {
             name: "Class J.S.S 2",
             iconText: "SI",
-            path: "/dashboard/jss2-student_information",
+            path: "/teacher/dashboard/jss2-student_information",
           },
           {
             name: "Class J.S.S 3",
             iconText: "SI",
-            path: "/dashboard/jss3-student_information",
+            path: "/teacher/dashboard/jss3-student_information",
           },
           {
-            name: "Class S.S.S 1",
+            name: "Class S.S.1.S",
             iconText: "SI",
-            path: "/dashboard/ss1-student_information",
+            path: "/teacher/dashboard/ss1-science-student_information",
           },
           {
-            name: "Class S.S.S 2",
+            name: "Class S.S.1.A",
             iconText: "SI",
-            path: "/dashboard/ss2-student_information",
+            path: "/teacher/dashboard/ss1-art-student_information",
           },
           {
-            name: "Class S.S.S 3",
+            name: "Class S.S.1.C",
             iconText: "SI",
-            path: "/dashboard/ss3-student_information",
+            path: "/teacher/dashboard/ss1-commercial-student_information",
+          },
+          {
+            name: "Class S.S.2.S",
+            iconText: "SI",
+            path: "/teacher/dashboard/ss2-science-student_information",
+          },
+          {
+            name: "Class S.S.2.A",
+            iconText: "SI",
+            path: "/teacher/dashboard/ss2-art-student_information",
+          },
+          {
+            name: "Class S.S.2.C",
+            iconText: "SI",
+            path: "/teacher/dashboard/ss2-commercial-student_information",
+          },
+          {
+            name: "Class S.S.3.S",
+            iconText: "SI",
+            path: "/teacher/dashboard/ss3-science-student_information",
+          },
+          {
+            name: "Class S.S.3.A",
+            iconText: "SI",
+            path: "/teacher/dashboard/ss3-art-student_information",
+          },
+          {
+            name: "Class S.S.3.C",
+            iconText: "SI",
+            path: "/teacher/dashboard/ss3-commercial-student_information",
           },
         ],
 

@@ -146,13 +146,12 @@ const ViewAdmin = () => {
           <Box className="breadcrumb">
             <Breadcrumb routeSegments={[{ name: "Manage Admin" }]} />
           </Box>
-          <Box className="breadcrumb">
-            <FormDialog />
-          </Box>
+
           <div>
             <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
               <div class="table-responsive full-data">
                 <table
+                  style={{ overflowX: "auto", maxWidth: "100%" }}
                   class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
                   id="example-student"
                 >
@@ -164,8 +163,6 @@ const ViewAdmin = () => {
                       <th>Email</th>
                       <th>Phone</th>
                       <th>Address</th>
-
-                      <th class="text-end">Action</th>
                     </tr>
                   </thead>
                   {data &&
@@ -192,44 +189,6 @@ const ViewAdmin = () => {
                           </td>
                           <td>
                             <h6 class="mb-0">{item.address}</h6>
-                          </td>
-
-                          <td>
-                            <TableCell align="right">
-                              <IconButton
-                                aria-controls={`action-menu-${item._id}`}
-                                aria-haspopup="true"
-                                onClick={(event) =>
-                                  handleOpenMenu(event, item._id)
-                                } // Pass item._id
-                              >
-                                <MoreVertIcon />{" "}
-                                {/* MoreVertIcon for the menu */}
-                              </IconButton>
-                              <Menu
-                                id={`action-menu-${item._id}`}
-                                anchorEl={anchorElMap[item._id]}
-                                open={Boolean(anchorElMap[item._id])}
-                                onClose={() => handleCloseMenu(item._id)}
-                              >
-                                <MenuItem>
-                                  <ListItemIcon>
-                                    <EditIcon /> {/* Use an Edit icon */}
-                                  </ListItemIcon>
-                                  Edit
-                                </MenuItem>
-                                <MenuItem
-                                  onClick={() =>
-                                    handleOpenDeleteConfirmation(item)
-                                  }
-                                >
-                                  <ListItemIcon>
-                                    <DeleteIcon />
-                                  </ListItemIcon>
-                                  Delete
-                                </MenuItem>
-                              </Menu>
-                            </TableCell>
                           </td>
                         </tr>
                       </tbody>

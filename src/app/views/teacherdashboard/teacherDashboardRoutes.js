@@ -28,6 +28,12 @@ import Sub4 from "./forms/Sub4";
 import Sub5 from "./forms/Sub5";
 import Sub6 from "./forms/Sub6";
 import ViewAdmin from "./ViewAdmin";
+import Info7 from "./forms/Info7";
+import Info8 from "./forms/Info8";
+import Info9 from "./forms/Info9";
+import Info10 from "./forms/Info10";
+import Info11 from "./forms/Info11";
+import Info12 from "./forms/Info12";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -103,20 +109,51 @@ const teacherDashboardRoutes = [
     auth: "teacher",
   },
   {
-    path: "/teacher/dashboard/ss1-student_information",
+    path: "/teacher/dashboard/ss1-science-student_information",
     element: <Info4 />,
     auth: "teacher",
   },
   {
-    path: "/teacher/dashboard/ss2-student_information",
+    path: "/teacher/dashboard/ss1-art-student_information",
     element: <Info5 />,
     auth: "teacher",
   },
   {
-    path: "/teacher/dashboard/ss3-student_information",
+    path: "/teacher/dashboard/ss1-commercial-student_information",
     element: <Info6 />,
     auth: "teacher",
   },
+  {
+    path: "/teacher/dashboard/ss2-science-student_information",
+    element: <Info7 />,
+    auth: "teacher",
+  },
+  {
+    path: "/teacher/dashboard/ss2-art-student_information",
+    element: <Info8 />,
+    auth: "teacher",
+  },
+  {
+    path: "/teacher/dashboard/ss2-commercial-student_information",
+    element: <Info9 />,
+    auth: "teacher",
+  },
+  {
+    path: "/teacher/dashboard/ss3-science-student_information",
+    element: <Info10 />,
+    auth: "teacher",
+  },
+  {
+    path: "/teacher/dashboard/ss3-art-student_information",
+    element: <Info11 />,
+    auth: "teacher",
+  },
+  {
+    path: "/teacher/dashboard/ss3-commercial-student_information",
+    element: <Info12 />,
+    auth: "teacher",
+  },
+
   {
     path: "/teacher/dashboard/teacher",
     element: <Teacher />,
