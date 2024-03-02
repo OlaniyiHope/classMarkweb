@@ -1,7 +1,7 @@
 export const navigations = [
   {
     name: " Dashboard",
-    path: "/teacher/dashboard/teacher",
+    path: "/teacher/dashboard",
     icon: <span style={{ color: "#ffc107" }}>dashboard</span>,
   },
   {
@@ -84,7 +84,23 @@ export const navigations = [
       },
     ],
   },
-  { name: "Teachers", path: "/dashboard/teacher", icon: "dashboard" },
+  {
+    name: "Affective Psychomotor",
+    icon: "person",
+    children: [
+      {
+        name: "Manage Category",
+        iconText: "SI",
+        path: "/dashboard/psychomotor_report_cat",
+      },
+      {
+        name: "Manage Student Report",
+        iconText: "SI",
+        path: "/dashboard/manage_psychomotor",
+      },
+    ],
+  },
+  { name: "Teachers", path: "/teacher/dashboard/teacher", icon: "dashboard" },
 
   {
     name: "Subject",
@@ -110,6 +126,11 @@ export const navigations = [
         path: "/dashboard/manage-mark-view",
       },
       {
+        name: "On-Screen Marking",
+        iconText: "SI",
+        path: "/dashboard/onscreen-marking",
+      },
+      {
         name: "Test List",
         iconText: "SI",
         path: "/dashboard/tabulation-sheet",
@@ -119,16 +140,19 @@ export const navigations = [
   },
 
   {
-    name: "Accounting",
-    icon: "payment",
+    name: "Online Exam",
+    icon: "computer",
     children: [
       {
-        name: "Student Payments",
+        name: "Create Online Exam",
         iconText: "SI",
-        path: "/dashboard/student-payment",
+        path: "/dashboard/online-exam",
       },
-      { name: "Create Student Payment", iconText: "SI", path: "/session/" },
-      { name: "Expenses", iconText: "SI", path: "/session/" },
+      {
+        name: "Manage Online Exam",
+        iconText: "SI",
+        path: "/dashboard/manage-online-exam",
+      },
     ],
   },
 

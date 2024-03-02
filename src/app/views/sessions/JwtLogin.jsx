@@ -91,7 +91,7 @@ const JwtLogin = () => {
     if (userRole === "admin") {
       navigate("/dashboard/admin");
     } else if (userRole === "teacher") {
-      navigate("/teacher/dashboard/teacher");
+      navigate("/teacher/dashboard");
     } else if (userRole === "student") {
       navigate("/student/dashboard/default");
     } else {

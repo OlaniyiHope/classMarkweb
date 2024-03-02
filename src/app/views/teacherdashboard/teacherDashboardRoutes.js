@@ -39,7 +39,7 @@ const Analytics = Loadable(lazy(() => import("./Analytics")));
 
 const teacherDashboardRoutes = [
   {
-    path: "/teacher/dashboard/teacher",
+    path: "/teacher/dashboard",
     element: <Analytics />,
     auth: "teacher",
   },
