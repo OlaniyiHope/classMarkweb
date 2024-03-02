@@ -140,11 +140,13 @@ const JwtLogin = () => {
               style={{
                 width: "200px",
                 height: "130px",
-                borderRadius: "50%",
               }}
             />
           </div>
-          {accountSettings.name || ""}
+          <p style={{ fontWeight: "700", fontSize: "20px", color: "white" }}>
+            {" "}
+            {accountSettings.name || ""}
+          </p>
           <p className="mb-4" style={{ color: "white" }}>
             Welcome!...Log in to your School Dashboard. 📚💡
             <br />

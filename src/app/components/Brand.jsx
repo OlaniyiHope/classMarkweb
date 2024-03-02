@@ -57,9 +57,8 @@ const Brand = ({ children }) => {
           <img
             src={`https://edupros.s3.amazonaws.com/${accountSettings.schoolLogo}`}
             style={{
-              width: "200px",
-              height: "130px",
-              borderRadius: "50%",
+              width: "120px",
+              height: "90px",
             }}
           />
         </StyledSpan>
