@@ -23,6 +23,7 @@ import pic1 from "./two.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import logo from "./logohlhs.png";
+import axios from "axios";
 import pic3 from "./pic-2.png";
 import { faGoogle, faApple } from "@fortawesome/free-brands-svg-icons";
 
@@ -52,7 +53,18 @@ const JwtLogin = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
-
+  const [accountSettings, setAccountSettings] = useState({
+    name: "",
+    motto: "",
+    address: "",
+    phone: "",
+    phonetwo: "",
+    email: "",
+    sessionStart: "",
+    sessionEnd: "",
+    schoolLogo: "",
+  });
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
   const handleFormSubmit = async (values) => {
     console.log("handleFormSubmit is triggered");
 
@@ -99,6 +111,22 @@ const JwtLogin = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchAccountSettings = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/api/account-setting`);
+        const { data } = response.data;
+
+        // Set the retrieved school settings to the state
+        setAccountSettings(data);
+      } catch (error) {
+        console.error("Error fetching school settings:", error);
+      }
+    };
+
+    fetchAccountSettings();
+  }, [apiUrl]);
+
   return (
     <div className="authincation d-flex flex-column flex-lg-row flex-column-fluid">
       <div
@@ -108,12 +136,15 @@ const JwtLogin = () => {
         <div className="d-flex flex-column-auto flex-column pt-lg-40 pt-15">
           <div className="text-center mb-lg-4 mb-2 pt-5 logo">
             <img
-              src={logo}
-              alt=""
-              style={{ margin: "auto", height: "100px" }}
+              src={`https://edupros.s3.amazonaws.com/${accountSettings.schoolLogo}`}
+              style={{
+                width: "200px",
+                height: "130px",
+                borderRadius: "50%",
+              }}
             />
           </div>
-          <h3 className="mb-2 text-white">HEAVENLY LOVE HIGH SCHOOL</h3>
+          {accountSettings.name || ""}
           <p className="mb-4" style={{ color: "white" }}>
             Welcome!...Log in to your School Dashboard. 📚💡
             <br />
