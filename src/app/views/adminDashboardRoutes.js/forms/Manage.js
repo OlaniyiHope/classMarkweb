@@ -37,6 +37,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import useFetch from "hooks/useFetch";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import EditExam from "./EditExam";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -83,9 +84,11 @@ const Manage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [action, setAction] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [editExamData, setEditExamData] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const apiUrl = process.env.REACT_APP_API_URL.trim();
 
@@ -144,7 +147,48 @@ const Manage = () => {
       console.error("Error deleting item:", error);
     }
   };
+  const handleEditExam = async (updatedData) => {
+    try {
+      const token = localStorage.getItem("jwtToken");
 
+      // Check if editStudentData is not null and has the _id property
+      if (editExamData?._id) {
+        // Log the payload before sending the request
+        console.log("Payload before sending:", {
+          title: updatedData.title,
+          className: updatedData.className,
+          // Add other fields as needed
+        });
+
+        const response = await axios.put(
+          `http://localhost:5000/api/edit-exam/${editExamData._id}`,
+          {
+            title: updatedData.title,
+            className: updatedData.className,
+            subject: updatedData.subject,
+            date: updatedData.date,
+            fromTime: updatedData.fromTime,
+            toTime: updatedData.toTime,
+
+            // Add other fields as needed
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log("Exam updated successfully:", response.data);
+        setEditDialogOpen(false);
+        reFetch(); // Manually trigger data refetch
+      } else {
+        console.error("Invalid or missing _id property in editExamData");
+      }
+    } catch (error) {
+      console.error("Error updating student:", error);
+    }
+  };
   return (
     <Fragment>
       <ContentBox className="analytics">
@@ -261,12 +305,15 @@ const Manage = () => {
                                   View Result
                                 </Link>
                               </MenuItem>
-                              <MenuItem>
+                              <MenuItem
+                                onClick={() => handleEditExam(item._id)}
+                              >
                                 <ListItemIcon>
                                   <EditIcon /> {/* Use an Edit icon */}
                                 </ListItemIcon>
                                 Edit
                               </MenuItem>
+
                               <MenuItem
                                 onClick={() =>
                                   handleOpenDeleteConfirmation(item)
@@ -291,6 +338,14 @@ const Manage = () => {
                   </TableRow>
                 )}
               </table>
+              {editExamData && (
+                <EditExam
+                  open={editDialogOpen}
+                  onClose={() => setEditDialogOpen(false)}
+                  studentId={editExamData._id}
+                  onSave={handleEditExam}
+                />
+              )}
               <Dialog
                 open={deleteConfirmationOpen}
                 onClose={handleCloseDeleteConfirmation}

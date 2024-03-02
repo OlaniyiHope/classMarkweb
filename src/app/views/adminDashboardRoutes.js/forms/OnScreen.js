@@ -979,6 +979,38 @@ const OnScreen = () => {
   //   }
   // }, [ctx, theoryAnswer, questionDetails]);
 
+  // useEffect(() => {
+  //   if (ctx) {
+  //     // Clear the canvas before drawing
+  //     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  //     // Draw text
+  //     if (theoryAnswer) {
+  //       Object.entries(theoryAnswer.answers).forEach(([questionId, answer]) => {
+  //         const questionTitle =
+  //           questionDetails.find((detail) => detail.id === questionId)?.title ||
+  //           "N/A";
+  //         // ctx.fillStyle = "black";
+  //         ctx.font = "20px Arial";
+  //         ctx.fillText(`Question Title: ${questionTitle}`, 20, 20);
+  //         ctx.fillText(`Answer: ${answer}`, 20, 40);
+  //       });
+  //     }
+  //     // Draw correct symbol
+  //     if (currentTool === "correct") {
+  //       ctx.fillStyle = correctColor;
+  //       ctx.beginPath();
+  //       ctx.arc(
+  //         correctSymbolPosition.x,
+  //         correctSymbolPosition.y,
+  //         5,
+  //         0,
+  //         Math.PI * 2
+  //       );
+  //       ctx.fill();
+  //     }
+  //   }
+  // }, [ctx, theoryAnswer, questionDetails, correctSymbolPosition, correctColor]);
+
   useEffect(() => {
     if (ctx) {
       // Clear the canvas before drawing
@@ -989,10 +1021,32 @@ const OnScreen = () => {
           const questionTitle =
             questionDetails.find((detail) => detail.id === questionId)?.title ||
             "N/A";
-          ctx.fillStyle = "black";
-          ctx.font = "12px Arial";
-          ctx.fillText(`Question Title: ${questionTitle}`, 20, 20);
-          ctx.fillText(`Answer: ${answer}`, 20, 40);
+          const questionTitleWords = questionTitle.split(" ");
+          const answerWords = answer.split(" ");
+          // ctx.fillStyle = "black";
+          ctx.font = "20px Arial";
+          let yPosition = 20;
+
+          // Render question title
+          ctx.fillText("Question Title:", 20, yPosition);
+          yPosition += 20; // Move to the next line
+          let currentLine = [];
+          for (let i = 0; i < questionTitleWords.length; i++) {
+            currentLine.push(questionTitleWords[i]);
+            if ((i + 1) % 4 === 0 || i === questionTitleWords.length - 1) {
+              ctx.fillText(currentLine.join(" "), 20, yPosition);
+              yPosition += 20; // Move to the next line
+              currentLine = [];
+            }
+          }
+
+          // Render answer
+          ctx.fillText("Answer:", 20, yPosition);
+          yPosition += 20; // Move to the next line
+          for (let i = 0; i < answerWords.length; i += 4) {
+            ctx.fillText(answerWords.slice(i, i + 4).join(" "), 20, yPosition);
+            yPosition += 20; // Move to the next line
+          }
         });
       }
       // Draw correct symbol
