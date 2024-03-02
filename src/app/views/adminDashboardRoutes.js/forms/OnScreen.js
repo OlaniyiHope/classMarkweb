@@ -1079,7 +1079,14 @@ const OnScreen = () => {
   }, [ctx, theoryAnswer, questionDetails]);
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        height: "100%",
+        marginTop: "50px",
+        overflowX: "auto",
+      }}
+    >
       <Container>
         <ValidatorForm onError={() => null}>
           <Box className="breadcrumb">{/* Breadcrumb component */}</Box>
