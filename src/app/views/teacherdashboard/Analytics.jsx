@@ -149,7 +149,7 @@ const Analytics = () => {
   return (
     <div>
       <h2 style={{ paddingTop: "15px", paddingLeft: "10px" }}>
-        Admin Dashboard
+        Teacher Dashboard
       </h2>
       <div className="row gutters-20" style={{ marginTop: "10px" }}>
         {Object.entries(userCounts).map(([role, count]) => (
