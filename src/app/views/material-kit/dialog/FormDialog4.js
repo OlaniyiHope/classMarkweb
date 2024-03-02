@@ -207,9 +207,11 @@ export default function FormDialog4() {
       );
 
       // Handle successful subject creation
+      toast.success("Subject saved successfully!");
       navigate("/dashboard/js1-subject");
     } catch (err) {
       // Handle errors
+      toast.error("An error occurred during login");
     }
   };
 
