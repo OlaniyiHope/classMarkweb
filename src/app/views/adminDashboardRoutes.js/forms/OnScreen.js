@@ -1021,32 +1021,29 @@ const OnScreen = () => {
           const questionTitle =
             questionDetails.find((detail) => detail.id === questionId)?.title ||
             "N/A";
-          const questionTitleWords = questionTitle.split(" ");
-          const answerWords = answer.split(" ");
-          // ctx.fillStyle = "black";
+          const questionTitleLines = getLines(ctx, questionTitle, 700); // Adjust 700 as needed for question width
+          const answerLines = getLines(ctx, answer, 700); // Adjust 700 as needed for answer width
+          // Set font properties
           ctx.font = "20px Arial";
+          ctx.textAlign = "left";
+          ctx.textBaseline = "top";
           let yPosition = 20;
 
           // Render question title
           ctx.fillText("Question Title:", 20, yPosition);
-          yPosition += 20; // Move to the next line
-          let currentLine = [];
-          for (let i = 0; i < questionTitleWords.length; i++) {
-            currentLine.push(questionTitleWords[i]);
-            if ((i + 1) % 4 === 0 || i === questionTitleWords.length - 1) {
-              ctx.fillText(currentLine.join(" "), 20, yPosition);
-              yPosition += 20; // Move to the next line
-              currentLine = [];
-            }
-          }
+          yPosition += 25; // Move to the next line
+          questionTitleLines.forEach((line) => {
+            ctx.fillText(line, 40, yPosition);
+            yPosition += 25; // Move to the next line
+          });
 
           // Render answer
           ctx.fillText("Answer:", 20, yPosition);
-          yPosition += 20; // Move to the next line
-          for (let i = 0; i < answerWords.length; i += 4) {
-            ctx.fillText(answerWords.slice(i, i + 4).join(" "), 20, yPosition);
-            yPosition += 20; // Move to the next line
-          }
+          yPosition += 25; // Move to the next line
+          answerLines.forEach((line) => {
+            ctx.fillText(line, 40, yPosition);
+            yPosition += 25; // Move to the next line
+          });
         });
       }
       // Draw correct symbol
@@ -1064,6 +1061,26 @@ const OnScreen = () => {
       }
     }
   }, [ctx, theoryAnswer, questionDetails, correctSymbolPosition, correctColor]);
+
+  // Function to split text into lines based on width
+  function getLines(ctx, text, maxWidth) {
+    const words = text.split(" ");
+    let lines = [];
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+      const word = words[i];
+      const width = ctx.measureText(currentLine + " " + word).width;
+      if (width < maxWidth) {
+        currentLine += " " + word;
+      } else {
+        lines.push(currentLine);
+        currentLine = word;
+      }
+    }
+    lines.push(currentLine);
+    return lines;
+  }
 
   return (
     <div>
