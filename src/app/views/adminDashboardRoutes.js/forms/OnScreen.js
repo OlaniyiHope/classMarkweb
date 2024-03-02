@@ -1011,76 +1011,72 @@ const OnScreen = () => {
   //   }
   // }, [ctx, theoryAnswer, questionDetails, correctSymbolPosition, correctColor]);
 
+  // Function to wrap text based on available width
+  const wrapText = (text, maxWidth, ctx) => {
+    const words = text.split(" ");
+    const lines = [];
+    let currentLine = "";
+
+    words.forEach((word) => {
+      const testLine = currentLine + word + " ";
+      const testWidth = ctx.measureText(testLine).width;
+      if (testWidth > maxWidth) {
+        lines.push(currentLine);
+        currentLine = word + " ";
+      } else {
+        currentLine = testLine;
+      }
+    });
+
+    lines.push(currentLine);
+    return lines;
+  };
+
+  // UseEffect hook
   useEffect(() => {
     if (ctx) {
       // Clear the canvas before drawing
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       // Draw text
       if (theoryAnswer) {
+        let yPosition = 20; // Initial y-position
+        const lineSpacing = 30; // Adjust line spacing as needed
+
         Object.entries(theoryAnswer.answers).forEach(([questionId, answer]) => {
           const questionTitle =
             questionDetails.find((detail) => detail.id === questionId)?.title ||
             "N/A";
-          const questionTitleLines = getLines(ctx, questionTitle, 700); // Adjust 700 as needed for question width
-          const answerLines = getLines(ctx, answer, 700); // Adjust 700 as needed for answer width
-          // Set font properties
-          ctx.font = "20px Arial";
-          ctx.textAlign = "left";
-          ctx.textBaseline = "top";
-          let yPosition = 20;
+          const questionTitleLines = wrapText(
+            questionTitle,
+            ctx.canvas.width - 40,
+            ctx
+          );
+          const answerLines = wrapText(answer, ctx.canvas.width - 40, ctx);
 
           // Render question title
           ctx.fillText("Question Title:", 20, yPosition);
-          yPosition += 25; // Move to the next line
+          yPosition += lineSpacing; // Increment y-position
+
           questionTitleLines.forEach((line) => {
             ctx.fillText(line, 40, yPosition);
-            yPosition += 25; // Move to the next line
+            yPosition += lineSpacing; // Increment y-position for each line
           });
 
           // Render answer
           ctx.fillText("Answer:", 20, yPosition);
-          yPosition += 25; // Move to the next line
+          yPosition += lineSpacing; // Increment y-position
+
           answerLines.forEach((line) => {
             ctx.fillText(line, 40, yPosition);
-            yPosition += 25; // Move to the next line
+            yPosition += lineSpacing; // Increment y-position for each line
           });
+
+          // Add extra spacing between questions
+          yPosition += lineSpacing;
         });
       }
-      // Draw correct symbol
-      if (currentTool === "correct") {
-        ctx.fillStyle = correctColor;
-        ctx.beginPath();
-        ctx.arc(
-          correctSymbolPosition.x,
-          correctSymbolPosition.y,
-          5,
-          0,
-          Math.PI * 2
-        );
-        ctx.fill();
-      }
     }
-  }, [ctx, theoryAnswer, questionDetails, correctSymbolPosition, correctColor]);
-
-  // Function to split text into lines based on width
-  function getLines(ctx, text, maxWidth) {
-    const words = text.split(" ");
-    let lines = [];
-    let currentLine = words[0];
-
-    for (let i = 1; i < words.length; i++) {
-      const word = words[i];
-      const width = ctx.measureText(currentLine + " " + word).width;
-      if (width < maxWidth) {
-        currentLine += " " + word;
-      } else {
-        lines.push(currentLine);
-        currentLine = word;
-      }
-    }
-    lines.push(currentLine);
-    return lines;
-  }
+  }, [ctx, theoryAnswer, questionDetails]);
 
   return (
     <div>
