@@ -790,9 +790,16 @@ const OnScreen = () => {
   //   }
   // };
   const [questionData, setQuestionData] = useState([
-    { question: "1", originalMark: "10", scoreGiven: "5" },
-    { question: "1a", originalMark: "5", scoreGiven: "3" },
-    { question: "2", originalMark: "15", scoreGiven: "10" },
+    { question: "1", originalMark: "", scoreGiven: "" },
+    { question: "2", originalMark: "", scoreGiven: "" },
+    { question: "3", originalMark: "", scoreGiven: "" },
+    { question: "4", originalMark: "", scoreGiven: "" },
+    { question: "5", originalMark: "", scoreGiven: "" },
+    { question: "6", originalMark: "", scoreGiven: "" },
+    { question: "7", originalMark: "", scoreGiven: "" },
+    { question: "8", originalMark: "", scoreGiven: "" },
+    { question: "9", originalMark: "", scoreGiven: "" },
+    { question: "10", originalMark: "", scoreGiven: "" },
     // Add more question data as needed
   ]);
 
@@ -1435,7 +1442,7 @@ const OnScreen = () => {
             <div>
               <div
                 style={{
-                  flex: "20%",
+                  flex: "30%",
                   borderLeft: "1px solid #ccc",
                   padding: "20px",
                 }}
@@ -1506,7 +1513,7 @@ const OnScreen = () => {
                       </button>
                       <input
                         type="text"
-                        value={`Original: ${item.originalMark}`}
+                        value={` ${item.originalMark}`}
                         readOnly
                         style={{ width: "30%", marginRight: "10px" }}
                       />
