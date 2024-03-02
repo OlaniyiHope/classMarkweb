@@ -397,6 +397,7 @@ const ManagePsy = () => {
               <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
                 <div class="table-responsive full-data">
                   <table
+                    style={{ overflowX: "auto", maxWidth: "100%" }}
                     class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
                     id="example-student"
                   >
