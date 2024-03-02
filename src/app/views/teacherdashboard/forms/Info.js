@@ -220,9 +220,6 @@ const Info = () => {
           <Box className="breadcrumb">
             <Breadcrumb routeSegments={[{ name: "Student Information" }]} />
           </Box>
-          <Box className="breadcrumb">
-            <FormDialog2 />
-          </Box>
 
           <Box width="100%" overflow="auto">
             <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
