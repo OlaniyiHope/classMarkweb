@@ -27,18 +27,19 @@ import Info6 from "./forms/Info6";
 import Sub4 from "./forms/Sub4";
 import Sub5 from "./forms/Sub5";
 import Sub6 from "./forms/Sub6";
+import ViewAdmin from "./ViewAdmin";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
 const teacherDashboardRoutes = [
   {
-    path: "/teacher/dashboard/default",
+    path: "/teacher/dashboard/teacher",
     element: <Analytics />,
     auth: "teacher",
   },
   {
     path: "/teacher/dashboard/admin",
-    element: <Admin />,
+    element: <ViewAdmin />,
     auth: "teacher",
   },
   {

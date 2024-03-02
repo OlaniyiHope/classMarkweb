@@ -227,113 +227,116 @@ const Info = () => {
           <Box width="100%" overflow="auto">
             <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
               <div class="table-responsive full-data">
-                <table
-                  class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
-                  id="example-student"
-                >
-                  <thead>
-                    <tr>
-                      <th>S/N</th>
-                      <th>Adm No</th>
+                <div style={{ overflowX: "auto", maxWidth: "100%" }}>
+                  <table
+                    style={{ overflowX: "auto", maxWidth: "100%" }}
+                    class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
+                    id="example-student"
+                  >
+                    <thead>
+                      <tr>
+                        <th>S/N</th>
+                        <th>Adm No</th>
 
-                      <th>Name</th>
-                      <th>Address</th>
-                      <th>Email</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Email</th>
 
-                      <th class="text-end">Action</th>
-                    </tr>
-                  </thead>
-                  {data && data.length > 0 ? (
-                    <tbody>
-                      {data.map((item, index) => (
-                        <tr key={item._id}>
-                          <td>
-                            <div class="trans-list">
-                              <h4>{index + 1}</h4>
-                            </div>
-                          </td>
-                          <td>
-                            <span class="text-primary font-w600">
-                              {item.AdmNo}
-                            </span>
-                          </td>
+                        <th class="text-end">Action</th>
+                      </tr>
+                    </thead>
+                    {data && data.length > 0 ? (
+                      <tbody>
+                        {data.map((item, index) => (
+                          <tr key={item._id}>
+                            <td>
+                              <div class="trans-list">
+                                <h4>{index + 1}</h4>
+                              </div>
+                            </td>
+                            <td>
+                              <span class="text-primary font-w600">
+                                {item.AdmNo}
+                              </span>
+                            </td>
 
-                          <td>
-                            <div class="date">{item.studentName}</div>
-                          </td>
-                          <td>
-                            <h6 class="mb-0">{item.address}</h6>
-                          </td>
-                          <td>
-                            <h6 class="mb-0">{item.email}</h6>
-                          </td>
+                            <td>
+                              <div class="date">{item.studentName}</div>
+                            </td>
+                            <td>
+                              <h6 class="mb-0">{item.address}</h6>
+                            </td>
+                            <td>
+                              <h6 class="mb-0">{item.email}</h6>
+                            </td>
 
-                          <td>
-                            <TableCell align="right">
-                              <IconButton
-                                aria-controls={`action-menu-${item._id}`}
-                                aria-haspopup="true"
-                                onClick={(event) =>
-                                  handleOpenMenu(event, item._id)
-                                } // Pass item._id
-                              >
-                                <MoreVertIcon />{" "}
-                                {/* MoreVertIcon for the menu */}
-                              </IconButton>
-                              <Menu
-                                id={`action-menu-${item._id}`}
-                                anchorEl={anchorElMap[item._id]}
-                                open={Boolean(anchorElMap[item._id])}
-                                onClose={() => handleCloseMenu(item._id)}
-                              >
-                                <MenuItem>
-                                  <ListItemIcon></ListItemIcon>
-                                  <Link
-                                    to={`/dashboard/student_mark_sheet/${item._id}`}
+                            <td>
+                              <TableCell align="right">
+                                <IconButton
+                                  aria-controls={`action-menu-${item._id}`}
+                                  aria-haspopup="true"
+                                  onClick={(event) =>
+                                    handleOpenMenu(event, item._id)
+                                  } // Pass item._id
+                                >
+                                  <MoreVertIcon />{" "}
+                                  {/* MoreVertIcon for the menu */}
+                                </IconButton>
+                                <Menu
+                                  id={`action-menu-${item._id}`}
+                                  anchorEl={anchorElMap[item._id]}
+                                  open={Boolean(anchorElMap[item._id])}
+                                  onClose={() => handleCloseMenu(item._id)}
+                                >
+                                  <MenuItem>
+                                    <ListItemIcon></ListItemIcon>
+                                    <Link
+                                      to={`/dashboard/student_mark_sheet/${item._id}`}
+                                    >
+                                      Mark Sheet
+                                    </Link>
+                                  </MenuItem>
+
+                                  <MenuItem>
+                                    <ListItemIcon></ListItemIcon>
+
+                                    <Link to="/dashboard/profile">
+                                      Student Profile
+                                    </Link>
+                                  </MenuItem>
+                                  <MenuItem
+                                    onClick={() => handleEditStudent(item._id)}
                                   >
-                                    Mark Sheet
-                                  </Link>
-                                </MenuItem>
-
-                                <MenuItem>
-                                  <ListItemIcon></ListItemIcon>
-
-                                  <Link to="/dashboard/profile">
-                                    Student Profile
-                                  </Link>
-                                </MenuItem>
-                                <MenuItem
-                                  onClick={() => handleEditStudent(item._id)}
-                                >
-                                  <ListItemIcon>
-                                    <EditIcon /> {/* Use an Edit icon */}
-                                  </ListItemIcon>
-                                  Edit
-                                </MenuItem>
-                                <MenuItem
-                                  onClick={() =>
-                                    handleOpenDeleteConfirmation(item)
-                                  }
-                                >
-                                  <ListItemIcon>
-                                    <DeleteIcon />
-                                  </ListItemIcon>
-                                  Delete
-                                </MenuItem>
-                              </Menu>
-                            </TableCell>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={5} align="center">
-                        No Student to display.
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </table>
+                                    <ListItemIcon>
+                                      <EditIcon /> {/* Use an Edit icon */}
+                                    </ListItemIcon>
+                                    Edit
+                                  </MenuItem>
+                                  <MenuItem
+                                    onClick={() =>
+                                      handleOpenDeleteConfirmation(item)
+                                    }
+                                  >
+                                    <ListItemIcon>
+                                      <DeleteIcon />
+                                    </ListItemIcon>
+                                    Delete
+                                  </MenuItem>
+                                </Menu>
+                              </TableCell>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={5} align="center">
+                          No Student to display.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </table>
+                </div>
                 {editStudentData && (
                   <EditStudent
                     open={editDialogOpen}
