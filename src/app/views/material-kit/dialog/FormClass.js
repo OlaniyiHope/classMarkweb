@@ -31,10 +31,7 @@ export default function FormClass() {
       teacher,
     };
     try {
-      const response = await axios.post(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/class`,
-        formData
-      );
+      const response = await axios.post(`${apiUrl}/api/class`, formData);
 
       if (response.status === 200) {
         // Class successfully created

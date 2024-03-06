@@ -184,7 +184,7 @@ const Info9 = () => {
         });
 
         const response = await axios.put(
-          `https://hlhs-3ff6501095d6.herokuapp.com/api/students/${editStudentData._id}`,
+          `${apiUrl}/api/students/${editStudentData._id}`,
           {
             studentName: updatedData.studentName,
             address: updatedData.address,

@@ -61,7 +61,7 @@ const Register = () => {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const response = await axios.post(
-        `https://hlhsapi-ecaf5e7a2f6f.herokuapp.com/api/register`,
+        `https://hlhs1-ef7e91975268.herokuapp.com/api/register`,
         {
           role: "student",
           ...values,

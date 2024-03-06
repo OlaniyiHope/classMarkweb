@@ -1,671 +1,3 @@
-// // OnScreen.jsx
-// import React, { useState, useEffect } from "react";
-// import { useParams } from "react-router-dom";
-// import axios from "axios";
-
-// const OnScreen = () => {
-//   const { id } = useParams();
-//   const [examData, setExamData] = useState(null);
-//   const apiUrl = process.env.REACT_APP_API_URL.trim();
-//   // useEffect(() => {
-//   //   const fetchExamData = async () => {
-//   //     try {
-//   //       const response = await axios.get(`${apiUrl}/api/get-exam/${id}`);
-//   //       setExamData(response.data);
-//   //     } catch (error) {
-//   //       console.error("Error fetching exam data:", error);
-//   //     }
-//   //   };
-
-//   //   fetchExamData();
-//   // }, [id]);
-
-//   const { examId, studentId } = useParams();
-
-//   useEffect(() => {
-//     const fetchExamData = async () => {
-//       try {
-//         const response = await axios.get(
-//           `${apiUrl}/api/get-exam/${examId}/student/${studentId}`
-//         );
-
-//         setExamData(response.data);
-//       } catch (error) {
-//         console.error("Error fetching exam data:", error);
-//       }
-//     };
-
-//     fetchExamData();
-//   }, [examId, studentId]);
-
-//   //  const fetchExamAndQuestions = async () => {
-//   //   try {
-//   //     const examResponse = await axios.get(`${apiUrl}/api/get-exam/${id}`);
-//   //     setExam(examResponse.data);
-//   //     // Set the exam object before calling startTimer
-//   //     console.log("Exam details:", examResponse.data);
-
-//   //     const token = localStorage.getItem("jwtToken");
-//   //     const headers = {
-//   //       Authorization: `Bearer ${token}`,
-//   //     };
-
-//   //     const questionsResponse = await axios.get(
-//   //       `${apiUrl}/api/questions/${id}`,
-//   //       { headers }
-//   //     );
-//   //     const questionsData = questionsResponse.data;
-//   //     console.log("Fetched questions:", questionsData);
-
-//   //     const correctAnswersData = {};
-
-//   //     questionsData.forEach((question) => {
-//   //       if (question.questionType === "true_false") {
-//   //         correctAnswersData[question._id] =
-//   //           question.correctAnswer.toLowerCase(); // Convert to lowercase
-//   //       } else if (question.questionType === "theory") {
-//   //         // Handle theory questions
-//   //         // For theory questions, correctAnswer might not be available
-//   //         // You can set it to an empty string or handle it differently based on your requirements
-//   //         correctAnswersData[question._id] = "";
-//   //       } else {
-//   //         correctAnswersData[question._id] =
-//   //           question.options
-//   //             .find((option) => option.isCorrect)
-//   //             ?.option.toLowerCase() || "";
-//   //       }
-//   //     });
-//   //     console.log("Correct Answers Data:", correctAnswersData);
-//   //     setCorrectAnswers(correctAnswersData);
-
-//   //     setQuestions(questionsData);
-
-//   //     const calculatedTotalMark = questionsData.reduce(
-//   //       (total, question) => total + parseInt(question.mark),
-//   //       0
-//   //     );
-//   //     setTotalMark(calculatedTotalMark);
-//   //     startTimer();
-//   //   } catch (error) {
-//   //     console.error("Error fetching exam or questions:", error);
-//   //   }
-//   // };
-
-//   if (!examData) {
-//     return <div>Loading...</div>;
-//   }
-
-//   return (
-//     <div>
-//       <h2>{examData.title}</h2>
-//       <h3>Student Answers:</h3>
-//       {examData.submittedAnswers.map((answer, index) => (
-//         <div key={index}>
-//           <p>Answer: {answer.answers}</p>
-//           {/* Add your marking tools here */}
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default OnScreen;
-
-// import { DatePicker } from "@mui/lab";
-// import AdapterDateFns from "@mui/lab/AdapterDateFns";
-// import { Stack } from "@mui/material";
-// import { Box } from "@mui/system";
-// import { Breadcrumb, SimpleCard } from "app/components";
-// import axios from "axios";
-// import LocalizationProvider from "@mui/lab/LocalizationProvider";
-// import {
-//   Button,
-//   Checkbox,
-//   FormControlLabel,
-//   Grid,
-//   Icon,
-//   Radio,
-//   MenuItem,
-//   DialogTitle,
-//   RadioGroup,
-//   styled,
-// } from "@mui/material";
-// import useFetch from "hooks/useFetch";
-// import { Span } from "app/components/Typography";
-// import { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import "./form.css";
-// import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
-// import { ToastContainer, toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-
-// const Container = styled("div")(({ theme }) => ({
-//   margin: "30px",
-//   [theme.breakpoints.down("sm")]: { margin: "16px" },
-//   "& .breadcrumb": {
-//     marginBottom: "30px",
-//     [theme.breakpoints.down("sm")]: { marginBottom: "16px" },
-//   },
-// }));
-
-// const TextField = styled(TextValidator)(() => ({
-//   width: "100%",
-//   marginBottom: "16px",
-// }));
-
-// const OnScreen = () => {
-//   const {
-//     data: classData,
-//     loading: classLoading,
-//     error: classError,
-//   } = useFetch("/class");
-//   const { data: examData } = useFetch("/getofflineexam");
-//   const [subjectData, setSubjectData] = useState([]);
-//   const [selectedClass, setSelectedClass] = useState("");
-//   const [selectedSubject, setSelectedSubject] = useState("");
-//   const [selectedExam, setSelectedExam] = useState("");
-//   const [selectedName, setSelectedName] = useState("");
-//   const [selectedStudent, setSelectedStudent] = useState("");
-//   const [studentData, setStudentData] = useState([]);
-//   const [theoryAnswer, setTheoryAnswer] = useState(null);
-//   console.log("Current studentData state:", studentData);
-//   const [selectedStudentId, setSelectedStudentId] = useState("");
-
-//   const [subjectIdLookup, setSubjectIdLookup] = useState({});
-//   const [showMarkManagement, setShowMarkManagement] = useState(false);
-//   const apiUrl = process.env.REACT_APP_API_URL.trim();
-
-//   const fetchStudentData = async (examId, subjectId) => {
-//     try {
-//       const token = localStorage.getItem("jwtToken");
-//       const headers = new Headers();
-//       headers.append("Authorization", `Bearer ${token}`);
-
-//       const response = await fetch(
-//         `${apiUrl}/api/get-all-scores/${examId}/${subjectId}`,
-//         {
-//           headers,
-//         }
-//       );
-
-//       if (!response.ok) {
-//         console.error(
-//           "Failed to fetch student data. Response details:",
-//           response
-//         );
-//         throw new Error("Failed to fetch student data");
-//       }
-
-//       const data = await response.json();
-//       return data;
-//     } catch (error) {
-//       console.error("Error fetching student data:", error);
-//       return { scores: [] }; // Return empty array if there's an error
-//     }
-//   };
-
-//   // const handleStudentChange = (event) => {
-//   //   const selectedStudent = event.target.value;
-//   //   setSelectedName(selectedStudent);
-//   // };
-//   const handleStudentChange = (event) => {
-//     const selectedStudentName = event.target.value;
-//     setSelectedName(selectedStudentName);
-
-//     // Find the corresponding student object and set the selected student's ID
-//     const selectedStudent = studentData.find(
-//       (student) => student.studentName === selectedStudentName
-//     );
-//     if (selectedStudent) {
-//       setSelectedStudentId(selectedStudent.id); // Ensure this line sets the correct student ID
-//       console.log("Selected Student ID:", selectedStudent.id); // Add this line for debugging
-//       setSelectedStudent(selectedStudent); // Optionally update to set the entire selected student object
-//     }
-//   };
-
-//   // const handleManageMarkClick = async () => {
-//   //   try {
-//   //     if (!selectedExam || !selectedName || !selectedSubject) {
-//   //       throw new Error("Please select an exam, student, and subject");
-//   //     }
-
-//   //     const token = localStorage.getItem("jwtToken");
-//   //     const headers = new Headers();
-//   //     headers.append("Authorization", `Bearer ${token}`);
-
-//   //     // Fetch exam data for the selected student
-//   //     const response = await fetch(
-//   //       `${apiUrl}/api/get-theory-answer/:className${className}/:student${studentId}/subject/:{subject}`,
-
-//   //       { headers }
-//   //     );
-
-//   //     if (!response.ok) {
-//   //       throw new Error("Failed to fetch exam data");
-//   //     }
-
-//   //     const exam = await response.json();
-
-//   //     // Update state with the fetched exam data
-//   //     setStudentData(exam.studentAnswer);
-//   //     setShowMarkManagement(true);
-//   //   } catch (error) {
-//   //     console.error("Error fetching exam data:", error);
-//   //     // Handle error
-//   //   }
-//   // };
-//   const handleManageMarkClick = async () => {
-//     try {
-//       // Check if all required fields are selected
-//       if (!selectedClass || !selectedSubject || !selectedStudentId) {
-//         throw new Error("Please select class, subject, and student");
-//       }
-//       console.log("Selected Class:", selectedClass);
-//       console.log("Selected Subject:", selectedSubject);
-//       console.log("Selected Student ID:", selectedStudentId);
-
-//       // Fetch theory answer from the backend
-//       const response = await fetch(
-//         `${apiUrl}/api/get-theory-answer/className/${selectedClass}/${selectedStudentId}/${subjectIdLookup[selectedSubject]}`
-//       );
-//       console.log("Subject ID Lookup:", subjectIdLookup[selectedSubject]);
-
-//       if (!response.ok) {
-//         throw new Error("Failed to fetch theory answer");
-//       }
-
-//       const data = await response.json();
-//       setTheoryAnswer(data.theoryAnswer);
-//     } catch (error) {
-//       console.error("Error fetching theory answer:", error);
-//       // Handle error
-//     }
-//   };
-
-//   useEffect(() => {
-//     const fetchSubjectData = async () => {
-//       try {
-//         if (!selectedClass) {
-//           setSubjectData([]);
-//           setSubjectIdLookup({});
-//           return;
-//         }
-
-//         const token = localStorage.getItem("jwtToken");
-//         const headers = new Headers();
-//         headers.append("Authorization", `Bearer ${token}`);
-
-//         const response = await fetch(
-//           `${apiUrl}/api/get-subject/${selectedClass}`,
-//           {
-//             headers,
-//           }
-//         );
-
-//         if (!response.ok) {
-//           throw new Error("Failed to fetch subjects");
-//         }
-
-//         const data = await response.json();
-
-//         setSubjectData(data);
-
-//         // Create a subjectId lookup
-//         const lookup = {};
-//         data.forEach((subject) => {
-//           lookup[subject.name] = subject._id;
-//         });
-//         setSubjectIdLookup(lookup);
-//       } catch (error) {
-//         console.error("Error fetching subjects:", error);
-//       }
-//     };
-
-//     // Call the fetchSubjectData function
-//     fetchSubjectData();
-//   }, [selectedClass]);
-//   // Include all dependencies used inside the useEffect
-
-//   // const handleClassChange = (event) => {
-//   //   const newSelectedClass = event.target.value;
-//   //   setSelectedClass(newSelectedClass);
-//   //   setSelectedSubject("");
-//   // };
-//   const handleClassChange = (event) => {
-//     const newSelectedClass = event.target.value;
-//     setSelectedClass(newSelectedClass);
-//     setSelectedSubject("");
-//     setSelectedExam("");
-//   };
-
-//   useEffect(() => {
-//     if (selectedClass) {
-//       const token = localStorage.getItem("jwtToken");
-//       const headers = new Headers();
-//       headers.append("Authorization", `Bearer ${token}`);
-
-//       fetch(`${apiUrl}/api/student/${selectedClass}`, {
-//         headers,
-//       })
-//         .then((response) => response.json())
-//         .then((data) => {
-//           setStudentData(data);
-//         })
-//         .catch((error) => {
-//           console.error("Error fetching subjects:", error);
-//         });
-//     } else {
-//       setStudentData([]);
-//     }
-//   }, [selectedClass, selectedStudentId]); // Ensure selectedStudentId is included in the dependency array
-
-//   const handleExamChange = (event) => {
-//     const selectedExamId = event.target.value;
-//     setSelectedExam(selectedExamId);
-//   };
-
-//   const getExamNameById = (examId) => {
-//     const selectedExam = examData.find((item) => item._id === examId);
-//     return selectedExam ? selectedExam.name : "";
-//   };
-
-//   const getSubjectById = (subjectId) => {
-//     const selectedSubject = subjectData.find((item) => item._id === subjectId);
-//     return selectedSubject ? selectedSubject.name : "";
-//   };
-
-//   const handleSubjectChange = (event) => {
-//     setSelectedSubject(event.target.value);
-//   };
-
-//   const handleSaveChanges = async () => {
-//     try {
-//       const marks = studentData.map((student) => {
-//         const { studentId, testscore = 0, examscore = 0 } = student;
-//         const marksObtained = testscore + examscore;
-
-//         return {
-//           studentId,
-//           subjectId: subjectIdLookup[selectedSubject],
-//           testscore,
-//           examscore,
-//           marksObtained,
-//         };
-//       });
-
-//       console.log("Updated Marks:", marks);
-
-//       const token = localStorage.getItem("jwtToken");
-//       const headers = new Headers();
-//       headers.append("Authorization", `Bearer ${token}`);
-
-//       // Check if there are existing marks by verifying the examId and subjectId
-//       if (selectedExam && subjectIdLookup[selectedSubject]) {
-//         const responseCheckMarks = await fetch(
-//           `${apiUrl}/api/get-all-scores/${selectedExam}/${subjectIdLookup[selectedSubject]}`,
-//           {
-//             headers,
-//           }
-//         );
-
-//         console.log("Response from Check Marks:", responseCheckMarks);
-
-//         if (responseCheckMarks.ok) {
-//           const responseData = await responseCheckMarks.json();
-//           const existingMarks = responseData.scores || [];
-
-//           // Check if there are existing marks
-//           if (existingMarks.length > 0) {
-//             // Existing marks found, proceed with updating
-//             const responseUpdateMarks = await fetch(
-//               `${apiUrl}/api/update-all-marks`,
-//               {
-//                 method: "PUT",
-//                 headers: {
-//                   ...headers,
-//                   "Content-Type": "application/json",
-//                 },
-//                 body: JSON.stringify({
-//                   examId: selectedExam,
-//                   subjectId: subjectIdLookup[selectedSubject],
-//                   updates: marks,
-//                 }),
-//               }
-//             );
-
-//             console.log("Request Payload:", {
-//               examId: selectedExam,
-//               subjectId: subjectIdLookup[selectedSubject],
-//               updates: marks,
-//             });
-
-//             console.log("Response from Update Marks:", responseUpdateMarks);
-
-//             if (!responseUpdateMarks.ok) {
-//               const errorMessage = await responseUpdateMarks.text();
-//               console.error(
-//                 `Failed to update marks. Server response: ${errorMessage}`
-//               );
-//               throw new Error("Failed to update marks");
-//             } else {
-//               // Notify success using toast
-//               toast.success("Marks updated successfully!");
-//             }
-//           } else {
-//             // No existing marks found, proceed to create new marks
-//             const responseSaveMarks = await fetch(`${apiUrl}/api/save-marks`, {
-//               method: "POST",
-//               headers: {
-//                 ...headers,
-//                 "Content-Type": "application/json",
-//               },
-//               body: JSON.stringify({
-//                 examId: selectedExam,
-//                 subjectId: subjectIdLookup[selectedSubject],
-//                 updates: marks,
-//               }),
-//             });
-
-//             console.log("Response from Save Marks:", responseSaveMarks);
-
-//             if (!responseSaveMarks.ok) {
-//               const errorMessage = await responseSaveMarks.text();
-
-//               console.error(
-//                 `Failed to save marks. Server response: ${errorMessage}`
-//               );
-//               throw new Error("Failed to save marks");
-//             } else {
-//               // Notify success using toast
-//               toast.success("Marks saved successfully!");
-//             }
-//           }
-//         } else {
-//           // Handle other response statuses
-//           // ...
-//         }
-//       }
-//       // ... (remaining code)
-//     } catch (error) {
-//       console.error("Error saving marks:", error);
-//       // ... (error handling)
-//     }
-//   };
-
-//   const handleScoreChange = (index, scoreType, value) => {
-//     // Assuming studentData is an array
-//     const updatedStudents = [...studentData];
-
-//     // Update the corresponding score
-//     if (scoreType === "testscore") {
-//       updatedStudents[index].testscore = parseInt(value, 10) || 0;
-//     } else if (scoreType === "examscore") {
-//       updatedStudents[index].examscore = parseInt(value, 10) || 0;
-//     }
-
-//     // Update marksObtained by adding test score and exam score
-//     updatedStudents[index].marksObtained =
-//       (updatedStudents[index].testscore || 0) +
-//       (updatedStudents[index].examscore || 0);
-
-//     // Update state with the modified students
-//     setStudentData(updatedStudents);
-//   };
-
-//   return (
-//     <div>
-//       <Container>
-//         <ValidatorForm onError={() => null}>
-//           <Box className="breadcrumb">
-//             <Breadcrumb routeSegments={[{ name: "Manage Exam Mark" }]} />
-//           </Box>
-//           <Grid container spacing={6}>
-//             <Grid item xs={4}>
-//               <TextField
-//                 select
-//                 label="Select a class"
-//                 variant="outlined"
-//                 value={selectedClass}
-//                 onChange={handleClassChange}
-//               >
-//                 {classData &&
-//                   classData.map((item) => (
-//                     <MenuItem key={item.id} value={item.name}>
-//                       {item.name}
-//                     </MenuItem>
-//                   ))}
-//               </TextField>
-//             </Grid>
-//             <Grid item xs={4}>
-//               <TextField
-//                 select
-//                 label="Select the Student"
-//                 variant="outlined"
-//                 value={selectedName}
-//                 onChange={handleStudentChange}
-//               >
-//                 {studentData.map((student) => (
-//                   <MenuItem key={student.id} value={student.studentName}>
-//                     {student.studentName}
-//                   </MenuItem>
-//                 ))}
-//               </TextField>
-//             </Grid>
-
-//             <Grid item xs={4}>
-//               <TextField
-//                 select
-//                 label="Select the subject"
-//                 variant="outlined"
-//                 value={selectedSubject}
-//                 onChange={handleSubjectChange}
-//               >
-//                 {subjectData &&
-//                   subjectData.map((item) => (
-//                     <MenuItem key={item.id} value={item.name}>
-//                       {item.name}
-//                     </MenuItem>
-//                   ))}
-//               </TextField>
-//             </Grid>
-//             <Grid item xs={4}>
-//               <Button
-//                 color="primary"
-//                 variant="contained"
-//                 type="submit"
-//                 onClick={handleManageMarkClick}
-//               >
-//                 View Answer
-//               </Button>
-//             </Grid>
-//           </Grid>
-
-//           {theoryAnswer && (
-//             <div>
-//               <h2>Student Theory Answer</h2>
-//               {/* Render student answer and any marking tools */}
-//               <p>Answer: {theoryAnswer.answers}</p>
-//               {/* Add your marking tools or additional information here */}
-//             </div>
-//           )}
-//           <>
-//             <div className="col-sm-4">
-//               <div className="tile-stats tile-gray">
-//                 <div className="icon">
-//                   <i className="entypo-chart-bar"></i>
-//                 </div>
-//                 <h3 style={{ color: "#696969" }}>Awarded Mark Summary</h3>
-//                 <h3 style={{ color: "#696969" }}>
-//                   Marks For: {getExamNameById(selectedExam)}
-//                 </h3>
-
-//                 <h4 style={{ color: "#696969" }}>Class: {selectedClass}</h4>
-//                 <h4 style={{ color: "#696969" }}>
-//                   Subject: {getSubjectById(subjectIdLookup[selectedSubject])}
-//                 </h4>
-//               </div>
-//             </div>
-//             <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
-//               <div class="table-responsive full-data">
-//                 <table
-//                   class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
-//                   id="example-student"
-//                 >
-//                   <thead>
-//                     <tr>
-//                       <th>Question Number</th>
-//                       <th>A</th>
-//                       <th>B</th>
-//                       <th>C</th>
-//                       <th>D</th>
-//                       <th>Total</th>
-//                     </tr>
-//                   </thead>
-//                   <tbody>
-//                     <tr>
-//                       <td>12</td>
-
-//                       {/*}  <td id={`subjectId_${index}`} style={{ display: "none" }}>
-// {subjectIdLookup[student.subjectName]}
-// </td>*/}
-//                       <td>23</td>
-
-//                       <td>32</td>
-//                       <td>32</td>
-//                       {/* Fix the nesting issue for marksObtained */}
-//                       <td>32</td>
-//                       {/*} <td>
-// <TextField
-// name={`comment_${index}`}
-// id={`comment_${index}`}
-// value={student.comment || ""}
-// onChange={(e) =>
-//   handleScoreChange(index, "comment", e.target.value)
-// }
-// />
-// </td>*/}
-//                     </tr>
-//                   </tbody>
-//                 </table>
-//               </div>
-//             </div>
-//             <Button
-//               color="primary"
-//               variant="contained"
-//               type="button"
-//               onClick={handleSaveChanges}
-//             >
-//               Save Changes
-//             </Button>
-//           </>
-//         </ValidatorForm>
-//         <ToastContainer />
-//       </Container>
-//     </div>
-//   );
-// };
-
-// export default OnScreen;
 import React, { useState, useEffect, useRef } from "react";
 import { Container, Grid, TextField, MenuItem, Button } from "@mui/material";
 import { ValidatorForm } from "react-material-ui-form-validator";
@@ -700,11 +32,19 @@ const OnScreen = () => {
   const [ctx, setCtx] = useState(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPoint, setStartPoint] = useState({ x: 0, y: 0 });
-
+  const [questionNumber, setQuestionNumber] = useState("");
+  const [outOfScore, setOutOfScore] = useState("");
+  const [scoreGiven, setScoreGiven] = useState("");
   const [subjectData, setSubjectData] = useState([]);
   const [studentData, setStudentData] = useState([]);
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
+  const [studentTheoryScores, setStudentTheoryScores] = useState([]);
+
+  const [examId, setExamId] = useState(""); // Define and initialize examId state variable
+  const [totalOutOfScore, setTotalOutOfScore] = useState(0);
+  const [totalScoreGiven, setTotalScoreGiven] = useState(0);
+
   const [selectedName, setSelectedName] = useState("");
   const [selectedStudentId, setSelectedStudentId] = useState("");
   const [currentTool, setCurrentTool] = useState("");
@@ -724,9 +64,23 @@ const OnScreen = () => {
 
   const [theoryAnswer, setTheoryAnswer] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL.trim();
+  // const handleStudentChange = (event) => {
+  //   const selectedStudent = event.target.value;
+  //   setSelectedName(selectedStudent);
+  // };
+
   const handleStudentChange = (event) => {
-    const selectedStudent = event.target.value;
-    setSelectedName(selectedStudent);
+    const selectedStudentName = event.target.value;
+    setSelectedName(selectedStudentName);
+
+    // Find the selected student's ID from studentData
+    const selectedStudent = studentData.find(
+      (student) => student.studentName === selectedStudentName
+    );
+
+    if (selectedStudent) {
+      setSelectedStudentId(selectedStudent.id); // Assuming student ID is stored in 'id' property
+    }
   };
 
   useEffect(() => {
@@ -790,27 +144,27 @@ const OnScreen = () => {
   //   }
   // };
   const [questionData, setQuestionData] = useState([
-    { question: "1", originalMark: "", scoreGiven: "" },
-    { question: "2", originalMark: "", scoreGiven: "" },
-    { question: "3", originalMark: "", scoreGiven: "" },
-    { question: "4", originalMark: "", scoreGiven: "" },
-    { question: "5", originalMark: "", scoreGiven: "" },
-    { question: "6", originalMark: "", scoreGiven: "" },
-    { question: "7", originalMark: "", scoreGiven: "" },
-    { question: "8", originalMark: "", scoreGiven: "" },
-    { question: "9", originalMark: "", scoreGiven: "" },
-    { question: "10", originalMark: "", scoreGiven: "" },
+    { question: "", originalMark: "", scoreGiven: "" },
+    { question: "", originalMark: "", scoreGiven: "" },
+    { question: "", originalMark: "", scoreGiven: "" },
+    { question: "", originalMark: "", scoreGiven: "" },
+    { question: "", originalMark: "", scoreGiven: "" },
+    { question: "", originalMark: "", scoreGiven: "" },
+    { question: "", originalMark: "", scoreGiven: "" },
+    { question: "", originalMark: "", scoreGiven: "" },
+    { question: "", originalMark: "", scoreGiven: "" },
+    { question: "", originalMark: "", scoreGiven: "" },
     // Add more question data as needed
   ]);
 
-  const totalOriginalScore = questionData.reduce(
-    (acc, curr) => acc + parseInt(curr.originalMark),
-    0
-  );
-  const totalScoreGiven = questionData.reduce(
-    (acc, curr) => acc + parseInt(curr.scoreGiven),
-    0
-  );
+  // const totalOriginalScore = questionData.reduce(
+  //   (acc, curr) => acc + parseInt(curr.originalMark),
+  //   0
+  // );
+  // const totalScoreGiven = questionData.reduce(
+  //   (acc, curr) => acc + parseInt(curr.scoreGiven),
+  //   0
+  // );
 
   const handleScoreChange = (index, value) => {
     const updatedQuestionData = [...questionData];
@@ -849,6 +203,31 @@ const OnScreen = () => {
         });
     }
   }, [theoryAnswer]);
+  // const handleManageMarkClick = async () => {
+  //   try {
+  //     if (!selectedClass || !selectedSubject || !selectedName) {
+  //       throw new Error("Please select class, subject, and student");
+  //     }
+
+  //     // Fetch theory answer from the backend
+  //     const response = await fetch(
+  //       `${apiUrl}/api/get-theory-answer-by-name/className/${selectedClass}/student/${encodeURIComponent(
+  //         selectedName
+  //       )}/subject/${selectedSubject}`
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch theory answer");
+  //     }
+
+  //     const data = await response.json();
+  //     setTheoryAnswer(data.theoryAnswer);
+  //   } catch (error) {
+  //     console.error("Error fetching theory answer:", error);
+  //     // Handle error
+  //   }
+  // };
+
   const handleManageMarkClick = async () => {
     try {
       if (!selectedClass || !selectedSubject || !selectedName) {
@@ -856,23 +235,39 @@ const OnScreen = () => {
       }
 
       // Fetch theory answer from the backend
-      const response = await fetch(
+      const theoryAnswerResponse = await fetch(
         `${apiUrl}/api/get-theory-answer-by-name/className/${selectedClass}/student/${encodeURIComponent(
           selectedName
         )}/subject/${selectedSubject}`
       );
 
-      if (!response.ok) {
+      if (!theoryAnswerResponse.ok) {
         throw new Error("Failed to fetch theory answer");
       }
 
-      const data = await response.json();
-      setTheoryAnswer(data.theoryAnswer);
+      const theoryAnswerData = await theoryAnswerResponse.json();
+      setTheoryAnswer(theoryAnswerData.theoryAnswer);
+
+      // Fetch student theory scores from the backend
+      // const scoresResponse = await fetch(
+      //   `${apiUrl}/api/student-theory-scores/${selectedStudentId}`
+      // );
+      const scoresResponse = await fetch(
+        `${apiUrl}/api/student-theory-scores/${selectedClass}/${selectedName}/${selectedSubject}`
+      );
+
+      if (!scoresResponse.ok) {
+        throw new Error("Failed to fetch student theory scores");
+      }
+
+      const scoresData = await scoresResponse.json();
+      setStudentTheoryScores(scoresData.studentTheoryScores);
     } catch (error) {
-      console.error("Error fetching theory answer:", error);
+      console.error("Error fetching data:", error);
       // Handle error
     }
   };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
@@ -911,6 +306,224 @@ const OnScreen = () => {
   //     setCorrectSymbolPosition({ x, y });
   //   }
   // };
+  // Define fetchData function to fetch updated data
+  // const fetchData = async (studentId) => {
+  //   try {
+  //     const token = localStorage.getItem("jwtToken");
+  //     const response = await fetch(
+  //       `http://localhost:5000/api/student-theory-scores/${studentId}`, // Assuming you have access to studentId
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch data");
+  //     }
+
+  //     const data = await response.json();
+  //     return data.studentTheoryScores;
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //     // Handle error
+  //     return [];
+  //   }
+  // };
+  // useEffect(() => {
+  //   // Define a function to fetch student theory scores
+  //   const fetchStudentTheoryScores = async () => {
+  //     try {
+  //       const token = localStorage.getItem("jwtToken");
+  //       const response = await fetch(
+  //         `http://localhost:5000/api/student-theory-scores/${selectedStudentId}`, // Assuming you have selectedStudentId state variable
+  //         {
+  //           method: "GET",
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
+
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch student theory scores");
+  //       }
+
+  //       const data = await response.json();
+
+  //           // Update questionData state with fetched data
+  //     const updatedQuestionData = data.studentTheoryScores.map((score) => ({
+  //       question: score.questionNumber,
+  //       originalMark: score.outOfScore, // Assuming you want to store original mark as well
+  //       scoreGiven: score.scoreGiven,
+  //     }));
+  //     setQuestionData(updatedQuestionData);
+  //       setStudentTheoryScores(data.studentTheoryScores);
+  //     } catch (error) {
+  //       console.error("Error fetching student theory scores:", error);
+  //       // Handle error
+  //     }
+  //   };
+
+  //   // Fetch student theory scores when selectedStudentId changes
+  //   if (selectedStudentId) {
+  //     fetchStudentTheoryScores();
+  //   }
+  // }, [selectedStudentId]);
+  useEffect(() => {
+    // Define a function to fetch student theory scores
+    const fetchStudentTheoryScores = async () => {
+      try {
+        const token = localStorage.getItem("jwtToken");
+        const response = await fetch(
+          `http://localhost:5000/api/student-theory-scores/${selectedStudentId}`, // Assuming you have selectedStudentId state variable
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch student theory scores");
+        }
+
+        const data = await response.json();
+
+        // Update questionData state with fetched data
+        const updatedQuestionData = data.studentTheoryScores.map((score) => ({
+          question: score.questionNumber,
+          outOfScore: score.outOfScore, // Corrected property name
+          scoreGiven: score.scoreGiven,
+        }));
+        setQuestionData(updatedQuestionData);
+        setStudentTheoryScores(data.studentTheoryScores);
+      } catch (error) {
+        console.error("Error fetching student theory scores:", error);
+        // Handle error
+      }
+    };
+
+    // Fetch student theory scores when selectedStudentId changes
+    if (selectedStudentId) {
+      fetchStudentTheoryScores();
+    }
+  }, [selectedStudentId]);
+
+  useEffect(() => {
+    // Populate input fields with fetched data when studentTheoryScores change
+    if (studentTheoryScores.length > 0) {
+      const updatedQuestionData = studentTheoryScores.map((score) => ({
+        question: score.questionNumber,
+        outOfScore: score.outOfScore,
+        scoreGiven: score.scoreGiven,
+      }));
+      setQuestionData(updatedQuestionData);
+    }
+  }, [studentTheoryScores]);
+
+  const handleSaveScore = async (index) => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      const question = questionData[index];
+
+      const response = await fetch(
+        "http://localhost:5000/api/save-student-theory-score",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            className: selectedClass,
+            studentName: selectedName,
+            subjectName: selectedSubject,
+            questionNumber: question.question,
+            outOfScore: question.outOfScore,
+            scoreGiven: question.scoreGiven,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to save score");
+      }
+
+      // Clear input fields after successful save
+      // const updatedQuestionData = [...questionData];
+      // updatedQuestionData[index].outOfScore = "";
+      // updatedQuestionData[index].scoreGiven = "";
+      // setQuestionData(updatedQuestionData);
+
+      // const updatedData = await fetchData(); // Implement fetchData function to fetch updated data
+      // setQuestionData(updatedData);
+      // Refresh data or update UI as needed
+    } catch (error) {
+      console.error("Error saving score:", error);
+      // Handle error
+    }
+  };
+
+  const saveTotalScores = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      const studentId = ""; // Set the studentId here, depending on your application logic
+
+      const response = await fetch(
+        "http://localhost:5000/api/save-total-scores",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            studentId,
+            totalOutOfScore,
+            totalScoreGiven,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to save total scores");
+      }
+
+      // Handle success
+    } catch (error) {
+      console.error("Error saving total scores:", error);
+      // Handle error
+    }
+  };
+
+  useEffect(() => {
+    // Fetch total out of score and total score given from the backend
+    const fetchTotalScores = async () => {
+      try {
+        const studentId = ""; // Set the studentId here, depending on your application logic
+        const response = await fetch(
+          `http://localhost:5000/api/calculate-total-score/${studentId}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch total scores");
+        }
+
+        const data = await response.json();
+        setTotalOutOfScore(data.totalOutOfScore);
+        setTotalScoreGiven(data.totalScoreGiven);
+      } catch (error) {
+        console.error("Error fetching total scores:", error);
+        // Handle error
+      }
+    };
+
+    fetchTotalScores();
+  }, []);
 
   const handleMouseMove = (event) => {
     if (!isDrawing || !ctx) return;
@@ -1084,6 +697,51 @@ const OnScreen = () => {
       }
     }
   }, [ctx, theoryAnswer, questionDetails]);
+  // const handleScoreChange = (index, field, value) => {
+  //   const updatedQuestionData = [...questionData];
+  //   updatedQuestionData[index][field] = value;
+  //   setQuestionData(updatedQuestionData);
+  // };
+
+  // const [studentId, setStudentId] = useState(""); // Define and initialize studentId state variable
+
+  // useEffect(() => {
+  //   // Assuming you have the student ID available in your component state
+  //   if (studentId) {
+  //     fetchTotalScore(studentId);
+  //   }
+  // }, [studentId]); // Fetch total score when the studentId changes
+
+  // const fetchTotalScore = async (studentId) => {
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:5000/api/calculate-total-score/${studentId}`
+  //     );
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch total score");
+  //     }
+  //     const data = await response.json();
+  //     setTotalOutOfScore(data.totalOutOfScore);
+  //     setTotalScoreGiven(data.totalScoreGiven);
+  //   } catch (error) {
+  //     console.error("Error fetching total score:", error);
+  //   }
+  // };
+  useEffect(() => {
+    // Calculate total out of score
+    const totalOutOf = questionData.reduce(
+      (total, question) => total + parseFloat(question.outOfScore || 0),
+      0
+    );
+    setTotalOutOfScore(totalOutOf);
+
+    // Calculate total score given
+    const totalScore = questionData.reduce(
+      (total, question) => total + parseFloat(question.scoreGiven || 0),
+      0
+    );
+    setTotalScoreGiven(totalScore);
+  }, [questionData]);
 
   return (
     <div
@@ -1442,111 +1100,111 @@ const OnScreen = () => {
             <div>
               <div
                 style={{
-                  flex: "30%",
-                  borderLeft: "1px solid #ccc",
-                  padding: "20px",
+                  display: "flex",
+                  flexDirection: "column",
+                  marginRight: "100px",
                 }}
               >
-                {/* Grading and score */}
-
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <div
-                    style={{
-                      backgroundColor: "#042954",
-                      color: "white",
-                      padding: "10px",
-                      fontSize: "20px",
-                      borderRight: "3px solid #fff",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        width: "30%",
-                        marginRight: "10px",
-                        borderRight: "3px solid #fff",
-                      }}
-                    >
-                      Question
-                    </span>
-                    <span
-                      style={{
-                        width: "30%",
-                        marginRight: "10px",
-                        borderRight: "3px solid #fff",
-                      }}
-                    >
-                      Out Of
-                    </span>
-                    <span
-                      style={{ width: "30%", borderRight: "3px solid #fff" }}
-                    >
-                      Score
-                    </span>
-                  </div>
-                  {questionData.map((item, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        backgroundColor: "#ffffff",
-                        border: "1px solid #ccc",
-                        borderRadius: "5px",
-                        padding: "10px",
-                        marginBottom: "10px",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      <button
-                        style={{
-                          width: "30%",
-                          marginRight: "10px",
-                          padding: "5px 10px",
-                          border: "none",
-                          backgroundColor: "#f0f0f0",
-                          fontSize: "16px",
-                          fontWeight: "bold",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {item.question}
-                      </button>
-                      <input
-                        type="text"
-                        value={` ${item.originalMark}`}
-                        readOnly
-                        style={{ width: "30%", marginRight: "10px" }}
-                      />
-                      <input
-                        type="number"
-                        value={item.scoreGiven}
-                        onChange={(e) =>
-                          handleScoreChange(index, e.target.value)
-                        }
-                        style={{ width: "30%", marginRight: "10px" }}
-                      />
-                    </div>
-                  ))}
-                </div>
                 <div
                   style={{
                     backgroundColor: "#042954",
-                    padding: "3px",
-                    borderRadius: "10px",
+                    color: "white",
+                    padding: "10px",
+                    fontSize: "20px",
+                    marginBottom: "10px",
+                    display: "flex",
+                    justifyContent: "space-between",
                   }}
                 >
-                  <p
-                    style={{
-                      color: "white",
-                      fontSize: "18px",
-                      textAlign: "center",
-                      fontWeight: "600",
-                    }}
-                  >
-                    Calculate Total Score: {totalOriginalScore}/
-                    {totalScoreGiven}{" "}
-                  </p>
+                  <span style={{ width: "30%" }}>Question</span>
+                  <span style={{ width: "30%" }}>Out Of</span>
+                  <span style={{ width: "30%" }}>Score</span>
                 </div>
+                {questionData.map((question, index) => (
+                  <div
+                    key={index}
+                    style={{ display: "flex", marginBottom: "10px" }}
+                  >
+                    <input
+                      type="text"
+                      placeholder="Question Number"
+                      value={question.question}
+                      onChange={(e) => {
+                        const newQuestionNumber = e.target.value;
+                        const updatedQuestionData = [...questionData];
+                        const existingQuestionNumbers = updatedQuestionData.map(
+                          (question) => question.question
+                        );
+
+                        // Check if the entered question number already exists
+                        if (
+                          existingQuestionNumbers.includes(newQuestionNumber)
+                        ) {
+                          // Show alert if the question number already exists
+                          alert(
+                            "Question number already exists. Please enter a unique question number."
+                          );
+                        } else {
+                          // Update the question number if it is unique
+                          updatedQuestionData[index].question =
+                            newQuestionNumber;
+                          setQuestionData(updatedQuestionData);
+                        }
+                      }}
+                    />
+
+                    <input
+                      type="number"
+                      placeholder=""
+                      value={question.outOfScore}
+                      onChange={(e) => {
+                        const updatedQuestionData = [...questionData];
+                        updatedQuestionData[index].outOfScore = e.target.value;
+                        setQuestionData(updatedQuestionData);
+                      }}
+                    />
+                    <input
+                      type="number"
+                      placeholder=""
+                      value={question.scoreGiven}
+                      onChange={(e) => {
+                        const updatedQuestionData = [...questionData];
+                        updatedQuestionData[index].scoreGiven = e.target.value;
+                        setQuestionData(updatedQuestionData);
+                      }}
+                    />
+                    <button
+                      onClick={() => handleSaveScore(index)}
+                      style={{
+                        backgroundColor: "#042954",
+                        width: "100px",
+                        color: "#fff",
+                        padding: "13px",
+                      }}
+                    >
+                      Save Score
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <div
+                style={{
+                  backgroundColor: "#042954",
+                  padding: "3px",
+                  borderRadius: "10px",
+                }}
+              >
+                <p
+                  style={{
+                    color: "white",
+                    fontSize: "18px",
+                    textAlign: "center",
+                    fontWeight: "600",
+                  }}
+                >
+                  Calculate Total Score: {totalScoreGiven}/{totalOutOfScore}
+                </p>
+                <button onClick={saveTotalScores}>Save Total Scores</button>
               </div>
             </div>
           </div>

@@ -86,7 +86,7 @@ const Form = () => {
     };
     try {
       await axios.post(
-        "https://hlhs-98d6f8c9ac3a.herokuapp.com/api/userrs/register",
+        "https://hlhs1-ef7e91975268.herokuapp.com/api/userrs/register",
         formData
       );
 

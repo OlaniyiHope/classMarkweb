@@ -38,10 +38,13 @@ export default function FormDialog3() {
       phone,
     };
     try {
-      await axios.post(`https://hlhs-3ff6501095d6.herokuapp.com/api/register`, {
-        ...formData,
-        role: "teacher",
-      });
+      await axios.post(
+        `https://hlhs1-ef7e91975268.herokuapp.com/api/register`,
+        {
+          ...formData,
+          role: "teacher",
+        }
+      );
 
       // navigate("/dashboard/admin");
       toast.success("User successfully created");

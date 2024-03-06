@@ -19,12 +19,9 @@ const useFetch = (url) => {
           Authorization: `Bearer ${token}`,
         };
 
-        const res = await axios.get(
-          `https://hlhs-3ff6501095d6.herokuapp.com/api${url}`,
-          {
-            headers, // Include the headers in the request
-          }
-        );
+        const res = await axios.get(`${apiUrl}/api${url}`, {
+          headers, // Include the headers in the request
+        });
 
         setData(res.data);
       } catch (err) {
@@ -46,12 +43,9 @@ const useFetch = (url) => {
         Authorization: `Bearer ${token}`,
       };
 
-      const res = await axios.get(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api${url}`,
-        {
-          headers, // Include the headers in the request
-        }
-      );
+      const res = await axios.get(`${apiUrl}/api${url}`, {
+        headers, // Include the headers in the request
+      });
 
       setData(res.data);
     } catch (err) {

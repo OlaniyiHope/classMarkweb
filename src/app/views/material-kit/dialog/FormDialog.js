@@ -47,7 +47,7 @@ export default function FormDialog() {
       address,
     };
     try {
-      await axios.post(`https://hlhs-3ff6501095d6.herokuapp.com/api/register`, {
+      await axios.post(`${apiUrl}/api/register`, {
         ...formData,
         role: "admin",
       });
