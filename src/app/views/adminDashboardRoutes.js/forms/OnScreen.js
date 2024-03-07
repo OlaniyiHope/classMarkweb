@@ -654,49 +654,66 @@ const OnScreen = () => {
 
   // UseEffect hook
   useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+
     if (ctx) {
       // Clear the canvas before drawing
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      // Draw text
+
       if (theoryAnswer) {
         let yPosition = 20; // Initial y-position
-        const lineSpacing = 30; // Adjust line spacing as needed
+        const lineSpacing = 10; // Adjust line spacing as needed
+        let currentPage = 1;
+        let remainingContent = [];
 
         Object.entries(theoryAnswer.answers).forEach(([questionId, answer]) => {
-          const questionTitle =
-            questionDetails.find((detail) => detail.id === questionId)?.title ||
-            "N/A";
+          // Retrieve question title from questionDetails array
+          const questionDetail = questionDetails.find(
+            (detail) => detail.id === questionId
+          );
+          const questionTitle = questionDetail ? questionDetail.title : "N/A";
+
           const questionTitleLines = wrapText(
             questionTitle,
-            ctx.canvas.width - 40,
+            ctx.canvas.width - 30,
             ctx
           );
-          const answerLines = wrapText(answer, ctx.canvas.width - 40, ctx);
+          const answerLines = wrapText(answer, ctx.canvas.width - 30, ctx);
 
-          // Render question title
-          ctx.fillText("Question Title:", 20, yPosition);
-          yPosition += lineSpacing; // Increment y-position
+          // Calculate total lines required for question and answer
+          const totalLines =
+            questionTitleLines.length + answerLines.length + 10; // 4 for title and answer headings
 
-          questionTitleLines.forEach((line) => {
-            ctx.fillText(line, 40, yPosition);
-            yPosition += lineSpacing; // Increment y-position for each line
-          });
+          // Render question and answer if it fits on the current canvas
+          if (yPosition + totalLines * lineSpacing < ctx.canvas.height) {
+            // Render question title
+            questionTitleLines.forEach((line) => {
+              ctx.fillText(line, 20, yPosition);
+              yPosition += lineSpacing; // Increment y-position for each line
+            });
 
-          // Render answer
-          ctx.fillText("Answer:", 20, yPosition);
-          yPosition += lineSpacing; // Increment y-position
+            // Render answer
+            answerLines.forEach((line) => {
+              ctx.fillText(line, 20, yPosition);
+              yPosition += lineSpacing; // Increment y-position for each line
+            });
 
-          answerLines.forEach((line) => {
-            ctx.fillText(line, 40, yPosition);
-            yPosition += lineSpacing; // Increment y-position for each line
-          });
-
-          // Add extra spacing between questions
-          yPosition += lineSpacing;
+            // Add extra spacing between questions
+            yPosition += lineSpacing;
+          } else {
+            // Move remaining content to another canvas (if needed)
+            remainingContent.push({ questionTitleLines, answerLines });
+          }
         });
+
+        if (remainingContent.length > 0) {
+          // Handle remaining content here (if needed)
+        }
       }
     }
-  }, [ctx, theoryAnswer, questionDetails]);
+  }, [theoryAnswer, questionDetails]);
+
   // const handleScoreChange = (index, field, value) => {
   //   const updatedQuestionData = [...questionData];
   //   updatedQuestionData[index][field] = value;
