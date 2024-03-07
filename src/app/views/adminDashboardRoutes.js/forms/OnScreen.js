@@ -292,7 +292,14 @@ const OnScreen = () => {
     //   setCorrectColor(""); // Reset color for other tools
     // }
   };
-
+  const insertNewRow = () => {
+    const newQuestion = {
+      question: "",
+      outOfScore: "",
+      scoreGiven: "",
+    };
+    setQuestionData([...questionData, newQuestion]);
+  };
   // const handleMouseDown = (event) => {
   //   const rect = canvasRef.current.getBoundingClientRect();
   //   const x = event.clientX - rect.left;
@@ -1203,6 +1210,7 @@ const OnScreen = () => {
                     </button>
                   </div>
                 ))}
+                <button onClick={insertNewRow}>Insert New Row</button>
               </div>
               <div
                 style={{
