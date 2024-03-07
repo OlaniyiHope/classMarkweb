@@ -1210,7 +1210,17 @@ const OnScreen = () => {
                     </button>
                   </div>
                 ))}
-                <button onClick={insertNewRow}>Insert New Row</button>
+                <button
+                  onClick={insertNewRow}
+                  style={{
+                    backgroundColor: "#042954",
+                    marginBottom: "20px",
+                    color: "#fff",
+                    padding: "13px",
+                  }}
+                >
+                  Insert New Row
+                </button>
               </div>
               <div
                 style={{
