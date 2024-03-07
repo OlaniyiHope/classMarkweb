@@ -1222,25 +1222,28 @@ const OnScreen = () => {
                   Insert New Row
                 </button>
               </div>
-              <div
+              <button
+                onClick={insertNewRow}
                 style={{
                   backgroundColor: "#042954",
-                  padding: "3px",
-                  borderRadius: "10px",
+                  marginBottom: "20px",
+                  color: "#fff",
+                  padding: "13px",
                 }}
               >
-                <p
-                  style={{
-                    color: "white",
-                    fontSize: "18px",
-                    textAlign: "center",
-                    fontWeight: "600",
-                  }}
-                >
-                  Calculate Total Score: {totalScoreGiven}/{totalOutOfScore}
-                </p>
-                <button onClick={saveTotalScores}>Save Total Scores</button>
-              </div>
+                Calculate Total Score: {totalScoreGiven}/{totalOutOfScore}
+              </button>
+              <button
+                onClick={saveTotalScores}
+                style={{
+                  backgroundColor: "#042954",
+                  marginBottom: "20px",
+                  color: "#fff",
+                  padding: "13px",
+                }}
+              >
+                Save Total Score:
+              </button>
             </div>
           </div>
           <ToastContainer />
