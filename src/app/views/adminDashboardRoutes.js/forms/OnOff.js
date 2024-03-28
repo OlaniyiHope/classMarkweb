@@ -19,8 +19,9 @@ import {
   Undo,
   Star,
 } from "@material-ui/icons";
+import axios from "axios";
 
-const OnScreen = () => {
+const OnOff = () => {
   // const [classData, setClassData] = useState([]);
   const {
     data: classData,
@@ -37,6 +38,7 @@ const OnScreen = () => {
   const [scoreGiven, setScoreGiven] = useState("");
   const [subjectData, setSubjectData] = useState([]);
   const [studentData, setStudentData] = useState([]);
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [studentTheoryScores, setStudentTheoryScores] = useState([]);
@@ -148,7 +150,12 @@ const OnScreen = () => {
     { question: "", originalMark: "", scoreGiven: "" },
     { question: "", originalMark: "", scoreGiven: "" },
     { question: "", originalMark: "", scoreGiven: "" },
-
+    { question: "", originalMark: "", scoreGiven: "" },
+    { question: "", originalMark: "", scoreGiven: "" },
+    { question: "", originalMark: "", scoreGiven: "" },
+    { question: "", originalMark: "", scoreGiven: "" },
+    { question: "", originalMark: "", scoreGiven: "" },
+    { question: "", originalMark: "", scoreGiven: "" },
     // Add more question data as needed
   ]);
 
@@ -198,6 +205,7 @@ const OnScreen = () => {
         });
     }
   }, [theoryAnswer]);
+
   // const handleManageMarkClick = async () => {
   //   try {
   //     if (!selectedClass || !selectedSubject || !selectedName) {
@@ -205,61 +213,88 @@ const OnScreen = () => {
   //     }
 
   //     // Fetch theory answer from the backend
-  //     const response = await fetch(
+  //     const theoryAnswerResponse = await fetch(
   //       `${apiUrl}/api/get-theory-answer-by-name/className/${selectedClass}/student/${encodeURIComponent(
   //         selectedName
   //       )}/subject/${selectedSubject}`
   //     );
 
-  //     if (!response.ok) {
+  //     if (!theoryAnswerResponse.ok) {
   //       throw new Error("Failed to fetch theory answer");
   //     }
 
-  //     const data = await response.json();
-  //     setTheoryAnswer(data.theoryAnswer);
+  //     const theoryAnswerData = await theoryAnswerResponse.json();
+  //     setTheoryAnswer(theoryAnswerData.theoryAnswer);
+
+  //     // Fetch student theory scores from the backend
+  //     // const scoresResponse = await fetch(
+  //     //   `${apiUrl}/api/student-theory-scores/${selectedStudentId}`
+  //     // );
+  //     const scoresResponse = await fetch(
+  //       `${apiUrl}/api/student-theory-scores/${selectedClass}/${selectedName}/${selectedSubject}`
+  //     );
+
+  //     if (!scoresResponse.ok) {
+  //       throw new Error("Failed to fetch student theory scores");
+  //     }
+
+  //     const scoresData = await scoresResponse.json();
+  //     setStudentTheoryScores(scoresData.studentTheoryScores);
   //   } catch (error) {
-  //     console.error("Error fetching theory answer:", error);
+  //     console.error("Error fetching data:", error);
   //     // Handle error
   //   }
   // };
 
-  const handleManageMarkClick = async () => {
+  const handleViewAnswerSheet = async () => {
     try {
-      if (!selectedClass || !selectedSubject || !selectedName) {
-        throw new Error("Please select class, subject, and student");
-      }
-
-      // Fetch theory answer from the backend
-      const theoryAnswerResponse = await fetch(
-        `${apiUrl}/api/get-theory-answer-by-name/className/${selectedClass}/student/${encodeURIComponent(
-          selectedName
-        )}/subject/${selectedSubject}`
+      const response = await fetch(
+        `http://localhost:5000/api/data/${selectedClass}/${selectedName}/${selectedSubject}`
       );
 
-      if (!theoryAnswerResponse.ok) {
-        throw new Error("Failed to fetch theory answer");
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch answer script: ${response.status} ${response.statusText}`
+        );
       }
 
-      const theoryAnswerData = await theoryAnswerResponse.json();
-      setTheoryAnswer(theoryAnswerData.theoryAnswer);
+      const data = await response.json();
 
-      // Fetch student theory scores from the backend
-      // const scoresResponse = await fetch(
-      //   `${apiUrl}/api/student-theory-scores/${selectedStudentId}`
-      // );
-      const scoresResponse = await fetch(
-        `${apiUrl}/api/student-theory-scores/${selectedClass}/${selectedName}/${selectedSubject}`
-      );
+      // Get the canvas context
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
 
-      if (!scoresResponse.ok) {
-        throw new Error("Failed to fetch student theory scores");
+      // Clear the canvas
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Check if data contains any answer script objects
+      if (data && data.length > 0) {
+        // Loop through each answer script object in the data array
+        data.forEach((script, index) => {
+          // Create a new image object for each answer script
+          const image = new Image();
+
+          // Set the image source to the URL of the answer script image
+          image.src = `https://edupros.s3.amazonaws.com/${script.answerScriptFiles[0]}`;
+
+          // Draw the image on the canvas once it's loaded
+          image.onload = () => {
+            // Calculate position to display the image
+            const x = 0; // Set X position as needed
+            const y = index * (canvas.height / data.length); // Adjust Y position based on index
+            const width = canvas.width; // Set width as canvas width
+            const height = canvas.height / data.length; // Divide canvas height by number of images
+
+            // Draw the image on the canvas
+            context.drawImage(image, x, y, width, height);
+          };
+        });
+      } else {
+        // If no answer scripts are found, display a message
+        console.log("No answer scripts found");
       }
-
-      const scoresData = await scoresResponse.json();
-      setStudentTheoryScores(scoresData.studentTheoryScores);
     } catch (error) {
-      console.error("Error fetching data:", error);
-      // Handle error
+      console.error("Error fetching answer scripts:", error.message);
     }
   };
 
@@ -582,58 +617,6 @@ const OnScreen = () => {
     }
   }, [ctx, currentTool, correctSymbolPosition]);
 
-  // useEffect(() => {
-  //   if (ctx) {
-  //     // Clear the canvas before drawing
-  //     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  //     // Draw text
-  //     if (theoryAnswer) {
-  //       Object.entries(theoryAnswer.answers).forEach(([questionId, answer]) => {
-  //         const questionTitle =
-  //           questionDetails.find((detail) => detail.id === questionId)?.title ||
-  //           "N/A";
-  //         ctx.fillStyle = "black";
-  //         ctx.font = "12px Arial";
-  //         ctx.fillText(`Question Title: ${questionTitle}`, 20, 20);
-  //         ctx.fillText(`Answer: ${answer}`, 20, 40);
-  //       });
-  //     }
-  //   }
-  // }, [ctx, theoryAnswer, questionDetails]);
-
-  // useEffect(() => {
-  //   if (ctx) {
-  //     // Clear the canvas before drawing
-  //     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  //     // Draw text
-  //     if (theoryAnswer) {
-  //       Object.entries(theoryAnswer.answers).forEach(([questionId, answer]) => {
-  //         const questionTitle =
-  //           questionDetails.find((detail) => detail.id === questionId)?.title ||
-  //           "N/A";
-  //         // ctx.fillStyle = "black";
-  //         ctx.font = "20px Arial";
-  //         ctx.fillText(`Question Title: ${questionTitle}`, 20, 20);
-  //         ctx.fillText(`Answer: ${answer}`, 20, 40);
-  //       });
-  //     }
-  //     // Draw correct symbol
-  //     if (currentTool === "correct") {
-  //       ctx.fillStyle = correctColor;
-  //       ctx.beginPath();
-  //       ctx.arc(
-  //         correctSymbolPosition.x,
-  //         correctSymbolPosition.y,
-  //         5,
-  //         0,
-  //         Math.PI * 2
-  //       );
-  //       ctx.fill();
-  //     }
-  //   }
-  // }, [ctx, theoryAnswer, questionDetails, correctSymbolPosition, correctColor]);
-
-  // Function to wrap text based on available width
   const wrapText = (text, maxWidth, ctx) => {
     const words = text.split(" ");
     const lines = [];
@@ -716,36 +699,6 @@ const OnScreen = () => {
     }
   }, [theoryAnswer, questionDetails]);
 
-  // const handleScoreChange = (index, field, value) => {
-  //   const updatedQuestionData = [...questionData];
-  //   updatedQuestionData[index][field] = value;
-  //   setQuestionData(updatedQuestionData);
-  // };
-
-  // const [studentId, setStudentId] = useState(""); // Define and initialize studentId state variable
-
-  // useEffect(() => {
-  //   // Assuming you have the student ID available in your component state
-  //   if (studentId) {
-  //     fetchTotalScore(studentId);
-  //   }
-  // }, [studentId]); // Fetch total score when the studentId changes
-
-  // const fetchTotalScore = async (studentId) => {
-  //   try {
-  //     const response = await fetch(
-  //       `http://localhost:5000/api/calculate-total-score/${studentId}`
-  //     );
-  //     if (!response.ok) {
-  //       throw new Error("Failed to fetch total score");
-  //     }
-  //     const data = await response.json();
-  //     setTotalOutOfScore(data.totalOutOfScore);
-  //     setTotalScoreGiven(data.totalScoreGiven);
-  //   } catch (error) {
-  //     console.error("Error fetching total score:", error);
-  //   }
-  // };
   useEffect(() => {
     // Calculate total out of score
     const totalOutOf = questionData.reduce(
@@ -761,6 +714,37 @@ const OnScreen = () => {
     );
     setTotalScoreGiven(totalScore);
   }, [questionData]);
+
+  const handleFileChange = (e) => {
+    setSelectedFiles([...selectedFiles, ...e.target.files]);
+  };
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append("className", selectedClass);
+    formData.append("studentName", selectedName);
+    formData.append("subject", selectedSubject);
+    selectedFiles.forEach((file) => {
+      formData.append("answerScriptFiles", file);
+    });
+
+    try {
+      // Make a POST request to your backend to upload the answer sheets
+      const response = await axios.post(
+        "http://localhost:5000/api/upload-and-mark-answer-scripts",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Response:", response.data);
+      // Handle success, e.g., show a success message to the user
+    } catch (error) {
+      console.error("Error:", error);
+      // Handle error, e.g., show an error message to the user
+    }
+  };
 
   return (
     <div
@@ -823,14 +807,30 @@ const OnScreen = () => {
                 ))}
               </TextField>
             </Grid>
+            <input
+              type="file"
+              multiple
+              onChange={handleFileChange}
+              style={{ padding: "10px" }}
+            />
             <Grid item xs={4}>
               <Button
                 color="primary"
                 variant="contained"
                 type="button"
-                onClick={handleManageMarkClick}
+                onClick={handleSubmit}
               >
-                View Answer
+                Submit Answer Sheet
+              </Button>
+            </Grid>
+            <Grid item xs={4}>
+              <Button
+                color="primary"
+                variant="contained"
+                type="button"
+                onClick={handleViewAnswerSheet}
+              >
+                View Answer Sheet
               </Button>
             </Grid>
           </Grid>
@@ -1248,4 +1248,4 @@ const OnScreen = () => {
   );
 };
 
-export default OnScreen;
+export default OnOff;

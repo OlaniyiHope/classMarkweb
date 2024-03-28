@@ -32,12 +32,11 @@ const FormDialog16 = ({ setGradesData }) => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const apiUrl = process.env.REACT_APP_API_URL;
+
   const handleSubmit = async () => {
     try {
-      const response = await axios.post(
-        "https://hlhs-679f1fd654ed.herokuapp.com/api/grade",
-        formData
-      );
+      const response = await axios.post(`${apiUrl}/api/grade`, formData);
       const newGrade = response.data;
       toast.success(`Grade ${newGrade.grade_name} created successfully`);
 

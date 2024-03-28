@@ -62,6 +62,8 @@ import Attendance from "./admin/Attendance";
 import Promotion from "./forms/Promotion";
 import PsyCat from "./forms/PsyCat";
 import OnScreen from "./forms/OnScreen";
+import Screen from "./forms/Screen";
+import OnOff from "./forms/OnOff";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -119,9 +121,21 @@ const adminDashboardRoutes = [
     auth: "admin",
   },
   {
-    path: "/dashboard/onscreen-marking",
+    path: "/dashboard/onscreen-marking-online",
 
     element: <OnScreen />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/onscreen-marking-offline",
+
+    element: <OnOff />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/onscreen-marking",
+
+    element: <Screen />,
     auth: "admin",
   },
   {
