@@ -7,6 +7,7 @@ import useAuth from "app/hooks/useAuth";
 
 const TermRepCont = () => {
   const { id } = useParams();
+  // const { examId, subjectId } = useParams(); // Get examId and subjectId from URL params
 
   return (
     <div>
