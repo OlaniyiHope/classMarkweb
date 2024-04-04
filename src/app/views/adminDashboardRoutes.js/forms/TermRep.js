@@ -72,6 +72,191 @@ const TermRep = ({ studentId }) => {
   const apiUrl = process.env.REACT_APP_API_URL.trim();
   // Inside useEffect after fetching student data
 
+  // const fetchStudentData = async (studentId) => {
+  //   try {
+  //     const token = localStorage.getItem("jwtToken");
+  //     if (!token) {
+  //       throw new Error("JWT token not found");
+  //     }
+
+  //     const headers = {
+  //       Authorization: `Bearer ${token}`,
+  //     };
+
+  //     const response = await axios.get(
+  //       `${apiUrl}/api/get-scores-by-student/${studentId}`,
+  //       { headers }
+  //     );
+
+  //     const filteredScores = response.data.scores.filter(
+  //       (score) => score.marksObtained !== undefined
+  //     );
+
+  //     console.log("Filtered data:", {
+  //       ...response.data,
+  //       scores: filteredScores,
+  //     });
+
+  //     if (filteredScores.length === 0) {
+  //       throw new Error("No scores found for the student");
+  //     }
+
+  //     const { examId, subjectId } =
+  //       filteredScores.length > 0 ? filteredScores[0] : {};
+
+  //     console.log("Exam ID:", examId);
+  //     console.log("Subject ID:", subjectId);
+
+  //     if (!examId || !subjectId) {
+  //       throw new Error("Exam ID or Subject ID not found");
+  //     }
+
+  //     const allStudentsData = await fetchAllStudentsData(
+  //       examId._id,
+  //       subjectId._id
+  //     );
+
+  //     console.log("All Students Data with Scores:", allStudentsData);
+
+  //     if (Array.isArray(allStudentsData)) {
+  //       // const studentPosition =
+  //       //   sortedStudents.findIndex(
+  //       //     (student) => student.studentId === studentId
+  //       //   ) + 1;
+  //       // console.log("Position of current student:", studentPosition);
+
+  //       // Sort students based on marks obtained
+  //       const sortedStudents = allStudentsData.sort((a, b) => {
+  //         // Compare marks obtained
+  //         if (a.marksObtained > b.marksObtained) {
+  //           return -1; // a should come before b
+  //         }
+  //         if (a.marksObtained < b.marksObtained) {
+  //           return 1; // b should come before a
+  //         }
+  //         return 0; // if marks are equal, maintain the order
+  //       });
+
+  //       // Find the position of the current student based on marks obtained
+
+  //       const studentPosition =
+  //         sortedStudents.findIndex(
+  //           (student) => student.studentId._id === studentId
+  //         ) + 1;
+
+  //       console.log("Position of current student:", studentPosition);
+
+  //       // Add position to each score object
+  //       const scoresWithPosition = filteredScores.map((score) => ({
+  //         ...score,
+  //         position: studentPosition,
+  //       }));
+
+  //       return {
+  //         ...response.data,
+  //         // scores: filteredScores,
+  //         scores: scoresWithPosition,
+  //         examId: examId._id,
+  //         subjectId: subjectId._id,
+  //         allStudentsData: sortedStudents,
+  //       };
+  //     } else {
+  //       console.error("Error: allStudentsData is not an array");
+  //       throw new Error("Failed to fetch student data");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching student data:", error);
+  //     throw new Error("Failed to fetch student data");
+  //   }
+  // };
+
+  // const fetchStudentData = async (studentId) => {
+  //   try {
+  //     const token = localStorage.getItem("jwtToken");
+  //     if (!token) {
+  //       throw new Error("JWT token not found");
+  //     }
+
+  //     const headers = {
+  //       Authorization: `Bearer ${token}`,
+  //     };
+
+  //     const response = await axios.get(
+  //       `${apiUrl}/api/get-scores-by-student/${studentId}`,
+  //       { headers }
+  //     );
+
+  //     const filteredScores = response.data.scores.filter(
+  //       (score) => score.marksObtained !== undefined
+  //     );
+
+  //     console.log("Filtered data:", {
+  //       ...response.data,
+  //       scores: filteredScores,
+  //     });
+
+  //     if (filteredScores.length === 0) {
+  //       throw new Error("No scores found for the student");
+  //     }
+
+  //     const scoresWithPositions = [];
+
+  //     // Iterate over each subject and exam combination
+  //     for (const score of filteredScores) {
+  //       const { examId, subjectId } = score;
+
+  //       if (!examId || !subjectId) {
+  //         console.error("Exam ID or Subject ID not found for a score:", score);
+  //         continue; // Skip this score if examId or subjectId is missing
+  //       }
+
+  //       const allStudentsData = await fetchAllStudentsData(
+  //         examId._id,
+  //         subjectId._id
+  //       );
+
+  //       // Filter students who have marks for the current subject and exam
+  //       const studentsWithMarks = allStudentsData.filter(
+  //         (student) =>
+  //           student.marksObtained !== undefined &&
+  //           student.studentId?._id !== studentId && // Exclude current student
+  //           student.subjectId?._id === subjectId._id &&
+  //           student.examId?._id === examId._id
+  //       );
+
+  //       // Sort students with marks based on marks obtained for the current subject and exam
+  //       const sortedStudents = studentsWithMarks.sort(
+  //         (a, b) => b.marksObtained - a.marksObtained
+  //       );
+
+  //       // Find the position of the current student for the current subject and exam
+  //       const studentPosition =
+  //         sortedStudents.findIndex(
+  //           (student) => student.studentId?._id === studentId
+  //         ) + 1;
+
+  //       console.log(
+  //         `Position of current student for Subject ${subjectId._id} and Exam ${examId._id}:`,
+  //         studentPosition
+  //       );
+
+  //       // Add position to the score object
+  //       scoresWithPositions.push({
+  //         ...score,
+  //         position: studentPosition,
+  //       });
+  //     }
+
+  //     return {
+  //       ...response.data,
+  //       scores: scoresWithPositions,
+  //     };
+  //   } catch (error) {
+  //     console.error("Error fetching student data:", error);
+  //     throw new Error("Failed to fetch student data");
+  //   }
+  // };
+
   const fetchStudentData = async (studentId) => {
     try {
       const token = localStorage.getItem("jwtToken");
@@ -101,69 +286,48 @@ const TermRep = ({ studentId }) => {
         throw new Error("No scores found for the student");
       }
 
-      const { examId, subjectId } =
-        filteredScores.length > 0 ? filteredScores[0] : {};
+      const scoresWithPositions = await Promise.all(
+        filteredScores.map(async (score) => {
+          const { examId, subjectId } = score;
 
-      console.log("Exam ID:", examId);
-      console.log("Subject ID:", subjectId);
+          if (!examId || !subjectId) {
+            console.error(
+              "Exam ID or Subject ID not found for a score:",
+              score
+            );
+            return { ...score, position: 0 };
+          }
 
-      if (!examId || !subjectId) {
-        throw new Error("Exam ID or Subject ID not found");
-      }
+          const allStudentsData = await fetchAllStudentsData(
+            examId._id,
+            subjectId._id
+          );
 
-      const allStudentsData = await fetchAllStudentsData(
-        examId._id,
-        subjectId._id
+          const sortedStudents = allStudentsData.sort(
+            (a, b) => b.marksObtained - a.marksObtained
+          );
+
+          const studentPosition =
+            sortedStudents.findIndex(
+              (student) => student.studentId?._id === studentId
+            ) + 1;
+
+          console.log(
+            `Position of current student for Subject ${subjectId._id} and Exam ${examId._id}:`,
+            studentPosition
+          );
+
+          return {
+            ...score,
+            position: studentPosition,
+          };
+        })
       );
 
-      console.log("All Students Data with Scores:", allStudentsData);
-
-      if (Array.isArray(allStudentsData)) {
-        // const studentPosition =
-        //   sortedStudents.findIndex(
-        //     (student) => student.studentId === studentId
-        //   ) + 1;
-        // console.log("Position of current student:", studentPosition);
-
-        // Sort students based on marks obtained
-        const sortedStudents = allStudentsData.sort((a, b) => {
-          // Compare marks obtained
-          if (a.marksObtained > b.marksObtained) {
-            return -1; // a should come before b
-          }
-          if (a.marksObtained < b.marksObtained) {
-            return 1; // b should come before a
-          }
-          return 0; // if marks are equal, maintain the order
-        });
-
-        // Find the position of the current student based on marks obtained
-
-        const studentPosition =
-          sortedStudents.findIndex(
-            (student) => student.studentId._id === studentId
-          ) + 1;
-
-        console.log("Position of current student:", studentPosition);
-
-        // Add position to each score object
-        const scoresWithPosition = filteredScores.map((score) => ({
-          ...score,
-          position: studentPosition,
-        }));
-
-        return {
-          ...response.data,
-          // scores: filteredScores,
-          scores: scoresWithPosition,
-          examId: examId._id,
-          subjectId: subjectId._id,
-          allStudentsData: sortedStudents,
-        };
-      } else {
-        console.error("Error: allStudentsData is not an array");
-        throw new Error("Failed to fetch student data");
-      }
+      return {
+        ...response.data,
+        scores: scoresWithPositions,
+      };
     } catch (error) {
       console.error("Error fetching student data:", error);
       throw new Error("Failed to fetch student data");
@@ -186,9 +350,22 @@ const TermRep = ({ studentId }) => {
         { headers }
       );
 
-      console.log("All Students Data:", response.data.scores);
+      console.log("All Students Data:", response.data);
 
-      return response.data.scores;
+      const data = response.data;
+      if (data && data.scores) {
+        console.log("Number of students with marks:", data.scores.length);
+        const studentsWithMarks = data.scores.filter(
+          (student) =>
+            student.marksObtained !== undefined && student.marksObtained !== 0
+        );
+        console.log("Students with marks:", studentsWithMarks);
+
+        return studentsWithMarks;
+      } else {
+        console.log("No scores data available.");
+        return [];
+      }
     } catch (error) {
       console.error("Error fetching all students data:", error);
       throw new Error("Failed to fetch all students data");
