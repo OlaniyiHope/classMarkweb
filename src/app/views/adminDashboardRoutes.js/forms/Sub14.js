@@ -32,6 +32,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import useFetch from "hooks/useFetch";
 import FormDialog4 from "app/views/material-kit/dialog/FormDialog4";
+import FormDialogT from "app/views/material-kit/dialog/FormDialogT";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -145,7 +146,7 @@ const Sub14 = () => {
             <Breadcrumb routeSegments={[{ name: "Subjects" }]} />
           </Box>
           <Box className="breadcrumb">
-            <FormDialog4 />
+            <FormDialogT />
           </Box>
 
           <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
@@ -175,14 +176,14 @@ const Sub14 = () => {
                         </td>
                         <td>
                           <span class="text-primary font-w600">
-                            {item.name}
+                            {item?.name}
                           </span>
                         </td>
                         <td>
-                          <div class="date">{item.teacher}</div>
+                          <div class="date">{item?.teacher}</div>
                         </td>
                         <td>
-                          <h6 class="mb-0">{item.classname}</h6>
+                          <h6 class="mb-0">{item?.classname}</h6>
                         </td>
 
                         <td>
