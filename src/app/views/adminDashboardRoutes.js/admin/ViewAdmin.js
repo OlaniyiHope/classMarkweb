@@ -83,6 +83,7 @@ const ViewAdmin = () => {
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const [tableData, setTableData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -138,7 +139,11 @@ const ViewAdmin = () => {
       console.error("Error deleting User:", error);
     }
   };
-
+  const updateTableData = (newSubject) => {
+    // Assuming data is an array
+    setTableData([...data, newSubject]);
+    reFetch(); // Trigger data refetch after updating tableData1
+  };
   return (
     <Fragment>
       <ContentBox className="analytics">
@@ -147,7 +152,7 @@ const ViewAdmin = () => {
             <Breadcrumb routeSegments={[{ name: "Manage Admin" }]} />
           </Box>
           <Box className="breadcrumb">
-            <FormDialog />
+            <FormDialog updateTableData={updateTableData} />
           </Box>
           <div>
             <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">

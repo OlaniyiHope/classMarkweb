@@ -179,7 +179,7 @@ const initialState = {
   classname: "",
 };
 
-export default function FormDialogT() {
+export default function FormDialogT({ updateTableData }) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(initialState);
   const { name, teacher, classname } = formData;
@@ -187,29 +187,61 @@ export default function FormDialogT() {
   const [selectedClass, setSelectedClass] = useState("");
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL.trim();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     // Fetch the authentication token from wherever you've stored it (e.g., local storage)
+  //     const token = localStorage.getItem("jwtToken");
+
+  //     // Include the token in the request headers
+  //     const headers = {
+  //       Authorization: `Bearer ${token}`,
+  //     };
+
+  //     // Make an API call to create a subject
+  //     await axios.post(`${apiUrl}/api/create-subject`, formData, {
+  //       headers, // Include the headers in the request
+  //     });
+
+  //     // Handle successful subject creation
+  //     toast.success("Subject saved successfully!");
+  //     navigate("/dashboard/ss1-technology-subject");
+  //   } catch (err) {
+  //     // Handle errors
+  //     toast.error("An error occurred during login");
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // Fetch the authentication token from wherever you've stored it (e.g., local storage)
       const token = localStorage.getItem("jwtToken");
-
-      // Include the token in the request headers
       const headers = {
         Authorization: `Bearer ${token}`,
       };
 
       // Make an API call to create a subject
-      await axios.post(`${apiUrl}/api/create-subject`, formData, {
-        headers, // Include the headers in the request
-      });
+      const response = await axios.post(
+        `${apiUrl}/api/create-subject`,
+        formData,
+        {
+          headers,
+        }
+      );
 
-      // Handle successful subject creation
-      toast.success("Subject saved successfully!");
-      navigate("/dashboard/ss1-technology-subject");
+      if (response.status === 200) {
+        // Update the table data in the parent component (Sub14)
+        updateTableData(response.data);
+        toast.success("Subject saved successfully!");
+        handleClose(); // Close the dialog after successful creation
+        // Optionally, you can also update the gradesData state in Grade component
+      } else {
+        toast.error("Failed to create subject");
+      }
     } catch (err) {
-      // Handle errors
-      toast.error("An error occurred during login");
+      console.error("An error occurred during subject creation:", err);
+      toast.error("An error occurred during subject creation");
     }
   };
 

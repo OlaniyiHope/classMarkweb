@@ -79,6 +79,7 @@ const Sub14 = () => {
   ); // Use the specified class name in the URL
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [tableData, setTableData] = useState([]);
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -138,6 +139,13 @@ const Sub14 = () => {
       console.error("Error deleting User:", error);
     }
   };
+
+  const updateTableData = (newSubject) => {
+    // Assuming data is an array
+    setTableData([...data, newSubject]);
+    reFetch(); // Trigger data refetch after updating tableData1
+  };
+
   return (
     <Fragment>
       <ContentBox className="analytics">
@@ -146,7 +154,7 @@ const Sub14 = () => {
             <Breadcrumb routeSegments={[{ name: "Subjects" }]} />
           </Box>
           <Box className="breadcrumb">
-            <FormDialogT />
+            <FormDialogT updateTableData={updateTableData} />
           </Box>
 
           <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">

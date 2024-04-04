@@ -19,7 +19,7 @@ const initialState = {
   phone: "",
   address: "",
 };
-export default function FormDialog() {
+export default function FormDialog({ updateTableData }) {
   const [formData, setformData] = useState(initialState);
   const { username, email, password, phone, address } = formData;
   const [open, setOpen] = useState(false);
@@ -37,6 +37,28 @@ export default function FormDialog() {
     const { name, value } = e.target;
     setformData({ ...formData, [name]: value });
   };
+  // const handleClick = async (e) => {
+  //   e.preventDefault();
+  //   const userData = {
+  //     username,
+  //     email,
+  //     password,
+  //     phone,
+  //     address,
+  //   };
+  //   try {
+  //     await axios.post(`${apiUrl}/api/register`, {
+  //       ...formData,
+  //       role: "admin",
+  //     });
+  //     // navigate("/dashboard/admin");
+  //     toast.success("User successfully created");
+  //     handleClose();
+  //   } catch (err) {
+  //     console.error("Error registering student:", err);
+  //     toast.error("Unable to create user");
+  //   }
+  // };
   const handleClick = async (e) => {
     e.preventDefault();
     const userData = {
@@ -47,17 +69,22 @@ export default function FormDialog() {
       address,
     };
     try {
-      await axios.post(`${apiUrl}/api/register`, {
+      const response = await axios.post(`${apiUrl}/api/register`, {
         ...formData,
         role: "admin",
       });
-      // navigate("/dashboard/admin");
+      // Assuming the response contains the new admin data
+      const newAdmin = response.data;
+      // Update the table data in the parent component (ViewAdmin)
+      updateTableData(newAdmin);
       toast.success("User successfully created");
+      handleClose();
     } catch (err) {
-      console.error("Error registering student:", err);
+      console.error("Error registering admin:", err);
       toast.error("Unable to create user");
     }
   };
+
   return (
     <Box>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>

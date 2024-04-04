@@ -21,35 +21,60 @@ const initialState = {
   phone: "",
 };
 
-export default function FormDialog3() {
+export default function FormDialog3({ updateTableData }) {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState(initialState);
   const { username, email, password, address, phone } = formData;
   const apiUrl = process.env.REACT_APP_API_URL.trim();
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const formData = {
+  //     username,
+  //     email,
+  //     password,
+  //     address,
+  //     phone,
+  //   };
+  //   try {
+  //     await axios.post(
+  //       `https://hlhs1-ef7e91975268.herokuapp.com/api/register`,
+  //       {
+  //         ...formData,
+  //         role: "teacher",
+  //       }
+  //     );
+
+  //     // navigate("/dashboard/admin");
+  //     toast.success("User successfully created");
+  //   } catch (err) {
+  //     console.error("Error registering student:", err);
+  //     toast.error("Unable to create user");
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = {
       username,
       email,
       password,
-      address,
       phone,
+      address,
     };
     try {
-      await axios.post(
-        `https://hlhs1-ef7e91975268.herokuapp.com/api/register`,
-        {
-          ...formData,
-          role: "teacher",
-        }
-      );
-
-      // navigate("/dashboard/admin");
+      const response = await axios.post(`${apiUrl}/api/register`, {
+        ...formData,
+        role: "teacher",
+      });
+      // Assuming the response contains the new admin data
+      const newAdmin = response.data;
+      // Update the table data in the parent component (ViewAdmin)
+      updateTableData(newAdmin);
       toast.success("User successfully created");
+      handleClose();
     } catch (err) {
-      console.error("Error registering student:", err);
+      console.error("Error registering admin:", err);
       toast.error("Unable to create user");
     }
   };

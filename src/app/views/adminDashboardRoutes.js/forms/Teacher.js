@@ -51,6 +51,7 @@ const Teacher = () => {
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});
+  const [tableData, setTableData] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [action, setAction] = useState(null);
@@ -179,6 +180,11 @@ const Teacher = () => {
       console.error("Error updating teacher:", error);
     }
   };
+  const updateTableData = (newSubject) => {
+    // Assuming data is an array
+    setTableData([...data, newSubject]);
+    reFetch(); // Trigger data refetch after updating tableData1
+  };
 
   return (
     <Fragment>
@@ -188,7 +194,7 @@ const Teacher = () => {
             <Breadcrumb routeSegments={[{ name: "Manage Teachers" }]} />
           </Box>
           <Box className="breadcrumb">
-            <FormDialog3 />
+            <FormDialog3 updateTableData={updateTableData} />
           </Box>
 
           <div>
