@@ -37,8 +37,8 @@ const ContentBox = styled("div")(({ theme }) => ({
   [theme.breakpoints.down("sm")]: { margin: "16px" },
 }));
 
-const Sub11 = () => {
-  const className = "S.S.3.A"; // Specify the class name here
+const Sub13 = () => {
+  const className = "S.S.2.A"; // Specify the class name here
 
   const { data, loading, error, reFetch } = useFetch(
     `/get-subject/${className}`
@@ -259,4 +259,4 @@ const Sub11 = () => {
   );
 };
 
-export default Sub11;
+export default Sub13;
