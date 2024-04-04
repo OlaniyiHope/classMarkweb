@@ -65,6 +65,7 @@ import OnScreen from "./forms/OnScreen";
 import Screen from "./forms/Screen";
 import OnOff from "./forms/OnOff";
 import Info13 from "./forms/Info13";
+import Sub14 from "./forms/Sub14";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -82,6 +83,11 @@ const adminDashboardRoutes = [
   {
     path: "/dashboard/ss1-commercial-subject",
     element: <Sub6 />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/ss1-technology-subject",
+    element: <Sub14 />,
     auth: "admin",
   },
   {
