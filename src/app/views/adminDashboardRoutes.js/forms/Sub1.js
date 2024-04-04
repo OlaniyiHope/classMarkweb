@@ -1,5 +1,5 @@
 import { Container } from "@mui/material";
-import { Fragment, React, useState } from "react";
+import { Fragment, React, useState, useEffect } from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 import {
@@ -73,9 +73,15 @@ const StyledButton = styled(Button)(({ theme }) => ({
 const Sub1 = () => {
   const className = "JS1"; // Specify the class name here
 
-  const { data, loading, error, reFetch } = useFetch(
+  const { data, fetchedData, loading, error, reFetch } = useFetch(
     `/get-subject/${className}`
   ); // Use the specified class name in the URL
+  useEffect(() => {
+    // Set the fetched data to the state
+    setSubData(fetchedData || []);
+  }, [fetchedData]);
+
+  const [subData, setSubData] = useState([]);
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const { palette } = useTheme();
