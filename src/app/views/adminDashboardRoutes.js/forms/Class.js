@@ -83,6 +83,7 @@ const Class = () => {
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});
+  const [tableData, setTableData] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [anchorEl, setAnchorEl] = useState(null);
   const [action, setAction] = useState(null);
@@ -144,12 +145,16 @@ const Class = () => {
       console.error("Error deleting Class:", error);
     }
   };
-
+  const updateTableData = (newSubject) => {
+    // Assuming data is an array
+    setTableData([...data, newSubject]);
+    reFetch(); // Trigger data refetch after updating tableData1
+  };
   return (
     <Fragment>
       <ContentBox className="analytics">
         <Box className="breadcrumb">
-          <FormClass />
+          <FormClass updateTableData={updateTableData} />
         </Box>
 
         <Box width="100%" overflow="auto">

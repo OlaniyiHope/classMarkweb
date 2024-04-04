@@ -17,7 +17,7 @@ const initialState = {
   teacher: "",
 };
 
-export default function FormClass() {
+export default function FormClass({ updateTableData }) {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState(initialState);
@@ -35,7 +35,10 @@ export default function FormClass() {
 
       if (response.status === 200) {
         // Class successfully created
-        toast.success("Class successfully created");
+
+        updateTableData(response.data);
+        toast.success("Class saved successfully!");
+        handleClose(); // Close the dialog after successful creation
 
         // Manually trigger data refetch or navigation logic
         // Example: reFetch();
