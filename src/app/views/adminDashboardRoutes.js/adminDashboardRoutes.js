@@ -64,6 +64,7 @@ import PsyCat from "./forms/PsyCat";
 import OnScreen from "./forms/OnScreen";
 import Screen from "./forms/Screen";
 import OnOff from "./forms/OnOff";
+import Info13 from "./forms/Info13";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -191,6 +192,11 @@ const adminDashboardRoutes = [
   {
     path: "/dashboard/ss3-commercial-student_information",
     element: <Info12 />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/ss1-technology-student_information",
+    element: <Info13 />,
     auth: "admin",
   },
 

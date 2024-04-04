@@ -163,6 +163,11 @@ export const navigations = [
         path: "/dashboard/ss1-commercial-subject",
       },
       {
+        name: "Class S.S.1.T",
+        iconText: "SI",
+        path: "/dashboard/ss1-technology-subject",
+      },
+      {
         name: "Class S.S.2.S",
         iconText: "SI",
         path: "/dashboard/ss2-science-subject",
