@@ -155,7 +155,7 @@ export const navigations = [
       {
         name: "Class S.S.1.A",
         iconText: "SI",
-        path: "/dashboard/ss1-art-ubject",
+        path: "/dashboard/ss1-art-subject",
       },
       {
         name: "Class S.S.1.C",
