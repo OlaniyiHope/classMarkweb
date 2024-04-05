@@ -32,6 +32,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import useFetch from "hooks/useFetch";
 import FormDialog4 from "app/views/material-kit/dialog/FormDialog4";
+import EditSub14 from "./EditSub14";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -82,6 +83,9 @@ const Sub4 = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [anchorElMap, setAnchorElMap] = useState({});
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [selectedSubject, setSelectedSubject] = useState(null); // State to hold selected subject data
+
   const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   const handleChangePage = (_, newPage) => {
@@ -102,7 +106,37 @@ const Sub4 = () => {
       [examId]: null,
     }));
   };
+  const handleOpenEditDialog = (subject) => {
+    setSelectedSubject(subject);
+    setEditDialogOpen(true);
+  };
 
+  // Function to handle closing the edit dialog
+  const handleCloseEditDialog = () => {
+    setEditDialogOpen(false);
+    setSelectedSubject(null);
+  };
+  // Function to handle saving edited subject data
+  const handleSaveEdit = async (editedSubject) => {
+    try {
+      const response = await axios.put(
+        `${apiUrl}/api/update-subject/${editedSubject._id}`,
+        editedSubject
+      );
+
+      console.log("Response from edit API:", response.data);
+
+      if (response.status === 200) {
+        console.log("Subject updated successfully");
+        handleCloseEditDialog();
+        reFetch();
+      } else {
+        console.error("Failed to update Subject");
+      }
+    } catch (error) {
+      console.error("Error updating Subject:", error);
+    }
+  };
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -199,7 +233,9 @@ const Sub4 = () => {
                             open={Boolean(anchorElMap[item._id])}
                             onClose={() => handleCloseMenu(item._id)}
                           >
-                            <MenuItem>
+                            <MenuItem
+                              onClick={() => handleOpenEditDialog(item)}
+                            >
                               <ListItemIcon>
                                 <EditIcon /> {/* Use an Edit icon */}
                               </ListItemIcon>
@@ -226,6 +262,14 @@ const Sub4 = () => {
                   </TableRow>
                 )}
               </table>
+              {editDialogOpen && selectedSubject && (
+                <EditSub14
+                  open={editDialogOpen}
+                  onClose={handleCloseEditDialog}
+                  subject={selectedSubject}
+                  onSave={handleSaveEdit}
+                />
+              )}
               <Dialog
                 open={deleteConfirmationOpen}
                 onClose={handleCloseDeleteConfirmation}
