@@ -37,6 +37,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import useFetch from "hooks/useFetch";
 import axios from "axios";
 import FormClass from "app/views/material-kit/dialog/FormClass";
+import EditClass from "./EditClass";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -84,6 +85,9 @@ const Class = () => {
   const [userToDelete, setUserToDelete] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});
   const [tableData, setTableData] = useState([]);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+
+  const [editClassData, setEditClassData] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [anchorEl, setAnchorEl] = useState(null);
   const [action, setAction] = useState(null);
@@ -105,6 +109,37 @@ const Class = () => {
     setAnchorElMap(updatedAnchorElMap);
   };
 
+  const handleEditClass = (classId) => {
+    const classToEdit = data.find((item) => item.classId === classId);
+    setEditClassData(classToEdit);
+    setEditDialogOpen(true);
+  };
+
+  const handleCloseEditDialog = () => {
+    setEditDialogOpen(false);
+    setEditClassData(null);
+  };
+
+  const handleSaveEdit = async (updatedClassData) => {
+    try {
+      const response = await axios.put(
+        `${apiUrl}/api/class/${updatedClassData._id}`,
+        updatedClassData
+      );
+
+      console.log("Response from edit API:", response.data);
+
+      if (response.status === 200) {
+        console.log("Class updated successfully");
+        handleCloseEditDialog();
+        reFetch();
+      } else {
+        console.error("Failed to update Class");
+      }
+    } catch (error) {
+      console.error("Error updating Class:", error);
+    }
+  };
   const handleCloseMenu = (itemId) => {
     // Create a new map object instead of directly modifying the state
     const updatedAnchorElMap = { ...anchorElMap, [itemId]: null };
@@ -208,7 +243,9 @@ const Class = () => {
                               open={Boolean(anchorElMap[item._id])}
                               onClose={() => handleCloseMenu(item._id)}
                             >
-                              <MenuItem>
+                              <MenuItem
+                                onClick={() => handleEditClass(item.classId)}
+                              >
                                 <ListItemIcon>
                                   <EditIcon /> {/* Use an Edit icon */}
                                 </ListItemIcon>
@@ -238,6 +275,15 @@ const Class = () => {
                   </TableRow>
                 )}
               </table>
+
+              {editClassData && (
+                <EditClass
+                  open={editDialogOpen}
+                  onClose={handleCloseEditDialog}
+                  classData={editClassData}
+                  onSave={handleSaveEdit}
+                />
+              )}
               <Dialog
                 open={deleteConfirmationOpen}
                 onClose={handleCloseDeleteConfirmation}
