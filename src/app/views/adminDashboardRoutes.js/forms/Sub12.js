@@ -34,6 +34,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import useFetch from "hooks/useFetch";
 import FormDialog4 from "app/views/material-kit/dialog/FormDialog4";
 import EditSub12 from "../EditSub12";
+import EditSub14 from "./EditSub14";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -74,20 +75,6 @@ const Sub12 = () => {
       [examId]: null,
     }));
   };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-  const handleOpenDeleteConfirmation = (user) => {
-    setUserToDelete(user);
-    setDeleteConfirmationOpen(true);
-  };
-
-  const handleCloseDeleteConfirmation = () => {
-    setUserToDelete(null);
-    setDeleteConfirmationOpen(false);
-  };
   const handleOpenEditDialog = (subject) => {
     setSelectedSubject(subject);
     setEditDialogOpen(true);
@@ -118,6 +105,19 @@ const Sub12 = () => {
     } catch (error) {
       console.error("Error updating Subject:", error);
     }
+  };
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+  const handleOpenDeleteConfirmation = (user) => {
+    setUserToDelete(user);
+    setDeleteConfirmationOpen(true);
+  };
+
+  const handleCloseDeleteConfirmation = () => {
+    setUserToDelete(null);
+    setDeleteConfirmationOpen(false);
   };
 
   const handleDeleteUser = async () => {
@@ -232,7 +232,7 @@ const Sub12 = () => {
                 )}
               </table>
               {editDialogOpen && selectedSubject && (
-                <EditSub12
+                <EditSub14
                   open={editDialogOpen}
                   onClose={handleCloseEditDialog}
                   subject={selectedSubject}
