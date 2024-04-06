@@ -594,8 +594,7 @@ const TermRep = ({ studentId }) => {
                     src={`https://edupros.s3.amazonaws.com/${accountSettings.schoolLogo}`}
                     style={{
                       width: "200px",
-                      height: "130px",
-                      borderRadius: "50%",
+                      height: "180px",
                     }}
                   />
                 </div>
