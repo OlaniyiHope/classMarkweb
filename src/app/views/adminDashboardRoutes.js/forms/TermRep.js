@@ -828,123 +828,104 @@ const TermRep = ({ studentId }) => {
                   </div>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="table-responsive bd_table">
-                    <table>
-                      <tbody>
+              <table
+                className="table"
+                id="customers"
+                style={{ width: "100% !important" }}
+              >
+                <thead style={{ width: "100% !important" }}>
+                  <tr style={{ width: "100% !important" }}>
+                    <th scope="col">S/No</th>
+                    <th scope="col" style={{ textAlign: "left" }}>
+                      Subject
+                    </th>
+                    <th scope="col">Test</th>
+                    <th scope="col">Exam</th>
+                    <th scope="col">Obtained Marks</th>
+                    <th scope="col">Position</th>
+                    <th scope="col">Grade</th>
+                    <th scope="col">Remark</th>
+                  </tr>
+                </thead>
+                <tbody style={{ width: "100% !important" }}>
+                  {studentData?.scores &&
+                    studentData.scores
+                      .filter((score) => score.marksObtained !== undefined)
+                      .map((score, index) => {
+                        return (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{score?.subjectName || "-"}</td>
+                            <td>{score?.testscore || "-"}</td>
+                            <td>{score?.examscore || "-"}</td>
+                            <td>{score?.marksObtained || "-"}</td>
+                            <td>{score?.position || "-"}</td>
+                            <td>{calculateGrade(score?.comment) || "-"}</td>
+                            <td>{score?.comment || "-"}</td>
+                          </tr>
+                        );
+                      })}
+                </tbody>
+              </table>
+
+              <td style={{ verticalAlign: "top" }}>
+                {/* Second Sub-Table for Affective and Psychomotor Report */}
+                <table className="table second-sub-table " id="customersreport">
+                  <thead>
+                    <tr>
+                      <th scope="col" colspan="3">
+                        AFFECTIVE AND PSYCHOMOTOR REPORT
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {psyData?.scores?.map((score, index) => (
+                      <div key={index}>
                         <tr>
-                          <td>
-                            <table className="table" id="customers">
-                              <thead>
-                                <tr>
-                                  <th scope="col">S/No</th>
-                                  <th scope="col" style={{ textAlign: "left" }}>
-                                    Subject
-                                  </th>
-                                  <th scope="col">Test</th>
-                                  <th scope="col">Exam</th>
-                                  <th scope="col">Obtained Marks</th>
-                                  {/*} <th scope="col">Position</th>*/}
-                                  <th scope="col">Position</th>
-                                  <th scope="col">Grade</th>
-                                  <th scope="col">Remark</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {studentData?.scores &&
-                                  studentData.scores
-                                    .filter(
-                                      (score) =>
-                                        score.marksObtained !== undefined
-                                    )
-
-                                    .map((score, index) => {
-                                      return (
-                                        <tr key={index}>
-                                          <td>{index + 1}</td>
-                                          <td>{score?.subjectName || "-"}</td>
-                                          <td>{score?.testscore || "-"}</td>
-                                          <td>{score?.examscore || "-"}</td>
-                                          <td>{score?.marksObtained || "-"}</td>
-                                          <td>{score?.position || "-"}</td>
-
-                                          {/* Display position of the current student */}
-                                          <td>
-                                            {calculateGrade(score?.comment) ||
-                                              "-"}
-                                          </td>
-                                          <td>{score?.comment || "-"}</td>
-                                        </tr>
-                                      );
-                                    })}
-                              </tbody>
-                            </table>
-                          </td>
-                          <td style={{ verticalAlign: "top" }}>
-                            <table class="table" id="customersreport">
-                              <thead>
-                                <tr>
-                                  <th scope="col" colspan="3">
-                                    AFFECTIVE AND PSYCHOMOTOR REPORT
-                                  </th>
-                                </tr>
-                              </thead>
-
-                              <tbody>
-                                {psyData?.scores?.map((score, index) => (
-                                  <div key={index}>
-                                    <tr>
-                                      <th></th>
-                                      <th>Work Habits</th>
-                                      <th>RATINGS</th>
-                                    </tr>
-                                    <tr>
-                                      <td>{index + 1}</td>
-                                      <td>Following Instruction</td>
-                                      <td> {score?.instruction || "0"}</td>
-                                    </tr>
-                                    <tr>
-                                      <td>{index + 2}</td>
-                                      <td>Working Independently</td>
-                                      <td>{score?.independently || "0"}</td>
-                                    </tr>
-                                    <tr>
-                                      <th></th>
-                                      <th>Behaviour</th>
-                                      <th>RATINGS</th>
-                                    </tr>
-                                    <tr>
-                                      <td>1</td>
-                                      <td>Punctuality</td>
-                                      <td>{score?.punctuality || "0"}</td>
-                                    </tr>
-                                    <tr>
-                                      <th></th>
-                                      <th>Communication</th>
-                                      <th>RATINGS</th>
-                                    </tr>
-                                    <tr>
-                                      <td>1</td>
-                                      <td>Talking</td>
-                                      <td>{score?.talking || "0"}</td>
-                                    </tr>
-                                    <tr>
-                                      <td>2</td>
-                                      <td>Eye Contact</td>
-                                      <td>{score?.eyecontact || "0"}</td>
-                                    </tr>
-                                  </div>
-                                ))}
-                              </tbody>
-                            </table>
-                          </td>
+                          <th></th>
+                          <th>Work Habits</th>
+                          <th>RATINGS</th>
                         </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+                        <tr>
+                          <td>{index + 1}</td>
+                          <td>Following Instruction</td>
+                          <td>{score?.instruction || "0"}</td>
+                        </tr>
+                        <tr>
+                          <td>{index + 2}</td>
+                          <td>Working Independently</td>
+                          <td>{score?.independently || "0"}</td>
+                        </tr>
+                        <tr>
+                          <th></th>
+                          <th>Behaviour</th>
+                          <th>RATINGS</th>
+                        </tr>
+                        <tr>
+                          <td>1</td>
+                          <td>Punctuality</td>
+                          <td>{score?.punctuality || "0"}</td>
+                        </tr>
+                        <tr>
+                          <th></th>
+                          <th>Communication</th>
+                          <th>RATINGS</th>
+                        </tr>
+                        <tr>
+                          <td>1</td>
+                          <td>Talking</td>
+                          <td>{score?.talking || "0"}</td>
+                        </tr>
+                        <tr>
+                          <td>2</td>
+                          <td>Eye Contact</td>
+                          <td>{score?.eyecontact || "0"}</td>
+                        </tr>
+                      </div>
+                    ))}
+                  </tbody>
+                </table>
+              </td>
               <div style={{ color: "#042954", fontSize: "16px" }}>
                 KEY TO GRADES A (DISTINCTION)=70% &amp; ABOVE , C
                 (CREDIT)=55-69% , P(PASS)=40-54% , F(FAIL)=BELOW 40%

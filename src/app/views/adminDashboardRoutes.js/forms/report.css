@@ -89,5 +89,70 @@ td {
     background-color: #ffc107 !important;
   }
 }
+@media print {
+  .print-table-cell {
+    display: table-cell !important;
+    vertical-align: top;
+  }
+}
+@media print {
+  .main-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd; /* Add borders for better visibility */
+  }
+
+  .main-table td {
+    padding: 8px; /* Adjust padding as needed */
+    vertical-align: top;
+  }
+
+  .main-table th {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 2px solid #ddd; /* Add bottom border to headers */
+  }
+}
+
+@media print {
+  /* Add a class to target the second sub-table */
+  .second-sub-table {
+    display: block !important;
+    width: 100%; /* Adjust width as needed */
+    page-break-before: always;
+    clear: both; /* Clear the float */
+    margin-top: 20px;
+  }
+}
+
+@media print {
+  .main-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd; /* Add borders for better visibility */
+  }
+
+  .main-table td {
+    padding: 8px; /* Adjust padding as needed */
+    vertical-align: top;
+  }
+
+  .main-table th {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 2px solid #ddd; /* Add bottom border to headers */
+  }
+
+  #customersreport {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  #customersreport th,
+  #customersreport td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+}
 
 /* Add more styles as needed */
