@@ -66,16 +66,17 @@ td {
   color: #042954;
 }
 
-th {
-  background-color: #f2f2f2;
-}
-
 .bd_key {
   margin-bottom: 20px;
 }
 
 .remarksbox {
   padding: 10px 0;
+}
+@media print {
+  table thead {
+    background-color: #ffc107 !important;
+  }
 }
 
 /* Add more styles as needed */
