@@ -837,7 +837,7 @@ const TermRep = ({ studentId }) => {
                         <tr>
                           <td>
                             <table className="table" id="customers">
-                              <thead style={{ backgroundColor: "#ffc107" }}>
+                              <thead>
                                 <tr>
                                   <th scope="col">S/No</th>
                                   <th scope="col" style={{ textAlign: "left" }}>
@@ -884,7 +884,7 @@ const TermRep = ({ studentId }) => {
                           </td>
                           <td style={{ verticalAlign: "top" }}>
                             <table class="table" id="customersreport">
-                              <thead style={{ backgroundColor: "#ffc107" }}>
+                              <thead>
                                 <tr>
                                   <th scope="col" colspan="3">
                                     AFFECTIVE AND PSYCHOMOTOR REPORT

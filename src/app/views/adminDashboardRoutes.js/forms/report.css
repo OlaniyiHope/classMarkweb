@@ -65,7 +65,12 @@ td {
   text-align: left;
   color: #042954;
 }
-
+#customers th {
+  background-color: #ffc107 !important;
+}
+#customersreport th {
+  background-color: #ffc107 !important;
+}
 .bd_key {
   margin-bottom: 20px;
 }
@@ -75,6 +80,12 @@ td {
 }
 @media print {
   table thead {
+    background-color: #ffc107 !important;
+  }
+  #customers th {
+    background-color: #ffc107 !important;
+  }
+  #customersreport th {
     background-color: #ffc107 !important;
   }
 }
