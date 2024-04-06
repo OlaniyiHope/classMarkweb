@@ -618,7 +618,7 @@ const TermRep = ({ studentId }) => {
                     {accountSettings.email || ""}
                   </p>
                   <h3 style={{ color: "#042954", margin: "10px 0" }}>
-                    {data?.classname || ""} First Term Report Card
+                    {data?.classname || ""} Second Term Report Card
                   </h3>
                 </div>
               </div>
