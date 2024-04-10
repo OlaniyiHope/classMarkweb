@@ -98,7 +98,7 @@ const StuReceipt = () => {
     reason: "",
     studentName: "",
     classname: "",
-    balance: 0,
+    paid: 0,
     amount: 0,
     date: "",
   });
@@ -134,7 +134,7 @@ const StuReceipt = () => {
         reason: "",
         studentName: selectedName,
         classname: selectedClass,
-        balance: 0,
+        paid: 0,
         amount: 0,
         date: "",
       });
@@ -168,109 +168,112 @@ const StuReceipt = () => {
         <Stack spacing={3}>
           <SimpleCard title="Student Receipt">
             <ValidatorForm onError={() => null}>
-              <Grid item xs={6}>
-                <TextField
-                  select
-                  label="Select a class"
-                  variant="outlined"
-                  value={selectedClass}
-                  onChange={handleClassChange}
-                >
-                  {classData &&
-                    classData.map((item) => (
-                      <MenuItem key={item.id} value={item.name}>
-                        {item.name}
+              <Grid container spacing={6}>
+                <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
+                  <TextField
+                    select
+                    label="Select a class"
+                    variant="outlined"
+                    value={selectedClass}
+                    onChange={handleClassChange}
+                  >
+                    {classData &&
+                      classData.map((item) => (
+                        <MenuItem key={item.id} value={item.name}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
+                  </TextField>
+
+                  <TextField
+                    select
+                    label="Select the Student"
+                    variant="outlined"
+                    value={selectedName}
+                    onChange={handleStudentChange}
+                  >
+                    {studentData.map((student) => (
+                      <MenuItem key={student.id} value={student.studentName}>
+                        {student.studentName}
                       </MenuItem>
                     ))}
-                </TextField>
+                  </TextField>
+                  <InputLabel>Date</InputLabel>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    type="date"
+                    label=" Date"
+                    variant="outlined"
+                    sx={{ mb: 3 }}
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                  />
+                  <TextField
+                    sx={{ mb: 4 }}
+                    type="text"
+                    name="amount"
+                    label="Total Fees"
+                    onChange={handleChange}
+                    value={formData.amount}
+                    errorMessages={["This field is required"]}
+                    validators={[
+                      "required",
+                      "minStringLength:4",
+                      "maxStringLength:16",
+                    ]}
+                  />
+
+                  <TextField
+                    sx={{ mb: 4 }}
+                    type="text"
+                    name="paid"
+                    label="Amount Paid"
+                    value={formData.paid}
+                    onChange={handleChange}
+                    errorMessages={["This field is required"]}
+                    validators={[
+                      "required",
+                      "minStringLength:4",
+                      "maxStringLength:16",
+                    ]}
+                  />
+                  <TextField
+                    name="reason"
+                    type="text"
+                    label="Reason"
+                    value={formData.reason}
+                    onChange={handleChange}
+                    validators={["required"]}
+                    errorMessages={["This field is required"]}
+                  />
+                  <InputLabel>Method of payment</InputLabel>
+                  <Select
+                    label="Type of Payment"
+                    variant="outlined"
+                    value={formData.typeOfPayment}
+                    onChange={handleChange}
+                    name="typeOfPayment"
+                    fullWidth
+                  >
+                    <MenuItem value="Cash">Cash</MenuItem>
+                    <MenuItem value="Transfer">Transfer</MenuItem>
+                    <MenuItem value="Cheque">Cheque</MenuItem>
+                  </Select>
+                  <InputLabel>Status</InputLabel>
+                  <Select
+                    label="Status"
+                    variant="outlined"
+                    value={formData.status}
+                    onChange={handleChange}
+                    name="status"
+                    fullWidth
+                  >
+                    <MenuItem value="Pending">Pending</MenuItem>
+                    <MenuItem value="Success">Success</MenuItem>
+                  </Select>
+                </Grid>
               </Grid>
-              <TextField
-                select
-                label="Select the Student"
-                variant="outlined"
-                value={selectedName}
-                onChange={handleStudentChange}
-              >
-                {studentData.map((student) => (
-                  <MenuItem key={student.id} value={student.studentName}>
-                    {student.studentName}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                fullWidth
-                size="small"
-                type="date"
-                label=" Date"
-                variant="outlined"
-                sx={{ mb: 3 }}
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-              />
-              <TextField
-                sx={{ mb: 4 }}
-                type="number"
-                name="amount"
-                label="Total Fees"
-                onChange={handleChange}
-                value={formData.amount}
-                errorMessages={["This field is required"]}
-                validators={[
-                  "required",
-                  "minStringLength:4",
-                  "maxStringLength:16",
-                ]}
-              />
-
-              <TextField
-                sx={{ mb: 4 }}
-                type="number"
-                name="balance"
-                label="Amount Paid"
-                value={formData.balance}
-                onChange={handleChange}
-                errorMessages={["This field is required"]}
-                validators={[
-                  "required",
-                  "minStringLength:4",
-                  "maxStringLength:16",
-                ]}
-              />
-              <TextField
-                name="reason"
-                type="text"
-                label="Reason"
-                value={formData.reason}
-                onChange={handleChange}
-                validators={["required"]}
-                errorMessages={["This field is required"]}
-              />
-              <InputLabel>Method of payment</InputLabel>
-              <Select
-                label="Type of Payment"
-                variant="outlined"
-                value={formData.typeOfPayment}
-                onChange={handleChange}
-                name="typeOfPayment"
-                fullWidth
-              >
-                <MenuItem value="Cash">Cash</MenuItem>
-                <MenuItem value="Transfer">Transfer</MenuItem>
-                <MenuItem value="Cheque">Cheque</MenuItem>
-              </Select>
-              <InputLabel>Status</InputLabel>
-              <Select
-                label="Status"
-                variant="outlined"
-                value={formData.status}
-                onChange={handleChange}
-                name="status"
-                fullWidth
-              >
-                <MenuItem value="Pending">Pending</MenuItem>
-                <MenuItem value="Success">Success</MenuItem>
-              </Select>
-
               <Button
                 color="primary"
                 variant="contained"

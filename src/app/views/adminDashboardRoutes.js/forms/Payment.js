@@ -1,5 +1,5 @@
 import {} from "@mui/material";
-import { Fragment, React, useState } from "react";
+import { Fragment, React, useState, useEffect } from "react";
 import { Box } from "@mui/system";
 import {
   Card,
@@ -73,7 +73,14 @@ const Payments = () => {
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [balances, setBalances] = useState([]);
 
+  useEffect(() => {
+    if (data) {
+      const balancesArray = data.map((item) => item.amount - item.paid);
+      setBalances(balancesArray);
+    }
+  }, [data]);
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
   };
@@ -101,58 +108,77 @@ const Payments = () => {
                 <TableCell align="center">Amount Paid</TableCell>
                 <TableCell align="center">Reason</TableCell>
                 <TableCell align="center">Date</TableCell>
+                <TableCell align="center">Balance</TableCell>
                 <TableCell align="center">Status</TableCell>
                 <TableCell align="right">Action</TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
               {data &&
-                data.map((item, index) => (
-                  <TableRow key={item._id}>
-                    <TableCell align="center">{index + 1}</TableCell>
-                    <TableCell align="left">{item.studentName}</TableCell>
-                    <TableCell align="center">{item.amount}</TableCell>
-                    <TableCell align="center">{item.balance}</TableCell>
-                    <TableCell align="center">{item.reason}</TableCell>
-                    <TableCell>
-                      {item.date
-                        ? new Date(item.date).toLocaleDateString()
-                        : ""}
-                    </TableCell>
-                    <TableCell align="center">{item.status}</TableCell>
-                    <TableCell align="right">
-                      <Menu id={`action-menu-${item._id}`}>
-                        <MenuItem>
-                          <ListItemIcon></ListItemIcon>
-                          <Link
-                            to={`/dashboard/manage-online-exam/${item._id}`}
-                          >
-                            Manage Questions
-                          </Link>
-                        </MenuItem>
-                        <MenuItem>
-                          <ListItemIcon></ListItemIcon>
+                data.map((item, index) => {
+                  const amount = item.amount
+                    ? parseFloat(item.amount.replace(/[^\d.-]/g, ""))
+                    : NaN;
+                  const paid = item.paid
+                    ? parseFloat(item.paid.replace(/[^\d.-]/g, ""))
+                    : NaN;
+                  console.log("Amount:", amount);
+                  console.log("Paid:", paid);
+                  const balance =
+                    isNaN(amount) || isNaN(paid)
+                      ? "Invalid Data"
+                      : amount - paid;
+                  console.log("Balance:", balance);
 
-                          <Link to={`/dashboard/view-result/${item._id}`}>
-                            View Result
-                          </Link>
-                        </MenuItem>
-                        <MenuItem>
-                          <ListItemIcon>
-                            <EditIcon /> {/* Use an Edit icon */}
-                          </ListItemIcon>
-                          Edit
-                        </MenuItem>
-                        <MenuItem>
-                          <ListItemIcon>
-                            <DeleteIcon /> {/* Use a Delete icon */}
-                          </ListItemIcon>
-                          Delete
-                        </MenuItem>
-                      </Menu>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                  return (
+                    <TableRow key={item._id}>
+                      <TableCell align="center">{index + 1}</TableCell>
+                      <TableCell align="left">{item.studentName}</TableCell>
+                      <TableCell align="center">{item.amount}</TableCell>
+                      <TableCell align="center">{item.paid}</TableCell>
+                      <TableCell align="center">{item.reason}</TableCell>
+                      <TableCell>
+                        {item.date
+                          ? new Date(item.date).toLocaleDateString()
+                          : ""}
+                      </TableCell>
+                      <TableCell align="center">{balance}</TableCell>
+                      <TableCell align="center">{item.status}</TableCell>
+                      <TableCell align="right">
+                        <Menu id={`action-menu-${item._id}`}>
+                          <MenuItem>
+                            <ListItemIcon></ListItemIcon>
+                            <Link
+                              to={`/dashboard/manage-online-exam/${item._id}`}
+                            >
+                              Manage Questions
+                            </Link>
+                          </MenuItem>
+                          <MenuItem>
+                            <ListItemIcon></ListItemIcon>
+
+                            <Link to={`/dashboard/view-result/${item._id}`}>
+                              View Result
+                            </Link>
+                          </MenuItem>
+                          <MenuItem>
+                            <ListItemIcon>
+                              <EditIcon />
+                            </ListItemIcon>
+                            Edit
+                          </MenuItem>
+                          <MenuItem>
+                            <ListItemIcon>
+                              <DeleteIcon />
+                            </ListItemIcon>
+                            Delete
+                          </MenuItem>
+                        </Menu>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </StyledTable>
 
