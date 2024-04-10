@@ -89,6 +89,7 @@ const ViewResult = () => {
   const [action, setAction] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
   useEffect(() => {
     if (data) {
       setScores(data);
@@ -98,9 +99,7 @@ const ViewResult = () => {
     // Fetch exam details separately
     async function fetchExamData() {
       try {
-        const response = await fetch(
-          `http://localhost:5000/api/get-exam/${id}`
-        );
+        const response = await fetch(`${apiUrl}/api/get-exam/${id}`);
         const data = await response.json();
         setExamData(data);
         console.log("this is data", data);
