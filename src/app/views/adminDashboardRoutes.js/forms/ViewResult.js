@@ -98,9 +98,12 @@ const ViewResult = () => {
     // Fetch exam details separately
     async function fetchExamData() {
       try {
-        const response = await fetch(`/get-exam/${id}`);
+        const response = await fetch(
+          `http://localhost:5000/api/get-exam/${id}`
+        );
         const data = await response.json();
         setExamData(data);
+        console.log("this is data", data);
       } catch (error) {
         // Handle the error here
       }
@@ -136,13 +139,17 @@ const ViewResult = () => {
     setAction(value);
     handleCloseMenu();
   };
-
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
   return (
     <Fragment>
       <ContentBox className="analytics">
-        <Box className="breadcrumb">
-          <FormDialog2 />
-        </Box>
         <TableContainer component={Paper}>
           <Table>
             <TableBody>
@@ -156,27 +163,43 @@ const ViewResult = () => {
                 <TableCell>
                   <b>Date</b>
                 </TableCell>
-                <TableCell></TableCell>
+                <TableCell>
+                  {" "}
+                  {examData ? formatDate(examData.date) : "Loading..."}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>
                   <b>Class</b>
                 </TableCell>
-                <TableCell></TableCell>
+                <TableCell>
+                  {" "}
+                  {examData ? examData.className : "Loading..."}
+                </TableCell>
                 <TableCell>
                   <b>Time</b>
                 </TableCell>
-                <TableCell></TableCell>
+                <TableCell>
+                  {" "}
+                  {examData ? examData.fromTime : "Loading..."} -{" "}
+                  {examData ? examData.toTime : "Loading..."}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>
                   <b>Exam Instruction</b>
                 </TableCell>
-                <TableCell></TableCell>
+                <TableCell>
+                  {" "}
+                  {examData ? examData.instruction : "Loading..."}
+                </TableCell>
                 <TableCell>
                   <b>Total Mark</b>
                 </TableCell>
-                <TableCell></TableCell>
+                <TableCell>
+                  {" "}
+                  {examData ? examData.mark : "Loading..."}
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>
