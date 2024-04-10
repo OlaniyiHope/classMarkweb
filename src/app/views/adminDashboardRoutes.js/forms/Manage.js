@@ -84,11 +84,14 @@ const Manage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [action, setAction] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+
   const [editExamData, setEditExamData] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+
+  const [selectedExam, setSelectedExam] = useState(null); // State to hold selected subject data
 
   const apiUrl = process.env.REACT_APP_API_URL.trim();
 
@@ -115,9 +118,13 @@ const Manage = () => {
       [itemId]: null,
     }));
   };
-  const handleAction = (value) => {
-    setAction(value);
-    handleCloseMenu();
+  const handleCloseEditDialog = () => {
+    setEditDialogOpen(false);
+    setSelectedExam(null);
+  };
+  const handleOpenEditDialog = (exam) => {
+    setSelectedExam(exam);
+    setEditDialogOpen(true);
   };
   const handleOpenDeleteConfirmation = (item) => {
     // Rename exam to item
@@ -125,6 +132,20 @@ const Manage = () => {
     setDeleteConfirmationOpen(true);
   };
 
+  const handleEditExam = (examId) => {
+    // Find the selected student by ID
+    const selectedExam = data.find((exam) => exam?._id === examId);
+
+    if (!selectedExam) {
+      console.error("Selected student not found for ID:", examId);
+      // Optionally, you can choose to return or handle this error gracefully
+      return;
+    }
+
+    // Open the edit dialog with the selected student data
+    setEditExamData(selectedExam);
+    setEditDialogOpen(true);
+  };
   const handleCloseDeleteConfirmation = () => {
     setItemToDelete(null);
     setDeleteConfirmationOpen(false);
@@ -147,31 +168,64 @@ const Manage = () => {
       console.error("Error deleting item:", error);
     }
   };
-  const handleEditExam = async (updatedData) => {
+  // const handleSaveEdit = async (updatedData) => {
+  //   try {
+  //     const token = localStorage.getItem("jwtToken");
+
+  //     // Check if editStudentData is not null and has the _id property
+  //     if (editExamData?._id) {
+  //       // Log the payload before sending the request
+
+  //       const response = await axios.put(
+  //         `${apiUrl}/api/edit-exam/${editExamData._id}`,
+  //         {
+  //           title: updatedData.title,
+  //           className: updatedData.className,
+  //           subject: updatedData.subject,
+  //           date: updatedData.date,
+  //           fromTime: updatedData.fromTime,
+  //           toTime: updatedData.toTime,
+
+  //           // Add other fields as needed
+  //         },
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
+
+  //       console.log("Exam updated successfully:", response.data);
+  //       setEditDialogOpen(false);
+  //       reFetch(); // Manually trigger data refetch
+  //     } else {
+  //       console.error("Invalid or missing _id property in editStudentData");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating student:", error);
+  //   }
+  // };
+  const handleSaveEdit = async (updatedData) => {
     try {
       const token = localStorage.getItem("jwtToken");
 
-      // Check if editStudentData is not null and has the _id property
+      // Check if editExamData is not null and has the _id property
       if (editExamData?._id) {
-        // Log the payload before sending the request
-        console.log("Payload before sending:", {
+        // Include the AM/PM indicator in the time values
+        const formattedData = {
           title: updatedData.title,
           className: updatedData.className,
+          subject: updatedData.subject,
+          date: updatedData.date,
+          fromTime: formatTime(updatedData.fromTime),
+          toTime: formatTime(updatedData.toTime),
           // Add other fields as needed
-        });
+        };
 
+        // Log the payload before sending the request
         const response = await axios.put(
-          `http://localhost:5000/api/edit-exam/${editExamData._id}`,
-          {
-            title: updatedData.title,
-            className: updatedData.className,
-            subject: updatedData.subject,
-            date: updatedData.date,
-            fromTime: updatedData.fromTime,
-            toTime: updatedData.toTime,
-
-            // Add other fields as needed
-          },
+          `${apiUrl}/api/edit-exam/${editExamData._id}`,
+          formattedData,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -186,8 +240,15 @@ const Manage = () => {
         console.error("Invalid or missing _id property in editExamData");
       }
     } catch (error) {
-      console.error("Error updating student:", error);
+      console.error("Error updating exam:", error);
     }
+  };
+
+  const formatTime = (time) => {
+    const [hours, minutes] = time.split(":");
+    const formattedHours = parseInt(hours) % 12 || 12;
+    const amPm = parseInt(hours) >= 12 ? "PM" : "AM";
+    return `${formattedHours}:${minutes} ${amPm}`;
   };
   return (
     <Fragment>
@@ -338,14 +399,16 @@ const Manage = () => {
                   </TableRow>
                 )}
               </table>
+
               {editExamData && (
                 <EditExam
                   open={editDialogOpen}
                   onClose={() => setEditDialogOpen(false)}
-                  studentId={editExamData._id}
-                  onSave={handleEditExam}
+                  examId={editExamData._id}
+                  onSave={handleSaveEdit}
                 />
               )}
+
               <Dialog
                 open={deleteConfirmationOpen}
                 onClose={handleCloseDeleteConfirmation}

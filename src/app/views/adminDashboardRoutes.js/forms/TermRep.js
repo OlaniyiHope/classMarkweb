@@ -717,7 +717,7 @@ const TermRep = ({ studentId }) => {
                         value={data?.AdmNo || ""}
                       />
                     </p>
-                    <p style={{ color: "#042954" }}>
+                    {/*<p style={{ color: "#042954" }}>
                       <span>Class Position:</span>{" "}
                       <input
                         type="text"
@@ -748,7 +748,7 @@ const TermRep = ({ studentId }) => {
                         }}
                         value={studentData?.noinclass || ""}
                       />
-                    </p>
+                      </p>*/}
                     <p style={{ color: "#042954" }}>
                       <span>Total Marks:</span>{" "}
                       <input
@@ -868,24 +868,36 @@ const TermRep = ({ studentId }) => {
                 </tbody>
               </table>
 
-              <td style={{ verticalAlign: "top" }}>
+              <td style={{ verticalAlign: "top", width: "100%" }}>
                 {/* Second Sub-Table for Affective and Psychomotor Report */}
-                <table className="table second-sub-table " id="customersreport">
+                <table
+                  className="table second-sub-table"
+                  id="customersreport"
+                  style={{ width: "100%" }}
+                >
+                  <colgroup>
+                    <col style={{ width: "33.33%" }} />
+                    <col style={{ width: "33.33%" }} />
+                    <col style={{ width: "33.33%" }} />
+                  </colgroup>
                   <thead>
                     <tr>
-                      <th scope="col" colspan="3">
+                      <th
+                        colSpan="3"
+                        style={{ textAlign: "center", fontSize: "18px" }}
+                      >
                         AFFECTIVE AND PSYCHOMOTOR REPORT
                       </th>
                     </tr>
                   </thead>
                   <tbody>
+                    <tr>
+                      <th></th>
+                      <th style={{ width: "33.33%" }}>Work Habits</th>
+                      <th style={{ width: "33.33%" }}>RATINGS</th>
+                    </tr>
                     {psyData?.scores?.map((score, index) => (
-                      <div key={index}>
-                        <tr>
-                          <th></th>
-                          <th>Work Habits</th>
-                          <th>RATINGS</th>
-                        </tr>
+                      <React.Fragment key={index}>
                         <tr>
                           <td>{index + 1}</td>
                           <td>Following Instruction</td>
@@ -921,11 +933,12 @@ const TermRep = ({ studentId }) => {
                           <td>Eye Contact</td>
                           <td>{score?.eyecontact || "0"}</td>
                         </tr>
-                      </div>
+                      </React.Fragment>
                     ))}
                   </tbody>
                 </table>
               </td>
+
               <div style={{ color: "#042954", fontSize: "16px" }}>
                 KEY TO GRADES A (DISTINCTION)=70% &amp; ABOVE , C
                 (CREDIT)=55-69% , P(PASS)=40-54% , F(FAIL)=BELOW 40%
