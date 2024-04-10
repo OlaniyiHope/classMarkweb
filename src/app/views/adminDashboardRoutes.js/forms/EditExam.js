@@ -195,7 +195,7 @@ const EditExam = ({ open, onClose, examId, onSave }) => {
       try {
         if (examId) {
           const token = localStorage.getItem("jwtToken");
-          const response = await fetch(`${apiUrl}/get-exam/${examId}`, {
+          const response = await fetch(`${apiUrl}/api/get-exam/${examId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
