@@ -29,12 +29,14 @@ import Sub5 from "./forms/Sub5";
 import Sub6 from "./forms/Sub6";
 import AddClass from "./forms/AddClass";
 import ManSin from "./forms/ManSin";
+
 import ViewResult from "./forms/ViewResult";
 import MarkSheet from "./forms/MarkSheet";
 import ReportCard from "./forms/ReportCard";
 import ViewAdmin from "./admin/ViewAdmin";
 
 import TermRepCont from "./forms/TermRepCont";
+
 import StuReceipt from "./forms/StuReceipt";
 
 import { ReceiptProvider } from "./forms/receiptContext";
@@ -66,6 +68,9 @@ import Screen from "./forms/Screen";
 import OnOff from "./forms/OnOff";
 import Info13 from "./forms/Info13";
 import Sub14 from "./forms/Sub14";
+import ViewReceipt from "./forms/ViewReceipt";
+import FirstTermRepCont from "./forms/FirstTermRepCont";
+import ThirdTermRepCont from "./forms/ThirdTermRepCont";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -261,8 +266,24 @@ const adminDashboardRoutes = [
   },
 
   {
+    path: "/dashboard/first_term_report_card/:id",
+    element: <FirstTermRepCont />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/third_term_report_card/:id",
+    element: <ThirdTermRepCont />,
+    auth: "admin",
+  },
+
+  {
     path: "/dashboard/student-payment",
     element: <Payment />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/view-receipt/:id",
+    element: <ViewReceipt />,
     auth: "admin",
   },
   {

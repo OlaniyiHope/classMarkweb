@@ -23,7 +23,7 @@ const ContentBox = styled("div")(({ theme }) => ({
   [theme.breakpoints.down("sm")]: { margin: "16px" },
 }));
 
-const TermRep = ({ studentId }) => {
+const FirstTermRep = ({ studentId }) => {
   const componentRef = useRef();
   const gradeDefinitions = [
     { markfrom: 70, markupto: 100, comment: "Excellent", grade: "A" },
@@ -70,269 +70,6 @@ const TermRep = ({ studentId }) => {
   });
 
   const apiUrl = process.env.REACT_APP_API_URL.trim();
-  // Inside useEffect after fetching student data
-
-  // const fetchStudentData = async (studentId) => {
-  //   try {
-  //     const token = localStorage.getItem("jwtToken");
-  //     if (!token) {
-  //       throw new Error("JWT token not found");
-  //     }
-
-  //     const headers = {
-  //       Authorization: `Bearer ${token}`,
-  //     };
-
-  //     const response = await axios.get(
-  //       `${apiUrl}/api/get-scores-by-student/${studentId}`,
-  //       { headers }
-  //     );
-
-  //     const filteredScores = response.data.scores.filter(
-  //       (score) => score.marksObtained !== undefined
-  //     );
-
-  //     console.log("Filtered data:", {
-  //       ...response.data,
-  //       scores: filteredScores,
-  //     });
-
-  //     if (filteredScores.length === 0) {
-  //       throw new Error("No scores found for the student");
-  //     }
-
-  //     const { examId, subjectId } =
-  //       filteredScores.length > 0 ? filteredScores[0] : {};
-
-  //     console.log("Exam ID:", examId);
-  //     console.log("Subject ID:", subjectId);
-
-  //     if (!examId || !subjectId) {
-  //       throw new Error("Exam ID or Subject ID not found");
-  //     }
-
-  //     const allStudentsData = await fetchAllStudentsData(
-  //       examId._id,
-  //       subjectId._id
-  //     );
-
-  //     console.log("All Students Data with Scores:", allStudentsData);
-
-  //     if (Array.isArray(allStudentsData)) {
-  //       // const studentPosition =
-  //       //   sortedStudents.findIndex(
-  //       //     (student) => student.studentId === studentId
-  //       //   ) + 1;
-  //       // console.log("Position of current student:", studentPosition);
-
-  //       // Sort students based on marks obtained
-  //       const sortedStudents = allStudentsData.sort((a, b) => {
-  //         // Compare marks obtained
-  //         if (a.marksObtained > b.marksObtained) {
-  //           return -1; // a should come before b
-  //         }
-  //         if (a.marksObtained < b.marksObtained) {
-  //           return 1; // b should come before a
-  //         }
-  //         return 0; // if marks are equal, maintain the order
-  //       });
-
-  //       // Find the position of the current student based on marks obtained
-
-  //       const studentPosition =
-  //         sortedStudents.findIndex(
-  //           (student) => student.studentId._id === studentId
-  //         ) + 1;
-
-  //       console.log("Position of current student:", studentPosition);
-
-  //       // Add position to each score object
-  //       const scoresWithPosition = filteredScores.map((score) => ({
-  //         ...score,
-  //         position: studentPosition,
-  //       }));
-
-  //       return {
-  //         ...response.data,
-  //         // scores: filteredScores,
-  //         scores: scoresWithPosition,
-  //         examId: examId._id,
-  //         subjectId: subjectId._id,
-  //         allStudentsData: sortedStudents,
-  //       };
-  //     } else {
-  //       console.error("Error: allStudentsData is not an array");
-  //       throw new Error("Failed to fetch student data");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching student data:", error);
-  //     throw new Error("Failed to fetch student data");
-  //   }
-  // };
-
-  // const fetchStudentData = async (studentId) => {
-  //   try {
-  //     const token = localStorage.getItem("jwtToken");
-  //     if (!token) {
-  //       throw new Error("JWT token not found");
-  //     }
-
-  //     const headers = {
-  //       Authorization: `Bearer ${token}`,
-  //     };
-
-  //     const response = await axios.get(
-  //       `${apiUrl}/api/get-scores-by-student/${studentId}`,
-  //       { headers }
-  //     );
-
-  //     const filteredScores = response.data.scores.filter(
-  //       (score) => score.marksObtained !== undefined
-  //     );
-
-  //     console.log("Filtered data:", {
-  //       ...response.data,
-  //       scores: filteredScores,
-  //     });
-
-  //     if (filteredScores.length === 0) {
-  //       throw new Error("No scores found for the student");
-  //     }
-
-  //     const scoresWithPositions = [];
-
-  //     // Iterate over each subject and exam combination
-  //     for (const score of filteredScores) {
-  //       const { examId, subjectId } = score;
-
-  //       if (!examId || !subjectId) {
-  //         console.error("Exam ID or Subject ID not found for a score:", score);
-  //         continue; // Skip this score if examId or subjectId is missing
-  //       }
-
-  //       const allStudentsData = await fetchAllStudentsData(
-  //         examId._id,
-  //         subjectId._id
-  //       );
-
-  //       // Filter students who have marks for the current subject and exam
-  //       const studentsWithMarks = allStudentsData.filter(
-  //         (student) =>
-  //           student.marksObtained !== undefined &&
-  //           student.studentId?._id !== studentId && // Exclude current student
-  //           student.subjectId?._id === subjectId._id &&
-  //           student.examId?._id === examId._id
-  //       );
-
-  //       // Sort students with marks based on marks obtained for the current subject and exam
-  //       const sortedStudents = studentsWithMarks.sort(
-  //         (a, b) => b.marksObtained - a.marksObtained
-  //       );
-
-  //       // Find the position of the current student for the current subject and exam
-  //       const studentPosition =
-  //         sortedStudents.findIndex(
-  //           (student) => student.studentId?._id === studentId
-  //         ) + 1;
-
-  //       console.log(
-  //         `Position of current student for Subject ${subjectId._id} and Exam ${examId._id}:`,
-  //         studentPosition
-  //       );
-
-  //       // Add position to the score object
-  //       scoresWithPositions.push({
-  //         ...score,
-  //         position: studentPosition,
-  //       });
-  //     }
-
-  //     return {
-  //       ...response.data,
-  //       scores: scoresWithPositions,
-  //     };
-  //   } catch (error) {
-  //     console.error("Error fetching student data:", error);
-  //     throw new Error("Failed to fetch student data");
-  //   }
-  // };
-
-  // const fetchStudentData = async (studentId) => {
-  //   try {
-  //     const token = localStorage.getItem("jwtToken");
-  //     if (!token) {
-  //       throw new Error("JWT token not found");
-  //     }
-
-  //     const headers = {
-  //       Authorization: `Bearer ${token}`,
-  //     };
-
-  //     const response = await axios.get(
-  //       `${apiUrl}/api/get-scores-by-student/${studentId}`,
-  //       { headers }
-  //     );
-
-  //     const filteredScores = response.data.scores.filter(
-  //       (score) => score.marksObtained !== undefined
-  //     );
-
-  //     console.log("Filtered data:", {
-  //       ...response.data,
-  //       scores: filteredScores,
-  //     });
-
-  //     if (filteredScores.length === 0) {
-  //       throw new Error("No scores found for the student");
-  //     }
-
-  //     const scoresWithPositions = await Promise.all(
-  //       filteredScores.map(async (score) => {
-  //         const { examId, subjectId } = score;
-
-  //         if (!examId || !subjectId) {
-  //           console.error(
-  //             "Exam ID or Subject ID not found for a score:",
-  //             score
-  //           );
-  //           return { ...score, position: 0 };
-  //         }
-
-  //         const allStudentsData = await fetchAllStudentsData(
-  //           examId._id,
-  //           subjectId._id
-  //         );
-
-  //         const sortedStudents = allStudentsData.sort(
-  //           (a, b) => b.marksObtained - a.marksObtained
-  //         );
-
-  //         const studentPosition =
-  //           sortedStudents.findIndex(
-  //             (student) => student.studentId?._id === studentId
-  //           ) + 1;
-
-  //         console.log(
-  //           `Position of current student for Subject ${subjectId._id} and Exam ${examId._id}:`,
-  //           studentPosition
-  //         );
-
-  //         return {
-  //           ...score,
-  //           position: studentPosition,
-  //         };
-  //       })
-  //     );
-
-  //     return {
-  //       ...response.data,
-  //       scores: scoresWithPositions,
-  //     };
-  //   } catch (error) {
-  //     console.error("Error fetching student data:", error);
-  //     throw new Error("Failed to fetch student data");
-  //   }
-  // };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -377,11 +114,11 @@ const TermRep = ({ studentId }) => {
       const filteredScores = response.data.scores.filter(
         (score) =>
           (score.marksObtained !== undefined || score.marksObtained === 0) &&
-          score.examId.name.toUpperCase() === "SECOND TERM"
+          score.examId.name.toUpperCase() === "FIRST TERM"
       );
 
       if (filteredScores.length === 0) {
-        throw new Error("No second term scores found for the student");
+        throw new Error("No first term scores found for the student");
       }
 
       console.log("Filtered Scores:", filteredScores);
@@ -437,6 +174,7 @@ const TermRep = ({ studentId }) => {
       throw new Error("Failed to fetch student data");
     }
   };
+
   const fetchAllStudentsData = async (examId, subjectId) => {
     try {
       const token = localStorage.getItem("jwtToken");
@@ -574,14 +312,6 @@ const TermRep = ({ studentId }) => {
   if (error) {
     return <p>{error}</p>;
   }
-  console.log("New Student Data:", studentData); // Log studentData to check its structure
-
-  // const totalMarksObtained = studentData?.scores?.reduce(
-  //   (total, score) => total + (score.marksObtained || 0),
-  //   0
-  // );
-  // console.log("Total Marks Obtained:", totalMarksObtained);
-
   let totalMarksObtained = 0;
 
   if (studentData && Array.isArray(studentData)) {
@@ -597,31 +327,9 @@ const TermRep = ({ studentId }) => {
   //   ? studentData.scores.length * 100 // Assuming 100 marks per subject
   //   : 0;
   const totalMarks = studentData ? studentData.length * 100 : 0;
-
-  // const averageMarks = studentData?.scores
-  //   ? (
-  //       (studentData.scores.reduce(
-  //         (acc, score) => acc + (score.marksObtained || 0),
-  //         0
-  //       ) /
-  //         totalMarks) *
-  //       100
-  //     ).toFixed(1)
-  //   : 0;
-
   const averageMarks = totalMarks
     ? ((totalMarksObtained / totalMarks) * 100).toFixed(1)
     : 0;
-
-  // const calculateGrade = (comment) => {
-  //   // Use your existing gradeDefinitions to find a grade with a similar comment
-  //   const matchingGrade = gradeDefinitions.find((grade) =>
-  //     comment.toLowerCase().includes(grade.comment.toLowerCase())
-  //   );
-
-  //   // Return the grade if a matching grade is found
-  //   return matchingGrade ? matchingGrade.grade : "-";
-  // };
 
   const calculateGrade = (comment) => {
     // Use your existing gradeDefinitions to find a grade with a similar comment
@@ -632,370 +340,6 @@ const TermRep = ({ studentId }) => {
     // Return the grade if a matching grade is found
     return matchingGrade ? matchingGrade.grade : "-";
   };
-
-  // const calculateAverageGrade = () => {
-  //   const gradeToValueMap = {
-  //     A: 5,
-  //     B: 4,
-  //     C: 3,
-  //     D: 2,
-  //     E: 1,
-  //   };
-
-  //   let totalGradeValues = 0;
-  //   let totalMarksObtained = 0;
-  //   let totalSubjects = 0;
-
-  //   // Check if there are subjects with valid grades
-  //   const subjectsWithGrades = studentData?.scores?.filter(
-  //     (score) => score?.marksObtained !== undefined
-  //   );
-
-  //   if (!subjectsWithGrades || subjectsWithGrades.length === 0) {
-  //     return "N/A";
-  //   }
-
-  //   subjectsWithGrades.forEach((score) => {
-  //     const gradeValue = gradeToValueMap[calculateGrade(score?.comment)];
-  //     const marksObtained = score?.marksObtained;
-
-  //     if (
-  //       !isNaN(gradeValue) &&
-  //       gradeValue !== undefined &&
-  //       !isNaN(marksObtained) &&
-  //       marksObtained !== undefined
-  //     ) {
-  //       console.log("Grade Value:", gradeValue);
-  //       console.log("Marks Obtained:", marksObtained);
-
-  //       totalGradeValues += gradeValue;
-  //       totalMarksObtained += gradeValue * marksObtained;
-  //       totalSubjects += 1;
-  //     }
-  //   });
-
-  //   if (
-  //     totalMarksObtained === 0 ||
-  //     totalGradeValues === 0 ||
-  //     totalSubjects === 0
-  //   ) {
-  //     return "N/A";
-  //   }
-
-  //   const averageGradeValue = totalGradeValues / totalSubjects;
-
-  //   if (isNaN(averageGradeValue)) {
-  //     // Check if the result is NaN, return "N/A" to avoid displaying an invalid value
-  //     return "N/A";
-  //   }
-
-  //   // Map the average grade value to a grade (e.g., A, B, C, D, E) based on your criteria
-  //   const valueToGradeMap = {
-  //     5: "A",
-  //     4: "B",
-  //     3: "C",
-  //     2: "D",
-  //     1: "E",
-  //   };
-
-  //   const averageGrade = valueToGradeMap[Math.round(averageGradeValue)];
-
-  //   // Ensure the result is a numeric value
-  //   const result = parseFloat(averageGradeValue.toFixed(1));
-
-  //   // Return the numeric value instead of a string
-  //   return isNaN(result) ? "N/A" : result;
-  // };
-  // const calculateAverageGrade = () => {
-  //   const gradeToValueMap = {
-  //     A: 5,
-  //     B: 4,
-  //     C: 3,
-  //     D: 2,
-  //     E: 1,
-  //   };
-
-  //   let totalGradeValues = 0;
-  //   let totalMarksObtained = 0;
-  //   let totalSubjects = 0;
-
-  //   // Check if there are subjects with valid grades
-  //   const subjectsWithGrades = studentData?.scores?.filter(
-  //     (score) => score?.marksObtained !== undefined
-  //   );
-
-  //   if (!subjectsWithGrades || subjectsWithGrades.length === 0) {
-  //     return "N/A";
-  //   }
-
-  //   subjectsWithGrades.forEach((score) => {
-  //     const gradeValue = gradeToValueMap[calculateGrade(score?.comment)];
-  //     const marksObtained = score?.marksObtained;
-
-  //     if (
-  //       !isNaN(gradeValue) &&
-  //       gradeValue !== undefined &&
-  //       !isNaN(marksObtained) &&
-  //       marksObtained !== undefined
-  //     ) {
-  //       totalGradeValues += gradeValue;
-  //       totalMarksObtained += marksObtained;
-  //       totalSubjects += 1;
-  //     }
-  //   });
-
-  //   if (
-  //     totalMarksObtained === 0 ||
-  //     totalGradeValues === 0 ||
-  //     totalSubjects === 0
-  //   ) {
-  //     return "N/A";
-  //   }
-
-  //   const averageGradeValue = totalMarksObtained / totalSubjects;
-
-  //   if (isNaN(averageGradeValue)) {
-  //     return "N/A";
-  //   }
-
-  //   // Map the average grade value to a grade (e.g., A, B, C, D, E) based on your criteria
-  //   const valueToGradeMap = {
-  //     5: "A",
-  //     4: "B",
-  //     3: "C",
-  //     2: "D",
-  //     1: "E",
-  //   };
-
-  //   const averageGrade = valueToGradeMap[Math.round(averageGradeValue)];
-
-  //   return averageGrade;
-  // };
-
-  // const calculateAverageGrade = () => {
-  //   const gradeToValueMap = {
-  //     A: 5,
-  //     B: 4,
-  //     C: 3,
-  //     D: 2,
-  //     E: 1,
-  //   };
-
-  //   let totalGradeValues = 0;
-  //   let totalMarksObtained = 0;
-  //   let totalSubjects = 0;
-
-  //   // Check if there are subjects with valid grades
-  //   const subjectsWithGrades = studentData?.scores?.filter(
-  //     (score) => score?.marksObtained !== undefined
-  //   );
-
-  //   if (!subjectsWithGrades || subjectsWithGrades.length === 0) {
-  //     console.log("No subjects with valid grades found.");
-  //     return "N/A";
-  //   }
-
-  //   subjectsWithGrades.forEach((score) => {
-  //     const gradeValue = gradeToValueMap[calculateGrade(score?.comment)];
-  //     const marksObtained = score?.marksObtained;
-
-  //     if (
-  //       !isNaN(gradeValue) &&
-  //       gradeValue !== undefined &&
-  //       !isNaN(marksObtained) &&
-  //       marksObtained !== undefined
-  //     ) {
-  //       console.log("Grade Value:", gradeValue);
-  //       console.log("Marks Obtained:", marksObtained);
-
-  //       totalGradeValues += gradeValue;
-  //       totalMarksObtained += marksObtained;
-  //       totalSubjects += 1;
-  //     }
-  //   });
-
-  //   console.log("Total Grade Values:", totalGradeValues);
-  //   console.log("Total Marks Obtained:", totalMarksObtained);
-  //   console.log("Total Subjects:", totalSubjects);
-
-  //   if (
-  //     totalMarksObtained === 0 ||
-  //     totalGradeValues === 0 ||
-  //     totalSubjects === 0
-  //   ) {
-  //     console.log("Unable to calculate average grade.");
-  //     return "N/A";
-  //   }
-
-  //   const averageGradeValue = totalMarksObtained / totalSubjects;
-
-  //   console.log("Average Grade Value:", averageGradeValue);
-
-  //   if (isNaN(averageGradeValue)) {
-  //     console.log("Average grade value is NaN.");
-  //     return "N/A";
-  //   }
-
-  //   // Map the average grade value to a grade (e.g., A, B, C, D, E) based on your criteria
-  //   const valueToGradeMap = {
-  //     5: "A",
-  //     4: "B",
-  //     3: "C",
-  //     2: "D",
-  //     1: "E",
-  //   };
-
-  //   const averageGrade = valueToGradeMap[Math.round(averageGradeValue)];
-
-  //   console.log("Average Grade:", averageGrade);
-
-  //   return averageGrade;
-  // };
-  // const calculateAverageGrade = () => {
-  //   const gradeToValueMap = {
-  //     A: 5,
-  //     B: 4,
-  //     C: 3,
-  //     D: 2,
-  //     E: 1,
-  //   };
-
-  //   let totalGradeValues = 0;
-  //   let totalMarksObtained = 0;
-  //   let totalSubjects = 0;
-
-  //   // Check if there are subjects with valid grades
-  //   const subjectsWithGrades = studentData?.filter(
-  //     (score) => score?.marksObtained !== undefined
-  //   );
-
-  //   if (!subjectsWithGrades || subjectsWithGrades.length === 0) {
-  //     console.log("No subjects with valid grades found.");
-  //     return "N/A";
-  //   }
-
-  //   subjectsWithGrades.forEach((score) => {
-  //     const gradeValue = gradeToValueMap[calculateGrade(score?.comment)];
-  //     const marksObtained = score?.marksObtained;
-
-  //     if (
-  //       !isNaN(gradeValue) &&
-  //       gradeValue !== undefined &&
-  //       !isNaN(marksObtained) &&
-  //       marksObtained !== undefined
-  //     ) {
-  //       console.log("Grade Value:", gradeValue);
-  //       console.log("Marks Obtained:", marksObtained);
-
-  //       totalGradeValues += gradeValue;
-  //       totalMarksObtained += marksObtained;
-  //       totalSubjects += 1;
-  //     }
-  //   });
-
-  //   console.log("Total Grade Values:", totalGradeValues);
-  //   console.log("Total Marks Obtained:", totalMarksObtained);
-  //   console.log("Total Subjects:", totalSubjects);
-
-  //   if (
-  //     totalMarksObtained === 0 ||
-  //     totalGradeValues === 0 ||
-  //     totalSubjects === 0
-  //   ) {
-  //     console.log("Unable to calculate average grade.");
-  //     return "N/A";
-  //   }
-
-  //   const averageGradeValue = totalGradeValues / totalSubjects;
-
-  //   console.log("Average Grade Value:", averageGradeValue);
-
-  //   if (isNaN(averageGradeValue)) {
-  //     console.log("Average grade value is NaN.");
-  //     return "N/A";
-  //   }
-
-  //   // Map the average grade value to a grade (e.g., A, B, C, D, E) based on your criteria
-  //   const valueToGradeMap = {
-  //     5: "A",
-  //     4: "B",
-  //     3: "C",
-  //     2: "D",
-  //     1: "E",
-  //   };
-
-  //   const averageGrade = valueToGradeMap[Math.round(averageGradeValue)];
-
-  //   console.log("Average Grade:", averageGrade);
-
-  //   return averageGrade;
-  // };
-  // const calculateAverageGrade = () => {
-  //   const gradeToValueMap = {
-  //     A: 5,
-  //     B: 4,
-  //     C: 3,
-  //     D: 2,
-  //     E: 1,
-  //   };
-
-  //   let totalGradeValues = 0;
-  //   let totalMarksObtained = 0;
-  //   let totalSubjects = 0;
-
-  //   // Check if there are subjects with valid grades
-  //   const subjectsWithGrades = studentData?.filter(
-  //     (score) => score?.marksObtained !== undefined
-  //   );
-
-  //   if (!subjectsWithGrades || subjectsWithGrades.length === 0) {
-  //     console.log("No subjects with valid grades found.");
-  //     return "N/A";
-  //   }
-
-  //   subjectsWithGrades.forEach((score) => {
-  //     const gradeValue = gradeToValueMap[calculateGrade(score?.comment)];
-  //     const marksObtained = score?.marksObtained;
-
-  //     if (
-  //       !isNaN(gradeValue) &&
-  //       gradeValue !== undefined &&
-  //       !isNaN(marksObtained) &&
-  //       marksObtained !== undefined
-  //     ) {
-  //       console.log("Grade Value:", gradeValue);
-  //       console.log("Marks Obtained:", marksObtained);
-
-  //       totalGradeValues += gradeValue;
-  //       totalMarksObtained += marksObtained;
-  //       totalSubjects += 1;
-  //     }
-  //   });
-
-  //   console.log("Total Grade Values:", totalGradeValues);
-  //   console.log("Total Marks Obtained:", totalMarksObtained);
-  //   console.log("Total Subjects:", totalSubjects);
-
-  //   if (
-  //     totalMarksObtained === 0 ||
-  //     totalGradeValues === 0 ||
-  //     totalSubjects === 0
-  //   ) {
-  //     console.log("Unable to calculate average grade.");
-  //     return "N/A";
-  //   }
-
-  //   const averageGradeValue = totalGradeValues / totalSubjects;
-
-  //   console.log("Average Grade Value:", averageGradeValue);
-
-  //   if (isNaN(averageGradeValue)) {
-  //     console.log("Average grade value is NaN.");
-  //     return "N/A";
-  //   }
-
-  //   return averageGradeValue.toFixed(15); // Adjust the number of decimal places as needed
-  // };
 
   const calculateAverageGrade = () => {
     const gradeToValueMap = {
@@ -1274,7 +618,7 @@ const TermRep = ({ studentId }) => {
                           marginLeft: "30px",
                           textAlign: "center",
                         }}
-                        value={totalMarksObtained}
+                        value={totalMarksObtained || ""}
                       />
                     </p>
                     <p style={{ color: "#042954" }}>
@@ -1306,9 +650,11 @@ const TermRep = ({ studentId }) => {
                           marginLeft: "30px",
                           textAlign: "center",
                         }}
+                        // value={calculateAverageGrade().toFixed(1)}
+
                         value={
                           typeof calculateAverageGrade() === "number"
-                            ? calculateAverageGrade().toFixed(2) // Assuming you want to display up to two decimal places
+                            ? calculateAverageGrade().toFixed(1)
                             : calculateAverageGrade()
                         }
                       />
@@ -1335,26 +681,6 @@ const TermRep = ({ studentId }) => {
                     <th scope="col">Remark</th>
                   </tr>
                 </thead>
-                {/*}  <tbody style={{ width: "100% !important" }}>
-                  {studentData?.scores &&
-                    studentData.scores
-                      .filter((score) => score.marksObtained !== undefined)
-                      .map((score, index) => {
-                        return (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{score?.subjectName || "-"}</td>
-                            <td>{score?.testscore || "-"}</td>
-                            <td>{score?.examscore || "-"}</td>
-                            <td>{score?.marksObtained || "-"}</td>
-                            <td>{score?.position || "-"}</td>
-                            <td>{calculateGrade(score?.comment) || "-"}</td>
-                            <td>{score?.comment || "-"}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>*/}
-
                 <tbody style={{ width: "100% !important" }}>
                   {studentData &&
                     studentData?.map((score, index) => {
@@ -1365,7 +691,6 @@ const TermRep = ({ studentId }) => {
                           <td>{score?.testscore || "-"}</td>{" "}
                           <td>{score?.examscore || "-"}</td>{" "}
                           <td>{score?.marksObtained || "-"}</td>
-                          <td>{score?.position || "-"}</td>
                           <td>{calculateGrade(score?.comment) || "-"}</td>
                           <td>{score?.comment || "-"}</td>
                         </tr>
@@ -1523,4 +848,4 @@ const TermRep = ({ studentId }) => {
   );
 };
 
-export default TermRep;
+export default FirstTermRep;

@@ -102,21 +102,39 @@ const MarkSheet = () => {
 
         <Box width="100%" overflow="auto">
           {/* Use studentId for "First Term Report Card" link */}
+          <Link to={`/dashboard/first_term_report_card/${id}`}>
+            <Button
+              color="primary"
+              variant="contained"
+              style={{ width: "100%", marginTop: "20px" }}
+            >
+              First Term Report Card
+            </Button>
+          </Link>
           <Link to={`/dashboard/term_report_card/${id}`}>
             <Button
               color="primary"
               variant="contained"
-              style={{ width: "100%", marginTop: "100px" }}
+              style={{ width: "100%", marginTop: "20px" }}
             >
               Second Term Report Card
             </Button>
           </Link>
-          {/* Use id for "Cumulative Result" link */}
-          <Link to={`/dashboard/report_card/${id}`}>
+          <Link to={`/dashboard/third_term_report_card/${id}`}>
             <Button
               color="primary"
               variant="contained"
-              style={{ width: "100%", marginTop: "100px" }}
+              style={{ width: "100%", marginTop: "20px" }}
+            >
+              Third Term Report Card
+            </Button>
+          </Link>
+          {/* Use id for "Cumulative Result" link */}
+          <Link>
+            <Button
+              color="primary"
+              variant="contained"
+              style={{ width: "100%", marginTop: "20px" }}
             >
               Cumulative Result
             </Button>

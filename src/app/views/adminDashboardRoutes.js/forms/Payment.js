@@ -1,6 +1,8 @@
 import {} from "@mui/material";
 import { Fragment, React, useState, useEffect } from "react";
 import { Box } from "@mui/system";
+import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
+
 import {
   Card,
   Button,
@@ -69,12 +71,16 @@ const Payments = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const { data, loading, error } = useFetch("/receipt");
   console.log(data);
+  const [anchorElMap, setAnchorElMap] = useState({});
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [balances, setBalances] = useState([]);
+  const [editStudentData, setEditStudentData] = useState(null);
 
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
   useEffect(() => {
     if (data) {
       const balancesArray = data.map((item) => item.amount - item.paid);
@@ -88,6 +94,28 @@ const Payments = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+  const handleOpenMenu = (event, examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: event.currentTarget,
+    }));
+  };
+  // Function to handle closing the context menu for a specific exam
+  const handleCloseMenu = (examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: null,
+    }));
+  };
+  const handleOpenDeleteConfirmation = (user) => {
+    setUserToDelete(user);
+    setDeleteConfirmationOpen(true);
+  };
+
+  const handleCloseDeleteConfirmation = () => {
+    setUserToDelete(null);
+    setDeleteConfirmationOpen(false);
   };
 
   return (
@@ -145,30 +173,41 @@ const Payments = () => {
                       </TableCell>
                       <TableCell align="center">{balance}</TableCell>
                       <TableCell align="center">{item.status}</TableCell>
+
                       <TableCell align="right">
-                        <Menu id={`action-menu-${item._id}`}>
+                        <IconButton
+                          aria-controls={`action-menu-${item._id}`}
+                          aria-haspopup="true"
+                          onClick={(event) => handleOpenMenu(event, item._id)} // Pass item._id
+                        >
+                          <MoreVertIcon /> {/* MoreVertIcon for the menu */}
+                        </IconButton>
+                        <Menu
+                          id={`action-menu-${item._id}`}
+                          anchorEl={anchorElMap[item._id]}
+                          open={Boolean(anchorElMap[item._id])}
+                          onClose={() => handleCloseMenu(item._id)}
+                        >
                           <MenuItem>
                             <ListItemIcon></ListItemIcon>
-                            <Link
-                              to={`/dashboard/manage-online-exam/${item._id}`}
-                            >
-                              Manage Questions
+                            <Link to={`/dashboard/view-receipt/${item._id}`}>
+                              View Receipt
                             </Link>
                           </MenuItem>
                           <MenuItem>
                             <ListItemIcon></ListItemIcon>
 
-                            <Link to={`/dashboard/view-result/${item._id}`}>
-                              View Result
-                            </Link>
+                            <Link to="/dashboard/profile">Student Profile</Link>
                           </MenuItem>
                           <MenuItem>
                             <ListItemIcon>
-                              <EditIcon />
+                              <EditIcon /> {/* Use an Edit icon */}
                             </ListItemIcon>
                             Edit
                           </MenuItem>
-                          <MenuItem>
+                          <MenuItem
+                            onClick={() => handleOpenDeleteConfirmation(item)}
+                          >
                             <ListItemIcon>
                               <DeleteIcon />
                             </ListItemIcon>
