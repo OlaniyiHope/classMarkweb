@@ -112,21 +112,39 @@ const MarkSheet = () => {
         </h2>
 
         <Box width="100%" overflow="auto">
+          <Link to={`/dashboard/first_term_report_card/${user._id}`}>
+            <Button
+              color="primary"
+              variant="contained"
+              style={{ width: "100%", marginTop: "20px" }}
+            >
+              First Term Report Card
+            </Button>
+          </Link>
           <Link to={`/dashboard/term_report_card/${user._id}`}>
             <Button
               color="primary"
               variant="contained"
-              style={{ width: "100%", marginTop: "100px" }}
+              style={{ width: "100%", marginTop: "20px" }}
             >
               Second Term Report Card
             </Button>
           </Link>
-
-          <Link to={`/dashboard/report_card/${data._id}`}>
+          <Link to={`/dashboard/third_term_report_card/${user._id}`}>
             <Button
               color="primary"
               variant="contained"
-              style={{ width: "100%", marginTop: "100px" }}
+              style={{ width: "100%", marginTop: "20px" }}
+            >
+              Third Term Report Card
+            </Button>
+          </Link>
+
+          <Link>
+            <Button
+              color="primary"
+              variant="contained"
+              style={{ width: "100%", marginTop: "20px" }}
             >
               Cummulative Result
             </Button>
