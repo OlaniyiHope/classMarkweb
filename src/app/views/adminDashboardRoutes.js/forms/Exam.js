@@ -60,14 +60,22 @@ const Exam = () => {
   const [showMarkManagement, setShowMarkManagement] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL.trim();
 
-  const gradeDefinitions = [
-    { markfrom: 80, markupto: 100, comment: "Excellent" },
-    { markfrom: 70, markupto: 79, comment: "Very Good" },
-    { markfrom: 60, markupto: 69, comment: "Good" },
-    { markfrom: 55, markupto: 59, comment: "Fairly Good" },
-    { markfrom: 0, markupto: 49, comment: "Poor" },
-  ];
+  // const gradeDefinitions = [
+  //   { markfrom: 80, markupto: 100, comment: "Excellent" },
+  //   { markfrom: 70, markupto: 79, comment: "Very Good" },
+  //   { markfrom: 60, markupto: 69, comment: "Good" },
+  //   { markfrom: 55, markupto: 59, comment: "Fairly Good" },
+  //   { markfrom: 0, markupto: 49, comment: "Poor" },
+  // ];
 
+  const gradeDefinitions = [
+    { markfrom: 70, markupto: 100, comment: "Excellent", grade: "A" },
+    { markfrom: 60, markupto: 69, comment: "Very Good", grade: "B" },
+    { markfrom: 50, markupto: 59, comment: "Good", grade: "C" },
+    { markfrom: 45, markupto: 49, comment: "Fairly Good", grade: "D" },
+    { markfrom: 40, markupto: 44, comment: "Poor", grade: "E" },
+    { markfrom: 0, markupto: 39, comment: "Poor", grade: "F" },
+  ];
   const fetchStudentData = async (examId, subjectId) => {
     try {
       const token = localStorage.getItem("jwtToken");
