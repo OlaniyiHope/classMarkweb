@@ -257,40 +257,103 @@
 
 // login();
 
-const puppeteer = require("puppeteer");
+// const puppeteer = require("puppeteer");
 
-async function login() {
-  const browser = await puppeteer.launch({ headless: false }); // Launch a browser instance
-  const page = await browser.newPage(); // Open a new page
+// async function login() {
+//   const browser = await puppeteer.launch({ headless: false }); // Launch a browser instance
+//   const page = await browser.newPage(); // Open a new page
+
+//   try {
+//     await page.goto("https://osmosapp.com/auth/sign-in"); // Navigate to the login page
+
+//     // Wait for the email input field to be visible and then type your email
+//     await page.waitForSelector('input[id="email"]', { timeout: 60000 });
+//     await page.type('input[id="email"]', "olaniyihoppee@gmail.com");
+
+//     // Wait for the password input field to be visible and then type your password
+//     await page.waitForSelector('input[id="password"]', { timeout: 60000 });
+//     await page.type('input[id="password"]', "Take100%");
+
+//     // Click the login button
+//     await page.click('button[type="submit"]');
+
+//     // Wait for navigation to the dashboard page
+//     // await page.waitForNavigation({ waitUntil: "networkidle2" });
+
+//     await page.waitForNavigation({ timeout: 60000, waitUntil: "networkidle2" });
+
+//     await page.waitForSelector("your_login_success_element_selector", {
+//       timeout: 60000,
+//     });
+
+//     // Wait for the dashboard page to load after login
+//     await page.waitForFunction(() =>
+//       window.location.href.includes("https://osmosapp.com/dash/home")
+//     );
+
+//     console.log("Login successful! Dashboard page loaded.");
+//   } catch (error) {
+//     console.error("Login failed:", error);
+//   } finally {
+//     await browser.close(); // Close the browser
+//   }
+// }
+
+// login();
+
+const { chromium } = require("playwright");
+
+async function loginAndCopyPages() {
+  const browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext();
+  const page = await context.newPage();
 
   try {
-    await page.goto("https://osmosapp.com/auth/sign-in"); // Navigate to the login page
+    // Navigate to the login page
+    const maxRetries = 3;
+    let retries = 0;
 
-    // Wait for the email input field to be visible and then type your email
-    await page.waitForSelector('input[id="email"]');
-    await page.type('input[id="email"]', "olaniyihoppee@gmail.com");
+    while (retries < maxRetries) {
+      try {
+        await page.goto("https://osmosapp.com/auth/sign-in", {
+          timeout: 60000,
+        });
+        break; // If successful, break out of the loop
+      } catch (error) {
+        console.error("Error during navigation:", error);
+        retries++;
+      }
+    }
 
-    // Wait for the password input field to be visible and then type your password
-    await page.waitForSelector('input[id="password"]');
-    await page.type('input[id="password"]', "Take100%");
+    while (retries < maxRetries) {
+      try {
+        await page.fill('input[id="email"]', "olaniyihoppee@gmail.com");
+        break; // If successful, break out of the loop
+      } catch (error) {
+        console.error("Error during filling email input:", error);
+        retries++;
+      }
+    }
 
-    // Click the login button
+    await page.fill('input[id="password"]', "Take100%");
     await page.click('button[type="submit"]');
 
-    // Wait for navigation to the dashboard page
-    await page.waitForNavigation({ waitUntil: "networkidle2" });
+    // Wait for navigation to complete
+    await page.waitForNavigation();
 
-    // Wait for the dashboard page to load after login
-    await page.waitForFunction(() =>
-      window.location.href.includes("https://osmosapp.com/dash/home")
-    );
+    // Navigate to the dashboard page
+    await page.goto("https://osmosapp.com/dash/home");
 
-    console.log("Login successful! Dashboard page loaded.");
+    // Wait for the dashboard content to load
+    await page.waitForSelector("your_dashboard_element_selector");
+
+    // Save the page content or take a screenshot
+    // Example: await page.screenshot({ path: 'dashboard.png' });
   } catch (error) {
-    console.error("Login failed:", error);
+    console.error("Error:", error);
   } finally {
-    await browser.close(); // Close the browser
+    await browser.close();
   }
 }
 
-login();
+loginAndCopyPages();
