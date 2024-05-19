@@ -28,6 +28,7 @@ import pic3 from "./pic-2.png";
 import { faGoogle, faApple } from "@fortawesome/free-brands-svg-icons";
 
 import "./style.css";
+import CustomLabel from "./CustomLabel";
 
 // inital login credentials
 const initialValues = {
@@ -192,7 +193,9 @@ const JwtLogin = () => {
                             fullWidth
                             type="text"
                             name="identifier"
-                            label="Email or Username"
+                            label={
+                              <CustomLabel label="Email or Username" required />
+                            }
                             onBlur={handleBlur}
                             value={values.identifier}
                             onChange={handleChange}
@@ -207,7 +210,7 @@ const JwtLogin = () => {
                             fullWidth
                             name="password"
                             type={showPassword ? "text" : "password"}
-                            label="Password"
+                            label={<CustomLabel label="Password" required />}
                             variant="outlined"
                             onBlur={handleBlur}
                             value={values.password}

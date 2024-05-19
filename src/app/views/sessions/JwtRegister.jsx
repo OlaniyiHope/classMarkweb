@@ -25,6 +25,7 @@ import * as Yup from "yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import "./style.css";
 import jwtDecode from "jwt-decode";
+import CustomLabel from "./CustomLabel";
 
 const FlexBox = styled(Box)(() => ({ display: "flex", alignItems: "center" }));
 
@@ -68,7 +69,14 @@ const initialValues = {
 // form field validation schema
 const validationSchema = Yup.object().shape({
   password: Yup.string()
-    .min(6, "Password must be 6 character length")
+    .min(6, "Password must be at least 6 characters long")
+    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+    .matches(/[0-9]/, "Password must contain at least one number")
+    .matches(
+      /[@$!%*?&#]/,
+      "Password must contain at least one special character"
+    )
     .required("Password is required!"),
   email: Yup.string()
     .email("Invalid Email address")
@@ -185,7 +193,7 @@ const JwtRegister = () => {
                           size="small"
                           type="text"
                           name="username"
-                          label="User Name"
+                          label={<CustomLabel label="Username" required />}
                           variant="outlined"
                           onBlur={handleBlur}
                           value={values.username}
@@ -201,7 +209,7 @@ const JwtRegister = () => {
                           size="small"
                           type="email"
                           name="email"
-                          label="Email"
+                          label={<CustomLabel label="Email" required />}
                           variant="outlined"
                           onBlur={handleBlur}
                           id="email"
@@ -216,7 +224,7 @@ const JwtRegister = () => {
                           size="small"
                           type="tel" // Use type "tel" to indicate a telephone number input
                           name="phone"
-                          label="Phone Number"
+                          label={<CustomLabel label="Phone Number" required />}
                           variant="outlined"
                           onBlur={handleBlur}
                           value={values.phone}
@@ -233,7 +241,7 @@ const JwtRegister = () => {
                           size="small"
                           type="text"
                           name="address"
-                          label=" Address"
+                          label={<CustomLabel label="Address" required />}
                           variant="outlined"
                           id="address"
                           onBlur={handleBlur}
@@ -248,7 +256,7 @@ const JwtRegister = () => {
                           size="small"
                           name="password"
                           type={showPassword ? "text" : "password"}
-                          label="Password"
+                          label={<CustomLabel label="Password" required />}
                           id="password"
                           variant="outlined"
                           onBlur={handleBlur}
@@ -276,7 +284,7 @@ const JwtRegister = () => {
                         />
                         <FormControl component="fieldset" sx={{ mb: 3 }}>
                           <FormLabel component="legend">
-                            Select a Role
+                            <CustomLabel label="Select a Role" required />
                           </FormLabel>
                           <RadioGroup
                             name="role"
@@ -300,7 +308,9 @@ const JwtRegister = () => {
                               size="small"
                               type="text"
                               name="studentName"
-                              label="Student Name"
+                              label={
+                                <CustomLabel label="Student Name" required />
+                              }
                               variant="outlined"
                               onBlur={handleBlur}
                               value={values.studentName}
@@ -332,7 +342,9 @@ const JwtRegister = () => {
                             <TextField
                               fullWidth
                               select
-                              label="Select a class"
+                              label={
+                                <CustomLabel label="Select a class" required />
+                              }
                               variant="outlined"
                               name="classname" // Make sure the name matches your form field
                               value={values.classname}
@@ -354,7 +366,9 @@ const JwtRegister = () => {
                               size="small"
                               type="text"
                               name="parentsName"
-                              label="Parent Name"
+                              label={
+                                <CustomLabel label="Parent Name" required />
+                              }
                               variant="outlined"
                               onBlur={handleBlur}
                               value={values.parentsName}
