@@ -41249,7 +41249,7 @@ code {
 .table tbody tr td {
   vertical-align: middle;
   white-space: nowrap;
-  border-color: #f2f2f2;
+  border-color: #000;
 }
 [data-theme-version="dark"] .table tbody tr td {
   /*   border-color: $d-border; */
@@ -48077,19 +48077,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .bg-skyblue {
-  background-color: #87CEEB;
+  background-color: #87ceeb;
 }
 
 .bg-yellow {
-  background-color: #FFD700;
+  background-color: #ffd700;
 }
 
 .bg-pink {
-  background-color: #FFC0CB;
+  background-color: #ffc0cb;
 }
 
 .bg-blue {
-  background-color: #ADD8E6;
+  background-color: #add8e6;
 }
 
 .notice-title {

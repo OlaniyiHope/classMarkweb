@@ -37,6 +37,23 @@ const TermRep = ({ studentId }) => {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
+  const handlePrintInNewTab = () => {
+    // Open a new window/tab
+    const printWindow = window.open("", "_blank");
+
+    // Generate printable content
+    const contentToPrint = componentRef.current.cloneNode(true);
+    const elementsToHide = contentToPrint.querySelectorAll(".dont-print");
+    elementsToHide.forEach((element) => {
+      element.style.display = "none";
+    });
+
+    // Append content to the new window/tab
+    printWindow.document.body.appendChild(contentToPrint);
+
+    // Trigger print dialog
+    printWindow.print();
+  };
 
   const [studentData, setStudentData] = useState(null);
   const [psyData, setPsyData] = useState(null);
@@ -1070,6 +1087,7 @@ const TermRep = ({ studentId }) => {
         <Box width="100%" overflow="auto">
           <body className="print-button-container">
             <button onClick={handlePrint}> Print this out!</button>
+            <button onClick={handlePrintInNewTab}>Print in New Tab</button>
             <div class="container" ref={componentRef}>
               <div
                 class="header"
