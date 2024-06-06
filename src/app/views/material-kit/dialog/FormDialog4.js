@@ -304,6 +304,7 @@ export default function FormDialog4() {
             type="text"
             onChange={handleChange}
             fullWidth
+            style={{ marginBottom: "10px" }}
           />
 
           <TextField
@@ -313,6 +314,7 @@ export default function FormDialog4() {
             value={selectedClass}
             onChange={handleClassChange}
             fullWidth
+            style={{ marginBottom: "10px" }}
           >
             {classData &&
               classData.map((item) => (

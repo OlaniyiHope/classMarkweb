@@ -324,7 +324,6 @@ const Form = () => {
                     size="small"
                     type="date"
                     name="date"
-                    label="Date of birth"
                     variant="outlined"
                     value={date}
                     id="date"

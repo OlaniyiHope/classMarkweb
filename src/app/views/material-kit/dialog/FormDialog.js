@@ -88,7 +88,7 @@ export default function FormDialog({ updateTableData }) {
   return (
     <Box>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Add new Admin
+        Add New Admin
       </Button>
 
       <Dialog
@@ -110,7 +110,7 @@ export default function FormDialog({ updateTableData }) {
             onChange={handleChange}
             fullWidth
           />
-          <label>email</label>
+          <label>Email</label>
           <TextField
             autoFocus
             margin="dense"
@@ -138,7 +138,7 @@ export default function FormDialog({ updateTableData }) {
             margin="dense"
             name="address"
             value={address}
-            placeholder="address"
+            placeholder="Add your address"
             onChange={handleChange}
             type="text"
             fullWidth

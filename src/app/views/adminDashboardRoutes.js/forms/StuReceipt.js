@@ -203,7 +203,6 @@ const StuReceipt = () => {
                     fullWidth
                     size="small"
                     type="date"
-                    label=" Date"
                     variant="outlined"
                     sx={{ mb: 3 }}
                     value={selectedDate}
@@ -277,6 +276,7 @@ const StuReceipt = () => {
               <Button
                 color="primary"
                 variant="contained"
+                style={{ marginTop: "20px" }}
                 type="submit"
                 onClick={handleSubmit}
               >

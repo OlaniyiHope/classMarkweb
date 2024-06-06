@@ -153,7 +153,7 @@ const JwtRegister = () => {
           </div>
           <h3 className="mb-2 text-white">HEAVENLY LOVE HIGH SCHOOL</h3>
           <p className="mb-4" style={{ color: "white" }}>
-            Welcome!...Log in to your School Dashboard. 📚💡
+            Welcome!...Sign Up first to have an account 📚💡
             <br />
           </p>
         </div>

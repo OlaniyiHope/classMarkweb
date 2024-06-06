@@ -149,7 +149,7 @@ const JwtLogin = () => {
             {accountSettings.name || ""}
           </p>
           <p className="mb-4" style={{ color: "white" }}>
-            Welcome!...Log in to your School Dashboard. 📚💡
+            Welcome!...Login to your School Dashboard. 📚💡
             <br />
           </p>
         </div>
@@ -192,6 +192,7 @@ const JwtLogin = () => {
                           <TextField
                             fullWidth
                             type="text"
+                            style={{ border: "1px solid black" }}
                             name="identifier"
                             label={
                               <CustomLabel label="Email or Username" required />
@@ -209,6 +210,7 @@ const JwtLogin = () => {
                           <TextField
                             fullWidth
                             name="password"
+                            style={{ border: "1px solid black" }}
                             type={showPassword ? "text" : "password"}
                             label={<CustomLabel label="Password" required />}
                             variant="outlined"
@@ -263,9 +265,9 @@ const JwtLogin = () => {
 
                         <Paragraph>
                           <br></br>
-                          Do you want to the home page?
+                          Do you want to go to the home page?
                           <NavLink
-                            to="https://kubiquee.vercel.app"
+                            to="https://www.edupro.com.ng"
                             style={{
                               color: theme.palette.primary.main,
                               marginLeft: 5,

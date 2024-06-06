@@ -79,7 +79,7 @@ export default function FormDialog3() {
   return (
     <Box>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Add new Parent
+        Add New Parent
       </Button>
 
       <Dialog
@@ -87,15 +87,15 @@ export default function FormDialog3() {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title"> Add new parent</DialogTitle>
+        <DialogTitle id="form-dialog-title"> Add New Parent</DialogTitle>
         <DialogContent>
-          <label>User name</label>
+          <label>Parent name</label>
           <TextField
             autoFocus
             margin="dense"
             name="username"
             value={username}
-            placeholder="Teachers name"
+            placeholder="Parent name"
             type="text"
             fullWidth
             onChange={handleChange}

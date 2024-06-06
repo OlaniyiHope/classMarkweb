@@ -170,7 +170,6 @@ const StudyMatForm = () => {
               fullWidth
               size="small"
               type="date"
-              label="Date"
               variant="outlined"
               sx={{ mb: 3 }}
               value={selectedDate}
