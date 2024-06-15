@@ -89,7 +89,7 @@ export default function NoticeBoard() {
             <Breadcrumb routeSegments={[{ name: "Notice Board" }]} />
           </Box>
           <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-            Add new Notice
+            Add New Notice
           </Button>
           <Box>
             <Dialog
