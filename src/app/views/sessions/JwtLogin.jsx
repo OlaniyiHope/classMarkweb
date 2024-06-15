@@ -238,7 +238,7 @@ const JwtLogin = () => {
                           />
                         </div>
                         <a
-                          href="javascript:void(0);"
+                          href="/session/forgot-password"
                           className="float-end mb-4"
                           style={{
                             color: "red !important",
