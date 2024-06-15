@@ -130,11 +130,7 @@ export const navigations = [
         iconText: "SI",
         path: "/dashboard/onscreen-marking",
       },
-      {
-        name: "Test List",
-        iconText: "SI",
-        path: "/dashboard/tabulation-sheet",
-      },
+
       { name: "Question Paper", iconText: "SI", path: "/session/" },
     ],
   },
