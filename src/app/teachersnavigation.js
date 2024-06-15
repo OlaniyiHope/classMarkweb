@@ -131,7 +131,7 @@ export const navigations = [
         path: "/dashboard/onscreen-marking",
       },
 
-      { name: "Question Paper", iconText: "SI", path: "/session/" },
+      // { name: "Question Paper", iconText: "SI", path: "/session/" },
     ],
   },
 

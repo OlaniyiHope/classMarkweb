@@ -226,7 +226,7 @@ export const navigations = [
         path: "/dashboard/tabulation-sheet",
       },
 
-      { name: "Question Paper", iconText: "SI", path: "/session/" },
+      // { name: "Question Paper", iconText: "SI", path: "/session/" },
     ],
   },
   {
