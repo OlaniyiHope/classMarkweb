@@ -187,12 +187,10 @@ const JwtLogin = () => {
                           <span>Your School Dashboard</span>
                         </div>
 
-                        <div className="sepertor"></div>
                         <div className="mb-3">
                           <TextField
                             fullWidth
                             type="text"
-                            style={{ border: "1px solid black" }}
                             name="identifier"
                             label={
                               <CustomLabel label="Email or Username" required />
@@ -210,7 +208,6 @@ const JwtLogin = () => {
                           <TextField
                             fullWidth
                             name="password"
-                            style={{ border: "1px solid black" }}
                             type={showPassword ? "text" : "password"}
                             label={<CustomLabel label="Password" required />}
                             variant="outlined"
