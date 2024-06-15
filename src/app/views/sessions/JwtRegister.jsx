@@ -282,11 +282,14 @@ const JwtRegister = () => {
                             ),
                           }}
                         />
-                        <FormControl component="fieldset" sx={{ mb: 3 }}>
+                        <FormControl
+                          component="fieldset"
+                          sx={{ mb: 3, width: "100%" }}
+                        >
                           <FormLabel component="legend">
                             <CustomLabel label="Select a Role" required />
                           </FormLabel>
-                          <RadioGroup
+                          {/*} <RadioGroup
                             name="role"
                             value={values.role}
                             onChange={handleChange}
@@ -299,7 +302,24 @@ const JwtRegister = () => {
                                 label={role}
                               />
                             ))}
-                          </RadioGroup>
+                            </RadioGroup> */}
+
+                          <TextField
+                            fullWidth
+                            select
+                            label="Select a Role"
+                            variant="outlined"
+                            name="role"
+                            value={values.role}
+                            onChange={handleChange}
+                            sx={{ mb: 3 }}
+                          >
+                            {roles.map((role) => (
+                              <MenuItem key={role} value={role}>
+                                {role}
+                              </MenuItem>
+                            ))}
+                          </TextField>
                         </FormControl>
                         {values.role === "student" && (
                           <div>
@@ -402,7 +422,7 @@ const JwtRegister = () => {
                           </div>
                         )}
 
-                        <FlexBox gap={1} alignItems="center">
+                        {/*} <FlexBox gap={1} alignItems="center">
                           <Checkbox
                             size="small"
                             name="remember"
@@ -414,7 +434,7 @@ const JwtRegister = () => {
                           <Paragraph fontSize={13}>
                             I have read and agree to the terms of service.
                           </Paragraph>
-                        </FlexBox>
+                              </FlexBox>*/}
 
                         <LoadingButton
                           type="submit"
