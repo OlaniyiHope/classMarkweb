@@ -163,15 +163,17 @@ const Layout1Topbar = () => {
               </StyledItem>
 
               <StyledItem>
-                <Link>
+                <Link to="/dashboard/profile">
                   <Icon> person </Icon>
                   <Span> Profile </Span>
                 </Link>
               </StyledItem>
 
               <StyledItem>
-                <Icon> settings </Icon>
-                <Span> Settings </Span>
+                <Link to="/dashboard/setting">
+                  <Icon> settings </Icon>
+                  <Span> Settings </Span>
+                </Link>
               </StyledItem>
 
               <StyledItem onClick={logout}>

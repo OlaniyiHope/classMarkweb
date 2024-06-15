@@ -18,8 +18,9 @@
   flex-wrap: wrap;
 }
 .cald .one {
-  flex-basis: 50%;
+  flex-basis: 40%;
 }
 .cald .two {
-  flex-basis: 50%;
+  flex-basis: 60%;
+  margin-top: 20px;
 }

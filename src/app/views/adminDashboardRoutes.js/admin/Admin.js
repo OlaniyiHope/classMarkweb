@@ -225,7 +225,7 @@ const Admin = () => {
           </div>
         </div>
         <div className="two">
-          <h2>Notice Board</h2>
+          <h2 style={{ marginLeft: "5px" }}>Notice Board</h2>
           <div
             className="notice-box-wrap m-height-660"
             style={{ display: "flex", flexWrap: "wrap" }}
