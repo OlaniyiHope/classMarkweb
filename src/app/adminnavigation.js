@@ -222,7 +222,7 @@ export const navigations = [
       {
         name: "Test List",
         iconText: "SI",
-        path: "/dashboard/test-list",
+        path: "",
       },
       {
         name: "Tabulation Sheet",

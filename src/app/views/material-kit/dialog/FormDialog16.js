@@ -68,7 +68,7 @@ const FormDialog16 = ({ setGradesData }) => {
   return (
     <Box>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Add new Grades
+        Add New Grades
       </Button>
 
       <Dialog

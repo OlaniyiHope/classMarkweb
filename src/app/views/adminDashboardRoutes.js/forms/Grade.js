@@ -289,7 +289,7 @@ const Grade = () => {
             </div>
           </div>
 
-          <TablePagination
+          {/*}  <TablePagination
             sx={{ px: 2 }}
             page={page}
             component="div"
@@ -300,7 +300,7 @@ const Grade = () => {
             onRowsPerPageChange={handleChangeRowsPerPage}
             nextIconButtonProps={{ "aria-label": "Next Page" }}
             backIconButtonProps={{ "aria-label": "Previous Page" }}
-          />
+                  />*/}
         </Box>
       </ContentBox>
     </Fragment>
