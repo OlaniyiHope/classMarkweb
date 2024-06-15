@@ -48,7 +48,7 @@ export default function FormDialog3() {
 
       // Make an API call to create a teacher
       await axios.post(
-        `https://hlhs-3ff6501095d6.herokuapp.com/api/create-parent`,
+        `https://hlhsapi-e6d7c4120dbb.herokuapp.com/api/create-parent`,
         formData,
         {
           headers, // Include the headers in the request

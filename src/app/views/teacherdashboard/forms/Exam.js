@@ -60,7 +60,7 @@ const Exam = (term, classname, subject) => {
       const fetchData = async () => {
         try {
           const res = await axios.get(
-            `https://hlhs1-ef7e91975268.herokuapp.com/api/examlist`
+            `https://hlhsapi-e6d7c4120dbb.herokuapp.com/api/examlist`
           );
           setExam(res.data);
         } catch (err) {
@@ -73,7 +73,7 @@ const Exam = (term, classname, subject) => {
       const fetchData = async () => {
         try {
           const res = await axios.get(
-            `https://hlhs1-ef7e91975268.herokuapp.com/api/class`
+            `https://hlhsapi-e6d7c4120dbb.herokuapp.com/api/class`
           );
           setClasss(res.data);
         } catch (err) {
@@ -86,7 +86,7 @@ const Exam = (term, classname, subject) => {
       const fetchData = async () => {
         try {
           const res = await axios.get(
-            `https://hlhs-3ff6501095d6.herokuapp.com/api/subject`
+            `https://hlhsapi-e6d7c4120dbb.herokuapp.com/api/subject`
           );
           setSubject(res.data);
         } catch (err) {
