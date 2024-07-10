@@ -60,7 +60,7 @@ const Exam = (term, classname, subject) => {
       const fetchData = async () => {
         try {
           const res = await axios.get(
-            `https://hlhsapi-e6d7c4120dbb.herokuapp.com/api/examlist`
+            `https://doneapi.vercel.app/api/examlist`
           );
           setExam(res.data);
         } catch (err) {
@@ -72,9 +72,7 @@ const Exam = (term, classname, subject) => {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const res = await axios.get(
-            `https://hlhsapi-e6d7c4120dbb.herokuapp.com/api/class`
-          );
+          const res = await axios.get(`https://doneapi.vercel.app/api/class`);
           setClasss(res.data);
         } catch (err) {
           setError(err);
@@ -85,9 +83,7 @@ const Exam = (term, classname, subject) => {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const res = await axios.get(
-            `https://hlhsapi-e6d7c4120dbb.herokuapp.com/api/subject`
-          );
+          const res = await axios.get(`https://doneapi.vercel.app/api/subject`);
           setSubject(res.data);
         } catch (err) {
           setError(err);

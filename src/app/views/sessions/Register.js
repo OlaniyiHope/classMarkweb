@@ -61,7 +61,7 @@ const Register = () => {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const response = await axios.post(
-        `https://hlhsapi-e6d7c4120dbb.herokuapp.com/api/register`,
+        `https://doneapi.vercel.app/api/register`,
         {
           role: "student",
           ...values,

@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import { Span } from "app/components/Typography";
 import { useEffect, useState } from "react";
+import avatar from "./avatar.png";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 const Container = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -79,11 +80,7 @@ const Profile = () => {
                 </div>
                 <div class="profile-info">
                   <div class="profile-photo">
-                    <img
-                      src="images/profile/profile.png"
-                      class="img-fluid rounded-circle"
-                      alt=""
-                    />
+                    <img src={avatar} class="img-fluid rounded-circle" alt="" />
                   </div>
                   <div class="profile-details">
                     <div class="profile-name px-3 pt-2">

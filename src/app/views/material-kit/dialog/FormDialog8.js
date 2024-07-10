@@ -34,7 +34,7 @@ export default function FormDialog8() {
     };
     try {
       await axios.post(
-        "https://hlhsapi-e6d7c4120dbb.herokuapp.com/api/userrs/register",
+        "https://doneapi.vercel.app/api/userrs/register",
         formData
       );
 

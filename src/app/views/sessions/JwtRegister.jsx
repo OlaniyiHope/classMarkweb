@@ -99,7 +99,7 @@ const JwtRegister = () => {
     // Assuming you have the JWT token stored in localStorage
     const token = localStorage.getItem("jwtToken");
     // Fetch classes from your API
-    fetch(`https://hlhsapi-e6d7c4120dbb.herokuapp.com/api/class`, {
+    fetch(`https://doneapi.vercel.app/api/class`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`, // Include your authentication token

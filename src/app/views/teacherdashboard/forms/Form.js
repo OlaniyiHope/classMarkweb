@@ -86,7 +86,7 @@ const Form = () => {
     };
     try {
       await axios.post(
-        "https://hlhs1-ef7e91975268.herokuapp.com/api/userrs/register",
+        "https://doneapi.vercel.app/api/userrs/register",
         formData
       );
 
