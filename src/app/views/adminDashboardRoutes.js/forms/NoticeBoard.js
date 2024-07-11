@@ -18,7 +18,7 @@ const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
 }));
-export default function NoticeBoard() {
+export default function NoticeBoard({ updateTableData }) {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
   // Using separate state for form data
@@ -55,15 +55,12 @@ export default function NoticeBoard() {
       });
 
       console.log("Notice created:", response.data);
-
+      updateTableData(response.data);
       setFormData({
         notice: "",
         posted_by: "",
       });
-
-      console.log("Form data reset...");
-
-      navigate("/");
+      handleClose();
     } catch (error) {
       console.error("Error creating notice:", error);
 

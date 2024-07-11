@@ -44,6 +44,7 @@ const ViewNotice = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [action, setAction] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [tableData, setTableData] = useState([]);
   const [notices, setNotices] = useState([]); // Add or replace this line based on your component
   const apiUrl = process.env.REACT_APP_API_URL.trim();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -137,11 +138,15 @@ const ViewNotice = () => {
       console.error("Error refetching data:", error);
     }
   };
-
+  const updateTableData = (newSubject) => {
+    // Assuming data is an array
+    setTableData([...data, newSubject]);
+    reFetch(); // Trigger data refetch after updating tableData1
+  };
   return (
     <Fragment>
       <Box className="breadcrumb">
-        <NoticeBoard />
+        <NoticeBoard updateTableData={updateTableData} />
       </Box>
       <ContentBox className="analytics">
         <Box width="100%" overflow="auto">

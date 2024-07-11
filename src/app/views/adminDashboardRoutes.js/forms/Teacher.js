@@ -84,12 +84,19 @@ const Teacher = () => {
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
   };
-  const handleOpenMenu = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleOpenMenu = (event, examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: event.currentTarget,
+    }));
   };
 
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
+  // Function to handle closing the context menu for a specific exam
+  const handleCloseMenu = (examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: null,
+    }));
   };
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
@@ -246,18 +253,20 @@ const Teacher = () => {
                           <td>
                             <TableCell align="right">
                               <IconButton
-                                aria-controls="action-menu"
+                                aria-controls={`action-menu-${item._id}`}
                                 aria-haspopup="true"
-                                onClick={handleOpenMenu}
+                                onClick={(event) =>
+                                  handleOpenMenu(event, item._id)
+                                } // Pass item._id
                               >
                                 <MoreVertIcon />{" "}
                                 {/* MoreVertIcon for the menu */}
                               </IconButton>
                               <Menu
-                                id="action-menu"
-                                anchorEl={anchorEl}
-                                open={Boolean(anchorEl)}
-                                onClose={handleCloseMenu}
+                                id={`action-menu-${item._id}`}
+                                anchorEl={anchorElMap[item._id]}
+                                open={Boolean(anchorElMap[item._id])}
+                                onClose={() => handleCloseMenu(item._id)}
                               >
                                 <MenuItem
                                   onClick={() => handleEditTeacher(item._id)}
