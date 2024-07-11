@@ -71,6 +71,7 @@ import Sub14 from "./forms/Sub14";
 import ViewReceipt from "./forms/ViewReceipt";
 import FirstTermRepCont from "./forms/FirstTermRepCont";
 import ThirdTermRepCont from "./forms/ThirdTermRepCont";
+import Syllabus from "./forms/Syllabus";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -83,6 +84,7 @@ const adminDashboardRoutes = [
   { path: "/dashboard/examlist", element: <Examlist />, auth: "admin" },
   { path: "/dashboard/js3-subject", element: <Sub3 />, auth: "admin" },
   { path: "/dashboard/js2-subject", element: <Sub2 />, auth: "admin" },
+  { path: "/dashboard/syllabus", element: <Syllabus /> },
   { path: "/dashboard/ss1-science-subject", element: <Sub4 />, auth: "admin" },
   { path: "/dashboard/ss1-art-subject", element: <Sub5 />, auth: "admin" },
   {

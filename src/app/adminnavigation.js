@@ -204,7 +204,11 @@ export const navigations = [
     icon: "school",
     children: [
       { name: "Manage Class", iconText: "SI", path: "/dashboard/class" },
-      { name: "Academic Syllabus", iconText: "SI", path: "/session/signin" },
+      {
+        name: "Academic Syllabus",
+        iconText: "SI",
+        path: "/dashboard/syllabus",
+      },
     ],
   },
   {
