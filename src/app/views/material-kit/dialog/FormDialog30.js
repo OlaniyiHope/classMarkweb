@@ -5,76 +5,85 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
-import React, { useState } from "react";
-import axios from "axios";
-import { useEffect } from "react";
+import { React, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+import axios from "axios";
 const initialState = {
   username: "",
   email: "",
   password: "",
-  address: "",
   phone: "",
+  address: "",
 };
-
-export default function FormDialog3() {
-  const [open, setOpen] = React.useState(false);
+export default function FormDialog30({ updateTableData }) {
+  const [formData, setformData] = useState(initialState);
+  const { username, email, password, phone, address } = formData;
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState(initialState);
-  const { username, email, password, address, phone } = formData;
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = {
-      username,
-      email,
-      password,
-      address,
-      phone,
-      role: "parent", // Hardcode the role to "teacher"
-    };
-
-    try {
-      // Fetch the authentication token from local storage
-      const token = localStorage.getItem("jwtToken");
-
-      // Include the token in the request headers
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-
-      // Make an API call to create a teacher
-      await axios.post(
-        `https://doneapi.vercel.app/api/create-parent`,
-        formData,
-        {
-          headers, // Include the headers in the request
-        }
-      );
-
-      // Handle successful teacher creation
-      navigate("/dashboard/parent");
-    } catch (err) {
-      // Handle errors
-      console.error("Error creating parent:", err);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
   function handleClickOpen() {
     setOpen(true);
   }
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   function handleClose() {
     setOpen(false);
   }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setformData({ ...formData, [name]: value });
+  };
+  // const handleClick = async (e) => {
+  //   e.preventDefault();
+  //   const userData = {
+  //     username,
+  //     email,
+  //     password,
+  //     phone,
+  //     address,
+  //   };
+  //   try {
+  //     await axios.post(`${apiUrl}/api/register`, {
+  //       ...formData,
+  //       role: "admin",
+  //     });
+  //     // navigate("/dashboard/admin");
+  //     toast.success("User successfully created");
+  //     handleClose();
+  //   } catch (err) {
+  //     console.error("Error registering student:", err);
+  //     toast.error("Unable to create user");
+  //   }
+  // };
+  const handleClick = async (e) => {
+    e.preventDefault();
+    const userData = {
+      username,
+      email,
+      password,
+      phone,
+      address,
+    };
+    try {
+      const response = await axios.post(`${apiUrl}/api/register`, {
+        ...formData,
+        role: "parent",
+      });
+      // Assuming the response contains the new admin data
+      const newParent = response.data;
+      // Update the table data in the parent component (ViewAdmin)
+      updateTableData(newParent);
+      toast.success("User successfully created");
+      handleClose();
+    } catch (err) {
+      console.error("Error registering parent:", err);
+      toast.error("Unable to create user");
+    }
+  };
 
   return (
     <Box>
@@ -87,73 +96,75 @@ export default function FormDialog3() {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title"> Add New Parent</DialogTitle>
+        <DialogTitle id="form-dialog-title"> Add new Parent</DialogTitle>
         <DialogContent>
-          <label>Parent name</label>
+          <label>Username</label>
+
           <TextField
             autoFocus
             margin="dense"
             name="username"
             value={username}
-            placeholder="Parent name"
+            placeholder="Enter your name"
             type="text"
-            fullWidth
             onChange={handleChange}
+            fullWidth
           />
-          <label>Email address</label>
+          <label>Email</label>
           <TextField
             autoFocus
             margin="dense"
-            type="email"
             name="email"
-            placeholder="Enter email"
             value={email}
-            fullWidth
+            placeholder="Enter your email"
+            type="email"
             onChange={handleChange}
-          />
-          <label>Home Address</label>
-          <TextField
-            type="text"
-            name="address"
-            autoFocus
-            margin="dense"
-            value={address}
-            placeholder="Address"
             fullWidth
-            onChange={handleChange}
           />
           <label>Phone Number</label>
           <TextField
             autoFocus
             margin="dense"
-            type="text"
             name="phone"
             value={phone}
-            placeholder="Phone Number"
-            fullWidth
+            placeholder="Enter your phone number"
             onChange={handleChange}
+            type="number"
+            fullWidth
+          />
+          <label>Home Address</label>
+          <TextField
+            autoFocus
+            margin="dense"
+            name="address"
+            value={address}
+            placeholder="Add your address"
+            onChange={handleChange}
+            type="text"
+            fullWidth
           />
           <label>Password</label>
           <TextField
             autoFocus
             margin="dense"
             name="password"
-            type="password"
-            placeholder="Password"
             value={password}
-            fullWidth
+            placeholder="Enter your password"
             onChange={handleChange}
+            type="password"
+            fullWidth
           />
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" color="secondary" onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit} color="primary">
+          <Button color="primary" onClick={handleClick}>
             Add Parent
           </Button>
         </DialogActions>
       </Dialog>
+      <ToastContainer />
     </Box>
   );
 }
