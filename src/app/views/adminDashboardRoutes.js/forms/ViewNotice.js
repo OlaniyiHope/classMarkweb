@@ -22,6 +22,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import NoticeBoard from "./NoticeBoard";
 import DeleteNoticeModal from "./DeleteNoticeModal";
 import axios from "axios";
+import EditNotice from "./EditNotice";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -42,28 +43,40 @@ const ViewNotice = () => {
   const { data, loading, error, reFetch } = useFetch("/get-all-notices");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [editNoticeData, setEditNoticeData] = useState(null);
   const [action, setAction] = useState(null);
+  const [anchorElMap, setAnchorElMap] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
   const [tableData, setTableData] = useState([]);
   const [notices, setNotices] = useState([]); // Add or replace this line based on your component
   const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [noticeIdToDelete, setNoticeIdToDelete] = useState(null);
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
   };
-  const handleOpenMenu = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleOpenMenu = (event, examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: event.currentTarget,
+    }));
+  };
+
+  // Function to handle closing the context menu for a specific exam
+  const handleCloseMenu = (examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: null,
+    }));
   };
   useEffect(() => {
     if (data) {
       setNotices(data);
     }
   }, [data]);
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
+
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -136,6 +149,61 @@ const ViewNotice = () => {
       setNotices(refetchedData.data);
     } catch (error) {
       console.error("Error refetching data:", error);
+    }
+  };
+
+  const handleEditNotice = (noticeId) => {
+    // Find the selected student by ID
+    const selectedNotice = data.find((notice) => notice?._id === noticeId);
+
+    if (!selectedNotice) {
+      console.error("Selected student not found for ID:", noticeId);
+      // Optionally, you can choose to return or handle this error gracefully
+      return;
+    }
+
+    // Open the edit dialog with the selected student data
+    setEditNoticeData(selectedNotice);
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveEdit = async (updatedData) => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+
+      // Check if editStudentData is not null and has the _id property
+      if (editNoticeData?._id) {
+        // Log the payload before sending the request
+        // console.log("Payload before sending:", {
+        //   studentName: updatedData.studentName,
+        //   address: updatedData.address,
+        //   // Add other fields as needed
+        // });
+
+        const response = await axios.put(
+          `${apiUrl}/api/edit-notice/${editNoticeData._id}`,
+          {
+            notice: updatedData.notice,
+            posted_by: updatedData.posted_by,
+            date: updatedData.date,
+
+            // Add other fields as needed
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log("Notive updated successfully:", response.data);
+        setEditDialogOpen(false);
+        reFetch(); // Manually trigger data refetch
+      } else {
+        console.error("Invalid or missing _id property in editNoticeData");
+      }
+    } catch (error) {
+      console.error("Error updating teacher:", error);
     }
   };
   const updateTableData = (newSubject) => {
@@ -212,19 +280,23 @@ const ViewNotice = () => {
                         <td>
                           <TableCell align="right">
                             <IconButton
-                              aria-controls="action-menu"
+                              aria-controls={`action-menu-${item._id}`}
                               aria-haspopup="true"
-                              onClick={handleOpenMenu}
+                              onClick={(event) =>
+                                handleOpenMenu(event, item._id)
+                              } // Pass item._id
                             >
                               <MoreVertIcon /> {/* MoreVertIcon for the menu */}
                             </IconButton>
                             <Menu
-                              id="action-menu"
-                              anchorEl={anchorEl}
-                              open={Boolean(anchorEl)}
-                              onClose={handleCloseMenu}
+                              id={`action-menu-${item._id}`}
+                              anchorEl={anchorElMap[item._id]}
+                              open={Boolean(anchorElMap[item._id])}
+                              onClose={() => handleCloseMenu(item._id)}
                             >
-                              <MenuItem>
+                              <MenuItem
+                                onClick={() => handleEditNotice(item._id)}
+                              >
                                 <ListItemIcon>
                                   <EditIcon /> {/* Use an Edit icon */}
                                 </ListItemIcon>
@@ -257,6 +329,15 @@ const ViewNotice = () => {
                   </TableRow>
                 )}
               </table>
+
+              {editNoticeData && (
+                <EditNotice
+                  open={editDialogOpen}
+                  onClose={() => setEditDialogOpen(false)}
+                  noticeId={editNoticeData._id}
+                  onSave={handleSaveEdit}
+                />
+              )}
             </div>
           </div>
 

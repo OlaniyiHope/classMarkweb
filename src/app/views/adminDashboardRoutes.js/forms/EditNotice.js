@@ -1,0 +1,178 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+} from "@mui/material";
+
+const EditNotice = ({ open, noticeId, onUpdate, onClose, onSave }) => {
+  const [formData, setFormData] = useState({
+    date: "",
+    notice: "",
+    posted_by: "",
+  });
+
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
+
+  useEffect(() => {
+    // const fetchNoticeById = async () => {
+    //   try {
+    //     if (noticeId) {
+    //       // Assuming you have the JWT token stored in localStorage
+    //       const token = localStorage.getItem("jwtToken");
+
+    //       const response = await fetch(`${apiUrl}/api/get-notice/${noticeId}`, {
+    //         headers: {
+    //           Authorization: `Bearer ${token}`, // Include your authentication token
+    //         },
+    //       });
+
+    //       if (response.ok) {
+    //         const data = await response.json();
+    //         console.log("Fetched notice data:", data);
+
+    //         // Set the state with the fetched data
+    //         setFormData({
+    //           notice: data.notice.notice || "",
+    //           posted_by: data.notice.posted_by || "",
+    //           date: data.notice.date || "",
+    //         });
+    //       } else {
+    //         console.error(
+    //           "Error fetching notice data. Status:",
+    //           response.status
+    //         );
+    //       }
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching notice data:", error);
+    //   }
+    // };
+
+    const fetchNoticeById = async () => {
+      try {
+        if (noticeId) {
+          const token = localStorage.getItem("jwtToken");
+
+          const response = await fetch(`${apiUrl}/api/get-notice/${noticeId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log("Fetched notice data:", data);
+
+            // Check if data.notice exists before accessing its properties
+            if (data.notice) {
+              setFormData({
+                notice: data.notice.notice || "",
+                posted_by: data.notice.posted_by || "",
+                date: data.notice.date || "",
+              });
+            } else {
+              console.error("Notice data not found in response:", data);
+            }
+          } else {
+            console.error(
+              "Error fetching notice data. Status:",
+              response.status
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching notice data:", error);
+      }
+    };
+
+    // Only fetch data if the teacherId prop has changed
+    if (open && noticeId !== null && noticeId !== undefined) {
+      console.log("Fetching data for noticeId:", noticeId);
+      fetchNoticeById();
+    }
+  }, [open, noticeId]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSave = () => {
+    onSave({ ...formData });
+    onClose();
+  };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     const response = await axios.put(
+  //       `${apiUrl}/api/edit-notice/${noticeId}`,
+  //       formData
+  //     );
+  //     console.log("Notice updated:", response.data);
+  //     onUpdate(response.data); // Call the onUpdate callback to refresh the list
+  //   } catch (error) {
+  //     console.error("Error updating notice:", error);
+  //   }
+  // };
+
+  return (
+    <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
+      <DialogTitle id="form-dialog-title">Edit Teacher</DialogTitle>
+      <DialogContent>
+        <label>Notice</label>
+        <TextField
+          margin="dense"
+          type="text"
+          name="notice"
+          value={formData.notice}
+          onChange={handleChange}
+          placeholder="Notice"
+          fullWidth
+        />
+
+        <label>Posted By</label>
+        <TextField
+          autoFocus
+          margin="dense"
+          type="text"
+          name="posted_by"
+          value={formData.posted_by}
+          onChange={handleChange}
+          placeholder="Posted By"
+          fullWidth
+        />
+        <label>Notice Date</label>
+        <TextField
+          autoFocus
+          margin="dense"
+          name="date"
+          value={formData.date}
+          onChange={handleChange}
+          fullWidth
+        />
+
+        {/* Add similar TextField components for other fields */}
+
+        {/* Add similar TextField components for other fields */}
+      </DialogContent>
+      <DialogActions>
+        <Button variant="outlined" color="secondary" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button onClick={handleSave} color="primary">
+          Save Changes
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export default EditNotice;
