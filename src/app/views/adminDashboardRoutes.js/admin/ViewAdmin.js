@@ -37,6 +37,7 @@ import "react-calendar/dist/Calendar.css";
 
 import "./style.css";
 import axios from "axios";
+import EditAdmin from "../forms/EditAdmin";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -79,11 +80,15 @@ const StyledButton = styled(Button)(({ theme }) => ({
 const ViewAdmin = () => {
   const { data, loading, error, reFetch } = useFetch("/get-admin");
   const { palette } = useTheme();
+  const [editAdminData, setEditAdminData] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL.trim();
   const [tableData, setTableData] = useState([]);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [action, setAction] = useState(null);
+  const [newPassword, setNewPassword] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -143,6 +148,62 @@ const ViewAdmin = () => {
     // Assuming data is an array
     setTableData([...data, newSubject]);
     reFetch(); // Trigger data refetch after updating tableData1
+  };
+
+  const handleEditAdmin = (adminId) => {
+    // Find the selected student by ID
+    const selectedAdmin = data.find((admin) => admin?._id === adminId);
+
+    if (!selectedAdmin) {
+      console.error("Selected admin not found for ID:", adminId);
+      // Optionally, you can choose to return or handle this error gracefully
+      return;
+    }
+
+    // Open the edit dialog with the selected student data
+    setEditAdminData(selectedAdmin);
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveEdit = async (updatedData) => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+
+      // Check if editStudentData is not null and has the _id property
+      if (editAdminData?._id) {
+        // Log the payload before sending the request
+        // console.log("Payload before sending:", {
+        //   studentName: updatedData.studentName,
+        //   address: updatedData.address,
+        //   // Add other fields as needed
+        // });
+
+        const response = await axios.put(
+          `${apiUrl}/api/admin/${editAdminData._id}`,
+          {
+            email: updatedData.email,
+            username: updatedData.username,
+            phone: updatedData.phone,
+            address: updatedData.address,
+            password: newPassword || updatedData.password,
+            // Add other fields as needed
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log("Admin updated successfully:", response.data);
+        setEditDialogOpen(false);
+        reFetch(); // Manually trigger data refetch
+      } else {
+        console.error("Invalid or missing _id property in editAdminData");
+      }
+    } catch (error) {
+      console.error("Error updating admin:", error);
+    }
   };
   return (
     <Fragment>
@@ -218,7 +279,9 @@ const ViewAdmin = () => {
                                 open={Boolean(anchorElMap[item._id])}
                                 onClose={() => handleCloseMenu(item._id)}
                               >
-                                <MenuItem>
+                                <MenuItem
+                                  onClick={() => handleEditAdmin(item._id)}
+                                >
                                   <ListItemIcon>
                                     <EditIcon /> {/* Use an Edit icon */}
                                   </ListItemIcon>
@@ -241,6 +304,14 @@ const ViewAdmin = () => {
                       </tbody>
                     ))}
                 </table>
+                {editAdminData && (
+                  <EditAdmin
+                    open={editDialogOpen}
+                    onClose={() => setEditDialogOpen(false)}
+                    adminId={editAdminData._id}
+                    onSave={handleSaveEdit}
+                  />
+                )}
                 <Dialog
                   open={deleteConfirmationOpen}
                   onClose={handleCloseDeleteConfirmation}
