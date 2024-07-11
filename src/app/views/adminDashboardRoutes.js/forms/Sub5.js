@@ -82,6 +82,7 @@ const Sub5 = () => {
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [tableData, setTableData] = useState([]);
   const [anchorElMap, setAnchorElMap] = useState({});
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState(null); // State to hold selected subject data
@@ -171,6 +172,13 @@ const Sub5 = () => {
       console.error("Error deleting User:", error);
     }
   };
+
+  const updateTableData = (newSubject) => {
+    // Assuming data is an array
+    setTableData([...data, newSubject]);
+    reFetch(); // Trigger data refetch after updating tableData1
+  };
+
   return (
     <Fragment>
       <ContentBox className="analytics">
@@ -179,7 +187,7 @@ const Sub5 = () => {
             <Breadcrumb routeSegments={[{ name: "Subjects" }]} />
           </Box>
           <Box className="breadcrumb">
-            <FormDialog4 />
+            <FormDialog4 updateTableData={updateTableData} />
           </Box>
 
           <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">

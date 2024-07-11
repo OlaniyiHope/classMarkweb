@@ -179,7 +179,7 @@ const initialState = {
   classname: "",
 };
 
-export default function FormDialog4() {
+export default function FormDialog4({ updateTableData }) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(initialState);
   const { name, teacher, classname } = formData;
@@ -200,13 +200,19 @@ export default function FormDialog4() {
       };
 
       // Make an API call to create a subject
-      await axios.post(`${apiUrl}/api/create-subject`, formData, {
-        headers, // Include the headers in the request
-      });
-
+      const response = await axios.post(
+        `${apiUrl}/api/create-subject`,
+        formData,
+        {
+          headers, // Include the headers in the request
+        }
+      );
+      // Handle successful subject creation
+      const newSubject = response.data;
+      updateTableData(newSubject);
       // Handle successful subject creation
       toast.success("Subject saved successfully!");
-      navigate("/dashboard/js1-subject");
+      handleClose();
     } catch (err) {
       // Handle errors
       toast.error("An error occurred during login");
