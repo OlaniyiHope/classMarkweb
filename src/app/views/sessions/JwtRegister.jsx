@@ -81,6 +81,10 @@ const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid Email address")
     .required("Email is required!"),
+  phone: Yup.string().matches(
+    /^\d{11}$/,
+    "Phone number must be exactly 11 digits"
+  ),
 });
 const roles = ["admin", "teacher", "parent", "student"]; // Define the available roles
 
@@ -222,9 +226,9 @@ const JwtRegister = () => {
                         <TextField
                           fullWidth
                           size="small"
-                          type="tel" // Use type "tel" to indicate a telephone number input
+                          type="Number" // Use type "tel" to indicate a telephone number input
                           name="phone"
-                          label={<CustomLabel label="Phone Number" required />}
+                          label={<CustomLabel label="Phone Number" />}
                           variant="outlined"
                           onBlur={handleBlur}
                           value={values.phone}
@@ -241,7 +245,7 @@ const JwtRegister = () => {
                           size="small"
                           type="text"
                           name="address"
-                          label={<CustomLabel label="Address" required />}
+                          label={<CustomLabel label="Address" />}
                           variant="outlined"
                           id="address"
                           onBlur={handleBlur}

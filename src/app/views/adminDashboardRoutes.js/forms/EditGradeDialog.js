@@ -56,7 +56,6 @@ const EditGradeDialog = ({ open, onClose, grade, gradeId, onSave }) => {
           margin="dense"
           name="grade_name"
           value={formData.grade_name}
-          placeholder="Grade name"
           type="text"
           onChange={handleChange}
           fullWidth
@@ -66,7 +65,6 @@ const EditGradeDialog = ({ open, onClose, grade, gradeId, onSave }) => {
           margin="dense"
           name="gradepoint"
           value={formData.gradepoint}
-          placeholder="Enter grade point"
           type="number"
           onChange={handleChange}
           fullWidth
@@ -78,7 +76,6 @@ const EditGradeDialog = ({ open, onClose, grade, gradeId, onSave }) => {
           margin="dense"
           onChange={handleChange}
           value={formData.markfrom}
-          placeholder="Enter Mark from"
           fullWidth
         />
         <TextField
@@ -88,7 +85,6 @@ const EditGradeDialog = ({ open, onClose, grade, gradeId, onSave }) => {
           margin="dense"
           onChange={handleChange}
           value={formData.markupto}
-          placeholder="Enter Mark Up to"
           fullWidth
         />
         <TextField
@@ -98,7 +94,6 @@ const EditGradeDialog = ({ open, onClose, grade, gradeId, onSave }) => {
           margin="dense"
           onChange={handleChange}
           value={formData.comment}
-          placeholder="Enter Comment"
           fullWidth
         />
       </DialogContent>
