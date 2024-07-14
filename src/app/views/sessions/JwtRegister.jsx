@@ -85,6 +85,7 @@ const validationSchema = Yup.object().shape({
     /^\d{11}$/,
     "Phone number must be exactly 11 digits"
   ),
+  role: Yup.string().required("Role is required!"),
 });
 const roles = ["admin", "teacher", "parent", "student"]; // Define the available roles
 
@@ -191,7 +192,6 @@ const JwtRegister = () => {
                           </h3>
                         </div>
 
-                        <div className="sepertor"></div>
                         <TextField
                           fullWidth
                           size="small"
@@ -226,7 +226,7 @@ const JwtRegister = () => {
                         <TextField
                           fullWidth
                           size="small"
-                          type="Number" // Use type "tel" to indicate a telephone number input
+                          type="text" // Use type "tel" to indicate a telephone number input
                           name="phone"
                           label={<CustomLabel label="Phone Number" />}
                           variant="outlined"
