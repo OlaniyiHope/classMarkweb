@@ -140,7 +140,7 @@ const NotificationBar = ({ container }) => {
                     <a href="#">{notice.notice}</a>
                   </Typography>
                   <div className="entry-meta">
-                    {notice.posted_by} / <span>5 min ago</span>
+                    {notice.posted_by} / <span> ago</span>
                   </div>
                 </Notification>
               ))}

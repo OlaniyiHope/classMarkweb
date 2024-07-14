@@ -14,7 +14,7 @@ import useAuth from "app/hooks/useAuth";
 import useSettings from "app/hooks/useSettings";
 import { topBarHeight } from "app/utils/constant";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Span } from "../../../components/Typography";
 import NotificationBar from "app/components/NotificationBar/NotificationBar";
 import { NotificationProvider } from "app/contexts/NotificationContext";
@@ -82,7 +82,7 @@ const Layout1Topbar = () => {
   const { settings, updateSettings } = useSettings();
   const { logout, user } = useAuth();
   const isMdScreen = useMediaQuery(theme.breakpoints.down("md"));
-
+  const navigate = useNavigate();
   const updateSidebarMode = (sidebarSettings) => {
     updateSettings({
       layout1Settings: { leftSidebar: { ...sidebarSettings } },
@@ -98,6 +98,17 @@ const Layout1Topbar = () => {
       mode = layout1Settings.leftSidebar.mode === "full" ? "close" : "full";
     }
     updateSidebarMode({ mode });
+  };
+  const checkUserRoleAndRedirect = () => {
+    if (user.role === "admin") {
+      navigate("/dashboard/admin"); // Adjust navigation paths based on your setup
+    } else if (user.role === "teacher") {
+      navigate("/dashboard/teacher");
+    } else if (user.role === "student") {
+      navigate("/dashboard/student");
+    } else {
+      navigate("/session/signin"); // Redirect unauthenticated users to sign-in page
+    }
   };
 
   return (
@@ -155,7 +166,7 @@ const Layout1Topbar = () => {
                 </UserMenu>
               }
             >
-              <StyledItem>
+              <StyledItem onClick={checkUserRoleAndRedirect}>
                 <Link to="/">
                   <Icon> home </Icon>
                   <Span> Home </Span>
