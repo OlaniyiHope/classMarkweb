@@ -152,10 +152,10 @@ const JwtRegister = () => {
         style={{ backgroundColor: "#000080 !important" }}
       >
         <div className="d-flex flex-column-auto flex-column pt-lg-40 pt-15">
-          <div className="text-center mb-lg-4 mb-2 pt-5 logo">
-            <img src={logo} alt="" style={{ height: "100px" }} />
-          </div>
-          <h3 className="mb-2 text-white">HEAVENLY LOVE HIGH SCHOOL</h3>
+          <div className="text-center mb-lg-4 mb-2 pt-5 logo"></div>
+          <h3 className="mb-2 text-white">
+            School Management Registration page
+          </h3>
           <p className="mb-4" style={{ color: "white" }}>
             Welcome!...Sign Up first to have an account 📚💡
             <br />
