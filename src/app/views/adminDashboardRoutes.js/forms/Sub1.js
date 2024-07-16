@@ -26,6 +26,8 @@ import {
 } from "@mui/material";
 import RowCards from "../shared/RowCards";
 import { Breadcrumb } from "app/components";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -321,6 +323,7 @@ const Sub1 = () => {
               nextIconButtonProps={{ "aria-label": "Next Page" }}
               backIconButtonProps={{ "aria-label": "Previous Page" }}
             />
+            <ToastContainer />
           </Box>
 
           {/* <TopSellingTable />

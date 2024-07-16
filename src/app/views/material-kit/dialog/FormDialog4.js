@@ -207,11 +207,12 @@ export default function FormDialog4({ updateTableData }) {
           headers, // Include the headers in the request
         }
       );
+      toast.success("Subject saved successfully!");
       // Handle successful subject creation
       const newSubject = response.data;
       updateTableData(newSubject);
       // Handle successful subject creation
-      toast.success("Subject saved successfully!");
+
       handleClose();
     } catch (err) {
       // Handle errors

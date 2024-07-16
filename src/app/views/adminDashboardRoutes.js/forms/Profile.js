@@ -91,7 +91,7 @@ const Profile = () => {
                       </li>
                       <div class="text-center">
                         <a
-                          href="javascript:void(0);"
+                          href="admin/admin"
                           class="btn btn-primary mb-1"
                           data-bs-toggle="modal"
                           data-bs-target="#sendMessageModal"
