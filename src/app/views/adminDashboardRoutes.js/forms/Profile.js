@@ -17,6 +17,7 @@ import {
 import { Span } from "app/components/Typography";
 import { useEffect, useState } from "react";
 import avatar from "./avatar.png";
+import useAuth from "app/hooks/useAuth";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 const Container = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -34,7 +35,7 @@ const TextField = styled(TextValidator)(() => ({
 
 const Profile = () => {
   const [state, setState] = useState({ date: new Date() });
-
+  const { logout, user } = useAuth();
   useEffect(() => {
     ValidatorForm.addValidationRule("isPasswordMatch", (value) => {
       if (value !== state.password) return false;
@@ -72,357 +73,7 @@ const Profile = () => {
     <div>
       <div class="container-fluid">
         <div class="row">
-          <div class="col-lg-12">
-            <div class="profile card card-body px-3 pt-3 pb-0">
-              <div class="profile-head">
-                <div class="photo-content">
-                  <div class="cover-photo rounded"></div>
-                </div>
-                <div class="profile-info">
-                  <div class="profile-photo">
-                    <img src={avatar} class="img-fluid rounded-circle" alt="" />
-                  </div>
-                  <div class="profile-details">
-                    <div class="profile-name px-3 pt-2">
-                      <h4 class="text-primary mb-0">Mitchell C. Shay</h4>
-                      <p>UX / UI Designer</p>
-                    </div>
-                    <div class="profile-email px-2 pt-2">
-                      <h4 class="text-muted mb-0">info@example.com</h4>
-                      <p>Email</p>
-                    </div>
-                    <div class="dropdown ms-auto">
-                      <div
-                        class="btn sharp btn-primary tp-btn"
-                        data-bs-toggle="dropdown"
-                      ></div>
-                      <ul class="dropdown-menu dropdown-menu-end">
-                        <li class="dropdown-item">
-                          <a href="javascript:void(0)">
-                            <i class="fa fa-user-circle text-primary me-2"></i>{" "}
-                            View profile
-                          </a>
-                        </li>
-                        <li class="dropdown-item">
-                          <a href="javascript:void(0)">
-                            <i class="fa fa-users text-primary me-2"></i> Add to
-                            btn-close friends
-                          </a>
-                        </li>
-                        <li class="dropdown-item">
-                          <a href="javascript:void(0)">
-                            <i class="fa fa-plus text-primary me-2"></i> Add to
-                            group
-                          </a>
-                        </li>
-                        <li class="dropdown-item">
-                          <a href="javascript:void(0)">
-                            <i class="fa fa-ban text-primary me-2"></i> Block
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xl-4">
-            <div class="row">
-              <div class="col-xl-12">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="profile-statistics">
-                      <div class="text-center">
-                        <div class="row">
-                          <div class="col">
-                            <h3 class="m-b-0">150</h3>
-                            <span>Follower</span>
-                          </div>
-                          <div class="col">
-                            <h3 class="m-b-0">140</h3>
-                            <span>Place Stay</span>
-                          </div>
-                          <div class="col">
-                            <h3 class="m-b-0">45</h3>
-                            <span>Reviews</span>
-                          </div>
-                        </div>
-                        <div class="mt-4">
-                          <a
-                            href="javascript:void(0);"
-                            class="btn btn-primary mb-1 me-1"
-                          >
-                            Follow
-                          </a>
-                          <a
-                            href="javascript:void(0);"
-                            class="btn btn-primary mb-1"
-                            data-bs-toggle="modal"
-                            data-bs-target="#sendMessageModal"
-                          >
-                            Send Message
-                          </a>
-                        </div>
-                      </div>
-
-                      <div class="modal fade" id="sendMessageModal">
-                        <div
-                          class="modal-dialog modal-dialog-centered"
-                          role="document"
-                        >
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title">Send Message</h5>
-                              <button
-                                type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                              ></button>
-                            </div>
-                            <div class="modal-body">
-                              <form class="comment-form">
-                                <div class="row">
-                                  <div class="col-lg-6">
-                                    <div class="mb-3">
-                                      <label class="text-black font-w600 form-label">
-                                        Name <span class="required">*</span>
-                                      </label>
-                                      <input
-                                        type="text"
-                                        class="form-control"
-                                        value="Author"
-                                        name="Author"
-                                        placeholder="Author"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div class="col-lg-6">
-                                    <div class="mb-3">
-                                      <label class="text-black font-w600 form-label">
-                                        Email <span class="required">*</span>
-                                      </label>
-                                      <input
-                                        type="text"
-                                        class="form-control"
-                                        value="Email"
-                                        placeholder="Email"
-                                        name="Email"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div class="col-lg-12">
-                                    <div class="mb-3">
-                                      <label class="text-black font-w600 form-label">
-                                        Comment
-                                      </label>
-                                      <textarea
-                                        rows="8"
-                                        class="form-control"
-                                        name="comment"
-                                        placeholder="Comment"
-                                      ></textarea>
-                                    </div>
-                                  </div>
-                                  <div class="col-lg-12">
-                                    <div class="mb-3 mb-0">
-                                      <input
-                                        type="submit"
-                                        value="Post Comment"
-                                        class="submit btn btn-primary"
-                                        name="submit"
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xl-12">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="profile-blog">
-                      <h5 class="text-primary d-inline">Today Highlights</h5>
-                      <img
-                        src="images/profile/1.jpg"
-                        alt=""
-                        class="img-fluid mt-4 mb-4 w-100 rounded"
-                      />
-                      <h4>
-                        <a href="post-details.html" class="text-black">
-                          {" "}
-                          Proof That EDUCATION Is Exactly What You Are Looking
-                          For
-                        </a>
-                      </h4>
-                      <p class="mb-0">
-                        For developing a nation, it is important to provide
-                        education to each one of living in the society. The key
-                        to a developed nation is connected with the education.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xl-12">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="profile-interest">
-                      <h5 class="text-primary d-inline">Interest</h5>
-                      <div class="row mt-4 sp4" id="lightgallery">
-                        <a
-                          href="images/profile/2.jpg"
-                          data-exthumbimage="images/profile/2.jpg"
-                          data-src="images/profile/2.jpg"
-                          class="mb-1 col-lg-4 col-xl-4 col-sm-4 col-6"
-                        >
-                          <img
-                            src="images/profile/2.jpg"
-                            alt=""
-                            class="img-fluid rounded"
-                          />
-                        </a>
-                        <a
-                          href="images/profile/3.jpg"
-                          data-exthumbimage="images/profile/3.jpg"
-                          data-src="images/profile/3.jpg"
-                          class="mb-1 col-lg-4 col-xl-4 col-sm-4 col-6"
-                        >
-                          <img
-                            src="images/profile/3.jpg"
-                            alt=""
-                            class="img-fluid rounded"
-                          />
-                        </a>
-                        <a
-                          href="images/profile/4.jpg"
-                          data-exthumbimage="images/profile/4.jpg"
-                          data-src="images/profile/4.jpg"
-                          class="mb-1 col-lg-4 col-xl-4 col-sm-4 col-6"
-                        >
-                          <img
-                            src="images/profile/4.jpg"
-                            alt=""
-                            class="img-fluid rounded"
-                          />
-                        </a>
-                        <a
-                          href="images/profile/3.jpg"
-                          data-exthumbimage="images/profile/3.jpg"
-                          data-src="images/profile/3.jpg"
-                          class="mb-1 col-lg-4 col-xl-4 col-sm-4 col-6"
-                        >
-                          <img
-                            src="images/profile/3.jpg"
-                            alt=""
-                            class="img-fluid rounded"
-                          />
-                        </a>
-                        <a
-                          href="images/profile/4.jpg"
-                          data-exthumbimage="images/profile/4.jpg"
-                          data-src="images/profile/4.jpg"
-                          class="mb-1 col-lg-4 col-xl-4 col-sm-4 col-6"
-                        >
-                          <img
-                            src="images/profile/4.jpg"
-                            alt=""
-                            class="img-fluid rounded"
-                          />
-                        </a>
-                        <a
-                          href="images/profile/2.jpg"
-                          data-exthumbimage="images/profile/2.jpg"
-                          data-src="images/profile/2.jpg"
-                          class="mb-1 col-lg-4 col-xl-4 col-sm-4 col-6"
-                        >
-                          <img
-                            src="images/profile/2.jpg"
-                            alt=""
-                            class="img-fluid rounded"
-                          />
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xl-12">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="profile-news">
-                      <h5 class="text-primary d-inline">Our Latest News</h5>
-                      <div class="media pt-3 pb-3">
-                        <img
-                          src="images/profile/5.jpg"
-                          alt="image"
-                          class="me-3 rounded"
-                          width="75"
-                        />
-                        <div class="media-body">
-                          <h5 class="m-b-5">
-                            <a href="post-details.html" class="text-black">
-                              These Mistakes Will Destroy Your EDUCATION
-                            </a>
-                          </h5>
-                          <p class="mb-0">
-                            Educational Institutions are established for
-                            availing education to student.
-                          </p>
-                        </div>
-                      </div>
-                      <div class="media pt-3 pb-3">
-                        <img
-                          src="images/profile/6.jpg"
-                          alt="image"
-                          class="me-3 rounded"
-                          width="75"
-                        />
-                        <div class="media-body">
-                          <h5 class="m-b-5">
-                            <a href="post-details.html" class="text-black">
-                              Best 50 Tips For EDUCATION
-                            </a>
-                          </h5>
-                          <p class="mb-0">
-                            education is also suffering from class conflict.
-                          </p>
-                        </div>
-                      </div>
-                      <div class="media pt-3 pb-3">
-                        <img
-                          src="images/profile/7.jpg"
-                          alt="image"
-                          class="me-3 rounded"
-                          width="75"
-                        />
-                        <div class="media-body">
-                          <h5 class="m-b-5">
-                            <a href="post-details.html" class="text-black">
-                              EDUCATION: This Is What Professionals
-                            </a>
-                          </h5>
-                          <p class="mb-0">
-                            system is degrading day by day due to various social
-                            and financial reasons.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-xl-8">
+          <div class="col-xl-12">
             <div class="card h-auto">
               <div class="card-body">
                 <div class="profile-tab">
@@ -430,39 +81,24 @@ const Profile = () => {
                     <ul class="nav nav-tabs" role="tablist">
                       <li class="nav-item" role="presentation">
                         <a
-                          href="#my-posts"
-                          data-bs-toggle="tab"
-                          class="nav-link show"
-                          aria-selected="false"
-                          role="tab"
-                          tabindex="-1"
-                        >
-                          Posts
-                        </a>
-                      </li>
-                      <li class="nav-item" role="presentation">
-                        <a
-                          href="#about-me"
                           data-bs-toggle="tab"
                           class="nav-link active"
                           aria-selected="true"
                           role="tab"
                         >
-                          About Me
+                          About
                         </a>
                       </li>
-                      <li class="nav-item" role="presentation">
+                      <div class="text-center">
                         <a
-                          href="#profile-settings"
-                          data-bs-toggle="tab"
-                          class="nav-link"
-                          aria-selected="false"
-                          tabindex="-1"
-                          role="tab"
+                          href="javascript:void(0);"
+                          class="btn btn-primary mb-1"
+                          data-bs-toggle="modal"
+                          data-bs-target="#sendMessageModal"
                         >
-                          Setting
+                          Edit Profile
                         </a>
-                      </li>
+                      </div>
                     </ul>
                     <div class="tab-content">
                       <div id="my-posts" class="tab-pane fade" role="tabpanel">
@@ -744,85 +380,11 @@ const Profile = () => {
                       >
                         <div class="profile-about-me">
                           <div class="pt-4 border-bottom-1 pb-3">
-                            <h5 class="text-primary">About Me</h5>
-                            <p class="mb-2">
-                              A wonderful serenity has taken possession of my
-                              entire soul, like these sweet mornings of spring
-                              which I enjoy with my whole heart. I am alone, and
-                              feel the charm of existence was created for the
-                              bliss of souls like mine.I am so happy, my dear
-                              friend, so absorbed in the exquisite sense of mere
-                              tranquil existence, that I neglect my talents.
-                            </p>
-                            <p>
-                              A collection of textile samples lay spread out on
-                              the table - Samsa was a travelling salesman - and
-                              above it there hung a picture that he had recently
-                              cut out of an illustrated magazine and housed in a
-                              nice, gilded frame.
-                            </p>
+                            <h5 class="text-primary">About </h5>
+                            <p class="mb-2"></p>
                           </div>
                         </div>
-                        <div class="profile-skills mb-5">
-                          <h5 class="text-primary mb-2">Skills</h5>
-                          <a
-                            href="javascript:void(0);"
-                            class="btn btn-primary light btn-xs mb-1"
-                          >
-                            Admin
-                          </a>
-                          <a
-                            href="javascript:void(0);"
-                            class="btn btn-primary light btn-xs mb-1"
-                          >
-                            Dashboard
-                          </a>
-                          <a
-                            href="javascript:void(0);"
-                            class="btn btn-primary light btn-xs mb-1"
-                          >
-                            Photoshop
-                          </a>
-                          <a
-                            href="javascript:void(0);"
-                            class="btn btn-primary light btn-xs mb-1"
-                          >
-                            Bootstrap
-                          </a>
-                          <a
-                            href="javascript:void(0);"
-                            class="btn btn-primary light btn-xs mb-1"
-                          >
-                            Responsive
-                          </a>
-                          <a
-                            href="javascript:void(0);"
-                            class="btn btn-primary light btn-xs mb-1"
-                          >
-                            Crypto
-                          </a>
-                        </div>
-                        <div class="profile-lang  mb-5">
-                          <h5 class="text-primary mb-2">Language</h5>
-                          <a
-                            href="javascript:void(0);"
-                            class="text-muted pe-3 f-s-16"
-                          >
-                            <i class="flag-icon flag-icon-us"></i> English
-                          </a>
-                          <a
-                            href="javascript:void(0);"
-                            class="text-muted pe-3 f-s-16"
-                          >
-                            <i class="flag-icon flag-icon-fr"></i> French
-                          </a>
-                          <a
-                            href="javascript:void(0);"
-                            class="text-muted pe-3 f-s-16"
-                          >
-                            <i class="flag-icon flag-icon-bd"></i> Bangla
-                          </a>
-                        </div>
+
                         <div class="profile-personal-info">
                           <h5 class="text-primary mb-4">
                             Personal Information
@@ -830,61 +392,137 @@ const Profile = () => {
                           <div class="row mb-2">
                             <div class="col-sm-3 col-5">
                               <h5 class="f-w-500">
-                                Name <span class="pull-end">:</span>
+                                Username <span class="pull-end">:</span>
                               </h5>
                             </div>
-                            <div class="col-sm-9 col-7">
-                              <span>Mitchell C.Shay</span>
+                            <div
+                              class="col-sm-9 col-7"
+                              style={{
+                                color: "#042954 ",
+                                fontSize: "17px",
+                                fontWeight: "800",
+                              }}
+                            >
+                              <span>{user.username}</span>
                             </div>
                           </div>
                           <div class="row mb-2">
                             <div class="col-sm-3 col-5">
                               <h5 class="f-w-500">
-                                Email <span class="pull-end">:</span>
+                                Email Address <span class="pull-end">:</span>
                               </h5>
                             </div>
-                            <div class="col-sm-9 col-7">
-                              <span>example@examplel.com</span>
+                            <div
+                              class="col-sm-9 col-7"
+                              style={{
+                                color: "#042954 ",
+                                fontSize: "17px",
+                                fontWeight: "800",
+                              }}
+                            >
+                              <span>{user.email}</span>
                             </div>
                           </div>
                           <div class="row mb-2">
                             <div class="col-sm-3 col-5">
                               <h5 class="f-w-500">
-                                Availability <span class="pull-end">:</span>
+                                Phone Number <span class="pull-end">:</span>
                               </h5>
                             </div>
-                            <div class="col-sm-9 col-7">
-                              <span>Full Time (Free Lancer)</span>
+                            <div
+                              class="col-sm-9 col-7"
+                              style={{
+                                color: "#042954 ",
+                                fontSize: "17px",
+                                fontWeight: "800",
+                              }}
+                            >
+                              <span>{user.phone}</span>
                             </div>
                           </div>
                           <div class="row mb-2">
                             <div class="col-sm-3 col-5">
                               <h5 class="f-w-500">
-                                Age <span class="pull-end">:</span>
+                                Home Address <span class="pull-end">:</span>
                               </h5>
                             </div>
-                            <div class="col-sm-9 col-7">
-                              <span>27</span>
+                            <div
+                              class="col-sm-9 col-7"
+                              style={{
+                                color: "#042954 ",
+                                fontSize: "17px",
+                                fontWeight: "800",
+                              }}
+                            >
+                              <span>{user.address}</span>
                             </div>
                           </div>
                           <div class="row mb-2">
                             <div class="col-sm-3 col-5">
                               <h5 class="f-w-500">
-                                Location <span class="pull-end">:</span>
+                                Admission No <span class="pull-end">:</span>
                               </h5>
                             </div>
-                            <div class="col-sm-9 col-7">
-                              <span>Rosemont Avenue Melbourne, Florida</span>
+                            <div
+                              class="col-sm-9 col-7"
+                              style={{
+                                color: "#042954 ",
+                                fontSize: "17px",
+                                fontWeight: "800",
+                              }}
+                            >
+                              <span>{user.AdmNo}</span>
                             </div>
                           </div>
                           <div class="row mb-2">
                             <div class="col-sm-3 col-5">
                               <h5 class="f-w-500">
-                                Year Experience <span class="pull-end">:</span>
+                                Class <span class="pull-end">:</span>
                               </h5>
                             </div>
-                            <div class="col-sm-9 col-7">
-                              <span>07 Year Experiences</span>
+                            <div
+                              class="col-sm-9 col-7"
+                              style={{
+                                color: "#042954 ",
+                                fontSize: "17px",
+                                fontWeight: "800",
+                              }}
+                            >
+                              <span>{user.className}</span>
+                            </div>
+                          </div>
+                          <div class="row mb-2">
+                            <div class="col-sm-3 col-5">
+                              <h5 class="f-w-500">
+                                Parents Name <span class="pull-end">:</span>
+                              </h5>
+                            </div>
+                            <div
+                              class="col-sm-9 col-7"
+                              style={{
+                                color: "#042954 ",
+                                fontSize: "17px",
+                                fontWeight: "800",
+                              }}
+                            >
+                              <span>{user.parentsName}</span>
+                            </div>
+                          </div>
+                          <div class="row mb-2">
+                            <div class="col-sm-3 col-5">
+                              <h5 class="f-w-500">
+                                Date of Birth <span class="pull-end">:</span>
+                              </h5>
+                            </div>
+                            <div
+                              class="col-sm-9 col-7"
+                              style={{
+                                color: "#042954 ",
+                                fontSize: "17px",
+                                fontWeight: "800",
+                              }}
+                            >
+                              <span>{user.dob}</span>
                             </div>
                           </div>
                         </div>
