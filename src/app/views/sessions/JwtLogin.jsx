@@ -83,8 +83,8 @@ const JwtLogin = () => {
         toast.error("Invalid credentials"); // Display an error notification
       }
     } catch (error) {
-      console.error("An error occurred during login:", error);
-      toast.error("An error occurred during login");
+      console.error("Incorrect Username/Email or Password:", error);
+      toast.error("Incorrect Username/Email or Password");
     }
   };
 
