@@ -76,7 +76,7 @@ const FormDialog16 = ({ setGradesData }) => {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title"> Add new grade</DialogTitle>
+        <DialogTitle id="form-dialog-title"> Add New Grades</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
