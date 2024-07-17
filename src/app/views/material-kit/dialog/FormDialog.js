@@ -576,7 +576,7 @@ export default function FormDialog({ updateTableData }) {
                   helperText={touched.phone && errors.phone}
                   error={touched.phone && Boolean(errors.phone)}
                 />
-                <label>Home Address</label>
+                <label> Address</label>
                 <TextField
                   autoFocus
                   margin="dense"
