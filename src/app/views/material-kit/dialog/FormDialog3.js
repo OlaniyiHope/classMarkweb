@@ -1,9 +1,184 @@
+// import { Box } from "@mui/material";
+// import Button from "@mui/material/Button";
+// import Dialog from "@mui/material/Dialog";
+// import DialogActions from "@mui/material/DialogActions";
+// import DialogContent from "@mui/material/DialogContent";
+// import DialogContentText from "@mui/material/DialogContentText";
+// import DialogTitle from "@mui/material/DialogTitle";
+// import { useNavigate } from "react-router-dom";
+// import TextField from "@mui/material/TextField";
+// import React, { useState } from "react";
+// import axios from "axios";
+// import { ToastContainer, toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+// import { useEffect } from "react";
+
+// const initialState = {
+//   username: "",
+//   email: "",
+//   password: "",
+//   address: "",
+//   phone: "",
+// };
+
+// export default function FormDialog3({ updateTableData }) {
+//   const [open, setOpen] = React.useState(false);
+//   const navigate = useNavigate();
+//   const [formData, setFormData] = useState(initialState);
+//   const { username, email, password, address, phone } = formData;
+//   const apiUrl = process.env.REACT_APP_API_URL.trim();
+
+//   // const handleSubmit = async (e) => {
+//   //   e.preventDefault();
+//   //   const formData = {
+//   //     username,
+//   //     email,
+//   //     password,
+//   //     address,
+//   //     phone,
+//   //   };
+//   //   try {
+//   //     await axios.post(
+//   //       `https://hlhs1-ef7e91975268.herokuapp.com/api/register`,
+//   //       {
+//   //         ...formData,
+//   //         role: "teacher",
+//   //       }
+//   //     );
+
+//   //     // navigate("/dashboard/admin");
+//   //     toast.success("User successfully created");
+//   //   } catch (err) {
+//   //     console.error("Error registering student:", err);
+//   //     toast.error("Unable to create user");
+//   //   }
+//   // };
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     const formData = {
+//       username,
+//       email,
+//       password,
+//       phone,
+//       address,
+//     };
+//     try {
+//       const response = await axios.post(`${apiUrl}/api/register`, {
+//         ...formData,
+//         role: "teacher",
+//       });
+//       // Assuming the response contains the new admin data
+//       const newAdmin = response.data;
+//       // Update the table data in the parent component (ViewAdmin)
+//       updateTableData(newAdmin);
+//       toast.success("User successfully created");
+//       handleClose();
+//     } catch (err) {
+//       console.error("Error registering admin:", err);
+//       toast.error("Unable to create user");
+//     }
+//   };
+
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData({ ...formData, [name]: value });
+//   };
+
+//   function handleClickOpen() {
+//     setOpen(true);
+//   }
+
+//   function handleClose() {
+//     setOpen(false);
+//   }
+
+//   return (
+//     <Box>
+//       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+//         Add new Teacher
+//       </Button>
+
+//       <Dialog
+//         open={open}
+//         onClose={handleClose}
+//         aria-labelledby="form-dialog-title"
+//       >
+//         <DialogTitle id="form-dialog-title"> Add new teacher</DialogTitle>
+//         <DialogContent>
+//           <label>Username</label>
+//           <TextField
+//             autoFocus
+//             margin="dense"
+//             name="username"
+//             value={username}
+//             placeholder="Teachers name"
+//             type="text"
+//             fullWidth
+//             onChange={handleChange}
+//           />
+//           <label>Email Address</label>
+//           <TextField
+//             autoFocus
+//             margin="dense"
+//             type="email"
+//             name="email"
+//             placeholder="Enter email"
+//             value={email}
+//             fullWidth
+//             onChange={handleChange}
+//           />
+//           <label>Home Address</label>
+//           <TextField
+//             type="text"
+//             name="address"
+//             autoFocus
+//             margin="dense"
+//             value={address}
+//             placeholder="Address"
+//             fullWidth
+//             onChange={handleChange}
+//           />
+//           <label>Phone Number</label>
+//           <TextField
+//             autoFocus
+//             margin="dense"
+//             type="text"
+//             name="phone"
+//             value={phone}
+//             placeholder="Phone Number"
+//             fullWidth
+//             onChange={handleChange}
+//           />
+//           <label>Password</label>
+//           <TextField
+//             autoFocus
+//             margin="dense"
+//             name="password"
+//             type="password"
+//             placeholder="Password"
+//             value={password}
+//             fullWidth
+//             onChange={handleChange}
+//           />
+//         </DialogContent>
+//         <DialogActions>
+//           <Button variant="outlined" color="secondary" onClick={handleClose}>
+//             Cancel
+//           </Button>
+//           <Button onClick={handleSubmit} color="primary">
+//             Add Teacher
+//           </Button>
+//         </DialogActions>
+//       </Dialog>
+//       <ToastContainer />
+//     </Box>
+//   );
+// }
 import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
@@ -11,7 +186,11 @@ import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useEffect } from "react";
+import * as Yup from "yup";
+import { Formik, Field } from "formik";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
 
 const initialState = {
   username: "",
@@ -21,68 +200,33 @@ const initialState = {
   phone: "",
 };
 
+const validationSchema = Yup.object().shape({
+  username: Yup.string().required("Username is required"),
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters long")
+    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+    .matches(/[0-9]/, "Password must contain at least one number")
+    .matches(
+      /[@$!%*?&#]/,
+      "Password must contain at least one special character"
+    )
+    .required("Password is required"),
+  phone: Yup.string().matches(
+    /^\d{11}$/,
+    "Phone number must be exactly 11 digits"
+  ),
+  address: Yup.string().required("Address is required"),
+});
+
 export default function FormDialog3({ updateTableData }) {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState(initialState);
-  const { username, email, password, address, phone } = formData;
+  const [showPassword, setShowPassword] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL.trim();
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const formData = {
-  //     username,
-  //     email,
-  //     password,
-  //     address,
-  //     phone,
-  //   };
-  //   try {
-  //     await axios.post(
-  //       `https://hlhs1-ef7e91975268.herokuapp.com/api/register`,
-  //       {
-  //         ...formData,
-  //         role: "teacher",
-  //       }
-  //     );
-
-  //     // navigate("/dashboard/admin");
-  //     toast.success("User successfully created");
-  //   } catch (err) {
-  //     console.error("Error registering student:", err);
-  //     toast.error("Unable to create user");
-  //   }
-  // };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = {
-      username,
-      email,
-      password,
-      phone,
-      address,
-    };
-    try {
-      const response = await axios.post(`${apiUrl}/api/register`, {
-        ...formData,
-        role: "teacher",
-      });
-      // Assuming the response contains the new admin data
-      const newAdmin = response.data;
-      // Update the table data in the parent component (ViewAdmin)
-      updateTableData(newAdmin);
-      toast.success("User successfully created");
-      handleClose();
-    } catch (err) {
-      console.error("Error registering admin:", err);
-      toast.error("Unable to create user");
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
 
   function handleClickOpen() {
     setOpen(true);
@@ -91,6 +235,14 @@ export default function FormDialog3({ updateTableData }) {
   function handleClose() {
     setOpen(false);
   }
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   return (
     <Box>
@@ -105,70 +257,136 @@ export default function FormDialog3({ updateTableData }) {
       >
         <DialogTitle id="form-dialog-title"> Add new teacher</DialogTitle>
         <DialogContent>
-          <label>Username</label>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="username"
-            value={username}
-            placeholder="Teachers name"
-            type="text"
-            fullWidth
-            onChange={handleChange}
-          />
-          <label>Email Address</label>
-          <TextField
-            autoFocus
-            margin="dense"
-            type="email"
-            name="email"
-            placeholder="Enter email"
-            value={email}
-            fullWidth
-            onChange={handleChange}
-          />
-          <label>Home Address</label>
-          <TextField
-            type="text"
-            name="address"
-            autoFocus
-            margin="dense"
-            value={address}
-            placeholder="Address"
-            fullWidth
-            onChange={handleChange}
-          />
-          <label>Phone Number</label>
-          <TextField
-            autoFocus
-            margin="dense"
-            type="text"
-            name="phone"
-            value={phone}
-            placeholder="Phone Number"
-            fullWidth
-            onChange={handleChange}
-          />
-          <label>Password</label>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="password"
-            type="password"
-            placeholder="Password"
-            value={password}
-            fullWidth
-            onChange={handleChange}
-          />
+          <Formik
+            initialValues={initialState}
+            validationSchema={validationSchema}
+            onSubmit={async (values, { setSubmitting }) => {
+              try {
+                const response = await axios.post(`${apiUrl}/api/register`, {
+                  ...values,
+                  role: "teacher",
+                });
+                const newAdmin = response.data;
+                updateTableData(newAdmin);
+                toast.success("User successfully created");
+                handleClose();
+              } catch (err) {
+                console.error("Error registering admin:", err);
+                toast.error("Unable to create user");
+              } finally {
+                setSubmitting(false);
+              }
+            }}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              isSubmitting,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                <label>Username</label>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  name="username"
+                  value={values.username}
+                  placeholder="Teacher's name"
+                  type="text"
+                  fullWidth
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  helperText={touched.username && errors.username}
+                  error={touched.username && Boolean(errors.username)}
+                />
+                <label>Email Address</label>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  type="email"
+                  name="email"
+                  placeholder="Enter email"
+                  value={values.email}
+                  fullWidth
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  helperText={touched.email && errors.email}
+                  error={touched.email && Boolean(errors.email)}
+                />
+                <label>Home Address</label>
+                <TextField
+                  type="text"
+                  name="address"
+                  autoFocus
+                  margin="dense"
+                  value={values.address}
+                  placeholder="Address"
+                  fullWidth
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  helperText={touched.address && errors.address}
+                  error={touched.address && Boolean(errors.address)}
+                />
+                <label>Phone Number</label>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  type="text"
+                  name="phone"
+                  value={values.phone}
+                  placeholder="Phone Number"
+                  fullWidth
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  helperText={touched.phone && errors.phone}
+                  error={touched.phone && Boolean(errors.phone)}
+                />
+                <label>Password</label>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={values.password}
+                  fullWidth
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  helperText={touched.password && errors.password}
+                  error={touched.password && Boolean(errors.password)}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <DialogActions>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={handleClose}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit" color="primary" disabled={isSubmitting}>
+                    Add Teacher
+                  </Button>
+                </DialogActions>
+              </form>
+            )}
+          </Formik>
         </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" color="secondary" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit} color="primary">
-            Add Teacher
-          </Button>
-        </DialogActions>
       </Dialog>
       <ToastContainer />
     </Box>
