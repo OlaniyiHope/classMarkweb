@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -8,6 +8,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
+import useFetch from "hooks/useFetch";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -19,7 +20,14 @@ const initialState = {
 
 export default function FormClass({ updateTableData }) {
   const [open, setOpen] = React.useState(false);
+  const {
+    data: teachersData,
+    loading: teachersLoading,
+    error: teachersError,
+  } = useFetch("/get-teachers");
+
   const navigate = useNavigate();
+  const [selectedTeacher, setSelectedTeacher] = useState("");
   const [formData, setFormData] = useState(initialState);
   const { name, teacher } = formData;
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -63,7 +71,21 @@ export default function FormClass({ updateTableData }) {
   function handleClickOpen() {
     setOpen(true);
   }
+  const handleTeacherChange = (event) => {
+    const selectedTeacherId = event.target.value;
+    setSelectedTeacher(selectedTeacherId);
 
+    // Assuming you have an array of teachersData containing teacher objects
+    // and you want to find the teacher's username based on their ID
+    const selectedTeacher = teachersData.find(
+      (teacher) => teacher._id === selectedTeacherId
+    );
+
+    if (selectedTeacher) {
+      const teacherUsername = selectedTeacher.username;
+      setFormData({ ...formData, teacher: teacherUsername }); // Store the teacher username
+    }
+  };
   function handleClose() {
     setOpen(false);
   }
@@ -100,15 +122,23 @@ export default function FormClass({ updateTableData }) {
           />
           <label>Class Teacher</label>
           <TextField
-            autoFocus
-            margin="dense"
-            type="text"
-            name="teacher"
-            placeholder="Enter teacher's name"
-            value={teacher}
+            select
+            label="Select Teacher"
+            variant="outlined"
+            value={selectedTeacher}
+            onChange={handleTeacherChange}
             fullWidth
-            onChange={handleChange}
-          />
+          >
+            {teachersData &&
+              teachersData.map(
+                (item) =>
+                  item.role === "teacher" && (
+                    <MenuItem key={item._id} value={item._id}>
+                      {item.username}
+                    </MenuItem>
+                  )
+              )}
+          </TextField>
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" color="secondary" onClick={handleClose}>

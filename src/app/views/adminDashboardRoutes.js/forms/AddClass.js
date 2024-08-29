@@ -40,6 +40,7 @@ const initialState = {
 const apiUrl = process.env.REACT_APP_API_URL.trim();
 const AddClass = () => {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState(initialState); // Assuming you have an 'initialState' object defined
   const { name, teacher } = formData; // Update these field names as needed
   const handleSubmit = async (e) => {
