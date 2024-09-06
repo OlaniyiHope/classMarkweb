@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { Fragment, React, useState } from "react";
+import { Fragment, React, useContext, useState } from "react";
 import useFetch from "../../../../hooks/useFetch";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -38,6 +38,7 @@ import "react-calendar/dist/Calendar.css";
 import "./style.css";
 import axios from "axios";
 import EditAdmin from "../forms/EditAdmin";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -78,7 +79,11 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const ViewAdmin = () => {
-  const { data, loading, error, reFetch } = useFetch("/get-admin");
+  // const { data, loading, error, reFetch } = useFetch("/get-admin");
+  const { currentSession } = useContext(SessionContext);
+  const { data, loading, error, reFetch } = useFetch(
+    currentSession ? `/get-session-admin/${currentSession._id}` : null
+  );
   const { palette } = useTheme();
   const [editAdminData, setEditAdminData] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});

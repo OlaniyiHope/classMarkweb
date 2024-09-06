@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useContext } from "react";
 import {
   Box,
   IconButton,
@@ -23,6 +23,7 @@ import NoticeBoard from "./NoticeBoard";
 import DeleteNoticeModal from "./DeleteNoticeModal";
 import axios from "axios";
 import EditNotice from "./EditNotice";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -40,7 +41,20 @@ const StyledTable = styled(Table)(({ theme }) => ({
 }));
 
 const ViewNotice = () => {
-  const { data, loading, error, reFetch } = useFetch("/get-all-notices");
+  const { currentSession } = useContext(SessionContext);
+  const { data, loading, error, reFetch } = useFetch(
+    currentSession ? `/get-all-notices/${currentSession._id}` : null
+  );
+  useEffect(() => {
+    console.log("Current Session:", currentSession);
+    console.log(
+      "Fetching notices with URL:",
+      currentSession
+        ? `/get-all-notices/${currentSession._id}`
+        : "No session ID"
+    );
+  }, [currentSession]);
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [editNoticeData, setEditNoticeData] = useState(null);
@@ -139,17 +153,6 @@ const ViewNotice = () => {
 
     // Close the dialog after the API call
     handleCloseDeleteDialog();
-  };
-  const refetchData = async () => {
-    // Manually refetch data to trigger a re-render
-    try {
-      const refetchedData = await axios.get(`${apiUrl}/api/get-all-notices`);
-      // Update the data prop with the new data
-      // This will trigger a re-render with the updated data
-      setNotices(refetchedData.data);
-    } catch (error) {
-      console.error("Error refetching data:", error);
-    }
   };
 
   const handleEditNotice = (noticeId) => {

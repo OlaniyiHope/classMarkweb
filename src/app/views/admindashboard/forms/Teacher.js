@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useContext } from "react";
 import {
   Box,
   IconButton,
@@ -28,6 +28,7 @@ import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import EditTeacher from "./EditTeacher";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -45,7 +46,10 @@ const StyledTable = styled(Table)(({ theme }) => ({
 }));
 
 const Teacher = () => {
-  const { data, loading, error, reFetch } = useFetch("/get-teachers");
+  const { currentSession } = useContext(SessionContext);
+  const { data, loading, error, reFetch } = useFetch(
+    currentSession ? `/get-teachers/${currentSession._id}` : null
+  );
   const [page, setPage] = useState(0);
   const [editTeacherData, setEditTeacherData] = useState(null);
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
@@ -58,28 +62,6 @@ const Teacher = () => {
   const [newPassword, setNewPassword] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL.trim();
-
-  useEffect(() => {
-    // Fetch the JWT token from your storage (localStorage or cookies)
-    const token = localStorage.getItem("jwtToken");
-
-    // Make an API call with the JWT token
-    fetch("/get-teachers", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`, // Include the JWT token in the headers
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // Handle the data here
-        console.log(data);
-      })
-      .catch((error) => {
-        // Handle errors
-        console.error(error);
-      });
-  }, []);
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
