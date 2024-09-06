@@ -12,9 +12,9 @@ import {
   Paper,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
-import useFetch from "hooks/useFetch";
+import useFetch from "../../../../hooks/useFetch";
 import axios from "axios";
-import useAuth from "app/hooks/useAuth";
+import useAuth from "../../../../app/hooks/useAuth";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",

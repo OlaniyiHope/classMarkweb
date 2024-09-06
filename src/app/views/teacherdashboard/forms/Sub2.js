@@ -17,10 +17,10 @@ import {
   TableRow,
 } from "@mui/material";
 import RowCards from "../shared/RowCards";
-import { Breadcrumb } from "app/components";
+import { Breadcrumb } from "../../../../app/components";
 
-import useFetch from "hooks/useFetch";
-import FormDialog5 from "app/views/material-kit/dialog/FormDialog5";
+import useFetch from "../../../../hooks/useFetch";
+import FormDialog5 from "../../../../app/views/material-kit/dialog/FormDialog5";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },

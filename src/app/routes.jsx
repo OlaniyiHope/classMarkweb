@@ -1,12 +1,14 @@
 import { Navigate } from "react-router-dom";
-import AuthGuard from "app/auth/AuthGuard";
-import chartsRoute from "app/views/charts/ChartsRoute";
-import NotFound from "app/views/sessions/NotFound";
-import sessionRoutes from "app/views/sessions/SessionRoutes";
+import AuthGuard from "../app/auth/AuthGuard";
+import chartsRoute from "../app/views/charts/ChartsRoute";
+import NotFound from "../app/views/sessions/NotFound";
+import sessionRoutes from "../app/views/sessions/SessionRoutes";
+
 import MatxLayout from "./components/MatxLayout/MatxLayout";
-import adminDashboardRoutes from "./views/adminDashboardRoutes.js/adminDashboardRoutes";
+
 import teacherDashboardRoutes from "./views/teacherdashboard/teacherDashboardRoutes";
 import studentDashboardRoutes from "./views/studentdashboard/studentDashboardRoutes";
+import adminDashboardRoutes from "./views/admindashboard/adminDashboardRoutes";
 
 const routes = [
   {

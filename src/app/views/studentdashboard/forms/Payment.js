@@ -20,14 +20,14 @@ import {
   Menu,
 } from "@mui/material";
 import RowCards from "../shared/RowCards";
-import { Breadcrumb } from "app/components";
+import { Breadcrumb } from "../../../../app/components";
 import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Link, useParams } from "react-router-dom";
 
-import useFetch from "hooks/useFetch";
-import FormDialog4 from "app/views/material-kit/dialog/FormDialog4";
-import useAuth from "app/hooks/useAuth";
+import useFetch from "../../../../hooks/useFetch";
+import FormDialog4 from "../../../../app/views/material-kit/dialog/FormDialog4";
+import useAuth from "../../../../app/hooks/useAuth";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },

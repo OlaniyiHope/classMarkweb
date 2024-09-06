@@ -2,7 +2,7 @@ import { DatePicker } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { Stack } from "@mui/material";
 import { Box } from "@mui/system";
-import { Breadcrumb, SimpleCard } from "app/components";
+import { Breadcrumb, SimpleCard } from "../../../../app/components";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import {
   Button,
@@ -14,7 +14,7 @@ import {
   RadioGroup,
   styled,
 } from "@mui/material";
-import { Span } from "app/components/Typography";
+import { Span } from "../../../../app/components/Typography";
 import { useEffect, useState } from "react";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 const Container = styled("div")(({ theme }) => ({

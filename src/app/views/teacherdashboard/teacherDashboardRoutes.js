@@ -1,4 +1,5 @@
-import Loadable from "app/components/Loadable";
+import Loadable from "../../../app/components/Loadable";
+
 import { lazy } from "react";
 import { authRoles } from "../../auth/authRoles";
 import Admin from "./admin/Admin";

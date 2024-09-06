@@ -17,7 +17,7 @@ import {
   FormControlLabel,
   Radio,
 } from "@mui/material";
-import useFetch from "hooks/useFetch";
+import useFetch from "../../../hooks/useFetch";
 const validationSchema = Yup.object().shape({
   username: Yup.string().required("Username is required"),
   email: Yup.string()

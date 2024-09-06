@@ -16,10 +16,10 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import RowCards from "../shared/RowCards";
-import { Breadcrumb } from "app/components";
-import useFetch from "hooks/useFetch";
-import FormDialog16 from "app/views/material-kit/dialog/FormDialog16";
+
+import useFetch from "../../../../hooks/useFetch";
+import FormDialog16 from "../../../../app/views/material-kit/dialog/FormDialog16";
+import { Breadcrumb } from "../../../components";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },

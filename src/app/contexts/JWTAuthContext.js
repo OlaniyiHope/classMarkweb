@@ -272,7 +272,7 @@
 import React, { createContext, useEffect, useReducer } from "react";
 import jwtDecode from "jwt-decode";
 import axios from "axios";
-import { MatxLoading } from "app/components";
+import { MatxLoading } from "../../app/components";
 
 const initialState = {
   isAuthenticated: false,

@@ -1,9 +1,9 @@
-import { DatePicker } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { Stack } from '@mui/material';
-import { Box } from '@mui/system';
-import { Breadcrumb, SimpleCard } from 'app/components';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { DatePicker } from "@mui/lab";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { Stack } from "@mui/material";
+import { Box } from "@mui/system";
+import { Breadcrumb, SimpleCard } from "../../../../app/components";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import {
   Button,
   Checkbox,
@@ -13,34 +13,34 @@ import {
   Radio,
   RadioGroup,
   styled,
-} from '@mui/material';
-import { Span } from 'app/components/Typography';
-import { useEffect, useState } from 'react';
-import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
-const Container = styled('div')(({ theme }) => ({
-  margin: '30px',
-  [theme.breakpoints.down('sm')]: { margin: '16px' },
-  '& .breadcrumb': {
-    marginBottom: '30px',
-    [theme.breakpoints.down('sm')]: { marginBottom: '16px' },
+} from "@mui/material";
+import { Span } from "../../../../app/components/Typography";
+import { useEffect, useState } from "react";
+import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
+const Container = styled("div")(({ theme }) => ({
+  margin: "30px",
+  [theme.breakpoints.down("sm")]: { margin: "16px" },
+  "& .breadcrumb": {
+    marginBottom: "30px",
+    [theme.breakpoints.down("sm")]: { marginBottom: "16px" },
   },
 }));
 
 const TextField = styled(TextValidator)(() => ({
-  width: '100%',
-  marginBottom: '16px',
+  width: "100%",
+  marginBottom: "16px",
 }));
 
 const Payment = () => {
   const [state, setState] = useState({ date: new Date() });
 
   useEffect(() => {
-    ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
+    ValidatorForm.addValidationRule("isPasswordMatch", (value) => {
       if (value !== state.password) return false;
 
       return true;
     });
-    return () => ValidatorForm.removeValidationRule('isPasswordMatch');
+    return () => ValidatorForm.removeValidationRule("isPasswordMatch");
   }, [state.password]);
 
   const handleSubmit = (event) => {
@@ -71,7 +71,12 @@ const Payment = () => {
     <div>
       <Container>
         <Box className="breadcrumb">
-          <Breadcrumb routeSegments={[{ name: 'Material', path: '/material' }, { name: 'Form' }]} />
+          <Breadcrumb
+            routeSegments={[
+              { name: "Material", path: "/material" },
+              { name: "Form" },
+            ]}
+          />
         </Box>
 
         <Stack spacing={3}>
@@ -83,11 +88,15 @@ const Payment = () => {
                     type="text"
                     name="username"
                     id="standard-basic"
-                    value={username || ''}
+                    value={username || ""}
                     onChange={handleChange}
-                    errorMessages={['this field is required']}
+                    errorMessages={["this field is required"]}
                     label="Username (Min length 4, Max length 9)"
-                    validators={['required', 'minStringLength: 4', 'maxStringLength: 9']}
+                    validators={[
+                      "required",
+                      "minStringLength: 4",
+                      "maxStringLength: 9",
+                    ]}
                   />
 
                   <TextField
@@ -95,19 +104,22 @@ const Payment = () => {
                     name="firstName"
                     label="First Name"
                     onChange={handleChange}
-                    value={firstName || ''}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
+                    value={firstName || ""}
+                    validators={["required"]}
+                    errorMessages={["this field is required"]}
                   />
 
                   <TextField
                     type="email"
                     name="email"
                     label="Email"
-                    value={email || ''}
+                    value={email || ""}
                     onChange={handleChange}
-                    validators={['required', 'isEmail']}
-                    errorMessages={['this field is required', 'email is not valid']}
+                    validators={["required", "isEmail"]}
+                    errorMessages={[
+                      "this field is required",
+                      "email is not valid",
+                    ]}
                   />
 
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -119,7 +131,7 @@ const Payment = () => {
                           {...props}
                           label="Date picker"
                           id="mui-pickers-date"
-                          sx={{ mb: 2, width: '100%' }}
+                          sx={{ mb: 2, width: "100%" }}
                         />
                       )}
                     />
@@ -131,9 +143,13 @@ const Payment = () => {
                     name="creditCard"
                     label="Credit Card"
                     onChange={handleChange}
-                    value={creditCard || ''}
-                    errorMessages={['this field is required']}
-                    validators={['required', 'minStringLength:16', 'maxStringLength: 16']}
+                    value={creditCard || ""}
+                    errorMessages={["this field is required"]}
+                    validators={[
+                      "required",
+                      "minStringLength:16",
+                      "maxStringLength: 16",
+                    ]}
                   />
                 </Grid>
 
@@ -141,71 +157,74 @@ const Payment = () => {
                   <TextField
                     type="text"
                     name="mobile"
-                    value={mobile || ''}
+                    value={mobile || ""}
                     label="Mobile Nubmer"
                     onChange={handleChange}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
+                    validators={["required"]}
+                    errorMessages={["this field is required"]}
                   />
                   <TextField
                     name="password"
                     type="password"
                     label="Password"
-                    value={password || ''}
+                    value={password || ""}
                     onChange={handleChange}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
-                  />{' '}
+                    validators={["required"]}
+                    errorMessages={["this field is required"]}
+                  />{" "}
                   <TextField
                     type="text"
                     name="firstName"
                     label="Section"
                     onChange={handleChange}
-                    value={firstName || ''}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
+                    value={firstName || ""}
+                    validators={["required"]}
+                    errorMessages={["this field is required"]}
                   />
                   <TextField
                     type="text"
                     name="firstName"
                     label="Birthday"
                     onChange={handleChange}
-                    value={firstName || ''}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
+                    value={firstName || ""}
+                    validators={["required"]}
+                    errorMessages={["this field is required"]}
                   />
                   <TextField
                     type="text"
                     name="firstName"
                     label="Address"
                     onChange={handleChange}
-                    value={firstName || ''}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
+                    value={firstName || ""}
+                    validators={["required"]}
+                    errorMessages={["this field is required"]}
                   />
                   <TextField
                     type="text"
                     name="firstName"
                     label="Id No"
                     onChange={handleChange}
-                    value={firstName || ''}
-                    validators={['required']}
-                    errorMessages={['this field is required']}
+                    value={firstName || ""}
+                    validators={["required"]}
+                    errorMessages={["this field is required"]}
                   />
                   <TextField
                     type="password"
                     name="confirmPassword"
                     onChange={handleChange}
                     label="Confirm Password"
-                    value={confirmPassword || ''}
-                    validators={['required', 'isPasswordMatch']}
-                    errorMessages={['this field is required', "password didn't match"]}
+                    value={confirmPassword || ""}
+                    validators={["required", "isPasswordMatch"]}
+                    errorMessages={[
+                      "this field is required",
+                      "password didn't match",
+                    ]}
                   />
                   <RadioGroup
                     row
                     name="gender"
                     sx={{ mb: 2 }}
-                    value={gender || ''}
+                    value={gender || ""}
                     onChange={handleChange}
                   >
                     <FormControlLabel
@@ -238,7 +257,7 @@ const Payment = () => {
 
               <Button color="primary" variant="contained" type="submit">
                 <Icon>send</Icon>
-                <Span sx={{ pl: 1, textTransform: 'capitalize' }}>Submit</Span>
+                <Span sx={{ pl: 1, textTransform: "capitalize" }}>Submit</Span>
               </Button>
             </ValidatorForm>
           </SimpleCard>

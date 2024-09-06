@@ -1,4 +1,4 @@
-import useSettings from 'app/hooks/useSettings';
+import useSettings from "../../app/hooks/useSettings";
 
 const MatxLogo = ({ className }) => {
   const { settings } = useSettings();
@@ -14,7 +14,13 @@ const MatxLogo = ({ className }) => {
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
     >
-      <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g
+        id="Page-1"
+        stroke="none"
+        strokeWidth="1"
+        fill="none"
+        fillRule="evenodd"
+      >
         <g
           id="logo"
           transform="translate(120.500000, 98.000000) rotate(-270.000000) translate(-120.500000, -98.000000) translate(-21.000000, -35.000000)"

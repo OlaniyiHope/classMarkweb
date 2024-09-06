@@ -7,17 +7,18 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { Box, styled, useTheme } from "@mui/system";
-import { MatxMenu, MatxSearchBox } from "app/components";
-import { themeShadows } from "app/components/MatxTheme/themeColors";
-import useAuth from "app/hooks/useAuth";
-
-import useSettings from "app/hooks/useSettings";
-import { topBarHeight } from "app/utils/constant";
-import React from "react";
+import { MatxMenu, MatxSearchBox } from "../../../../app/components";
+import { themeShadows } from "../../../../app/components/MatxTheme/themeColors";
+import useAuth from "../../../../app/hooks/useAuth";
+import axios from "axios";
+import useSettings from "../../../../app/hooks/useSettings";
+import { topBarHeight } from "../../../../app/utils/constant";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Span } from "../../../components/Typography";
-import NotificationBar from "app/components/NotificationBar/NotificationBar";
-import { NotificationProvider } from "app/contexts/NotificationContext";
+import NotificationBar from "../../../../app/components/NotificationBar/NotificationBar";
+import { NotificationProvider } from "../../../../app/contexts/NotificationContext";
+import { SessionContext } from "./SessionContext";
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   color: theme.palette.text.primary,
@@ -82,6 +83,10 @@ const Layout1Topbar = () => {
   const { settings, updateSettings } = useSettings();
   const { logout, user } = useAuth();
   const isMdScreen = useMediaQuery(theme.breakpoints.down("md"));
+
+  const { sessions, currentSession, setSessions, setCurrentSession } =
+    useContext(SessionContext);
+
   const navigate = useNavigate();
   const updateSidebarMode = (sidebarSettings) => {
     updateSettings({
@@ -111,6 +116,93 @@ const Layout1Topbar = () => {
     }
   };
 
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:5000/api/sessions")
+  //     .then((response) => {
+  //       if (Array.isArray(response.data)) {
+  //         setSessions(response.data); // Set the sessions state directly
+  //         setCurrentSession(response.data[0]?._id);
+  //       } else {
+  //         console.error("Unexpected response structure", response);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching sessions:", error);
+  //     });
+  // }, []);
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/sessions")
+      .then((response) => {
+        if (Array.isArray(response.data)) {
+          const activeSession = response.data.find(
+            (session) => session.isActive
+          );
+          if (activeSession) {
+            setCurrentSession(activeSession); // Set the current active session
+          } else {
+            console.warn("No active session found");
+          }
+          setSessions(response.data); // Set the sessions list
+        } else {
+          console.error("Unexpected response structure", response);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching sessions:", error);
+      });
+  }, []);
+
+  // const handleSessionChange = (sessionId) => {
+  //   const selectedSession = sessions.find(
+  //     (session) => session._id === sessionId
+  //   );
+  //   setCurrentSession(selectedSession);
+  //   // Perform any additional actions on session change
+  // };
+  // const handleSessionChange = (sessionId) => {
+  //   const selectedSession = sessions.find(
+  //     (session) => session._id === sessionId
+  //   );
+  //   if (selectedSession) {
+  //     console.log("Switching to session:", selectedSession);
+  //     setCurrentSession(selectedSession);
+  //     // Perform any additional actions on session change
+  //   }
+  // };
+  const handleSessionChange = (sessionId) => {
+    const selectedSession = sessions.find(
+      (session) => session._id === sessionId
+    );
+
+    if (selectedSession) {
+      console.log("Switching to session:", selectedSession);
+
+      // Update session to be active on the backend
+      axios
+        .patch(`http://localhost:5000/api/sessions/${sessionId}/activate`)
+        .then((response) => {
+          console.log("Session activated:", response.data);
+
+          // Update the current session in the state
+          setCurrentSession(selectedSession);
+
+          // Optionally, update the sessions list to reflect the active session
+          setSessions((prevSessions) =>
+            prevSessions.map((session) =>
+              session._id === sessionId
+                ? { ...session, isActive: true }
+                : { ...session, isActive: false }
+            )
+          );
+        })
+        .catch((error) => {
+          console.error("Error activating session:", error);
+        });
+    }
+  };
+
   return (
     <>
       <TopbarRoot>
@@ -125,7 +217,9 @@ const Layout1Topbar = () => {
                   <Hidden xsDown>
                     <Span>
                       <strong style={{ display: "flex", alignItems: "center" }}>
-                        Running Session
+                        {currentSession?.name
+                          ? `Current Session: ${currentSession.name}`
+                          : "No active session"}
                         <Icon style={{ fontSize: "20px", marginLeft: "5px" }}>
                           arrow_drop_down
                         </Icon>
@@ -135,17 +229,22 @@ const Layout1Topbar = () => {
                 </UserMenu>
               }
             >
-              <StyledItem>
-                <Link>
-                  <Span> 2022/2023 </Span>
-                </Link>
-              </StyledItem>
-
-              <StyledItem>
-                <Link>
-                  <Span> 2023/2024 </Span>
-                </Link>
-              </StyledItem>
+              {sessions.length > 0 ? (
+                sessions.map((session) => (
+                  <StyledItem
+                    key={session._id}
+                    onClick={() => handleSessionChange(session._id)}
+                  >
+                    <Link>
+                      <Span>{session?.name}</Span>
+                    </Link>
+                  </StyledItem>
+                ))
+              ) : (
+                <StyledItem>
+                  <Span>No sessions available</Span>
+                </StyledItem>
+              )}
             </MatxMenu>
           </Box>
 

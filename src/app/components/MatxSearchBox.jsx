@@ -1,34 +1,34 @@
-import { Icon, IconButton } from '@mui/material';
-import { styled, useTheme } from '@mui/system';
-import { topBarHeight } from 'app/utils/constant';
-import React, { useState } from 'react';
+import { Icon, IconButton } from "@mui/material";
+import { styled, useTheme } from "@mui/system";
+import { topBarHeight } from "../../app/utils/constant";
+import React, { useState } from "react";
 
-const SearchContainer = styled('div')(({ theme }) => ({
-  position: 'absolute',
+const SearchContainer = styled("div")(({ theme }) => ({
+  position: "absolute",
   top: 0,
   left: 0,
   zIndex: 9,
-  width: '100%',
-  display: 'flex',
-  alignItems: 'center',
+  width: "100%",
+  display: "flex",
+  alignItems: "center",
   height: topBarHeight,
   background: theme.palette.primary.main,
   color: theme.palette.text.primary,
-  '&::placeholder': {
+  "&::placeholder": {
     color: theme.palette.text.primary,
   },
 }));
 
-const SearchInput = styled('input')(({ theme }) => ({
-  width: '100%',
-  border: 'none',
-  outline: 'none',
-  fontSize: '1rem',
-  paddingLeft: '20px',
-  height: 'calc(100% - 5px)',
+const SearchInput = styled("input")(({ theme }) => ({
+  width: "100%",
+  border: "none",
+  outline: "none",
+  fontSize: "1rem",
+  paddingLeft: "20px",
+  height: "calc(100% - 5px)",
   background: theme.palette.primary.main,
   color: theme.palette.text.primary,
-  '&::placeholder': { color: theme.palette.text.primary },
+  "&::placeholder": { color: theme.palette.text.primary },
 }));
 
 const MatxSearchBox = () => {
@@ -51,7 +51,7 @@ const MatxSearchBox = () => {
       {open && (
         <SearchContainer>
           <SearchInput type="text" placeholder="Search here..." autoFocus />
-          <IconButton onClick={toggle} sx={{ mx: 2, verticalAlign: 'middle' }}>
+          <IconButton onClick={toggle} sx={{ mx: 2, verticalAlign: "middle" }}>
             <Icon sx={{ color: textColor }}>close</Icon>
           </IconButton>
         </SearchContainer>

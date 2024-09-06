@@ -79,8 +79,8 @@ import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Button, styled } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
-import useFetch from "hooks/useFetch";
-import useAuth from "app/hooks/useAuth";
+import useFetch from "../../../../hooks/useFetch";
+import useAuth from "../../../../app/hooks/useAuth";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",

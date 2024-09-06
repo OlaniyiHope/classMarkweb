@@ -11,7 +11,8 @@ import {
   Tooltip,
   useTheme,
 } from "@mui/material";
-import useSettings from "app/hooks/useSettings";
+import useSettings from "../../../app/hooks/useSettings";
+
 import { Fragment, useState } from "react";
 import Scrollbar from "react-perfect-scrollbar";
 import { themeShadows } from "../MatxTheme/themeColors";

@@ -17,9 +17,9 @@ import {
   TableRow,
 } from "@mui/material";
 import RowCards from "../shared/RowCards";
-import { Breadcrumb } from "app/components";
-import useFetch from "hooks/useFetch";
-import FormDialog2 from "app/views/material-kit/dialog/FormDialog2";
+import { Breadcrumb } from "../../../../app/components";
+import useFetch from "../../../../hooks/useFetch";
+import FormDialog2 from "../../../../app/views/material-kit/dialog/FormDialog2";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },

@@ -1,4 +1,5 @@
-import Loadable from "app/components/Loadable";
+import Loadable from "../../../app/components/Loadable";
+
 import { lazy } from "react";
 import Login2 from "./Login2";
 import Register from "./Register";

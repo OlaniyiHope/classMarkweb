@@ -29,9 +29,9 @@ import { Container } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
 import RowCards from "../shared/RowCards";
-import { Breadcrumb } from "app/components";
-import FormDialog2 from "app/views/material-kit/dialog/FormDialog2";
-import useFetch from "hooks/useFetch";
+import { Breadcrumb } from "../../../../app/components";
+
+import useFetch from "../../../../hooks/useFetch";
 import axios from "axios";
 import { Link } from "react-router-dom";
 

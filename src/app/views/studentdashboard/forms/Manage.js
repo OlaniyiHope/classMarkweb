@@ -379,8 +379,8 @@ import {
   Box,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Breadcrumb } from "app/components";
-import useAuth from "app/hooks/useAuth";
+import { Breadcrumb } from "../../../../app/components";
+import useAuth from "../../../../app/hooks/useAuth";
 
 const Manage = () => {
   const { palette } = useTheme();

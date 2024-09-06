@@ -138,8 +138,8 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import useAuth from "app/hooks/useAuth";
-import AuthContext from "app/contexts/JWTAuthContext";
+import useAuth from "../../../../app/hooks/useAuth";
+import AuthContext from "../../../../app/contexts/JWTAuthContext";
 
 // Import useNavigate
 import { useNavigate } from "react-router-dom";

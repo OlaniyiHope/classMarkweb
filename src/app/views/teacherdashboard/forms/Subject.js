@@ -1,6 +1,6 @@
-import {} from '@mui/material';
-import { Fragment, React, useState } from 'react';
-import { Box } from '@mui/system';
+import {} from "@mui/material";
+import { Fragment, React, useState } from "react";
+import { Box } from "@mui/system";
 import {
   Card,
   Button,
@@ -15,42 +15,42 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-} from '@mui/material';
-import RowCards from '../shared/RowCards';
-import { Breadcrumb } from 'app/components';
-import FormDialog2 from 'app/views/material-kit/dialog/FormDialog2';
-import FormDialog5 from 'app/views/material-kit/dialog/FormDialog5';
-const ContentBox = styled('div')(({ theme }) => ({
-  margin: '30px',
-  [theme.breakpoints.down('sm')]: { margin: '16px' },
+} from "@mui/material";
+import RowCards from "../shared/RowCards";
+import { Breadcrumb } from "../../../../app/components";
+import FormDialog2 from "../../../../app/views/material-kit/dialog/FormDialog2";
+import FormDialog5 from "../../../../app/views/material-kit/dialog/FormDialog5";
+const ContentBox = styled("div")(({ theme }) => ({
+  margin: "30px",
+  [theme.breakpoints.down("sm")]: { margin: "16px" },
 }));
 
-const Title = styled('span')(() => ({
-  fontSize: '1rem',
-  fontWeight: '500',
-  marginRight: '.5rem',
-  textTransform: 'capitalize',
+const Title = styled("span")(() => ({
+  fontSize: "1rem",
+  fontWeight: "500",
+  marginRight: ".5rem",
+  textTransform: "capitalize",
 }));
 
-const SubTitle = styled('span')(({ theme }) => ({
-  fontSize: '0.875rem',
+const SubTitle = styled("span")(({ theme }) => ({
+  fontSize: "0.875rem",
   color: theme.palette.text.secondary,
 }));
 
-const H4 = styled('h4')(({ theme }) => ({
-  fontSize: '1rem',
-  fontWeight: '500',
-  marginBottom: '16px',
-  textTransform: 'capitalize',
+const H4 = styled("h4")(({ theme }) => ({
+  fontSize: "1rem",
+  fontWeight: "500",
+  marginBottom: "16px",
+  textTransform: "capitalize",
   color: theme.palette.text.secondary,
 }));
 const StyledTable = styled(Table)(() => ({
-  whiteSpace: 'pre',
-  '& thead': {
-    '& tr': { '& th': { paddingLeft: 0, paddingRight: 0 } },
+  whiteSpace: "pre",
+  "& thead": {
+    "& tr": { "& th": { paddingLeft: 0, paddingRight: 0 } },
   },
-  '& tbody': {
-    '& tr': { '& td': { paddingLeft: 0, textTransform: 'capitalize' } },
+  "& tbody": {
+    "& tr": { "& td": { paddingLeft: 0, textTransform: "capitalize" } },
   },
 }));
 
@@ -60,67 +60,67 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 const subscribarList = [
   {
-    name: 'john doe',
-    date: '18 january, 2019',
+    name: "john doe",
+    date: "18 january, 2019",
     amount: 1000,
-    status: 'close',
-    company: 'ABC Fintech LTD.',
+    status: "close",
+    company: "ABC Fintech LTD.",
   },
   {
-    name: 'kessy bryan',
-    date: '10 january, 2019',
+    name: "kessy bryan",
+    date: "10 january, 2019",
     amount: 9000,
-    status: 'open',
-    company: 'My Fintech LTD.',
+    status: "open",
+    company: "My Fintech LTD.",
   },
   {
-    name: 'kessy bryan',
-    date: '10 january, 2019',
+    name: "kessy bryan",
+    date: "10 january, 2019",
     amount: 9000,
-    status: 'open',
-    company: 'My Fintech LTD.',
+    status: "open",
+    company: "My Fintech LTD.",
   },
   {
-    name: 'james cassegne',
-    date: '8 january, 2019',
+    name: "james cassegne",
+    date: "8 january, 2019",
     amount: 5000,
-    status: 'close',
-    company: 'Collboy Tech LTD.',
+    status: "close",
+    company: "Collboy Tech LTD.",
   },
   {
-    name: 'lucy brown',
-    date: '1 january, 2019',
+    name: "lucy brown",
+    date: "1 january, 2019",
     amount: 89000,
-    status: 'open',
-    company: 'ABC Fintech LTD.',
+    status: "open",
+    company: "ABC Fintech LTD.",
   },
   {
-    name: 'lucy brown',
-    date: '1 january, 2019',
+    name: "lucy brown",
+    date: "1 january, 2019",
     amount: 89000,
-    status: 'open',
-    company: 'ABC Fintech LTD.',
+    status: "open",
+    company: "ABC Fintech LTD.",
   },
   {
-    name: 'lucy brown',
-    date: '1 january, 2019',
+    name: "lucy brown",
+    date: "1 january, 2019",
     amount: 89000,
-    status: 'open',
-    company: 'ABC Fintech LTD.',
+    status: "open",
+    company: "ABC Fintech LTD.",
   },
   {
-    name: 'lucy brown',
-    date: '1 january, 2019',
+    name: "lucy brown",
+    date: "1 january, 2019",
     amount: 89000,
-    status: 'open',
-    company: 'ABC Fintech LTD.',
+    status: "open",
+    company: "ABC Fintech LTD.",
   },
   {
-    name: 'lucy brown',
-    date: '1 january, 2019',
+    name: "lucy brown",
+    date: "1 january, 2019",
     amount: 89000,
-    status: 'open',
-    company: 'ABC Fintech LTD.',
+    status: "open",
+    company: "ABC Fintech LTD.",
   },
 ];
 
@@ -143,7 +143,10 @@ const Subject = () => {
       <ContentBox className="analytics">
         <Box className="breadcrumb">
           <Breadcrumb
-            routeSegments={[{ name: 'Material', path: '/material' }, { name: 'Subjects' }]}
+            routeSegments={[
+              { name: "Material", path: "/material" },
+              { name: "Subjects" },
+            ]}
           />
           <FormDialog5 />
         </Box>
@@ -188,8 +191,8 @@ const Subject = () => {
             onPageChange={handleChangePage}
             rowsPerPageOptions={[5, 10, 25]}
             onRowsPerPageChange={handleChangeRowsPerPage}
-            nextIconButtonProps={{ 'aria-label': 'Next Page' }}
-            backIconButtonProps={{ 'aria-label': 'Previous Page' }}
+            nextIconButtonProps={{ "aria-label": "Next Page" }}
+            backIconButtonProps={{ "aria-label": "Previous Page" }}
           />
         </Box>
 

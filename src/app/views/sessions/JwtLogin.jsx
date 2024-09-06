@@ -9,8 +9,8 @@ import {
   TextField,
 } from "@mui/material";
 import { Box, styled, useTheme } from "@mui/system";
-import { Paragraph } from "app/components/Typography";
-import useAuth from "app/hooks/useAuth";
+import { Paragraph } from "../../../app/components/Typography";
+import useAuth from "../../../app/hooks/useAuth";
 import { Field, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
