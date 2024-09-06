@@ -235,8 +235,8 @@ const ViewAdmin = () => {
                       <th class="text-end">Action</th>
                     </tr>
                   </thead>
-                  {data &&
-                    data.map((item, index) => (
+                  {Array.isArray(data) &&
+                    data?.map((item, index) => (
                       <tbody>
                         <tr key={item?._id}>
                           <td>
@@ -246,41 +246,41 @@ const ViewAdmin = () => {
                           <td>{index + 1}</td>
                           <td>
                             <div class="trans-list">
-                              <h4>{item.username}</h4>
+                              <h4>{item?.username}</h4>
                             </div>
                           </td>
                           <td>
                             <span class="text-primary font-w600">
-                              {item.email}
+                              {item?.email}
                             </span>
                           </td>
                           <td>
-                            <div class="date">{item.phone}</div>
+                            <div class="date">{item?.phone}</div>
                           </td>
                           <td>
-                            <h6 class="mb-0">{item.address}</h6>
+                            <h6 class="mb-0">{item?.address}</h6>
                           </td>
 
                           <td>
                             <TableCell align="right">
                               <IconButton
-                                aria-controls={`action-menu-${item._id}`}
+                                aria-controls={`action-menu-${item?._id}`}
                                 aria-haspopup="true"
                                 onClick={(event) =>
-                                  handleOpenMenu(event, item._id)
+                                  handleOpenMenu(event, item?._id)
                                 } // Pass item._id
                               >
                                 <MoreVertIcon />{" "}
                                 {/* MoreVertIcon for the menu */}
                               </IconButton>
                               <Menu
-                                id={`action-menu-${item._id}`}
-                                anchorEl={anchorElMap[item._id]}
-                                open={Boolean(anchorElMap[item._id])}
-                                onClose={() => handleCloseMenu(item._id)}
+                                id={`action-menu-${item?._id}`}
+                                anchorEl={anchorElMap[item?._id]}
+                                open={Boolean(anchorElMap[item?._id])}
+                                onClose={() => handleCloseMenu(item?._id)}
                               >
                                 <MenuItem
-                                  onClick={() => handleEditAdmin(item._id)}
+                                  onClick={() => handleEditAdmin(item?._id)}
                                 >
                                   <ListItemIcon>
                                     <EditIcon /> {/* Use an Edit icon */}
@@ -343,7 +343,7 @@ const ViewAdmin = () => {
                 page={page}
                 component="div"
                 rowsPerPage={rowsPerPage}
-                count={data.length}
+                // count={data.length}
                 onPageChange={handleChangePage}
                 rowsPerPageOptions={[5, 10, 25]}
                 onRowsPerPageChange={handleChangeRowsPerPage}

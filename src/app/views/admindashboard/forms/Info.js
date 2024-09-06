@@ -77,16 +77,15 @@ const StyledButton = styled(Button)(({ theme }) => ({
 const Info = () => {
   // const { data, loading, error, reFetch } = useFetch("/student/JS1");
   const { currentSession } = useContext(SessionContext);
-
   // const { data, loading, error, reFetch } = useFetch(
-  //   `/student/JS1/${currentSession?._id}`
+  //   `/student/JS1/${currentSession}`
   // );
-  const {
-    data = [],
-    loading,
-    error,
-    reFetch,
-  } = useFetch(`/student/JS1/${currentSession?._id}`);
+
+  const { data, loading, error, reFetch } = useFetch(
+    currentSession ? `/student/JS1/${currentSession._id}` : null
+  );
+
+  console.log("Data:", data);
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
@@ -110,11 +109,6 @@ const Info = () => {
     // Fetch data when the component mounts
     fetchData();
   }, []);
-  useEffect(() => {
-    if (currentSession) {
-      reFetch(); // Refetch data when session changes
-    }
-  }, [currentSession, reFetch]);
 
   const fetchData = async () => {
     try {
