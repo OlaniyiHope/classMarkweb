@@ -350,7 +350,7 @@
 // export default Form;
 import { DatePicker } from "@mui/lab";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { MenuItem, Select, Stack } from "@mui/material";
@@ -378,6 +378,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { Navigate, useNavigate } from "react-router-dom";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 const Container = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -427,27 +428,54 @@ const validationSchema = Yup.object().shape({
 
 const Form = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const { currentSession } = useContext(SessionContext);
   const [classData, setClassData] = useState([]);
+
   const navigate = useNavigate();
   const [state, setState] = useState({ date: new Date() });
   const apiUrl = process.env.REACT_APP_API_URL.trim();
 
+  // useEffect(() => {
+  //   const token = localStorage.getItem("jwtToken");
+  //   fetch(`${apiUrl}/api/class`, {
+  //     method: "GET",
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setClassData(data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching classes:", error);
+  //     });
+  // }, [apiUrl]);
   useEffect(() => {
-    const token = localStorage.getItem("jwtToken");
-    fetch(`${apiUrl}/api/class`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setClassData(data);
+    if (currentSession) {
+      // Ensure currentSession is available
+      const token = localStorage.getItem("jwtToken");
+      fetch(`${apiUrl}/api/class/${currentSession._id}`, {
+        // Use currentSession._id as sessionId
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .catch((error) => {
-        console.error("Error fetching classes:", error);
-      });
-  }, [apiUrl]);
+        .then((response) => response.json())
+        .then((data) => {
+          if (Array.isArray(data)) {
+            setClassData(data);
+          } else {
+            console.error("Invalid data format:", data);
+            setClassData([]);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching classes:", error);
+        });
+    }
+  }, [apiUrl, currentSession]); // Depend on currentSession
 
   const formik = useFormik({
     initialValues,
@@ -457,6 +485,7 @@ const Form = () => {
         await axios.post(`${apiUrl}/api/register`, {
           ...values,
           role: "student",
+          sessionId: currentSession._id,
         });
         toast.success("Student successfully created");
       } catch (err) {

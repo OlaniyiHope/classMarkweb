@@ -6,10 +6,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import { Navigate, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 const initialState = {
   name: "",
@@ -18,6 +19,7 @@ const initialState = {
 };
 
 export default function Examform() {
+  const { currentSession } = useContext(SessionContext); // Get the active session
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(initialState);
   const { name, comment, date } = formData;
@@ -28,8 +30,17 @@ export default function Examform() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Retrieve the current session ID (this should be set earlier in your code)
+    const currentSessionId = currentSession._id; // Ensure this variable holds the current session ID
+
+    // Include the current session ID in the formData payload
+    const formData = {
+      ...formData, // Include other form fields
+      session: currentSessionId, // Add session to the payload
+    };
+
     try {
-      // Fetch the authentication token from wherever you've stored it (e.g., local storage)
+      // Fetch the authentication token from local storage
       const token = localStorage.getItem("jwtToken");
 
       // Include the token in the request headers
@@ -37,17 +48,22 @@ export default function Examform() {
         Authorization: `Bearer ${token}`,
       };
 
-      // Make an API call to create a subject
-      await axios.post(`${apiUrl}/api/offlineexam`, formData, {
-        headers, // Include the headers in the request
+      // Make an API call to create an exam
+      const response = await axios.post(`${apiUrl}/api/offlineexam`, formData, {
+        headers, // Include headers in the request
       });
 
-      // Handle successful subject creation
-      toast.success("Exam successfully created");
-      navigate("/dashboard/examlist");
+      if (response.status === 200) {
+        // Handle successful exam creation
+        toast.success("Exam successfully created");
+        navigate("/dashboard/examlist"); // Redirect to the exam list page
+      } else {
+        toast.error("Failed to create exam");
+      }
     } catch (err) {
       // Handle errors
-      toast.error("Unable to create Exam");
+      console.error("Error creating exam:", err);
+      toast.error("Unable to create exam");
     }
   };
 
@@ -76,6 +92,7 @@ export default function Examform() {
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title"> Add Exam</DialogTitle>
+
         <DialogContent>
           <label>Exam Name</label>
           <TextField
@@ -89,6 +106,7 @@ export default function Examform() {
             fullWidth
           />
           <label>Exam Date</label>
+
           <TextField
             autoFocus
             margin="dense"

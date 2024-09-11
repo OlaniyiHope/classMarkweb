@@ -1,5 +1,5 @@
 import {} from "@mui/material";
-import { Fragment, React, useState, useEffect } from "react";
+import { Fragment, React, useState, useEffect, useContext } from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 
@@ -28,6 +28,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Link } from "react-router-dom";
 
 import useFetch from "../../../../hooks/useFetch";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -68,8 +69,14 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Payments = () => {
+  const { currentSession } = useContext(SessionContext);
+
   const storedUser = JSON.parse(localStorage.getItem("user"));
-  const { data, loading, error } = useFetch("/receipt");
+
+  const { data, loading, fetchedData, error, reFetch } = useFetch(
+    currentSession ? `/receipt-session/${currentSession._id}` : null
+  );
+
   console.log(data);
   const [anchorElMap, setAnchorElMap] = useState({});
 
@@ -226,7 +233,7 @@ const Payments = () => {
             page={page}
             component="div"
             rowsPerPage={rowsPerPage}
-            count={data.length}
+            count={data ? data.length : 0}
             onPageChange={handleChangePage}
             rowsPerPageOptions={[5, 10, 25]}
             onRowsPerPageChange={handleChangeRowsPerPage}

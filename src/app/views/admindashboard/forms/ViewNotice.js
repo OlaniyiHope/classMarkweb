@@ -210,10 +210,11 @@ const ViewNotice = () => {
     }
   };
   const updateTableData = (newSubject) => {
-    // Assuming data is an array
-    setTableData([...data, newSubject]);
+    const safeData = Array.isArray(data) ? data : [];
+    setTableData([...safeData, newSubject]);
     reFetch(); // Trigger data refetch after updating tableData1
   };
+
   return (
     <Fragment>
       <Box className="breadcrumb">

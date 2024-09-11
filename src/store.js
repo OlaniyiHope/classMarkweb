@@ -1,10 +1,8 @@
-//this is the most important file for using the redux as state management tool
-//this file should be created directly in the frontend folder
-import { createStore, combineReducers, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
-import { composeWithDevTools } from 'redux-devtools-extension'
-import { studentListReducer } from './reducers/studentReducers'
-import { userLoginReducer } from './reducers/userReducers'
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
+import { composeWithDevTools } from "redux-devtools-extension";
+import { studentListReducer } from "./reducers/studentReducers";
+import { userLoginReducer } from "./reducers/userReducers";
 import {
   studentClassListReducer,
   studentSearchReducer,
@@ -12,23 +10,23 @@ import {
   studentDeleteReducer,
   studentAttendanceReducer,
   studentFeesReducer,
-} from './reducers/studentReducers'
+} from "./reducers/studentReducers";
 import {
   allIncomeReducer,
   allSalaryReducer,
-} from './reducers/miscellaneousReducers'
+} from "./reducers/miscellaneousReducers";
 import {
   teacherSalaryReducer,
   teacherRegisterReducer,
   teacherDeleteReducer,
   teacherListReducer,
-} from './reducers/teacherReducers'
+} from "./reducers/teacherReducers";
 import {
   staffSalaryReducer,
   staffRegisterReducer,
   staffDeleteReducer,
   staffListReducer,
-} from './reducers/staffReducers'
+} from "./reducers/staffReducers";
 const reducer = combineReducers({
   studentList: studentListReducer,
   studentClassList: studentClassListReducer,
@@ -48,20 +46,20 @@ const reducer = combineReducers({
   staffList: staffListReducer,
   allIncome: allIncomeReducer,
   allSalary: allSalaryReducer,
-})
-const userInfoFromStorage = localStorage.getItem('userCred')
-  ? JSON.parse(localStorage.getItem('userCred'))
-  : null
+});
+const userInfoFromStorage = localStorage.getItem("userCred")
+  ? JSON.parse(localStorage.getItem("userCred"))
+  : null;
 
 //remember the above should be null
 const initialState = {
   userLogin: { userCred: userInfoFromStorage },
-}
-const middleware = [thunk]
+};
+const middleware = [thunk];
 const store = createStore(
   reducer,
   initialState,
   composeWithDevTools(applyMiddleware(...middleware))
-)
+);
 
-export default store
+export default store;

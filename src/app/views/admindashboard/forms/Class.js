@@ -6,76 +6,43 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { Fragment, React, useState } from "react";
+import { Fragment, React, useState, useContext } from "react";
 import { Box } from "@mui/system";
-import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
-
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Card,
   Button,
   Grid,
   styled,
   useTheme,
-  Icon,
   IconButton,
   Table,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  TableBody,
   TableCell,
-  TableHead,
   TablePagination,
   TableRow,
 } from "@mui/material";
-
-import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import useFetch from "../../../../hooks/useFetch";
 import axios from "axios";
 import FormClass from "../../../../app/views/material-kit/dialog/FormClass";
 import EditClass from "./EditClass";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
 }));
 
-const Title = styled("span")(() => ({
-  fontSize: "1rem",
-  fontWeight: "500",
-  marginRight: ".5rem",
-  textTransform: "capitalize",
-}));
-
-const SubTitle = styled("span")(({ theme }) => ({
-  fontSize: "0.875rem",
-  color: theme.palette.text.secondary,
-}));
-
-const H4 = styled("h4")(({ theme }) => ({
-  fontSize: "1rem",
-  fontWeight: "500",
-  marginBottom: "16px",
-  textTransform: "capitalize",
-  color: theme.palette.text.secondary,
-}));
-const StyledTable = styled(Table)(() => ({
-  whiteSpace: "pre",
-  "& thead": {
-    "& tr": { "& th": { paddingLeft: 0, paddingRight: 0 } },
-  },
-  "& tbody": {
-    "& tr": { "& td": { paddingLeft: 0, textTransform: "capitalize" } },
-  },
-}));
-
-const StyledButton = styled(Button)(({ theme }) => ({
-  margin: theme.spacing(1),
-}));
-
 const Class = () => {
-  const { data, loading, error, reFetch } = useFetch("/class");
+  const { currentSession } = useContext(SessionContext);
+  // const { data, loading, error, reFetch } = useFetch("/class");
+  const { data, reFetch } = useFetch(
+    currentSession ? `/class/${currentSession._id}` : null
+  );
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
@@ -178,11 +145,29 @@ const Class = () => {
       console.error("Error deleting Class:", error);
     }
   };
+  // const updateTableData = (newSubject) => {
+  //   // Assuming data is an array
+  //   setTableData([...data, newSubject]);
+  //   reFetch(); // Trigger data refetch after updating tableData1
+  // };
   const updateTableData = (newSubject) => {
-    // Assuming data is an array
-    setTableData([...data, newSubject]);
-    reFetch(); // Trigger data refetch after updating tableData1
+    // Check if the data and setTableData functions are correctly defined
+    if (Array.isArray(data)) {
+      // Add newSubject to the data array and update tableData
+      setTableData([...data, newSubject]);
+    } else {
+      // If data is not an array, handle accordingly (e.g., log an error)
+      console.error("Data is not an array. Cannot update table data.");
+    }
+
+    // Ensure reFetch is correctly defined and working
+    if (typeof reFetch === "function") {
+      reFetch(); // Trigger data refetch
+    } else {
+      console.error("reFetch function is not defined or not a function.");
+    }
   };
+
   return (
     <Fragment>
       <ContentBox className="analytics">
@@ -313,7 +298,7 @@ const Class = () => {
             page={page}
             component="div"
             rowsPerPage={rowsPerPage}
-            count={data.length}
+            count={data ? data.length : 0}
             onPageChange={handleChangePage}
             rowsPerPageOptions={[5, 10, 25]}
             onRowsPerPageChange={handleChangeRowsPerPage}

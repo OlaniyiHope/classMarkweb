@@ -45,41 +45,7 @@ const ContentBox = styled("div")(({ theme }) => ({
   [theme.breakpoints.down("sm")]: { margin: "16px" },
 }));
 
-const Title = styled("span")(() => ({
-  fontSize: "1rem",
-  fontWeight: "500",
-  marginRight: ".5rem",
-  textTransform: "capitalize",
-}));
-
-const SubTitle = styled("span")(({ theme }) => ({
-  fontSize: "0.875rem",
-  color: theme.palette.text.secondary,
-}));
-
-const H4 = styled("h4")(({ theme }) => ({
-  fontSize: "1rem",
-  fontWeight: "500",
-  marginBottom: "16px",
-  textTransform: "capitalize",
-  color: theme.palette.text.secondary,
-}));
-const StyledTable = styled(Table)(() => ({
-  whiteSpace: "pre",
-  "& thead": {
-    "& tr": { "& th": { paddingLeft: 0, paddingRight: 0 } },
-  },
-  "& tbody": {
-    "& tr": { "& td": { paddingLeft: 0, textTransform: "capitalize" } },
-  },
-}));
-
-const StyledButton = styled(Button)(({ theme }) => ({
-  margin: theme.spacing(1),
-}));
-
 const ViewAdmin = () => {
-  // const { data, loading, error, reFetch } = useFetch("/get-admin");
   const { currentSession } = useContext(SessionContext);
   const { data, loading, error, reFetch } = useFetch(
     currentSession ? `/get-session-admin/${currentSession._id}` : null
@@ -112,7 +78,6 @@ const ViewAdmin = () => {
     }));
   };
 
-  // Function to handle closing the context menu for a specific exam
   const handleCloseMenu = (examId) => {
     setAnchorElMap((prev) => ({
       ...prev,
@@ -140,7 +105,6 @@ const ViewAdmin = () => {
       if (response.status === 200) {
         console.log("User deleted successfully");
 
-        // Manually trigger data refetch
         reFetch();
       } else {
         console.error("Failed to delete User");
@@ -150,22 +114,18 @@ const ViewAdmin = () => {
     }
   };
   const updateTableData = (newSubject) => {
-    // Assuming data is an array
     setTableData([...data, newSubject]);
-    reFetch(); // Trigger data refetch after updating tableData1
+    reFetch();
   };
 
   const handleEditAdmin = (adminId) => {
-    // Find the selected student by ID
     const selectedAdmin = data.find((admin) => admin?._id === adminId);
 
     if (!selectedAdmin) {
       console.error("Selected admin not found for ID:", adminId);
-      // Optionally, you can choose to return or handle this error gracefully
+
       return;
     }
-
-    // Open the edit dialog with the selected student data
     setEditAdminData(selectedAdmin);
     setEditDialogOpen(true);
   };

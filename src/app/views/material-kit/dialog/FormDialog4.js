@@ -167,11 +167,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import { Navigate, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import useFetch from "../../../../hooks/useFetch";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 const initialState = {
   name: "",
@@ -180,6 +181,7 @@ const initialState = {
 };
 
 export default function FormDialog4({ updateTableData }) {
+  const { currentSession } = useContext(SessionContext);
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(initialState);
   const { name, teacher, classname } = formData;
@@ -199,24 +201,30 @@ export default function FormDialog4({ updateTableData }) {
         Authorization: `Bearer ${token}`,
       };
 
+      // Add the current session to the form data
+      const payload = {
+        ...formData,
+        session: currentSession, // Add session to the payload
+      };
+
       // Make an API call to create a subject
       const response = await axios.post(
         `${apiUrl}/api/create-subject`,
-        formData,
+        payload,
         {
           headers, // Include the headers in the request
         }
       );
-      toast.success("Subject saved successfully!");
+
       // Handle successful subject creation
+      toast.success("Subject saved successfully!");
       const newSubject = response.data;
       updateTableData(newSubject);
-      // Handle successful subject creation
 
       handleClose();
     } catch (err) {
       // Handle errors
-      toast.error("An error occurred during login");
+      toast.error("An error occurred during subject creation");
     }
   };
 
@@ -242,14 +250,18 @@ export default function FormDialog4({ updateTableData }) {
     data: teachersData,
     loading: teachersLoading,
     error: teachersError,
-  } = useFetch("/get-teachers");
+  } = useFetch(`/get-teachers/${currentSession._id}`);
 
   // Fetch class data
   const {
     data: classData,
     loading: classLoading,
     error: classError,
-  } = useFetch("/class");
+  } = useFetch(`/class/${currentSession._id}`);
+
+  console.log("Teachers Data:", teachersData);
+  console.log("Teachers Loading:", teachersLoading);
+  console.log("Teachers Error:", teachersError);
 
   // const handleTeacherChange = (event) => {
   //   setSelectedTeacher(event.target.value);
@@ -340,15 +352,18 @@ export default function FormDialog4({ updateTableData }) {
             onChange={handleTeacherChange}
             fullWidth
           >
-            {teachersData &&
-              teachersData.map(
-                (item) =>
-                  item.role === "teacher" && (
-                    <MenuItem key={item._id} value={item._id}>
-                      {item.username}
-                    </MenuItem>
-                  )
-              )}
+            {teachersData && teachersData.length > 0 ? (
+              teachersData.map((item) => {
+                console.log("Teacher item:", item); // This confirms each teacher is processed
+                return (
+                  <MenuItem key={item._id} value={item._id}>
+                    {item.username}
+                  </MenuItem>
+                );
+              })
+            ) : (
+              <MenuItem disabled>No teachers available</MenuItem>
+            )}
           </TextField>
         </DialogContent>
         <DialogActions>

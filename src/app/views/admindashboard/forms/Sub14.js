@@ -1,5 +1,5 @@
 import { Container } from "@mui/material";
-import { Fragment, React, useState } from "react";
+import { Fragment, React, useContext, useState } from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 import {
@@ -34,6 +34,7 @@ import useFetch from "../../../../hooks/useFetch";
 
 import FormDialogT from "../../../../app/views/material-kit/dialog/FormDialogT";
 import EditSub14 from "./EditSub14";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -73,11 +74,12 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Sub14 = () => {
+  const { currentSession } = useContext(SessionContext);
   const className = "S.S.1.T"; // Specify the class name here
 
-  const { data, loading, error, reFetch } = useFetch(
-    `/get-subject/${className}`
-  ); // Use the specified class name in the URL
+  const { data, loading, fetchedData, error, reFetch } = useFetch(
+    currentSession ? `/get-subject/${className}/${currentSession._id}` : null
+  );
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [tableData, setTableData] = useState([]);
@@ -312,7 +314,7 @@ const Sub14 = () => {
               page={page}
               component="div"
               rowsPerPage={rowsPerPage}
-              count={data.length}
+              count={data ? data.length : 0}
               onPageChange={handleChangePage}
               rowsPerPageOptions={[5, 10, 25]}
               onRowsPerPageChange={handleChangeRowsPerPage}

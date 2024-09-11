@@ -7,18 +7,20 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Fragment } from "react";
 import axios from "axios";
 import { Breadcrumb } from "../../../../app/components";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
 }));
 export default function NoticeBoard({ updateTableData }) {
+  const { currentSession } = useContext(SessionContext); // Get the active session
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
   // Using separate state for form data
@@ -51,6 +53,7 @@ export default function NoticeBoard({ updateTableData }) {
 
       const response = await axios.post(`${apiUrl}/api/create-notice`, {
         ...formData,
+        sessionId: currentSession._id,
         date: new Date(),
       });
 

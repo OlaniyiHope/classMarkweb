@@ -172,6 +172,7 @@ const Teacher = () => {
   const updateTableData = (newSubject) => {
     // Assuming data is an array
     setTableData([...data, newSubject]);
+
     reFetch(); // Trigger data refetch after updating tableData1
   };
 
@@ -206,52 +207,52 @@ const Teacher = () => {
                       <th class="text-end">Action</th>
                     </tr>
                   </thead>
-                  {data && data.length > 0 ? (
-                    data.map((item, index) => (
+                  {Array.isArray(data) &&
+                    data?.map((item, index) => (
                       <tbody>
-                        <tr key={item._id}>
-                          <td></td>
+                        <tr key={item?._id}>
                           <td>
-                            <div class="trans-list">
-                              <h4>{index + 1}</h4>
-                            </div>
+                            <div class="checkbox me-0 align-self-center"></div>
                           </td>
 
+                          <td>{index + 1}</td>
+                          <td>
+                            <div class="trans-list">
+                              <h4>{item?.username}</h4>
+                            </div>
+                          </td>
                           <td>
                             <span class="text-primary font-w600">
-                              {item.username}
+                              {item?.email}
                             </span>
                           </td>
                           <td>
-                            <div class="date">{item.email}</div>
+                            <div class="date">{item?.phone}</div>
                           </td>
                           <td>
-                            <h6 class="mb-0">{item.phone}</h6>
-                          </td>
-                          <td>
-                            <h6 class="mb-0">{item.address}</h6>
+                            <h6 class="mb-0">{item?.address}</h6>
                           </td>
 
                           <td>
                             <TableCell align="right">
                               <IconButton
-                                aria-controls={`action-menu-${item._id}`}
+                                aria-controls={`action-menu-${item?._id}`}
                                 aria-haspopup="true"
                                 onClick={(event) =>
-                                  handleOpenMenu(event, item._id)
+                                  handleOpenMenu(event, item?._id)
                                 } // Pass item._id
                               >
                                 <MoreVertIcon />{" "}
                                 {/* MoreVertIcon for the menu */}
                               </IconButton>
                               <Menu
-                                id={`action-menu-${item._id}`}
-                                anchorEl={anchorElMap[item._id]}
-                                open={Boolean(anchorElMap[item._id])}
-                                onClose={() => handleCloseMenu(item._id)}
+                                id={`action-menu-${item?._id}`}
+                                anchorEl={anchorElMap[item?._id]}
+                                open={Boolean(anchorElMap[item?._id])}
+                                onClose={() => handleCloseMenu(item?._id)}
                               >
                                 <MenuItem
-                                  onClick={() => handleEditTeacher(item._id)}
+                                  onClick={() => handleEditTeacher(item?._id)}
                                 >
                                   <ListItemIcon>
                                     <EditIcon /> {/* Use an Edit icon */}
@@ -273,14 +274,7 @@ const Teacher = () => {
                           </td>
                         </tr>
                       </tbody>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={5} align="center">
-                        No Teacher to display.
-                      </TableCell>
-                    </TableRow>
-                  )}
+                    ))}
                 </table>
                 {editTeacherData && (
                   <EditTeacher
@@ -321,7 +315,7 @@ const Teacher = () => {
               page={page}
               component="div"
               rowsPerPage={rowsPerPage}
-              count={data ? data.length : 0}
+              // count={data ? data.length : 0}
               onPageChange={handleChangePage}
               rowsPerPageOptions={[5, 10, 25]}
               onRowsPerPageChange={handleChangeRowsPerPage}

@@ -6,7 +6,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { Fragment, React, useState } from "react";
+import { Fragment, React, useContext, useState } from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 
@@ -37,6 +37,7 @@ import useFetch from "../../../../hooks/useFetch";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import EditExam from "./EditExam";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -76,7 +77,12 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Manage = () => {
-  const { data, loading, error, reFetch } = useFetch("/get-exam");
+  const { currentSession } = useContext(SessionContext);
+
+  // const { data, loading, error, reFetch } = useFetch("/get-exam");
+  const { data, loading, fetchedData, error, reFetch } = useFetch(
+    currentSession ? `/get-exam/${currentSession._id}` : null
+  );
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
@@ -432,7 +438,7 @@ const Manage = () => {
             page={page}
             component="div"
             rowsPerPage={rowsPerPage}
-            count={data.length}
+            count={data ? data.length : 0}
             onPageChange={handleChangePage}
             rowsPerPageOptions={[5, 10, 25]}
             onRowsPerPageChange={handleChangeRowsPerPage}

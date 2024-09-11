@@ -7,24 +7,26 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import useFetch from "../../../../hooks/useFetch";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 const initialState = {
   name: "",
   teacher: "",
 };
 
 export default function FormClass({ updateTableData }) {
+  const { currentSession } = useContext(SessionContext);
   const [open, setOpen] = React.useState(false);
   const {
     data: teachersData,
     loading: teachersLoading,
     error: teachersError,
-  } = useFetch("/get-teachers");
+  } = useFetch(`/get-teachers/${currentSession._id}`);
 
   const navigate = useNavigate();
   const [selectedTeacher, setSelectedTeacher] = useState("");
@@ -32,18 +34,51 @@ export default function FormClass({ updateTableData }) {
   const { name, teacher } = formData;
   const apiUrl = process.env.REACT_APP_API_URL;
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const formData = {
+  //     name,
+  //     teacher,
+  //   };
+  //   try {
+  //     const response = await axios.post(`${apiUrl}/api/class`, formData);
+
+  //     if (response.status === 200) {
+  //       // Class successfully created
+
+  //       updateTableData(response.data);
+  //       toast.success("Class saved successfully!");
+  //       handleClose(); // Close the dialog after successful creation
+
+  //       // Manually trigger data refetch or navigation logic
+  //       // Example: reFetch();
+
+  //       // Close the dialog
+  //       handleClose();
+  //     } else {
+  //       // Handle other status codes if necessary
+  //       toast.error("Failed to create class");
+  //     }
+  //   } catch (err) {
+  //     console.error("Error creating class:", err);
+  //     toast.error("Unable to create class");
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = {
+
+    // Add the current session to the formData payload
+    const payload = {
       name,
       teacher,
+      session: currentSession._id, // Add session to the payload
     };
+
     try {
-      const response = await axios.post(`${apiUrl}/api/class`, formData);
+      const response = await axios.post(`${apiUrl}/api/class`, payload);
 
       if (response.status === 200) {
         // Class successfully created
-
         updateTableData(response.data);
         toast.success("Class saved successfully!");
         handleClose(); // Close the dialog after successful creation
@@ -129,15 +164,18 @@ export default function FormClass({ updateTableData }) {
             onChange={handleTeacherChange}
             fullWidth
           >
-            {teachersData &&
-              teachersData.map(
-                (item) =>
-                  item.role === "teacher" && (
-                    <MenuItem key={item._id} value={item._id}>
-                      {item.username}
-                    </MenuItem>
-                  )
-              )}
+            {teachersData && teachersData.length > 0 ? (
+              teachersData.map((item) => {
+                console.log("Teacher item:", item); // This confirms each teacher is processed
+                return (
+                  <MenuItem key={item._id} value={item._id}>
+                    {item.username}
+                  </MenuItem>
+                );
+              })
+            ) : (
+              <MenuItem disabled>No teachers available</MenuItem>
+            )}
           </TextField>
         </DialogContent>
         <DialogActions>

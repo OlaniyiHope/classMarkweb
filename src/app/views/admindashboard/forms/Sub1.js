@@ -1,5 +1,5 @@
 import { Container } from "@mui/material";
-import { Fragment, React, useState, useEffect } from "react";
+import { Fragment, React, useState, useEffect, useContext } from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 import {
@@ -35,6 +35,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import useFetch from "../../../../hooks/useFetch";
 import FormDialog4 from "../../../../app/views/material-kit/dialog/FormDialog4";
 import EditSub14 from "./EditSub14";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -74,11 +75,16 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Sub1 = () => {
+  const { currentSession } = useContext(SessionContext);
   const className = "JS1"; // Specify the class name here
 
-  const { data, fetchedData, loading, error, reFetch } = useFetch(
-    `/get-subject/${className}`
-  ); // Use the specified class name in the URL
+  // const { data, fetchedData, loading, error, reFetch } = useFetch(
+  //   `/get-subject/${className}`
+  // );
+
+  const { data, loading, fetchedData, error, reFetch } = useFetch(
+    currentSession ? `/get-subject/${className}/${currentSession._id}` : null
+  );
   useEffect(() => {
     // Set the fetched data to the state
     setSubData(fetchedData || []);
@@ -316,7 +322,7 @@ const Sub1 = () => {
               page={page}
               component="div"
               rowsPerPage={rowsPerPage}
-              count={data.length}
+              count={data ? data.length : 0}
               onPageChange={handleChangePage}
               rowsPerPageOptions={[5, 10, 25]}
               onRowsPerPageChange={handleChangeRowsPerPage}
