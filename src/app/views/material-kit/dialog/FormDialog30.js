@@ -202,7 +202,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
-import { React, useState } from "react";
+import { React, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
@@ -212,6 +212,7 @@ import { Formik, Field, Form } from "formik";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 const initialState = {
   username: "",
@@ -244,6 +245,7 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function FormDialog30({ updateTableData }) {
+  const { currentSession } = useContext(SessionContext); // Get the active session
   const [showPassword, setShowPassword] = useState(false);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -257,19 +259,62 @@ export default function FormDialog30({ updateTableData }) {
     setOpen(false);
   }
 
+  // const handleFormSubmit = async (values, { setSubmitting }) => {
+  //   if (!currentSession) {
+  //     toast.error("No active session found");
+  //     setSubmitting(false);
+  //     return;
+  //   }
+  //   try {
+  //     const response = await axios.post(`${apiUrl}/api/register`, {
+  //       ...values,
+  //       role: "parent",
+  //       sessionId: currentSession._id,
+  //     });
+  //     const newParent = response.data;
+  //     updateTableData(newParent);
+  //     toast.success("User successfully created");
+  //     handleClose();
+  //   } catch (err) {
+  //     console.error("Error registering parent:", err);
+  //     toast.error("Unable to create user");
+
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // };
+
   const handleFormSubmit = async (values, { setSubmitting }) => {
+    if (!currentSession) {
+      toast.error("No active session found");
+      setSubmitting(false);
+      return;
+    }
+
     try {
       const response = await axios.post(`${apiUrl}/api/register`, {
         ...values,
         role: "parent",
+        sessionId: currentSession._id,
       });
+
       const newParent = response.data;
       updateTableData(newParent);
       toast.success("User successfully created");
       handleClose();
     } catch (err) {
       console.error("Error registering parent:", err);
-      toast.error("Unable to create user");
+
+      // Handle specific error messages
+      if (err.response && err.response.data && err.response.data.error) {
+        toast.error(err.response.data.error, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      } else {
+        toast.error("Unable to create user", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
     } finally {
       setSubmitting(false);
     }

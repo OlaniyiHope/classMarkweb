@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { Fragment, React, useState } from "react";
+import { Fragment, React, useContext, useState } from "react";
 import useFetch from "../../../../hooks/useFetch";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -39,7 +39,7 @@ import "./style.css";
 import axios from "axios";
 import EditParent from "./EditParent";
 import FormDialog30 from "../../../../app/views/material-kit/dialog/FormDialog30";
-
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -79,7 +79,10 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Parent = () => {
-  const { data, loading, error, reFetch } = useFetch("/get-parent");
+  const { currentSession } = useContext(SessionContext);
+  const { data, loading, error, reFetch } = useFetch(
+    currentSession ? `/get-parent/${currentSession._id}` : null
+  );
   const { palette } = useTheme();
   const [editParentData, setEditParentData] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});
@@ -145,9 +148,17 @@ const Parent = () => {
       console.error("Error deleting User:", error);
     }
   };
+  // const updateTableData = (newSubject) => {
+  //   // Assuming data is an array
+  //   setTableData([...data, newSubject]);
+  //   reFetch(); // Trigger data refetch after updating tableData1
+  // };
   const updateTableData = (newSubject) => {
-    // Assuming data is an array
-    setTableData([...data, newSubject]);
+    if (Array.isArray(data)) {
+      setTableData([...data, newSubject]);
+    } else {
+      console.error("Expected 'data' to be an array but received:", data);
+    }
     reFetch(); // Trigger data refetch after updating tableData1
   };
 
@@ -344,7 +355,7 @@ const Parent = () => {
                 page={page}
                 component="div"
                 rowsPerPage={rowsPerPage}
-                count={data.length}
+                count={data ? data.length : 0}
                 onPageChange={handleChangePage}
                 rowsPerPageOptions={[5, 10, 25]}
                 onRowsPerPageChange={handleChangeRowsPerPage}
