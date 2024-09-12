@@ -314,7 +314,7 @@
 
 // export default Grade;
 
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import {
   IconButton,
   Menu,
@@ -341,6 +341,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import axios from "axios";
 import EditGradeDialog from "./EditGradeDialog";
 import useFetch from "../../../../hooks/useFetch";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -358,12 +359,16 @@ const StyledTable = styled(Table)(({ theme }) => ({
 }));
 
 const Grade = () => {
-  const { data: fetchedData, loading, error, reFetch } = useFetch("/grade");
+  // const { data: fetchedData, loading, error, reFetch } = useFetch("/grade");
+
+  const { currentSession } = useContext(SessionContext);
+  console.log("Current session:", currentSession); // Log the current session
+
   const [gradesData, setGradesData] = useState([]);
 
-  useEffect(() => {
-    setGradesData(fetchedData || []);
-  }, [fetchedData]);
+  // useEffect(() => {
+  //   setGradesData(fetchedData || []);
+  // }, [fetchedData]);
 
   const [page, setPage] = useState(0);
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
@@ -376,14 +381,45 @@ const Grade = () => {
 
   const apiUrl = process.env.REACT_APP_API_URL.trim();
 
+  // const fetchData = async () => {
+  //   try {
+  //     const response = await axios.get(`${apiUrl}/api/grade`);
+  //     setGradesData(response.data || []);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
   const fetchData = async () => {
+    if (!currentSession) {
+      setGradesData([]); // Clear the data when there's no session
+      return;
+    }
+
+    console.log("Fetching data for session:", currentSession._id);
     try {
-      const response = await axios.get(`${apiUrl}/api/grade`);
-      setGradesData(response.data || []);
+      const response = await axios.get(
+        `${apiUrl}/api/grade/${currentSession._id}`
+      );
+      console.log("Fetched grades data:", response.data);
+
+      if (response.data && response.data.success) {
+        setGradesData(response.data.data);
+      } else {
+        setGradesData([]);
+        console.error("Failed to fetch grades data");
+      }
     } catch (error) {
+      setGradesData([]);
       console.error("Error fetching data:", error);
     }
   };
+
+  useEffect(() => {
+    if (currentSession) {
+      console.log("Current session:", currentSession);
+      fetchData();
+    }
+  }, [currentSession]);
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
@@ -423,7 +459,8 @@ const Grade = () => {
       console.log("Response from delete API:", response.data);
       if (response.status === 200) {
         console.log("User deleted successfully");
-        reFetch();
+        // reFetch();
+        fetchData();
       } else {
         console.error("Failed to delete User");
       }
@@ -546,7 +583,7 @@ const Grade = () => {
                   ) : (
                     <TableRow>
                       <TableCell colSpan={5} align="center">
-                        No Parent to display.
+                        No Grade to display.
                       </TableCell>
                     </TableRow>
                   )}

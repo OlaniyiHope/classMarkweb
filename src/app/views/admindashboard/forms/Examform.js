@@ -34,7 +34,7 @@ export default function Examform() {
     const currentSessionId = currentSession._id; // Ensure this variable holds the current session ID
 
     // Include the current session ID in the formData payload
-    const formData = {
+    const payload = {
       ...formData, // Include other form fields
       session: currentSessionId, // Add session to the payload
     };
@@ -49,7 +49,7 @@ export default function Examform() {
       };
 
       // Make an API call to create an exam
-      const response = await axios.post(`${apiUrl}/api/offlineexam`, formData, {
+      const response = await axios.post(`${apiUrl}/api/offlineexam`, payload, {
         headers, // Include headers in the request
       });
 
