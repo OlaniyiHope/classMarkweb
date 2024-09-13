@@ -371,261 +371,6 @@
 
 // export default StudyMat;
 
-// import React, { Fragment, useState, useEffect, useContext } from "react";
-// import {
-//   Box,
-//   IconButton,
-//   Icon,
-//   styled,
-//   Table,
-//   TableBody,
-//   MenuItem,
-//   Menu,
-//   Dialog,
-//   DialogActions,
-//   DialogContent,
-//   DialogTitle,
-//   TableCell,
-//   Button,
-//   TableHead,
-//   TableRow,
-//   Container,
-//   ListItemIcon,
-// } from "@mui/material";
-// import useFetch from "../../../../hooks/useFetch";
-// import { Breadcrumb } from "../../../../app/components";
-// import FormDialog30 from "../../../../app/views/material-kit/dialog/FormDialog30";
-// import { TablePagination } from "@mui/material";
-// import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
-// import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
-// import DeleteIcon from "@mui/icons-material/Delete";
-// import axios from "axios";
-// import FormDialog16 from "../../../../app/views/material-kit/dialog/FormDialog16";
-// import EditGradeDialog from "./EditGradeDialog";
-// import StudyMatForm from "./StudyMatForm";
-// import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
-
-// const ContentBox = styled("div")(({ theme }) => ({
-//   margin: "30px",
-//   [theme.breakpoints.down("sm")]: { margin: "16px" },
-// }));
-
-// const StyledTable = styled(Table)(({ theme }) => ({
-//   whiteSpace: "pre",
-//   "& thead": {
-//     "& tr": { "& th": { paddingLeft: 0, paddingRight: 0 } },
-//   },
-//   "& tbody": {
-//     "& tr": { "& td": { paddingLeft: 0, textTransform: "capitalize" } },
-//   },
-// }));
-
-// const StudyMat = () => {
-//   const { currentSession } = useContext(SessionContext);
-//   const { data, error, reFetch, loading } = useFetch(
-//     currentSession ? `/download/${currentSession._id}` : null
-//   );
-//   console.log("Current session:", currentSession);
-
-//   console.log("Data fetched:", data); // Ensure this is displaying the expected data structure
-
-//   const [downloads, setDownloads] = useState([]);
-//   const [page, setPage] = useState(0);
-//   const [rowsPerPage, setRowsPerPage] = useState(5);
-//   const [selectedGradeId, setSelectedGradeId] = useState(null);
-//   const [anchorEl, setAnchorEl] = useState(null);
-//   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
-//   const [userToDelete, setUserToDelete] = useState(null);
-//   const [editDialogOpen, setEditDialogOpen] = useState(false);
-//   const [editGradeData, setEditGradeData] = useState(null);
-
-//   const handleChangePage = (_, newPage) => {
-//     setPage(newPage);
-//   };
-
-//   const handleChangeRowsPerPage = (event) => {
-//     setRowsPerPage(+event.target.value);
-//     setPage(0);
-//   };
-
-//   const handleOpenMenu = (event, gradeId) => {
-//     setAnchorEl(event.currentTarget);
-//     setSelectedGradeId(gradeId);
-//   };
-
-//   const handleCloseMenu = () => {
-//     setAnchorEl(null);
-//   };
-
-//   const handleOpenDeleteConfirmation = (user) => {
-//     setUserToDelete(user);
-//     setDeleteConfirmationOpen(true);
-//   };
-
-//   const handleCloseDeleteConfirmation = () => {
-//     setUserToDelete(null);
-//     setDeleteConfirmationOpen(false);
-//   };
-
-//   const handleDeleteUser = async () => {
-//     try {
-//       // Make your API call here to delete the user
-//       // After successful delete, refetch the data
-//       await reFetch();
-//       handleCloseDeleteConfirmation();
-//     } catch (error) {
-//       console.error("Error deleting User:", error);
-//     }
-//   };
-
-//   const handleEditGrade = (grade) => {
-//     setEditGradeData(grade);
-//     setEditDialogOpen(true);
-//   };
-
-//   const handleSaveEdit = async (updatedGrade) => {
-//     try {
-//       // Make your API call here to save the edited grade
-//       // After successful edit, refetch the data
-//       await reFetch();
-//       setEditDialogOpen(false);
-//     } catch (error) {
-//       console.error("Error updating grade:", error);
-//     }
-//   };
-
-//   return (
-//     <Fragment>
-//       <ContentBox className="analytics">
-//         <Container>
-//           <Box className="breadcrumb">
-//             <Breadcrumb routeSegments={[{ name: "Manage Study Material" }]} />
-//           </Box>
-//           <Box className="breadcrumb">
-//             <StudyMatForm />
-//           </Box>
-//           <Box width="100%" overflow="auto">
-//             <div className="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
-//               <div className="table-responsive full-data">
-//                 <table
-//                   className="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
-//                   id="example-student"
-//                 >
-//                   <thead>
-//                     <tr>
-//                       <th>S/N</th>
-//                       <th>Date</th>
-//                       <th>Title</th>
-//                       <th>Description</th>
-//                       <th>Class</th>
-//                       <th>Subject</th>
-//                       <th>Download</th>
-//                       <th className="text-end">Action</th>
-//                     </tr>
-//                   </thead>
-
-//                   {data && Array.isArray(data) && data.length > 0 ? (
-//                     <tbody>
-//                       {data.map((download, index) => (
-//                         <tr key={download._id}>
-//                           <td>{index + 1}</td>
-//                           <td>
-//                             {download.date
-//                               ? new Date(download.date).toLocaleDateString()
-//                               : ""}
-//                           </td>
-//                           <td>{download.title}</td>
-//                           <td>{download.desc}</td>
-//                           <td>{download.className}</td>
-//                           <td>{download.subject}</td>
-//                           <td>
-//                             <Button
-//                               variant="contained"
-//                               component="a"
-//                               href={`https://edupros.s3.amazonaws.com/${download.Download}`}
-//                               target="_blank"
-//                               rel="noopener noreferrer"
-//                               download
-//                             >
-//                               Download
-//                             </Button>
-//                           </td>
-//                           <td>
-//                             <IconButton
-//                               aria-controls="action-menu"
-//                               aria-haspopup="true"
-//                               onClick={(event) =>
-//                                 handleOpenMenu(event, download._id)
-//                               }
-//                             >
-//                               <MoreVertIcon />
-//                             </IconButton>
-//                           </td>
-//                         </tr>
-//                       ))}
-//                     </tbody>
-//                   ) : (
-//                     <TableRow>
-//                       <TableCell colSpan={8} align="center">
-//                         No Study material to display.
-//                       </TableCell>
-//                     </TableRow>
-//                   )}
-//                 </table>
-//                 <EditGradeDialog
-//                   open={editDialogOpen}
-//                   onClose={() => {
-//                     setEditGradeData(null);
-//                     setEditDialogOpen(false);
-//                   }}
-//                   gradeId={editGradeData}
-//                   onSave={handleSaveEdit}
-//                 />
-//                 <Dialog
-//                   open={deleteConfirmationOpen}
-//                   onClose={handleCloseDeleteConfirmation}
-//                 >
-//                   <DialogTitle>Delete Confirmation</DialogTitle>
-//                   <DialogContent>
-//                     Are you sure you want to delete {userToDelete?.username}?
-//                   </DialogContent>
-//                   <DialogActions>
-//                     <Button onClick={handleCloseDeleteConfirmation}>
-//                       Cancel
-//                     </Button>
-//                     <Button
-//                       onClick={async () => {
-//                         await handleDeleteUser();
-//                         handleCloseDeleteConfirmation();
-//                       }}
-//                     >
-//                       Delete
-//                     </Button>
-//                   </DialogActions>
-//                 </Dialog>
-//               </div>
-//             </div>
-//             <TablePagination
-//               sx={{ px: 2 }}
-//               page={page}
-//               component="div"
-//               rowsPerPage={rowsPerPage}
-//               count={data ? data.length : 0}
-//               onPageChange={handleChangePage}
-//               rowsPerPageOptions={[5, 10, 25]}
-//               onRowsPerPageChange={handleChangeRowsPerPage}
-//               nextIconButtonProps={{ "aria-label": "Next Page" }}
-//               backIconButtonProps={{ "aria-label": "Previous Page" }}
-//             />
-//           </Box>
-//         </Container>
-//       </ContentBox>
-//     </Fragment>
-//   );
-// };
-
-// export default StudyMat;
-
 import React, { Fragment, useState, useEffect, useContext } from "react";
 import {
   Box,
@@ -680,6 +425,9 @@ const StudyMat = () => {
   const { data, error, reFetch, loading } = useFetch(
     currentSession ? `/download/${currentSession._id}` : null
   );
+  console.log("Current session:", currentSession);
+
+  console.log("Data fetched:", data); // Ensure this is displaying the expected data structure
 
   const [downloads, setDownloads] = useState([]);
   const [page, setPage] = useState(0);
@@ -746,8 +494,6 @@ const StudyMat = () => {
     }
   };
 
-  const tableData = data?.data || []; // Access data from the nested 'data' property
-
   return (
     <Fragment>
       <ContentBox className="analytics">
@@ -777,6 +523,7 @@ const StudyMat = () => {
                       <th className="text-end">Action</th>
                     </tr>
                   </thead>
+
                   {data && Array.isArray(data) && data.length > 0 ? (
                     <tbody>
                       {data.map((download, index) => (
@@ -863,7 +610,7 @@ const StudyMat = () => {
               page={page}
               component="div"
               rowsPerPage={rowsPerPage}
-              count={Array.isArray(data) ? data.length : 0}
+              count={data ? data.length : 0}
               onPageChange={handleChangePage}
               rowsPerPageOptions={[5, 10, 25]}
               onRowsPerPageChange={handleChangeRowsPerPage}

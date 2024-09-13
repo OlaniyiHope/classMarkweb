@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Container,
@@ -19,6 +19,7 @@ import axios from "axios";
 import { Breadcrumb, SimpleCard } from "../../../../app/components";
 import { useReceipt } from "./receiptContext"; // Import your context hook
 import useFetch from "../../../../hooks/useFetch";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 const TextField = styled(TextValidator)(() => ({
   width: "100%",
@@ -26,12 +27,12 @@ const TextField = styled(TextValidator)(() => ({
 }));
 const StuReceipt = () => {
   const { dispatch } = useReceipt();
+  const { currentSession } = useContext(SessionContext);
   const {
     data: classData,
     loading: classLoading,
     error: classError,
-  } = useFetch("/class"); // Assuming useFetch is correctly implemented
-
+  } = useFetch(`/class/${currentSession._id}`);
   const navigate = useNavigate();
 
   const [state, setState] = useState({ date: new Date() });
@@ -61,26 +62,52 @@ const StuReceipt = () => {
     setSelectedName(selectedStudent);
   };
 
+  // useEffect(() => {
+  //   if (selectedClass) {
+  //     const token = localStorage.getItem("jwtToken");
+  //     const headers = new Headers();
+  //     headers.append("Authorization", `Bearer ${token}`);
+
+  //     fetch(`${apiUrl}/api/student/${selectedClass}`, {
+  //       headers,
+  //     })
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         setStudentData(data);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching subjects:", error);
+  //       });
+  //   } else {
+  //     setStudentData([]);
+  //   }
+  // }, [selectedClass]);
+
   useEffect(() => {
-    if (selectedClass) {
+    if (selectedClass && currentSession?._id) {
       const token = localStorage.getItem("jwtToken");
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      fetch(`${apiUrl}/api/student/${selectedClass}`, {
+      fetch(`${apiUrl}/api/student/${selectedClass}/${currentSession._id}`, {
         headers,
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then((data) => {
           setStudentData(data);
         })
         .catch((error) => {
-          console.error("Error fetching subjects:", error);
+          console.error("Error fetching students:", error);
         });
     } else {
       setStudentData([]);
     }
-  }, [selectedClass]);
+  }, [selectedClass, currentSession]); // Listen for changes to selectedClass and currentSession
 
   const handleClassChange = (event) => {
     const newSelectedClass = event.target.value;
@@ -107,40 +134,107 @@ const StuReceipt = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!selectedClass || !selectedName) {
+  //     console.error("Please select a class and student.");
+  //     // You can also show an error message to the user
+  //     return;
+  //   }
+
+  //   try {
+  //     dispatch({ type: "CREATE_RECEIPT_START" });
+
+  //     const response = await axios.post(`${apiUrl}/api/receipt`, {
+  //       ...formData,
+  //       studentName: selectedName,
+  //       classname: selectedClass,
+  //       date: selectedDate, // Set the date field
+  //     });
+
+  //     console.log("Receipt created:", response.data);
+
+  //     setFormData({
+  //       typeOfPayment: "",
+  //       status: "",
+  //       reason: "",
+  //       studentName: selectedName,
+  //       classname: selectedClass,
+  //       paid: 0,
+  //       amount: 0,
+  //       date: "",
+  //     });
+
+  //     dispatch({ type: "CREATE_RECEIPT_SUCCESS" });
+  //     // Step 3: Navigate to the desired route after successful submission
+  //     navigate("/dashboard/student-payment");
+  //   } catch (error) {
+  //     console.error("Error creating receipt:", error);
+
+  //     if (error.response) {
+  //       console.error("Server responded with:", error.response.data);
+  //     }
+
+  //     dispatch({ type: "CREATE_RECEIPT_ERROR" });
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Ensure the class and student are selected
     if (!selectedClass || !selectedName) {
       console.error("Please select a class and student.");
-      // You can also show an error message to the user
       return;
     }
 
     try {
+      // Dispatch the creation process start
       dispatch({ type: "CREATE_RECEIPT_START" });
 
-      const response = await axios.post(`${apiUrl}/api/receipt`, {
-        ...formData,
+      // Construct the receipt data
+      const receiptData = {
+        typeOfPayment: formData.typeOfPayment,
+        status: formData.status,
+        reason: formData.reason,
         studentName: selectedName,
         classname: selectedClass,
-        date: selectedDate, // Set the date field
-      });
+        paid: formData.paid,
+        amount: formData.amount,
+        date: selectedDate, // Date should come from state
+        sessionId: currentSession._id, // Pass sessionId from context or state
+      };
 
+      // Use axios to send the POST request with the JWT token
+      const token = localStorage.getItem("jwtToken");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      };
+
+      // API call to create a receipt
+      const response = await axios.post(
+        `${apiUrl}/api/receipt`,
+        receiptData,
+        config
+      );
+
+      // Log the successful creation of the receipt
       console.log("Receipt created:", response.data);
 
+      // Reset form fields
       setFormData({
         typeOfPayment: "",
         status: "",
         reason: "",
-        studentName: selectedName,
-        classname: selectedClass,
         paid: 0,
         amount: 0,
-        date: "",
       });
 
+      // Dispatch the success action and navigate to another page
       dispatch({ type: "CREATE_RECEIPT_SUCCESS" });
-      // Step 3: Navigate to the desired route after successful submission
       navigate("/dashboard/student-payment");
     } catch (error) {
       console.error("Error creating receipt:", error);
@@ -149,6 +243,7 @@ const StuReceipt = () => {
         console.error("Server responded with:", error.response.data);
       }
 
+      // Dispatch the error action
       dispatch({ type: "CREATE_RECEIPT_ERROR" });
     }
   };
@@ -170,6 +265,7 @@ const StuReceipt = () => {
             <ValidatorForm onError={() => null}>
               <Grid container spacing={6}>
                 <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
+                  <InputLabel>Class</InputLabel>
                   <TextField
                     select
                     label="Select a class"
@@ -184,7 +280,7 @@ const StuReceipt = () => {
                         </MenuItem>
                       ))}
                   </TextField>
-
+                  <InputLabel>Name of Student</InputLabel>
                   <TextField
                     select
                     label="Select the Student"
@@ -201,13 +297,13 @@ const StuReceipt = () => {
                   <InputLabel>Date</InputLabel>
                   <TextField
                     fullWidth
-                    size="small"
                     type="date"
                     variant="outlined"
                     sx={{ mb: 3 }}
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
                   />
+                  <InputLabel>Total School Fees of the student</InputLabel>
                   <TextField
                     sx={{ mb: 4 }}
                     type="text"
@@ -222,7 +318,9 @@ const StuReceipt = () => {
                       "maxStringLength:16",
                     ]}
                   />
-
+                </Grid>
+                <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
+                  <InputLabel>Total School fees paid</InputLabel>
                   <TextField
                     sx={{ mb: 4 }}
                     type="text"
@@ -237,6 +335,7 @@ const StuReceipt = () => {
                       "maxStringLength:16",
                     ]}
                   />
+                  <InputLabel>For what(Reason)</InputLabel>
                   <TextField
                     name="reason"
                     type="text"

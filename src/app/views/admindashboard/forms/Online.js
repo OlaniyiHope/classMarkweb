@@ -21,9 +21,10 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import DateFnsUtils from "@mui/x-date-pickers/AdapterDateFns";
 import { TimePicker } from "@mui/x-date-pickers";
 import { Span } from "../../../../app/components/Typography";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import useFetch from "../../../../hooks/useFetch";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 const Container = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -39,11 +40,12 @@ const TextField = styled(TextValidator)(() => ({
 }));
 
 const Online = () => {
+  const { currentSession } = useContext(SessionContext);
   const {
     data: classData,
     loading: classLoading,
     error: classError,
-  } = useFetch("/class");
+  } = useFetch(`/class/${currentSession._id}`);
   const [subjectData, setSubjectData] = useState([]); // Initialize subject data as an empty array
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
@@ -77,7 +79,9 @@ const Online = () => {
 
   // const handleSubmit = (event) => {
   //   event.preventDefault();
-  //   const formattedDate = selectedDate.toISOString().split("T")[0];
+
+  //   // Convert selectedDate to a Date object
+  //   const formattedDate = new Date(selectedDate).toISOString().split("T")[0];
 
   //   // Assuming you have the JWT token stored in localStorage
   //   const token = localStorage.getItem("jwtToken");
@@ -86,24 +90,31 @@ const Online = () => {
   //     // Handle the case where the token is missing or expired, e.g., redirect to login
   //     return;
   //   }
+  //   const sessionId = currentSession?._id; // Fetch the sessionId from currentSession (use context or state)
+  //   if (!sessionId) {
+  //     console.error("Session ID is missing");
+  //     // Handle the case where sessionId is missing (e.g., show error message)
+  //     return;
+  //   }
+
+  //   // Format fromTime and toTime to "HH:mm AM/PM" format
+  //   const formattedFromTime = formatTime(fromTime);
+  //   const formattedToTime = formatTime(toTime);
 
   //   const examData = {
   //     title: title,
   //     className: selectedClass,
   //     subject: selectedSubject,
-  //     date: selectedDate, // Format the date
-  //     // fromTime: fromTime,
-  //     // toTime: toTime,
-
-  //     fromTime: formatTime(fromTime), // Format the time
-  //     toTime: formatTime(toTime),
-
+  //     date: formattedDate, // Use formattedDate instead of selectedDate
+  //     fromTime: formattedFromTime, // Use formattedFromTime instead of formatTime(fromTime)
+  //     toTime: formattedToTime, // Use formattedToTime instead of formatTime(toTime)
   //     percent: percent,
   //     instruction: instruction,
+  //     sessionId: sessionId,
   //   };
 
   //   // Make a POST request to your backend to create the exam with the JWT token
-  //   fetch(`https://hlhs-3ff6501095d6.herokuapp.com/api/create-exam`, {
+  //   fetch(`${apiUrl}/api/create-exam`, {
   //     method: "POST",
   //     headers: {
   //       "Content-Type": "application/json",
@@ -128,30 +139,41 @@ const Online = () => {
     // Convert selectedDate to a Date object
     const formattedDate = new Date(selectedDate).toISOString().split("T")[0];
 
-    // Assuming you have the JWT token stored in localStorage
+    // Retrieve the JWT token from localStorage
     const token = localStorage.getItem("jwtToken");
 
     if (!token) {
-      // Handle the case where the token is missing or expired, e.g., redirect to login
+      // Handle the case where the token is missing or expired
+      console.error("Token is missing or expired");
+      // Redirect to login or show an error message
       return;
     }
 
-    // Format fromTime and toTime to "HH:mm AM/PM" format
+    // Ensure sessionId is correctly fetched from context or state
+    const sessionId = currentSession?._id;
+    if (!sessionId) {
+      console.error("Session ID is missing");
+      return;
+    }
+
+    // Format fromTime and toTime
     const formattedFromTime = formatTime(fromTime);
     const formattedToTime = formatTime(toTime);
 
+    // Construct exam data object
     const examData = {
       title: title,
       className: selectedClass,
       subject: selectedSubject,
-      date: formattedDate, // Use formattedDate instead of selectedDate
-      fromTime: formattedFromTime, // Use formattedFromTime instead of formatTime(fromTime)
-      toTime: formattedToTime, // Use formattedToTime instead of formatTime(toTime)
+      date: formattedDate,
+      fromTime: formattedFromTime,
+      toTime: formattedToTime,
       percent: percent,
       instruction: instruction,
+      sessionId: sessionId,
     };
 
-    // Make a POST request to your backend to create the exam with the JWT token
+    // Send POST request to backend
     fetch(`${apiUrl}/api/create-exam`, {
       method: "POST",
       headers: {
@@ -160,33 +182,62 @@ const Online = () => {
       },
       body: JSON.stringify(examData),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) => {
-        // Handle the response from the server (e.g., show success message)
+        // Handle success, e.g., navigate to another page
         navigate("/dashboard/manage-online-exam");
       })
       .catch((error) => {
         console.error("Error creating exam:", error);
-        // Handle the error (e.g., show an error message)
+        // Handle the error, e.g., show an error message
       });
   };
 
   useEffect(() => {
     // Fetch class data here if needed
   }, []);
+  // useEffect(() => {
+  //   if (selectedClass) {
+  //     // Fetch the authentication token from wherever you've stored it (e.g., local storage)
+  //     const token = localStorage.getItem("jwtToken");
+
+  //     // Include the token in the request headers
+  //     const headers = new Headers();
+  //     headers.append("Authorization", `Bearer ${token}`);
+
+  //     // Make an API call to fetch subjects for the selected class with the authorization token
+  //     fetch(`${apiUrl}/api/get-subject/${selectedClass}`, {
+  //       headers,
+  //     })
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         setSubjectData(data);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching subjects:", error);
+  //       });
+  //   } else {
+  //     // Clear the subjects if no class is selected
+  //     setSubjectData([]);
+  //   }
+  // }, [selectedClass]);
   useEffect(() => {
-    if (selectedClass) {
-      // Fetch the authentication token from wherever you've stored it (e.g., local storage)
+    if (selectedClass && currentSession) {
       const token = localStorage.getItem("jwtToken");
 
-      // Include the token in the request headers
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      // Make an API call to fetch subjects for the selected class with the authorization token
-      fetch(`${apiUrl}/api/get-subject/${selectedClass}`, {
-        headers,
-      })
+      // Fetch subjects for the selected class and session
+      fetch(
+        `${apiUrl}/api/get-subject/${selectedClass}/${currentSession._id}`, // Include sessionId here
+        { headers }
+      )
         .then((response) => response.json())
         .then((data) => {
           setSubjectData(data);
@@ -195,10 +246,9 @@ const Online = () => {
           console.error("Error fetching subjects:", error);
         });
     } else {
-      // Clear the subjects if no class is selected
       setSubjectData([]);
     }
-  }, [selectedClass]);
+  }, [selectedClass, currentSession]); // Re-fetch when class or session changes
 
   // const handleClassChange = (event) => {
   //   setSelectedClass(event.target.value);
