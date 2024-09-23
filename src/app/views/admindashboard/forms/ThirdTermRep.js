@@ -17,6 +17,7 @@ import useFetch from "../../../../hooks/useFetch";
 import axios from "axios";
 import useAuth from "../../../../app/hooks/useAuth";
 import "./report.css";
+import "./print.css";
 
 import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
@@ -974,8 +975,9 @@ const ThirdTermRep = ({ studentId }) => {
                         textAlign: "center",
                       }}
                     >
-                      {accountSettings.sessionStart}-
-                      {accountSettings.sessionEnd}
+                        {currentSession?.name
+                          ? `${currentSession.name}`
+                          : "No active session"}
                     </p>
                   </div>
                   <div style={{ marginBottom: "20px" }}>
@@ -1128,6 +1130,7 @@ const ThirdTermRep = ({ studentId }) => {
                 </div>
               </div>
 
+              <div className="tables-container">
               <table
                 className="table"
                 id="customers"
@@ -1171,12 +1174,11 @@ const ThirdTermRep = ({ studentId }) => {
 </tbody>
               </table>
 
-              <td style={{ verticalAlign: "top", width: "100%" }}>
                 {/* Second Sub-Table for Affective and Psychomotor Report */}
                 <table
                   className="table second-sub-table"
                   id="customersreport"
-                  style={{ width: "100%" }}
+                  style={{ width: "150%" }}
                 >
                   <colgroup>
                     <col style={{ width: "33.33%" }} />
@@ -1240,7 +1242,8 @@ const ThirdTermRep = ({ studentId }) => {
                     ))}
                   </tbody>
                 </table>
-              </td>
+              </div>
+
 
               <div style={{ color: "#042954", fontSize: "16px" }}>
                 KEY TO GRADES A (DISTINCTION)=70% &amp; ABOVE , C

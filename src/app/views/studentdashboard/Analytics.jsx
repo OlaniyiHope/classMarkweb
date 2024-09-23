@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { Fragment, React, useState, useEffect } from "react";
+import { Fragment, React, useState, useContext, useEffect } from "react";
 import useFetch from "../../../hooks/useFetch";
 import { Box } from "@mui/system";
 import {
@@ -21,6 +21,9 @@ import Calendar from "react-calendar";
 import "./calendar.css";
 import axios from "axios";
 import "./style.css";
+
+import { SessionContext } from "../../components/MatxLayout/Layout1/SessionContext";
+
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -81,6 +84,8 @@ const Analytics = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const { currentSession } = useContext(SessionContext);
+
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
@@ -97,7 +102,7 @@ const Analytics = () => {
   useEffect(() => {
     const fetchNotices = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/get-all-notices`);
+        const response = await axios.get(`${apiUrl}/api/get-all-notices/${currentSession._id}`);
         setNotices(response.data);
       } catch (error) {
         console.error("Error fetching notices:", error);
@@ -109,7 +114,7 @@ const Analytics = () => {
     };
 
     fetchNotices();
-  }, [apiUrl]);
+  }, [apiUrl, currentSession]);
   // Fetch user counts
   const [userCounts, setUserCounts] = useState({
     students: 0,
@@ -120,33 +125,50 @@ const Analytics = () => {
 
   useEffect(() => {
     const fetchUserCounts = async () => {
+      // Reset userCounts to zero before fetching new data
+      setUserCounts({
+        students: 0,
+        teachers: 0,
+        parents: 0,
+        admins: 0,
+      });
+
       try {
         const roles = ["student", "teacher", "parent", "admin"];
+        const sessionId = currentSession._id; // Assuming currentSession is available from context
 
         const counts = await Promise.all(
           roles.map(async (role) => {
-            const response = await axios.get(`${apiUrl}/api/users/${role}`);
-            return { role, count: response.data.length };
+            try {
+              const response = await axios.get(
+                `${process.env.REACT_APP_API_URL.trim()}/api/users/${role}/${sessionId}`
+              );
+              return { role, count: response.data?.length || 0 };
+            } catch (err) {
+              console.error(`Error fetching ${role} count:`, err);
+              return { role, count: 0 }; // Default to 0 if there's an error
+            }
           })
         );
 
         const newCounts = counts.reduce((acc, { role, count }) => {
-          acc[role + "s"] = count;
+          acc[role + "s"] = count; // For example, role "student" becomes "students"
           return acc;
         }, {});
 
         setUserCounts(newCounts);
       } catch (error) {
         console.error("Error fetching user counts:", error);
-
         if (error.response) {
           console.error("Server responded with:", error.response.data);
         }
       }
     };
 
-    fetchUserCounts();
-  }, [apiUrl]);
+    if (currentSession) {
+      fetchUserCounts();
+    }
+  }, [currentSession]);
   return (
     <div>
       <h2 style={{ paddingTop: "15px", paddingLeft: "10px" }}>

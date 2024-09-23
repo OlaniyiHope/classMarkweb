@@ -23,6 +23,7 @@ import useFetch from "../../../../hooks/useFetch";
 import axios from "axios";
 import useAuth from "../../../../app/hooks/useAuth";
 import "./report.css";
+import "./print.css";
 
 import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
@@ -77,6 +78,8 @@ const FirstTermRep = ({ studentId }) => {
     sessionEnd: "",
     schoolLogo: "",
   });
+
+  
 
   const apiUrl = process.env.REACT_APP_API_URL.trim();
 
@@ -394,7 +397,7 @@ const FirstTermRep = ({ studentId }) => {
     });
 
     if (totalGradeValues === 0 || totalSubjects === 0) {
-      return "N/A";
+      return "  ";
     }
 
     return (totalGradeValues / totalSubjects).toFixed(2);
@@ -405,7 +408,7 @@ const FirstTermRep = ({ studentId }) => {
       <ContentBox className="analytics">
         <Box width="100%" overflow="auto">
           <button onClick={handlePrint}>Print this out!</button>
-          <div className="container" ref={componentRef}>
+          <div className="comp" ref={componentRef}>
             <div
               className="header"
               style={{
@@ -496,7 +499,9 @@ const FirstTermRep = ({ studentId }) => {
                       marginLeft: "30px",
                       textAlign: "center",
                     }}>
-                    {accountSettings.sessionStart}-{accountSettings.sessionEnd}
+                    {currentSession?.name
+                          ? `${currentSession.name}`
+                          : "No active session"}
                   </p>
                 </div>
                 <div style={{ marginBottom: "20px" }}>
@@ -608,6 +613,7 @@ const FirstTermRep = ({ studentId }) => {
               </div>
             </div>
 
+            <div className="tables-container flex">
             {/* First Table */}
             <table className="table" id="customers" style={{ width: "100%" }}>
               <thead>
@@ -728,6 +734,9 @@ const FirstTermRep = ({ studentId }) => {
                 )}
               </tbody>
             </table>
+
+            </div>
+
 
             <div style={{ color: "#042954", fontSize: "16px" }}>
               KEY TO GRADES A (DISTINCTION)=70% &amp; ABOVE , C (CREDIT)=55-69%

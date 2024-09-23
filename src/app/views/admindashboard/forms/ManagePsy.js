@@ -155,8 +155,8 @@ const ManagePsy = () => {
             punctuality: studentScore ? studentScore.punctuality || 0 : 0,
             talking: studentScore ? studentScore.talking || 0 : 0,
             eyecontact: studentScore ? studentScore.eyecontact || 0 : 0,
-            remarks: studentScore ? studentScore.remarks || "" : "",
-            premarks: studentScore ? studentScore.premarks || "" : "",
+            remarks: studentScore ? studentScore.remarks || "Null" : "Null", // Ensure default value is an empty string
+            premarks: studentScore ? studentScore.premarks || "Null" : "Null", // Ensure default value is an empty string            
           };
         });
 
@@ -195,9 +195,11 @@ const ManagePsy = () => {
           punctuality = 5,
           talking = 5,
           eyecontact = 5,
-          remarks = 5,
-          premarks = 5,
+          remarks = "",
+          premarks = "",
         } = student;
+
+        console.log(student)
 
         return {
           studentId,
@@ -272,7 +274,7 @@ const ManagePsy = () => {
             }
           } else {
             // No existing marks found, proceed to create new marks
-            const responseSaveMarks = await fetch(`${apiUrl}/api/save-psy`, {
+            const responseSaveMarks = await fetch(`${apiUrl}/api/save-psy/${currentSession._id}`, {
               method: "POST",
               headers: {
                 ...headers,
@@ -327,10 +329,11 @@ const ManagePsy = () => {
     } else if (scoreType === "eyecontact") {
       updatedStudents[index].eyecontact = parseInt(value, 10) || 0;
     } else if (scoreType === "remarks") {
-      updatedStudents[index].remarks = String(value) || 0;
+      updatedStudents[index].remarks = value.trim() ? value : "No remarks";  // Default to "No remarks" if empty
     } else if (scoreType === "premarks") {
-      updatedStudents[index].premarks = String(value) || 0;
+      updatedStudents[index].premarks = value.trim() ? value : "No principal remarks";  // Default to "No principal remarks" if empty
     }
+  
 
     // Update state with the modified students
     setStudentData(updatedStudents);
@@ -520,7 +523,7 @@ const ManagePsy = () => {
                               type="text"
                               name={`remarks_${index}`}
                               id={`remarks_${index}`}
-                              value={student.remarks || ""}
+                              value={student.remarks || "No remarks"} // Default value if empty
                               onChange={(e) =>
                                 handleScoreChange(
                                   index,
@@ -536,7 +539,7 @@ const ManagePsy = () => {
                               type="text"
                               name={`premarks_${index}`}
                               id={`premarks_${index}`}
-                              value={student.premarks || ""}
+                              value={student.premarks || "No principal remarks"} 
                               onChange={(e) =>
                                 handleScoreChange(
                                   index,

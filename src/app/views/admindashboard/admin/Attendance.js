@@ -19,12 +19,15 @@ import {
 } from "@mui/material";
 import useFetch from "../../../../hooks/useFetch";
 import { Span } from "../../../../app/components/Typography";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
 
 const Container = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -41,12 +44,14 @@ const TextField = styled(TextValidator)(() => ({
 }));
 
 const Attendance = () => {
+  const { currentSession } = useContext(SessionContext);
+
   const {
     data: classData,
     loading: classLoading,
     error: classError,
-  } = useFetch("/class");
-  const { data: examData } = useFetch("/getofflineexam");
+  } = useFetch(`/class/${currentSession._id}`);
+  const { data: examData } = useFetch(`/getofflineexam/${currentSession._id}`);
 
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
@@ -91,7 +96,7 @@ const Attendance = () => {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      const response = await fetch(`${apiUrl}/api/student/${selectedClass}`, {
+      const response = await fetch(`${apiUrl}/api/student/${selectedClass}/${currentSession._id}`, {
         headers,
       });
 
@@ -145,8 +150,8 @@ const Attendance = () => {
             punctuality: studentScore ? studentScore.punctuality || 0 : 0,
             talking: studentScore ? studentScore.talking || 0 : 0,
             eyecontact: studentScore ? studentScore.eyecontact || 0 : 0,
-            remarks: studentScore ? studentScore.remarks || "" : "",
-            premarks: studentScore ? studentScore.premarks || "" : "",
+            remarks: studentScore ? studentScore.remarks || "Null" : "Null", // Ensure default value is an empty string
+            premarks: studentScore ? studentScore.premarks || "Null" : "Null", // Ensure default value is an empty string   
           };
         });
 
@@ -227,7 +232,7 @@ const Attendance = () => {
           if (existingMarks.length > 0) {
             // Existing marks found, proceed with updating
             const responseUpdateMarks = await fetch(
-              `${apiUrl}/api/update-all-psy`,
+              `${apiUrl}/api/update-all-psy/`,
               {
                 method: "PUT",
                 headers: {
@@ -262,7 +267,7 @@ const Attendance = () => {
             }
           } else {
             // No existing marks found, proceed to create new marks
-            const responseSaveMarks = await fetch(`${apiUrl}/api/save-psy`, {
+            const responseSaveMarks = await fetch(`${apiUrl}/api/save-psy/${currentSession._id}`, {
               method: "POST",
               headers: {
                 ...headers,
@@ -317,9 +322,9 @@ const Attendance = () => {
     } else if (scoreType === "eyecontact") {
       updatedStudents[index].eyecontact = parseInt(value, 10) || 0;
     } else if (scoreType === "remarks") {
-      updatedStudents[index].remarks = String(value) || 0;
+      updatedStudents[index].remarks = value.trim() ? value : "No remarks";  // Default to "No remarks" if empty
     } else if (scoreType === "premarks") {
-      updatedStudents[index].premarks = String(value) || 0;
+      updatedStudents[index].premarks = value.trim() ? value : "No principal remarks";  // Default to "No principal remarks" if empty
     }
 
     // Update state with the modified students
@@ -514,7 +519,7 @@ const Attendance = () => {
                               type="text"
                               name={`remarks_${index}`}
                               id={`remarks_${index}`}
-                              value={student.remarks || ""}
+                              value={student.remarks || "No remarks"} // Default value if empty
                               onChange={(e) =>
                                 handleScoreChange(
                                   index,
@@ -530,7 +535,7 @@ const Attendance = () => {
                               type="text"
                               name={`premarks_${index}`}
                               id={`premarks_${index}`}
-                              value={student.premarks || ""}
+                              value={student.premarks || "No principal remarks"} 
                               onChange={(e) =>
                                 handleScoreChange(
                                   index,

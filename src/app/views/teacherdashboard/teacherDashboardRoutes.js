@@ -45,11 +45,6 @@ const teacherDashboardRoutes = [
     auth: "teacher",
   },
   {
-    path: "/teacher/dashboard/admin",
-    element: <ViewAdmin />,
-    auth: "teacher",
-  },
-  {
     path: "/teacher/dashboard/student_add",
     element: <Form />,
     auth: "teacher",

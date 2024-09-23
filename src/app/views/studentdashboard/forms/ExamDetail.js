@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Typography,
   Button,
@@ -25,6 +25,9 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 import CameraFeed from "./CameraFeed";
 
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
+
 const ExamDetail = () => {
   const { id } = useParams(); // Get the id parameter from the route
   const [exam, setExam] = useState(null);
@@ -40,7 +43,10 @@ const ExamDetail = () => {
   const [timerInterval, setTimerInterval] = useState(null);
 
   const [examFinished, setExamFinished] = useState(false);
+  const { currentSession } = useContext(SessionContext);
+
   const apiUrl = process.env.REACT_APP_API_URL.trim();
+  
 
   const navigate = useNavigate();
 
@@ -191,7 +197,7 @@ const ExamDetail = () => {
 
   const fetchExamAndQuestions = async () => {
     try {
-      const examResponse = await axios.get(`${apiUrl}/api/get-exam/${id}`);
+      const examResponse = await axios.get(`${apiUrl}/api/get-exam-by-id/${id}/${currentSession._id}`);
       setExam(examResponse.data);
       // Set the exam object before calling startTimer
       console.log("Exam details:", examResponse.data);
@@ -324,7 +330,7 @@ const ExamDetail = () => {
 
       console.log("Data before submitting:", data); // Log the data before submitting
 
-      const response = await axios.post(`${apiUrl}/api/exams/submit`, data, {
+      const response = await axios.post(`${apiUrl}/api/exams/submit/${currentSession._id}`, data, {
         headers,
       });
 

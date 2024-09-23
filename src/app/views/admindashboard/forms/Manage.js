@@ -74,7 +74,7 @@ const StyledTable = styled(Table)(() => ({
 
 const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(1),
-}));
+})); 
 
 const Manage = () => {
   const { currentSession } = useContext(SessionContext);

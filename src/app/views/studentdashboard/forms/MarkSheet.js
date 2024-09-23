@@ -74,13 +74,17 @@
 // };
 
 // export default MarkSheet;
-import { Fragment, React, useEffect, useState } from "react";
+import { Fragment, React, useContext, useEffect, useState } from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Button, styled } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import useFetch from "../../../../hooks/useFetch";
 import useAuth from "../../../../app/hooks/useAuth";
+
+// import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -90,20 +94,26 @@ const ContentBox = styled("div")(({ theme }) => ({
 const MarkSheet = () => {
   const [studentData, setStudentData] = useState(null);
   const { user } = useAuth();
-  console.log("User:", user);
+  const { currentSession } = useContext(SessionContext);
 
-  const { data, loading, error } = useFetch(`/students/${user._id}`); // Fetch data using the correct URL
+  console.log("User:", user._id);
+
+  const { data, loading, error } = useFetch(`/students/${user._id}/${currentSession._id}`); // Fetch data using the correct URL
 
   useEffect(() => {
-    // Check if the data is available before updating the state
-    console.log("Data from useFetch:", data);
-    if (data && data.studentName && data.classname) {
-      console.log("Fetched student data:", data);
-      setStudentData(data);
+    // Ensure the data is available and valid
+    if (data && data.length > 0 && data[0].studentName && data[0].classname) {
+      setStudentData(data[0]);
     }
   }, [data]);
 
-  return (
+  // If no data is available, return a blank page or a message
+  if (loading) return <p>Loading...</p>;
+  if (!data || data.length === 0 || !studentData) {
+    return <p>No data available for the selected session.</p>;
+  }
+
+  return ( 
     <Fragment>
       <ContentBox className="analytics">
         <h2>

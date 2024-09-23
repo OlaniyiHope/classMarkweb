@@ -1,5 +1,5 @@
 import {} from "@mui/material";
-import { Fragment, React, useState, useEffect } from "react";
+import { Fragment, React, useState, useContext, useEffect } from "react";
 import { Box } from "@mui/system";
 import {
   Card,
@@ -22,6 +22,9 @@ import { Breadcrumb } from "../../../../app/components";
 import useFetch from "../../../../hooks/useFetch";
 import FormDialog4 from "../../../../app/views/material-kit/dialog/FormDialog4";
 import useAuth from "../../../../app/hooks/useAuth";
+
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -62,10 +65,9 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 const Sub1 = ({ classname }) => {
   const { user } = useAuth();
-  // const { data, loading, error, reFetch } = useFetch(
-  //   `/get-subject/${classname}`
-  // ); // Use the specified class name in the URL
-  const { data, loading, error } = useFetch(`/get-subject/${user.classname}`);
+  const { currentSession } = useContext(SessionContext);
+
+  const { data, loading, error } = useFetch(`/get-subject/${user.classname}/${currentSession._id}`);
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
@@ -74,10 +76,6 @@ const Sub1 = ({ classname }) => {
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
   };
-  // useEffect(() => {
-  //   // When classname changes, refetch the data
-  //   reFetch(`/get-subject/${classname}`);
-  // }, [classname, reFetch]);
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
@@ -90,7 +88,6 @@ const Sub1 = ({ classname }) => {
         <Box className="breadcrumb">
           <Breadcrumb
             routeSegments={[
-              // { name: "Material", path: "/material" },
               { name: "Manage Subject" },
             ]}
           />
@@ -113,7 +110,7 @@ const Sub1 = ({ classname }) => {
                 </thead>
                 {data && data.length > 0 ? (
                   data.map((item, index) => (
-                    <tbody>
+                    <tbody key={index}>
                       <tr key={item._id}>
                         <td>
                           <div class="trans-list">
@@ -143,12 +140,13 @@ const Sub1 = ({ classname }) => {
             </div>
           </div>
 
+          {/* Add null check here */}
           <TablePagination
             sx={{ px: 2 }}
             page={page}
             component="div"
             rowsPerPage={rowsPerPage}
-            count={data.length}
+            count={data ? data.length : 0}  
             onPageChange={handleChangePage}
             rowsPerPageOptions={[5, 10, 25]}
             onRowsPerPageChange={handleChangeRowsPerPage}
@@ -156,27 +154,6 @@ const Sub1 = ({ classname }) => {
             backIconButtonProps={{ "aria-label": "Previous Page" }}
           />
         </Box>
-
-        {/* <TopSellingTable />
-            <StatCards2 />
-
-            <H4>Ongoing Projects</H4>
-            <RowCards />
-          </Grid>
-
-          <Grid item lg={4} md={4} sm={12} xs={12}>
-            <Card sx={{ px: 3, py: 2, mb: 3 }}>
-              <Title>Traffic Sources</Title>
-              <SubTitle>Last 30 days</SubTitle>
-
-              <DoughnutChart
-                height="300px"
-                color={[palette.primary.dark, palette.primary.main, palette.primary.light]}
-              />
-            </Card>
-
-            <UpgradeCard />
-            <Campaigns />*/}
       </ContentBox>
     </Fragment>
   );

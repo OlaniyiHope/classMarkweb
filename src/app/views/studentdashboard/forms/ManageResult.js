@@ -141,6 +141,9 @@ import { useParams } from "react-router-dom";
 import useAuth from "../../../../app/hooks/useAuth";
 import AuthContext from "../../../../app/contexts/JWTAuthContext";
 
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
+
 // Import useNavigate
 import { useNavigate } from "react-router-dom";
 
@@ -149,13 +152,15 @@ const ManageResult = () => {
   const { user } = useAuth();
   const { id: examId } = useParams();
 
-  console.log("User ID:", user.id);
-  console.log("Exam ID:", examId);
+  console.log("User ID:", user._id);
+  // console.log("Exam ID:", examId);
 
-  const { id } = useParams(); // Access examId from URL
+  // const { id } = useParams(); // Access examId from URL
   const [scores, setScores] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const { currentSession } = useContext(SessionContext);
+
   const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   // Import useNavigate
@@ -163,7 +168,7 @@ const ManageResult = () => {
 
   // Function to navigate to the "View Result" route with userId parameter
   const navigateToViewResult = () => {
-    navigate(`/student/dashboard/manage-online-result/${user.id}`);
+    navigate(`/student/dashboard/manage-online-result/${user._id}`);
   };
 
   useEffect(() => {
@@ -175,11 +180,12 @@ const ManageResult = () => {
         };
 
         const response = await axios.get(
-          `${apiUrl}/api/students/all-scores/${user._id}`, // Use user._id instead of user.id
+          `${apiUrl}/api/students/all-scores/${user._id}/${currentSession._id}`, // Use user._id instead of user.id
           {
             headers,
           }
         );
+        console.log("test",response.data)
         setScores(response.data);
       } catch (error) {
         console.error("Error fetching exam score:", error);

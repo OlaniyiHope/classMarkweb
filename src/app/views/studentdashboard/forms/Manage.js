@@ -1,7 +1,7 @@
 // import React, { Fragment, useEffect, useState } from "react";
 // import { Box } from "@mui/system";
 // import {
-//   Table,
+//   Table, 
 //   TableBody,
 //   TableCell,
 //   TableHead,
@@ -366,7 +366,7 @@
 // };
 
 // export default Manage;
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState,useContext, useEffect, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useTheme } from "@mui/material/styles";
@@ -381,6 +381,8 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Breadcrumb } from "../../../../app/components";
 import useAuth from "../../../../app/hooks/useAuth";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
 
 const Manage = () => {
   const { palette } = useTheme();
@@ -391,6 +393,8 @@ const Manage = () => {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const { currentSession } = useContext(SessionContext);
+
 
   useEffect(() => {
     const fetchExams = async () => {
@@ -398,7 +402,7 @@ const Manage = () => {
         const token = localStorage.getItem("jwtToken");
         const headers = { Authorization: `Bearer ${token}` };
         const response = await axios.get(
-          `${apiUrl}/api/get-exams-by-class/${user.classname}`,
+          `${apiUrl}/api/get-exams-by-class/${user.classname}/${currentSession._id}`,
           { headers }
         );
         setData(response.data);
@@ -407,7 +411,7 @@ const Manage = () => {
       }
     };
     fetchExams();
-  }, [user.classname]);
+  }, [user.classname, currentSession]);
 
   const handleManageQuestions = (examId) => {
     navigate(`/student/dashboard/manage-online-exam/${examId}`);
@@ -431,6 +435,15 @@ const Manage = () => {
       const toTimeParts = toTime24Hours.split(":");
       endTime.setHours(parseInt(toTimeParts[0], 10));
       endTime.setMinutes(parseInt(toTimeParts[1], 10));
+
+      const examTaken = item.submittedAnswers.some(
+        (answer) => answer.userId === user._id // Compare logged-in user's ID with submittedAnswers userId
+      );
+  
+      if (examTaken) {
+        alert("You have already taken this exam.");
+        return; // Prevent the menu from opening
+      }
 
       // Check if it's time for the exam
       if (userLocalTime >= startTime && userLocalTime <= endTime) {

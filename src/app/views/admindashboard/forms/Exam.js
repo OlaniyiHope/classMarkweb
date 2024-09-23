@@ -347,7 +347,7 @@ const Exam = () => {
               // Notify success using toast
               toast.success("Marks updated successfully!");
             }
-          } else {
+          } else { 
             // No existing marks found, proceed to create new marks
             const responseSaveMarks = await fetch(`${apiUrl}/api/save-marks/${currentSession._id}`, {
               method: "POST",

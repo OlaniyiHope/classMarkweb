@@ -5,11 +5,6 @@ export const navigations = [
     icon: <span style={{ color: "#ffc107" }}>dashboard</span>,
   },
   {
-    name: " Admin",
-    path: "/teacher/dashboard/admin",
-    icon: <span style={{ color: "#ffc107" }}>Admin</span>,
-  },
-  {
     name: "Student",
     icon: "people",
     children: [

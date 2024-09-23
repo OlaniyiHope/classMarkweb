@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Grid,
   Paper,
@@ -17,12 +17,19 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useLocation, useNavigate } from "react-router-dom";
 import useFetch from "hooks/useFetch";
 
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
+
 const ManSin2 = () => {
   const location = useLocation();
   const parts = location.pathname.split("/");
   const id = parts[3];
 
-  const { data, loading, error } = useFetch(`/get-exam/${id}`);
+  const { currentSession } = useContext(SessionContext);
+
+
+  const { data, loading, error } = useFetch(`/get-exam-by-id/${id}/${currentSession._id}/`);
+
   const [questionType, setQuestionType] = useState("");
 
   const [numberOfOptions, setNumberOfOptions] = useState(0);

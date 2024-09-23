@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Grid,
   Paper,
@@ -21,16 +21,27 @@ import IconButton from "@mui/material/IconButton";
 import useFetch from "../../../../hooks/useFetch";
 import EditQuestionModal from "./EditQuestionModal";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
+
 const ManSin = () => {
   const location = useLocation();
   const parts = location.pathname.split("/");
   const id = parts[3];
+  const { currentSession } = useContext(SessionContext);
 
-  const { data, loading, error } = useFetch(`/get-exam/${id}`);
+
+  console.log(currentSession._id)
+  console.log(id)
   const [questionType, setQuestionType] = useState("");
   const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true); // New loading state
+  const [error, setError] = useState(null); // Error state
 
-  // State for total marks
   const [totalMark, setTotalMark] = useState(0);
 
   // ...rest of your code
@@ -42,12 +53,85 @@ const ManSin = () => {
   const [questionTitle, setQuestionTitle] = useState("");
   const [deleteQuestionId, setDeleteQuestionId] = useState(null);
   const [editQuestion, setEditQuestion] = useState(null);
+
+
   const [onscreenMarking, setOnscreenMarking] = useState(""); // Add this line to declare onscreenMarking and setOnscreenMarking
 
   const [options, setOptions] = useState([]);
   const navigate = useNavigate();
 
   const [questions, setQuestions] = useState([]);
+
+
+  
+  // State for total marks
+  // const { data, loading, error } = useFetch(`/get-exam-by-id/${id}/${currentSession._id}`);
+  // console.log("Data", data)
+
+  useEffect(() => {
+    // Define the API URL directly with the hardcoded values
+    const apiUrlT = `${apiUrl}/api/get-exam-by-id/${id}/${currentSession._id}`
+
+    // Async function to fetch data
+    const fetchExamById = async () => {
+      try {
+        const response = await fetch(apiUrlT);
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        console.log("Fetched data:", result); // For debugging
+        setData(result); // Set the data on success
+        setLoading(false)
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError(true)
+      } 
+    };
+
+    fetchExamById();
+  }, [apiUrl, id, currentSession]);
+
+
+
+
+  useEffect(() => {
+    const total = calculateTotalMarks();
+    setTotalMark(total);
+  }, [questions]);
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        // Fetch the JWT token from local storage
+        const token = localStorage.getItem("jwtToken");
+
+        // Include the token in the request headers
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+
+        const response = await fetch(`${apiUrl}/api/questions/${id}`, {
+          method: "GET",
+          headers, // Include the headers in the request
+        });
+
+        if (response.ok) {
+          const questionsData = await response.json();
+          setQuestions(questionsData);
+        } else {
+          console.error("Failed to fetch questions");
+        }
+      } catch (error) {
+        console.error("An error occurred while fetching questions:", error);
+      }
+    };
+
+    fetchQuestions();
+  }, [id]);
+
   // Function to calculate total marks
 
   const confirmDelete = async () => {
@@ -82,10 +166,7 @@ const ManSin = () => {
     );
   };
   // Update total marks whenever questions change
-  useEffect(() => {
-    const total = calculateTotalMarks();
-    setTotalMark(total);
-  }, [questions]);
+
 
   const handleQuestionTypeChange = (event) => {
     setQuestionType(event.target.value);
@@ -140,35 +221,7 @@ const ManSin = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        // Fetch the JWT token from local storage
-        const token = localStorage.getItem("jwtToken");
 
-        // Include the token in the request headers
-        const headers = {
-          Authorization: `Bearer ${token}`,
-        };
-
-        const response = await fetch(`${apiUrl}/api/questions/${id}`, {
-          method: "GET",
-          headers, // Include the headers in the request
-        });
-
-        if (response.ok) {
-          const questionsData = await response.json();
-          setQuestions(questionsData);
-        } else {
-          console.error("Failed to fetch questions");
-        }
-      } catch (error) {
-        console.error("An error occurred while fetching questions:", error);
-      }
-    };
-
-    fetchQuestions();
-  }, [id]);
 
   // const submitQuestion = async () => {
   //   try {
@@ -251,13 +304,20 @@ const ManSin = () => {
         ).value;
       } else if (questionType === "fill_in_the_blanks") {
         // Additional logic for fill in the blanks questions
-        questionData.possible_answers = possibleAnswers;
+        questionData.possibleAnswers = possibleAnswers;
       } else if (questionType === "theory") {
         // Additional logic for theory questions
         questionData.onscreenMarking = onscreenMarking;
       }
 
-      const response = await fetch(`${apiUrl}/api/questions`, {
+      console.log("sub questiondata",questionData)
+
+      if (!questionType || !questionTitle || !mark ) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+      
+
+      const response = await fetch(`${apiUrl}/api/questions/${currentSession._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -269,13 +329,19 @@ const ManSin = () => {
       if (response.ok) {
         // Question submitted successfully, you can handle the response here
         console.log("Question submitted successfully");
+        toast.success("Question submitted successfully");
+
         addQuestion(questionData);
       } else {
         // Handle errors
         console.error("Failed to submit the question");
+        toast.error("Failed to submit the question");
+
       }
     } catch (error) {
       console.error("An error occurred while submitting the question:", error);
+      toast.error("An error occurred while submitting the question");
+
     }
   };
 
@@ -527,7 +593,7 @@ const ManSin = () => {
                 type="text"
                 variant="outlined"
                 fullWidth
-                name="possible_answers"
+                name="possibleAnswers"
                 required
                 multiline
                 rows={4}
@@ -547,7 +613,7 @@ const ManSin = () => {
                     type: questionType,
                     mark: mark,
                     question_title: questionTitle,
-                    possible_answers: possibleAnswers,
+                    possibleAnswers: possibleAnswers,
                   };
                   console.log("Question Type:", questionType);
                   console.log("question Data:", questionData);
@@ -640,8 +706,17 @@ const ManSin = () => {
     // Inside the submitQuestion() function
   };
 
+  if (loading) {
+    return <div>Loading...</div>; // Render loading state
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>; // Render error state
+  }
+
   return (
     <div style={{ marginTop: "50px" }}>
+      <ToastContainer />
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <Paper>

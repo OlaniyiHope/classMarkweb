@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useContext, useState, useEffect } from "react";
 import {
   Box,
   IconButton,
@@ -28,6 +28,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert 
 import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -57,13 +59,15 @@ const Teacher = () => {
   const [newPassword, setNewPassword] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const { currentSession } = useContext(SessionContext);
+
 
   useEffect(() => {
     // Fetch the JWT token from your storage (localStorage or cookies)
     const token = localStorage.getItem("jwtToken");
 
     // Make an API call with the JWT token
-    fetch("/get-teachers", {
+    fetch(`/get-teachers/${currentSession._id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`, // Include the JWT token in the headers

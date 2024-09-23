@@ -488,7 +488,7 @@ const Profile = () => {
                                 fontWeight: "800",
                               }}
                             >
-                              <span>{user.className}</span>
+                              <span>{user.classname}</span>
                             </div>
                           </div>
                           <div class="row mb-2">

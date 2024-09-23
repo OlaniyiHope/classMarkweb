@@ -25,6 +25,7 @@ import useAuth from "../../../../app/hooks/useAuth";
 import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 import "./report.css";
+import "./print.css";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -53,15 +54,32 @@ const TermRep = ({ studentId }) => {
     const contentToPrint = componentRef.current.cloneNode(true);
     const elementsToHide = contentToPrint.querySelectorAll(".dont-print");
     elementsToHide.forEach((element) => {
-      element.style.display = "none";
+        element.style.display = "none";
     });
 
     // Append content to the new window/tab
     printWindow.document.body.appendChild(contentToPrint);
 
+    // Copy styles from the current document to the new window/tab
+    const styleSheets = [...document.styleSheets].map((styleSheet) => {
+        try {
+            return [...styleSheet.cssRules]
+                .map((rule) => rule.cssText)
+                .join("\n");
+        } catch (e) {
+            console.error("Error accessing stylesheet:", e);
+            return "";
+        }
+    }).join("\n");
+
+    const styleElement = printWindow.document.createElement("style");
+    styleElement.textContent = styleSheets;
+    printWindow.document.head.appendChild(styleElement);
+
     // Trigger print dialog
     printWindow.print();
-  };
+};
+
 
   const [studentData, setStudentData] = useState(null);
   const [psyData, setPsyData] = useState(null);
@@ -1186,8 +1204,9 @@ const TermRep = ({ studentId }) => {
                         marginLeft: "30px",
                         textAlign: "center",
                       }}>
-                      {accountSettings.sessionStart}-
-                      {accountSettings.sessionEnd}
+                   {currentSession?.name
+                          ? `${currentSession.name}`
+                          : "No active session"}
                     </p>
                   </div>
                   <div style={{ marginBottom: "20px" }}>
@@ -1334,6 +1353,8 @@ const TermRep = ({ studentId }) => {
                   </div>
                 </div>
               </div>
+
+              <div className="tables-container">
               <table
                 className="table"
                 id="customers"
@@ -1396,12 +1417,11 @@ const TermRep = ({ studentId }) => {
 </tbody>
               </table>
 
-              <td style={{ verticalAlign: "top", width: "100%" }}>
                 {/* Second Sub-Table for Affective and Psychomotor Report */}
                 <table
                   className="table second-sub-table"
                   id="customersreport"
-                  style={{ width: "100%" }}>
+                  style={{ width: "150%" }}>
                   <colgroup>
                     <col style={{ width: "33.33%" }} />
                     <col style={{ width: "33.33%" }} />
@@ -1463,7 +1483,8 @@ const TermRep = ({ studentId }) => {
                     ))}
                   </tbody>
                 </table>
-              </td>
+
+              </div>
 
               <div style={{ color: "#042954", fontSize: "16px" }}>
                 KEY TO GRADES A (DISTINCTION)=70% &amp; ABOVE , C
