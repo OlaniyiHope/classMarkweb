@@ -20,6 +20,8 @@ import { faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons";
 import Calendar from "react-calendar";
 import "./calendar.css";
 import axios from "axios";
+import useAuth from "../../hooks/useAuth";
+
 import "./style.css";
 
 import { SessionContext } from "../../components/MatxLayout/Layout1/SessionContext";
@@ -86,6 +88,9 @@ const Analytics = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const { currentSession } = useContext(SessionContext);
 
+  const { logout, user } = useAuth();
+
+
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
@@ -122,113 +127,55 @@ const Analytics = () => {
     parents: 0,
     admins: 0,
   });
+  const [studentCount, setStudentCount] = useState(0);
+// get all users in a class 
 
-  useEffect(() => {
-    const fetchUserCounts = async () => {
-      // Reset userCounts to zero before fetching new data
-      setUserCounts({
-        students: 0,
-        teachers: 0,
-        parents: 0,
-        admins: 0,
-      });
 
-      try {
-        const roles = ["student", "teacher", "parent", "admin"];
-        const sessionId = currentSession._id; // Assuming currentSession is available from context
 
-        const counts = await Promise.all(
-          roles.map(async (role) => {
-            try {
-              const response = await axios.get(
-                `${process.env.REACT_APP_API_URL.trim()}/api/users/${role}/${sessionId}`
-              );
-              return { role, count: response.data?.length || 0 };
-            } catch (err) {
-              console.error(`Error fetching ${role} count:`, err);
-              return { role, count: 0 }; // Default to 0 if there's an error
-            }
-          })
-        );
+useEffect(() => {
+  // Fetch data from the API with Authorization token
+  const fetchStudents = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken"); // Retrieve the JWT token from localStorage
+      const headers = {
+        Authorization: `Bearer ${token}`, // Set the Authorization header
+      };
 
-        const newCounts = counts.reduce((acc, { role, count }) => {
-          acc[role + "s"] = count; // For example, role "student" becomes "students"
-          return acc;
-        }, {});
-
-        setUserCounts(newCounts);
-      } catch (error) {
-        console.error("Error fetching user counts:", error);
-        if (error.response) {
-          console.error("Server responded with:", error.response.data);
+      const response = await fetch(
+        `${apiUrl}/api/get-all-students/${user.classname}/${currentSession._id}`,
+        {
+          headers, // Pass the headers with the request
         }
-      }
-    };
+      );
 
-    if (currentSession) {
-      fetchUserCounts();
+      if (!response.ok) {
+        throw new Error("Failed to fetch students");
+      }
+
+      const data = await response.json();
+
+      // Count the number of students in the returned data
+      const numberOfStudents = data.length;
+
+      // Update the state with the student count
+      setStudentCount(numberOfStudents);
+    } catch (error) {
+      console.error("Error fetching student data:", error);
     }
-  }, [currentSession]);
+  };
+
+  if (currentSession) {
+    fetchStudents();
+  }
+}, [currentSession, user.classname]); // Fetch data again if currentSession, user.classname, or apiUrl changes
+
   return (
     <div>
       <h2 style={{ paddingTop: "15px", paddingLeft: "10px" }}>
         Student Dashboard
       </h2>
       <div className="row gutters-20" style={{ marginTop: "20px" }}>
-        {Object.entries(userCounts).map(([role, count]) => (
-          <div key={role} className="col-xl-3 col-sm-6 col-12">
-            <div className="dashboard-summery-one mg-b-20">
-              <div className="row align-items-center">
-                <div className="col-6">
-                  <div
-                    className={`item-icon bg-light-${
-                      role === "admins"
-                        ? "red"
-                        : role === "teachers"
-                        ? "blue"
-                        : role === "parents"
-                        ? "yellow"
-                        : "green"
-                    }`}
-                  >
-                    <FontAwesomeIcon
-                      icon={
-                        role === "admins"
-                          ? faUsers
-                          : role === "teachers"
-                          ? faUsers
-                          : role === "parents"
-                          ? faUserFriends
-                          : faUser
-                      }
-                      className={`flaticon-classmates text-${
-                        role === "admins"
-                          ? "red"
-                          : role === "teachers"
-                          ? "blue"
-                          : role === "parents"
-                          ? "yellow"
-                          : "green"
-                      }`}
-                    />
-                  </div>
-                </div>
-                <div className="col-6">
-                  <div className="item-content">
-                    <div className="item-title">
-                      {role.charAt(0).toUpperCase() + role.slice(1)}
-                    </div>
-                    <div className="item-number">
-                      <span className="counter" data-num={count}>
-                        {count}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
+       <h2>No of Students in this class: {studentCount}</h2>
       </div>
       <div className="row gutters-20" style={{ marginTop: "60px" }}></div>
       <div className="cald">

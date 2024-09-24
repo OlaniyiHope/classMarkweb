@@ -28,6 +28,15 @@ import ExamDetail from "./forms/ExamDetail";
 import ManageResult from "./forms/ManageResult";
 import MarkSheet from "./forms/MarkSheet";
 import ReportCard from "./forms/ReportCard";
+import AddPq from "./forms/AddPq";
+import ViewPq from "./forms/ViewPq";
+
+// import Su from "./forms/SubSubject";
+// import SubSubject from "./forms/subSubject";
+
+import SubSubject from "./forms/SubSubject";
+import PastQuestionsList from "./forms/PastQuestionsList";
+
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -132,6 +141,26 @@ const studentDashboardRoutes = [
   {
     path: "/student/dashboard/student-payment",
     element: <Payment />,
+    auth: "student",
+  },
+  // {
+  //   path: "/student/dashboard/add-past-questions",
+  //   element: <AddPq />,
+  //   auth: "student",
+  // },
+  {
+    path: "/student/dashboard/view-past-questions",
+    element: <AddPq />,
+    auth: "student",
+  },
+  {
+    path: "/student/dashboard/subsubjects/:subjectName",
+    element: <SubSubject />,
+    auth: "student",
+  },
+  {
+    path: "/student/dashboard/questions/:subjectName/:title",
+    element: <PastQuestionsList />,
     auth: "student",
   },
   { path: "/student/dashboard/profile", element: <Profile />, auth: "student" },

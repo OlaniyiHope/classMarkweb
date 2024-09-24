@@ -145,6 +145,7 @@ const ManSin = () => {
   };
   const handleEditQuestion = (question) => {
     setEditQuestion(question);
+    console.log("editQ", question, editQuestion)
   };
   const updateQuestion = (updatedQuestion) => {
     // Update the question in your state
@@ -350,7 +351,7 @@ const ManSin = () => {
       <div key={i} className="form-group options">
         <label className="col-sm-3 control-label">Option {i + 1}</label>
         <div className="col-sm-8">
-          <div className="input-group">
+          <div className="input-group" style={{ display: "flex", flexWrap: "nowrap", alignItems: "center" }}>
             <TextField
               type="text"
               variant="outlined"
@@ -359,7 +360,7 @@ const ManSin = () => {
               required
               id={`option${i + 1}`}
             />
-            <div className="input-group-addon">
+            <div className="input-group-addon" style={{ marginLeft: "10px" }}>
               <input
                 type="checkbox"
                 name="correct_answers[]"
@@ -373,7 +374,7 @@ const ManSin = () => {
     ));
     setOptionFields(options);
   };
-
+  
   const renderQuestionFields = () => {
     if (questionType === "multiple_choice") {
       console.log("Question Type:", questionType);

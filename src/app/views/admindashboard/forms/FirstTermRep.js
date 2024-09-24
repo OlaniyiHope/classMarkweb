@@ -683,7 +683,8 @@ const FirstTermRep = ({ studentId }) => {
 
             <div className="tables-container flex">
             {/* First Table */}
-            <table className="table" id="customers" style={{ width: "100%" }}>
+            <div>
+            <table className="table mainT" id="customers" style={{ width: "100%" }}>
               <thead>
                 <tr>
                   <th>S/No</th>
@@ -734,6 +735,7 @@ const FirstTermRep = ({ studentId }) => {
                 )}
               </tbody>
             </table>
+            </div>
 
             {/* Second Table */}
             <table

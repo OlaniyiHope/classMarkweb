@@ -72,6 +72,7 @@ import ViewReceipt from "./forms/ViewReceipt";
 import FirstTermRepCont from "./forms/FirstTermRepCont";
 import ThirdTermRepCont from "./forms/ThirdTermRepCont";
 import Syllabus from "./forms/Syllabus";
+import Js1b from "./forms/Js1b";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -130,8 +131,13 @@ const adminDashboardRoutes = [
 
   { path: "/dashboard/manage-mark-view", element: <ManagemarkView /> },
   {
-    path: "/dashboard/jss1-student_information",
+    path: "/dashboard/jss1A-student_information",
     element: <Info />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/jss1B-student_information",
+    element: <Js1b />,
     auth: "admin",
   },
   {

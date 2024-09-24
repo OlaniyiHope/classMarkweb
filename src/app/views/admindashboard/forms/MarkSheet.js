@@ -112,7 +112,7 @@ const MarkSheet = () => {
 
         <Box width="100%" overflow="auto">
           {/* Use studentId for "First Term Report Card" link */}
-          <Link to={`/dashboard/first_term_report_card/${id}`}>
+          <Link to={`/dashboard/first_term_report_card/${id}`}  target="_blank" >
             <Button
               color="primary"
               variant="contained"
@@ -121,7 +121,7 @@ const MarkSheet = () => {
               First Term Report Card
             </Button>
           </Link>
-          <Link to={`/dashboard/term_report_card/${id}`}>
+          <Link to={`/dashboard/term_report_card/${id}`}  target="_blank" >
             <Button
               color="primary"
               variant="contained"
@@ -130,7 +130,7 @@ const MarkSheet = () => {
               Second Term Report Card
             </Button>
           </Link>
-          <Link to={`/dashboard/third_term_report_card/${id}`}>
+          <Link to={`/dashboard/third_term_report_card/${id}`}  target="_blank" >
             <Button
               color="primary"
               variant="contained"

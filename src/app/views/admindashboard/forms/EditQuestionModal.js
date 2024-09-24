@@ -60,19 +60,25 @@ const EditQuestionModal = ({ open, onClose, question, onUpdate }) => {
     });
   };
 
+  // Fix: Handle both the text and the isCorrect status for options
   const handleOptionChange = (index, e) => {
     const updatedOptions = [...editedQuestion.options];
-    updatedOptions[index] = e.target.value;
+    updatedOptions[index].option = e.target.value; // Update the option text
     setEditedQuestion({
       ...editedQuestion,
       options: updatedOptions,
     });
   };
 
-  const handleCorrectAnswerChange = (option) => {
+  const handleCorrectAnswerChange = (index) => {
+    const updatedOptions = editedQuestion.options.map((option, i) => ({
+      ...option,
+      isCorrect: i === index, // Only set the selected option as correct
+    }));
+
     setEditedQuestion({
       ...editedQuestion,
-      correctAnswer: option,
+      options: updatedOptions,
     });
   };
 
@@ -103,7 +109,7 @@ const EditQuestionModal = ({ open, onClose, question, onUpdate }) => {
                 <div key={index}>
                   <TextField
                     label={`Option ${index + 1}`}
-                    value={option}
+                    value={option.option} // Access the option text from the object
                     onChange={(e) => handleOptionChange(index, e)}
                     fullWidth
                     margin="normal"
@@ -111,8 +117,8 @@ const EditQuestionModal = ({ open, onClose, question, onUpdate }) => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={editedQuestion.correctAnswer === option}
-                        onChange={() => handleCorrectAnswerChange(option)}
+                        checked={option.isCorrect} // Use isCorrect to check if the option is correct
+                        onChange={() => handleCorrectAnswerChange(index)}
                         name={`correct${index + 1}`}
                       />
                     }

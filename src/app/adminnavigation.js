@@ -25,19 +25,34 @@ export const navigations = [
 
         children: [
           {
-            name: "Class J.S.S 1",
+            name: "Class J.S.S 1 A",
             iconText: "SI",
-            path: "/dashboard/jss1-student_information",
+            path: "/dashboard/jss1A-student_information",
           },
           {
-            name: "Class J.S.S 2",
+            name: "Class J.S.S 1 B",
             iconText: "SI",
-            path: "/dashboard/jss2-student_information",
+            path: "/dashboard/jss1B-student_information",
           },
           {
-            name: "Class J.S.S 3",
+            name: "Class J.S.S 2 A",
             iconText: "SI",
-            path: "/dashboard/jss3-student_information",
+            path: "/dashboard/jss2A-student_information",
+          },
+          {
+            name: "Class J.S.S 2 B",
+            iconText: "SI",
+            path: "/dashboard/jss2B-student_information",
+          },
+          {
+            name: "Class J.S.S 3 A",
+            iconText: "SI",
+            path: "/dashboard/jss3A-student_information",
+          },
+          {
+            name: "Class J.S.S 3 B",
+            iconText: "SI",
+            path: "/dashboard/jss3B-student_information",
           },
           {
             name: "Class S.S.1.S",

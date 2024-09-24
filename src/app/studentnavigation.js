@@ -22,6 +22,22 @@ export const navigations = [
     icon: <span style={{ color: "#ffc107" }}>assignment</span>,
   },
   {
+    name: "Past Questions",
+    icon: "assignment",
+    children: [
+      // {
+      //   name: "Add Past Questions",
+      //   iconText: "SI",
+      //   path: "student/dashboard/add-past-questions",
+      // },
+      {
+        name: "View Past Questions",
+        iconText: "SI",
+        path: "/student/dashboard/view-past-questions",
+      },
+    ],
+  },
+  {
     name: "Online Exam",
     icon: "assignment",
     children: [

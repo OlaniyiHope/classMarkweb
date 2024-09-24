@@ -1,0 +1,64 @@
+.pq{
+    padding: 20px;
+}  
+
+li{
+    font-weight: bolder;
+    font-size: 18px;
+    color: rgb(10, 26, 174);
+}
+
+/* Container for the list */
+.list-container {
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f9f9f9; /* Light background */
+    border: 1px solid #ddd; /* Add a border around the list */
+  }
+  
+  /* Styling the list */
+  .list {
+    list-style-type: none; /* Remove default bullet points */
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Styling each list item */
+  .list-item {
+    padding: 15px 20px; /* Add space around each item */
+    border-bottom: 1px solid #ddd; /* Add a line under each item */
+    display: flex;
+    justify-content: space-between; /* Spread items apart */
+    align-items: center; /* Center items vertically */
+    transition: background-color 0.3s; /* Smooth hover effect */
+  }
+  
+  /* Hover effect for list items */
+  .list-item:hover {
+    background-color: #f1f1f1; /* Light gray on hover */
+  }
+  
+  /* Style the links in the list */
+  .list-item a {
+    text-decoration: none; /* Remove underline */
+    color: #4CAF50; /* Green color for links */
+    font-weight: bold;
+    transition: color 0.3s ease;
+  }
+  
+  /* Hover effect for links */
+  .list-item a:hover {
+    color: #388e3c; /* Darker green on hover */
+  }
+  
+  /* Responsive design for smaller screens */
+  @media screen and (max-width: 600px) {
+    .list-item {
+      padding: 10px 15px;
+      flex-direction: column; /* Stack items vertically on smaller screens */
+      align-items: flex-start; /* Align to the left */
+    }
+  }
+  
