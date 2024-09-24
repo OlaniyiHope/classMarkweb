@@ -359,7 +359,6 @@ const Exam = () => {
                 examId: selectedExam,
                 subjectId: subjectIdLookup[selectedSubject],
                 updates: marks,
-                session: currentSession._id
               }),
             });
 
