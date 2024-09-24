@@ -61,6 +61,7 @@ const FirstTermRep = ({ studentId }) => {
 
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [teacherName, setTeacherName] = useState("")
   const [error, setError] = useState(null);
   const [schoolSettings, setSchoolSettings] = useState({
     principalName: "",
@@ -82,6 +83,12 @@ const FirstTermRep = ({ studentId }) => {
   
 
   const apiUrl = process.env.REACT_APP_API_URL.trim();
+
+  // /class/${currentSession._id}
+
+  // console.log("class Teacher:", classTeacher )
+
+
 
   // Debug: Log the studentId and currentSession
   useEffect(() => {
@@ -116,6 +123,67 @@ const FirstTermRep = ({ studentId }) => {
 
     console.log("Student ID in useEffect:", studentId);
   }, [studentId, currentSession]);
+
+
+
+
+
+
+
+
+  const fetchclassteacher = async (studentId) => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      if (!token) {
+        throw new Error("JWT token not found");
+      }
+  
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+  
+      const response = await axios.get(
+        `${apiUrl}/api/class/${currentSession._id}`,
+        { headers }
+      );
+  
+      // Debug: Log the entire API response
+      console.log("API Response for class:", response.data);
+  
+      // Assuming 'data' holds the student data
+      const studentClassName = data[0]?.classname;  // Replace with correct field
+      if (!studentClassName) {
+        throw new Error("Student's class not found");
+      }
+  
+      // Find the class that matches the student's class name
+      const matchedClass = response.data.find(
+        (classItem) => classItem.name === studentClassName
+      );
+  
+      if (matchedClass) {
+        console.log("Class Teacher:", matchedClass.teacher);
+        setTeacherName(matchedClass.teacher)
+        return matchedClass.teacher;
+      } else {
+        console.log("No class found matching the student's class.");
+      }
+  
+    } catch (error) {
+      console.error("Error fetching class teacher:", error);
+      // throw new Error("Failed to fetch class teacher");
+    }
+  };
+  
+  fetchclassteacher();
+  
+
+
+
+
+
+
+
 
   const fetchStudentData = async (studentId) => {
     try {
@@ -516,7 +584,7 @@ const FirstTermRep = ({ studentId }) => {
                       marginLeft: "30px",
                       textAlign: "center",
                     }}>
-                    Mrs Adebisi Emmanuel
+                    {teacherName}
                   </span>
                 </div>
               </div>
