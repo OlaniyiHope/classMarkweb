@@ -49,11 +49,8 @@ const teacherDashboardRoutes = [
     element: <Form />,
     auth: "teacher",
   },
-  {
-    path: "/teacher/dashboard/js1-subject",
-    element: <Sub1 />,
-    auth: "teacher",
-  },
+  { path: "/dashboard/:classname-subject", element: <Sub1 />, auth: "admin" },
+
   {
     path: "/teacher/dashboard/examlist",
     element: <Examlist />,
@@ -90,66 +87,10 @@ const teacherDashboardRoutes = [
     auth: "teacher",
   },
   {
-    path: "/teacher/dashboard/jss1-student_information",
+    path: "/teacher/dashboard/:classname-student_information",
     element: <Info />,
     auth: "teacher",
   },
-  {
-    path: "/teacher/dashboard/jss2-student_information",
-    element: <Info2 />,
-    auth: "teacher",
-  },
-  {
-    path: "/teacher/dashboard/jss3-student_information",
-    element: <Info3 />,
-    auth: "teacher",
-  },
-  {
-    path: "/teacher/dashboard/ss1-science-student_information",
-    element: <Info4 />,
-    auth: "teacher",
-  },
-  {
-    path: "/teacher/dashboard/ss1-art-student_information",
-    element: <Info5 />,
-    auth: "teacher",
-  },
-  {
-    path: "/teacher/dashboard/ss1-commercial-student_information",
-    element: <Info6 />,
-    auth: "teacher",
-  },
-  {
-    path: "/teacher/dashboard/ss2-science-student_information",
-    element: <Info7 />,
-    auth: "teacher",
-  },
-  {
-    path: "/teacher/dashboard/ss2-art-student_information",
-    element: <Info8 />,
-    auth: "teacher",
-  },
-  {
-    path: "/teacher/dashboard/ss2-commercial-student_information",
-    element: <Info9 />,
-    auth: "teacher",
-  },
-  {
-    path: "/teacher/dashboard/ss3-science-student_information",
-    element: <Info10 />,
-    auth: "teacher",
-  },
-  {
-    path: "/teacher/dashboard/ss3-art-student_information",
-    element: <Info11 />,
-    auth: "teacher",
-  },
-  {
-    path: "/teacher/dashboard/ss3-commercial-student_information",
-    element: <Info12 />,
-    auth: "teacher",
-  },
-
   {
     path: "/teacher/dashboard/teacher",
     element: <Teacher />,

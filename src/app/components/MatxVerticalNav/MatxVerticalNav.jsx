@@ -86,7 +86,7 @@ const MatxVerticalNav = ({ items }) => {
           </ListLabel>
         );
 
-      if (item.children) {
+      if (item.children) { 
         return (
           <MatxVerticalNavExpansionPanel mode={mode} item={item} key={index}>
             {renderLevels(item.children)}

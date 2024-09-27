@@ -1,116 +1,66 @@
-export const navigations = [
-  {
-    name: "Dashboard ",
-    path: "/dashboard/admin",
-    icon: <span style={{ color: "#ffc107" }}>dashboard</span>,
-  },
-  {
-    name: " Admin",
-    path: "/admin/admin",
-    icon: <span style={{ color: "#ffc107" }}>person</span>,
-  },
+import React, { useContext, useState, useEffect } from "react";
+import { SessionContext } from "./components/MatxLayout/Layout1/SessionContext";
+import useFetch from "../hooks/useFetch";
 
-  {
-    name: "Student",
-    icon: "people",
-    children: [
-      {
-        name: "Admit Student",
-        iconText: "SI",
-        path: "/dashboard/student_add",
-      },
-      {
-        name: "Student information",
-        iconText: "SU",
+export const Navigations = () => {
+  const { currentSession } = useContext(SessionContext); // Moved inside the component
+  const [classes, setClasses] = useState([]);
 
-        children: [
-          {
-            name: "Class J.S.S 1 A",
-            iconText: "SI",
-            path: "/dashboard/jss1A-student_information",
-          },
-          {
-            name: "Class J.S.S 1 B",
-            iconText: "SI",
-            path: "/dashboard/jss1B-student_information",
-          },
-          {
-            name: "Class J.S.S 2 A",
-            iconText: "SI",
-            path: "/dashboard/jss2A-student_information",
-          },
-          {
-            name: "Class J.S.S 2 B",
-            iconText: "SI",
-            path: "/dashboard/jss2B-student_information",
-          },
-          {
-            name: "Class J.S.S 3 A",
-            iconText: "SI",
-            path: "/dashboard/jss3A-student_information",
-          },
-          {
-            name: "Class J.S.S 3 B",
-            iconText: "SI",
-            path: "/dashboard/jss3B-student_information",
-          },
-          {
-            name: "Class S.S.1.S",
-            iconText: "SI",
-            path: "/dashboard/ss1-science-student_information",
-          },
-          {
-            name: "Class S.S.1.A",
-            iconText: "SI",
-            path: "/dashboard/ss1-art-student_information",
-          },
-          {
-            name: "Class S.S.1.C",
-            iconText: "SI",
-            path: "/dashboard/ss1-commercial-student_information",
-          },
-          {
-            name: "Class S.S.2.S",
-            iconText: "SI",
-            path: "/dashboard/ss2-science-student_information",
-          },
-          {
-            name: "Class S.S.2.A",
-            iconText: "SI",
-            path: "/dashboard/ss2-art-student_information",
-          },
-          {
-            name: "Class S.S.2.C",
-            iconText: "SI",
-            path: "/dashboard/ss2-commercial-student_information",
-          },
-          {
-            name: "Class S.S.3.S",
-            iconText: "SI",
-            path: "/dashboard/ss3-science-student_information",
-          },
-          {
-            name: "Class S.S.3.A",
-            iconText: "SI",
-            path: "/dashboard/ss3-art-student_information",
-          },
-          {
-            name: "Class S.S.3.C",
-            iconText: "SI",
-            path: "/dashboard/ss3-commercial-student_information",
-          },
-        ],
+  const { data, reFetch } = useFetch(
+    currentSession ? `/class/${currentSession._id}` : null
+  );
 
-        path: "/session/signup",
-      },
+  console.log("cls",data)
 
-      {
-        name: "Student Promotion",
-        iconText: "404",
-        path: "/dashboard/promotion",
-      },
-    ],
-  },
+  
+  useEffect(() => {
+    if (data) {
+      setClasses(data);
+    }
+  }, [data]);
+  
+  console.log("clases",classes)
+  return [
+    {
+      name: "Dashboard ",
+      path: "/dashboard/admin",
+      icon: <span style={{ color: "#ffc107" }}>dashboard</span>,
+    },
+    {
+      name: "Admin",
+      path: "/admin/admin",
+      icon: <span style={{ color: "#ffc107" }}>person</span>,
+    },
+
+    {
+      name: "Student",
+      icon: "people",
+      children: [
+        {
+          name: "Admit Student",
+          iconText: "SI",
+          path: "/dashboard/student_add",
+        },
+        {
+          name: "Student information",
+          iconText: "SU",
+          children: classes.length > 0
+          ? classes.map((item, index) => ({
+              name: `Class ${item.name}`,
+              iconText: "SI",
+              path: `/dashboard/${item.name}-student_information`,
+            }))
+          : [], // Add the console log here for debugging
+          path: "/session/signup",
+        },
+
+        {
+          name: "Student Promotion",
+          iconText: "404",
+          path: "/dashboard/promotion",
+        },
+      ],
+    },
   {
     name: "Affective Psychomotor",
     icon: "person",
@@ -146,73 +96,13 @@ export const navigations = [
   {
     name: "Subject",
     icon: "book",
-    children: [
-      {
-        name: "Class J.S.S 1",
-        iconText: "SI",
-        path: "/dashboard/js1-subject",
-      },
-      {
-        name: "Class J.S.S 2",
-        iconText: "SI",
-        path: "/dashboard/js2-subject",
-      },
-      {
-        name: "Class J.S.S 3",
-        iconText: "SI",
-        path: "/dashboard/js3-subject",
-      },
-      {
-        name: "Class S.S.1.S",
-        iconText: "SI",
-        path: "/dashboard/ss1-science-subject",
-      },
-      {
-        name: "Class S.S.1.A",
-        iconText: "SI",
-        path: "/dashboard/ss1-art-subject",
-      },
-      {
-        name: "Class S.S.1.C",
-        iconText: "SI",
-        path: "/dashboard/ss1-commercial-subject",
-      },
-      {
-        name: "Class S.S.1.T",
-        iconText: "SI",
-        path: "/dashboard/ss1-technology-subject",
-      },
-      {
-        name: "Class S.S.2.S",
-        iconText: "SI",
-        path: "/dashboard/ss2-science-subject",
-      },
-      {
-        name: "Class S.S.2.A",
-        iconText: "SI",
-        path: "/dashboard/ss2-art-subject",
-      },
-      {
-        name: "Class S.S.2.C",
-        iconText: "SI",
-        path: "/dashboard/ss2-commercial-subject",
-      },
-      {
-        name: "Class S.S.3.S",
-        iconText: "SI",
-        path: "/dashboard/ss3-science-subject",
-      },
-      {
-        name: "Class S.S.3.A",
-        iconText: "SI",
-        path: "/dashboard/ss3-art-subject",
-      },
-      {
-        name: "Class S.S.3.C",
-        iconText: "SI",
-        path: "/dashboard/ss3-commercial-subject",
-      },
-    ],
+      children: classes.length > 0
+      ? classes.map((item, index) => ({
+          name: `Class ${item.name}`,
+          iconText: "SI",
+          path: `/dashboard/${item.name}-subject`,
+        }))
+      : [],
   },
   {
     name: "Class",
@@ -265,6 +155,17 @@ export const navigations = [
     ],
   },
   {
+    name: "Past Questions",
+    icon: "assignment",
+    children: [
+      {
+        name: "Add Past Questions",
+        iconText: "SI",
+        path: "/dashboard/addpq",
+      },
+    ],
+  },
+  {
     name: "Accounting",
     icon: "payment",
     children: [
@@ -306,4 +207,5 @@ export const navigations = [
     path: "/dashboard/account",
     icon: <span style={{ color: "#ffc107" }}>edit</span>,
   },
-];
+  ];
+};

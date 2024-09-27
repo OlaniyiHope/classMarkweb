@@ -206,7 +206,7 @@
 
 //       // Handle successful subject creation
 //       toast.success("Subject saved successfully!");
-//       navigate("/dashboard/js1-subject");
+//       navigate("/");
 //     } catch (err) {
 //       // Handle errors
 //       toast.error("An error occurred during login");
@@ -519,8 +519,7 @@ export default function FormDialog13({ updateTableData }) {
       <Dialog
         open={open}
         onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
+        aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title"> Add new subject</DialogTitle>
         <DialogContent>
           <TextField
@@ -540,8 +539,7 @@ export default function FormDialog13({ updateTableData }) {
             variant="outlined"
             value={selectedClass}
             onChange={handleClassChange}
-            fullWidth
-          >
+            fullWidth>
             {classData &&
               classData.map((item) => (
                 <MenuItem key={item._id} value={item.name}>
@@ -557,8 +555,7 @@ export default function FormDialog13({ updateTableData }) {
             variant="outlined"
             value={selectedTeacher}
             onChange={handleTeacherChange}
-            fullWidth
-          >
+            fullWidth>
             {teachersData &&
               teachersData.map(
                 (item) =>

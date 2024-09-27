@@ -137,7 +137,7 @@ import {
   Menu,
 } from "@mui/material";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import useAuth from "../../../../app/hooks/useAuth";
 import AuthContext from "../../../../app/contexts/JWTAuthContext";
 
@@ -150,13 +150,14 @@ import { useNavigate } from "react-router-dom";
 const ManageResult = () => {
   // const { user } = useContext(AuthContext);
   const { user } = useAuth();
-  const { id: examId } = useParams();
+  // const { id: examId } = useParams();
 
   console.log("User ID:", user._id);
   // console.log("Exam ID:", examId);
 
   // const { id } = useParams(); // Access examId from URL
   const [scores, setScores] = useState([]);
+  const [examIds, setExamIds] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { currentSession } = useContext(SessionContext);
@@ -170,6 +171,8 @@ const ManageResult = () => {
   const navigateToViewResult = () => {
     navigate(`/student/dashboard/manage-online-result/${user._id}`);
   };
+
+
 
   useEffect(() => {
     const fetchExamScore = async () => {
@@ -194,6 +197,57 @@ const ManageResult = () => {
 
     fetchExamScore();
   }, [user._id]);
+
+
+
+  const fetchExamId = async (name, session) => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      };
+
+      const body = {
+        name,
+        session, // Make sure to pass the correct session here
+      };
+
+      const response = await axios.post(
+        `${apiUrl}/api/exams/find-exam`,
+        body,
+        { headers }
+      );
+
+      return response.data.examId; // Return the fetched exam ID
+    } catch (error) {
+      console.error("Error fetching exam ID:", error);
+      return null; // Return null if there's an error
+    }
+  };
+
+  useEffect(() => {
+    const fetchAllExamIds = async () => {
+      const newExamIds = {}; // Create an object to store exam IDs
+
+      for (const item of scores) {
+        const examId = await fetchExamId(item.examTitle, currentSession._id); // Fetch the exam ID
+        console.log("examud",examId)
+        if (examId) {
+          newExamIds[item.examTitle] = examId; // Store it in the object
+        }
+      }
+
+      setExamIds(newExamIds); // Update the state with the new exam IDs
+    };
+
+    if (scores.length > 0) {
+      fetchAllExamIds(); // Fetch exam IDs if there are scores
+    }
+  }, [scores]); // Only run when the scores change
+
+  console.log("examids",examIds)
+
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
   };
@@ -211,23 +265,27 @@ const ManageResult = () => {
             <TableCell align="left">Exam Name</TableCell>
             <TableCell align="center">Subject</TableCell>
             <TableCell align="center">Obtained Mark</TableCell>
+            <TableCell align="center">View Correction</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {scores.length > 0 ? (
-            scores.map((item) => (
-              <TableRow key={item.examTitle}>
-                <TableCell align="center">{item.examTitle}</TableCell>
-                <TableCell align="center">{item.subject}</TableCell>
-                <TableCell align="center">{item.score}</TableCell>
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={3}>No scores available</TableCell>
-            </TableRow>
-          )}
-        </TableBody>
+      {scores.length > 0 ? (
+        scores.map((item) => (
+          <TableRow key={item.examTitle}>
+            <TableCell align="center">{item.examTitle}</TableCell>
+            <TableCell align="center">{item.subject}</TableCell>
+            <TableCell align="center">{item.score}</TableCell>
+            <TableCell align="center">
+              <Link to={`/student/dashboard/answers/${examIds[item.examTitle]}`}>Answers</Link>
+            </TableCell>
+          </TableRow>
+        ))
+      ) : (
+        <TableRow>
+          <TableCell colSpan={4}>No scores available</TableCell>
+        </TableRow>
+      )}
+    </TableBody>
       </Table>
 
       <TablePagination

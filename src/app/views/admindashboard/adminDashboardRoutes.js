@@ -73,6 +73,7 @@ import FirstTermRepCont from "./forms/FirstTermRepCont";
 import ThirdTermRepCont from "./forms/ThirdTermRepCont";
 import Syllabus from "./forms/Syllabus";
 import Js1b from "./forms/Js1b";
+import AddPq from "./forms/AddPq";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
 
@@ -81,7 +82,7 @@ const adminDashboardRoutes = [
   { path: "/admin/admin", element: <ViewAdmin />, auth: "admin" },
   { path: "/dashboard/student_add", element: <Form />, auth: "admin" },
   { path: "/dashboard/classes", element: <AddClass />, auth: "admin" },
-  { path: "/dashboard/js1-subject", element: <Sub1 />, auth: "admin" },
+  { path: "/dashboard/:classname-subject", element: <Sub1 />, auth: "admin" },
   { path: "/dashboard/examlist", element: <Examlist />, auth: "admin" },
   { path: "/dashboard/js3-subject", element: <Sub3 />, auth: "admin" },
   { path: "/dashboard/js2-subject", element: <Sub2 />, auth: "admin" },
@@ -131,13 +132,8 @@ const adminDashboardRoutes = [
 
   { path: "/dashboard/manage-mark-view", element: <ManagemarkView /> },
   {
-    path: "/dashboard/jss1A-student_information",
+    path: "/dashboard/:classname-student_information",
     element: <Info />,
-    auth: "admin",
-  },
-  {
-    path: "/dashboard/jss1B-student_information",
-    element: <Js1b />,
     auth: "admin",
   },
   {
@@ -156,66 +152,6 @@ const adminDashboardRoutes = [
     path: "/dashboard/onscreen-marking",
 
     element: <Screen />,
-    auth: "admin",
-  },
-  {
-    path: "/dashboard/jss2-student_information",
-    element: <Info2 />,
-    auth: "admin",
-  },
-  {
-    path: "/dashboard/jss3-student_information",
-    element: <Info3 />,
-    auth: "admin",
-  },
-  {
-    path: "/dashboard/ss1-science-student_information",
-    element: <Info4 />,
-    auth: "admin",
-  },
-  {
-    path: "/dashboard/ss1-art-student_information",
-    element: <Info5 />,
-    auth: "admin",
-  },
-  {
-    path: "/dashboard/ss1-commercial-student_information",
-    element: <Info6 />,
-    auth: "admin",
-  },
-  {
-    path: "/dashboard/ss2-science-student_information",
-    element: <Info7 />,
-    auth: "admin",
-  },
-  {
-    path: "/dashboard/ss2-art-student_information",
-    element: <Info8 />,
-    auth: "admin",
-  },
-  {
-    path: "/dashboard/ss2-commercial-student_information",
-    element: <Info9 />,
-    auth: "admin",
-  },
-  {
-    path: "/dashboard/ss3-science-student_information",
-    element: <Info10 />,
-    auth: "admin",
-  },
-  {
-    path: "/dashboard/ss3-art-student_information",
-    element: <Info11 />,
-    auth: "admin",
-  },
-  {
-    path: "/dashboard/ss3-commercial-student_information",
-    element: <Info12 />,
-    auth: "admin",
-  },
-  {
-    path: "/dashboard/ss1-technology-student_information",
-    element: <Info13 />,
     auth: "admin",
   },
 
@@ -260,6 +196,11 @@ const adminDashboardRoutes = [
   {
     path: "/dashboard/report_card/:id",
     element: <ReportCard />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/addpq",
+    element: <AddPq />,
     auth: "admin",
   },
   // {

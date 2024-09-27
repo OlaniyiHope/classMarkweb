@@ -18,6 +18,8 @@ function AddPq() {
       // Fetch subjects from your API
       const response = await fetch(`${apiUrl}/api/pq/view-past-quest`); // Adjust the API endpoint as needed
       const data = await response.json();
+
+      console.log(data)
       
       // Filter the subjects based on the user's class name
       const filteredSubjects = data.filter(subject => 

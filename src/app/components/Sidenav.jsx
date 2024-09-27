@@ -2,9 +2,11 @@ import { styled } from "@mui/system";
 import { MatxVerticalNav } from "../../app/components";
 import useSettings from "../../app/hooks/useSettings";
 
-import { navigations as adminNavigation } from "../../app/adminnavigation"; // Create an admin navigation file
+// import { navigations as Navigations } from "../../app/adminnavigation"; // Create an admin navigation file
+import { Navigations } from '../../app/adminnavigation'; // Named import
+// Create an admin navigation file
 import { navigations as studentNavigation } from "../../app/studentnavigation"; // Create a student navigation file
-import { navigations as teacherNavigation } from "../../app/teachersnavigation"; // Create a teacher navigation file
+import { getNavigations } from "../../app/teachersnavigation"; // Create a teacher navigation file
 import useAuth from "../../app/hooks/useAuth";
 import { Fragment } from "react";
 import Scrollbar from "react-perfect-scrollbar";
@@ -52,17 +54,17 @@ const Sidenav = ({ children }) => {
 
   switch (user.role) {
     case "admin":
-      navigation = adminNavigation;
+      navigation = Navigations();
       break;
     case "student":
       navigation = studentNavigation;
       break;
     case "teacher":
-      navigation = teacherNavigation;
+      navigation = getNavigations();
       break;
     default:
       // Default navigation for unknown roles
-      navigation = adminNavigation;
+      navigation = Navigations();
   }
 
   return (

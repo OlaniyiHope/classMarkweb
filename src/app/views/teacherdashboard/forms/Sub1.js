@@ -1,5 +1,5 @@
 import {} from "@mui/material";
-import { Fragment, React, useState } from "react";
+import { Fragment, React, useState, useContext } from "react";
 import { Box } from "@mui/system";
 import {
   Card,
@@ -21,6 +21,12 @@ import { Breadcrumb } from "../../../../app/components";
 
 import useFetch from "../../../../hooks/useFetch";
 import FormDialog4 from "../../../../app/views/material-kit/dialog/FormDialog4";
+
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
+import { useParams } from "react-router-dom";
+
+
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -58,9 +64,19 @@ const StyledTable = styled(Table)(() => ({
 const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(1),
 }));
-
+ 
 const Sub1 = () => {
-  const { data, loading, error } = useFetch("/subject/JS1");
+  const { classname } = useParams();
+  const { currentSession } = useContext(SessionContext);
+
+
+  // const { data, fetchedData, loading, error, reFetch } = useFetch(
+  //   `/get-subject/${className}`
+  // );
+
+  const { data, loading, fetchedData, error, reFetch } = useFetch(
+    currentSession ? `/get-subject/${classname}/${currentSession._id}` : null
+  );
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);

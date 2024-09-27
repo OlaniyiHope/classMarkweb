@@ -36,6 +36,9 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
+import { useParams } from "react-router-dom";
+
+
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -77,8 +80,11 @@ const StyledButton = styled(Button)(({ theme }) => ({
 const Info = () => {
   // const { data, loading, error, reFetch } = useFetch("/student/JS1");
   const { currentSession } = useContext(SessionContext);
+  const { classname } = useParams();
+
+
   const { data, loading, error, reFetch } = useFetch(
-    currentSession ? `/student/JS1/${currentSession._id}` : null
+    currentSession ? `/student/${classname}/${currentSession._id}` : null
   );
   console.log("Data:", data);
 

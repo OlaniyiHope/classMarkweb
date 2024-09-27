@@ -44,6 +44,8 @@ const Class = () => {
     currentSession ? `/class/${currentSession._id}` : null
   );
 
+  // console.log("cls",data)
+
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);

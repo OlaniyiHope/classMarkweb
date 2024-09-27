@@ -36,6 +36,11 @@ import useFetch from "../../../../hooks/useFetch";
 import FormDialog4 from "../../../../app/views/material-kit/dialog/FormDialog4";
 import EditSub14 from "./EditSub14";
 import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
+import { useParams } from "react-router-dom";
+
+
+
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -74,16 +79,16 @@ const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(1),
 }));
 
-const Sub1 = () => {
+const Sub1 = () => { 
   const { currentSession } = useContext(SessionContext);
-  const className = "JS1"; // Specify the class name here
+  const { classname } = useParams();
 
   // const { data, fetchedData, loading, error, reFetch } = useFetch(
   //   `/get-subject/${className}`
   // );
 
   const { data, loading, fetchedData, error, reFetch } = useFetch(
-    currentSession ? `/get-subject/${className}/${currentSession._id}` : null
+    currentSession ? `/get-subject/${classname}/${currentSession._id}` : null
   );
   useEffect(() => {
     // Set the fetched data to the state

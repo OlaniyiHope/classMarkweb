@@ -197,49 +197,68 @@ const ExamDetail = () => {
 
   const fetchExamAndQuestions = async () => {
     try {
+      // Fetch the exam details
       const examResponse = await axios.get(`${apiUrl}/api/get-exam-by-id/${id}/${currentSession._id}`);
       const examData = examResponse.data;
       setExam(examData);
-  
-      // Fetch previously submitted answers
+    
+      // Fetch previously submitted answers, if any
       const token = localStorage.getItem("jwtToken");
       const headers = { Authorization: `Bearer ${token}` };
-      const submissionResponse = await axios.get(
-        `${apiUrl}/api/exams/get-submission/${id}/${getLoggedInUserId()}`,
-        { headers }
-      );
+      let userAnswers = {};
   
-      const userAnswers = submissionResponse.data.answers;
-      console.log(userAnswers)
-      setAnswers(userAnswers);  // Populate the form with user's previous answers
+      try {
+        const submissionResponse = await axios.get(
+          `${apiUrl}/api/exams/get-submission/${id}/${getLoggedInUserId()}`,
+          { headers }
+        );
+        userAnswers = submissionResponse.data.answers || {}; // Default to an empty object if no answers
+        console.log("User's previous answers:", userAnswers);
+      } catch (error) {
+        console.warn("No previous answers found for the user or error fetching submission:", error);
+        // Initialize userAnswers to an empty object in case there's no previous submission
+        userAnswers = {};
+      }
   
-      const questionsResponse = await axios.get(
-        `${apiUrl}/api/questions/${id}`,
-        { headers }
-      );
+      // Populate the form with user's previous answers, if any
+      setAnswers(userAnswers);
+  
+      // Fetch the exam questions
+      const questionsResponse = await axios.get(`${apiUrl}/api/questions/${id}`, { headers });
       const questionsData = questionsResponse.data;
-      setQuestions(questionsData);
+      console.log("Fetched questions:", questionsData);
   
       const correctAnswersData = {};
+  
+      // Process correct answers for each question
       questionsData.forEach((question) => {
         if (question.questionType === "true_false") {
           correctAnswersData[question._id] = question.correctAnswer.toLowerCase();
+        } else if (question.questionType === "theory") {
+          correctAnswersData[question._id] = ""; // No correct answer for theory questions
         } else {
-          correctAnswersData[question._id] =
+          correctAnswersData[question._id] = 
             question.options.find((option) => option.isCorrect)?.option.toLowerCase() || "";
         }
       });
   
       setCorrectAnswers(correctAnswersData);
-      setTotalMark(
-        questionsData.reduce((total, question) => total + parseInt(question.mark), 0)
-      );
+      setQuestions(questionsData);
   
+      // Calculate the total marks for the exam
+      const calculatedTotalMark = questionsData.reduce(
+        (total, question) => total + parseInt(question.mark, 10),
+        0
+      );
+      setTotalMark(calculatedTotalMark);
+  
+      // Start the exam timer
       startTimer();
     } catch (error) {
       console.error("Error fetching exam or questions:", error);
     }
   };
+  
   
 
   // useEffect(() => {
