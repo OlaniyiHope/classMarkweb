@@ -37,6 +37,7 @@ import ViewPq from "./forms/ViewPq";
 import SubSubject from "./forms/SubSubject";
 import PastQuestionsList from "./forms/PastQuestionsList";
 import Answers from "./forms/Answers";
+import PracticePq from "./forms/PracticePq";
 
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
@@ -149,6 +150,11 @@ const studentDashboardRoutes = [
   //   element: <AddPq />,
   //   auth: "student",
   // },
+  {
+    path: "/student/dashboard/practice-past-questions",
+    element: <PracticePq />,
+    auth: "student",
+  },
   {
     path: "/student/dashboard/view-past-questions",
     element: <AddPq />,

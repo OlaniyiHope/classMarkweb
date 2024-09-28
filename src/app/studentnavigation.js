@@ -25,11 +25,11 @@ export const navigations = [
     name: "Past Questions",
     icon: "assignment",
     children: [
-      // {
-      //   name: "Add Past Questions",
-      //   iconText: "SI",
-      //   path: "student/dashboard/add-past-questions",
-      // },
+      {
+        name: "Practice Past Questions",
+        iconText: "SI",
+        path: "student/dashboard/practice-past-questions",
+      },
       {
         name: "View Past Questions",
         iconText: "SI",
