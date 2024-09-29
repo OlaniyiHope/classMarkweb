@@ -287,7 +287,7 @@ const EditExam = ({ open, noticeId, onClose, onSave }) => {
           fullWidth
         />
 
-        <label>Posted By</label>
+        <label>Posted By:</label>
         <TextField
           autoFocus
           margin="dense"
