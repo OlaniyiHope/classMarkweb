@@ -379,7 +379,7 @@ const Grade = () => {
   const [editGradeData, setEditGradeData] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   // const fetchData = async () => {
   //   try {

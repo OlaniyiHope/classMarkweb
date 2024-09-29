@@ -41,7 +41,7 @@ const Exam = (term, classname, subject) => {
   const navigate = useNavigate();
   // const [classs, setClasss] = useState();
   // const [subject, setSubject] = useState();
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   {
     /*const handleClick = () => {

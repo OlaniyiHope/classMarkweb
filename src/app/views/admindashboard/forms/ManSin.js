@@ -28,7 +28,7 @@ const ManSin = () => {
 
   const { data, loading, error } = useFetch(`/get-exam/${id}`);
   const [questionType, setQuestionType] = useState("");
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   // State for total marks
   const [totalMark, setTotalMark] = useState(0);

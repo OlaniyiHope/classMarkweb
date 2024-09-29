@@ -52,7 +52,7 @@ export default function FormDialog3({ updateTableData }) {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   function handleClickOpen() {
     setOpen(true);

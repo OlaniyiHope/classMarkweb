@@ -70,7 +70,7 @@ const ThirdTermRep = ({ studentId }) => {
     schoolLogo: "",
   });
 
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
   const [examName, setExamName] = useState("");
 
   // const fetchStudentData = async (studentId) => {

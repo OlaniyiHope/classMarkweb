@@ -40,7 +40,7 @@ const ExamDetail = () => {
   const [timerInterval, setTimerInterval] = useState(null);
 
   const [examFinished, setExamFinished] = useState(false);
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const navigate = useNavigate();
 

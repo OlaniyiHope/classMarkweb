@@ -28,7 +28,7 @@ const ReportCard = () => {
   const [scores, setScores] = useState([]);
 
   const { data, loading, error } = useFetch(`/students/${id}`);
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     if (data && data.studentName && data.classname) {

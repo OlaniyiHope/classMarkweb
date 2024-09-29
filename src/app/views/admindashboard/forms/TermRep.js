@@ -86,7 +86,7 @@ const TermRep = ({ studentId }) => {
     schoolLogo: "",
   });
 
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
   // Inside useEffect after fetching student data
 
   // const fetchStudentData = async (studentId) => {

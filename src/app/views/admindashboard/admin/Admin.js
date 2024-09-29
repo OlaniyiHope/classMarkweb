@@ -455,7 +455,7 @@ const Admin = () => {
           roles.map(async (role) => {
             try {
               const response = await axios.get(
-                `${process.env.REACT_APP_API_URL.trim()}/api/users/${role}/${sessionId}`
+                `${process.env.REACT_APP_API_URL}/api/users/${role}/${sessionId}`
               );
               return { role, count: response.data?.length || 0 };
             } catch (err) {

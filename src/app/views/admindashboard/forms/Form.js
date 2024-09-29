@@ -433,7 +433,7 @@ const Form = () => {
 
   const navigate = useNavigate();
   const [state, setState] = useState({ date: new Date() });
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   // useEffect(() => {
   //   const token = localStorage.getItem("jwtToken");

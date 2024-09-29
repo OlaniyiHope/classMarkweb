@@ -88,7 +88,7 @@ const Parent = () => {
   const [anchorElMap, setAnchorElMap] = useState({});
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
   const [tableData, setTableData] = useState([]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [action, setAction] = useState(null);

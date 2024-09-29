@@ -55,7 +55,7 @@ const Sub10 = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [tableData, setTableData] = useState([]);
   const [anchorElMap, setAnchorElMap] = useState({});
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState(null); // State to hold selected subject data
 

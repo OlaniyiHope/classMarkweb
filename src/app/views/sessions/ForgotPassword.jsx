@@ -147,7 +147,7 @@ const ForgotPassword = () => {
     sessionEnd: "",
     schoolLogo: "",
   });
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
   const handleFormSubmit = async (values) => {
     console.log("handleFormSubmit is triggered");
 

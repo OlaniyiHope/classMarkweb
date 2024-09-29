@@ -98,7 +98,7 @@ const JwtRegister = () => {
   const [classData, setClassData] = useState([]); // To store the list of classes
 
   const [selectedClass, setSelectedClass] = useState(""); // To store the selected class
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     // Assuming you have the JWT token stored in localStorage

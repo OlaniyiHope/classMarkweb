@@ -56,7 +56,7 @@ const Class = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [anchorEl, setAnchorEl] = useState(null);
   const [action, setAction] = useState(null);
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
   };

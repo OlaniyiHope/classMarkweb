@@ -87,7 +87,7 @@ const Analytics = () => {
   };
   const [notices, setNotices] = useState([]);
 
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchNotices = async () => {

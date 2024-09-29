@@ -98,7 +98,7 @@ const Manage = () => {
 
   const [selectedExam, setSelectedExam] = useState(null); // State to hold selected subject data
 
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);

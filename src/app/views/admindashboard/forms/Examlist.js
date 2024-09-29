@@ -86,7 +86,7 @@ const Examlist = () => {
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
   const [anchorElMap, setAnchorElMap] = useState({});
 
   const handleChangePage = (_, newPage) => {

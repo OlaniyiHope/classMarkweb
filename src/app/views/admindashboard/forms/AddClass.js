@@ -37,7 +37,7 @@ const initialState = {
   name: "", // Initial value for the class name
   teacher: "", // Initial value for the class teacher's name
 };
-const apiUrl = process.env.REACT_APP_API_URL.trim();
+const apiUrl = process.env.REACT_APP_API_URL;
 const AddClass = () => {
   const navigate = useNavigate();
 

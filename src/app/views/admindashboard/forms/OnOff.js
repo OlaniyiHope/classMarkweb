@@ -65,7 +65,7 @@ const OnOff = () => {
   const [questionDetails, setQuestionDetails] = useState([]);
 
   const [theoryAnswer, setTheoryAnswer] = useState(null);
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
   // const handleStudentChange = (event) => {
   //   const selectedStudent = event.target.value;
   //   setSelectedName(selectedStudent);

@@ -189,7 +189,7 @@ const EditExam = ({ open, onClose, examId, onSave }) => {
     fromTime: "",
     toTime: "",
   });
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
   useEffect(() => {
     const fetchExamById = async () => {
       try {

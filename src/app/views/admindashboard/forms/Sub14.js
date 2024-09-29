@@ -91,7 +91,7 @@ const Sub14 = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState(null); // State to hold selected subject data
 
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);

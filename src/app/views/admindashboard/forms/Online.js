@@ -55,7 +55,7 @@ const Online = () => {
   const [percent, setPercent] = useState(0); // Add state for percent
   const [instruction, setInstruction] = useState(""); // Add state for instruction
   // ...
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const currentDate = new Date();
   const formattedDate = currentDate.toJSON().slice(0, 10); // Format the date (yyyy-MM-dd)

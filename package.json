@@ -1,5 +1,4 @@
 {
-  "proxy": "https://edupro.com.ng",
   "name": "matx-react",
   "version": "3.0.0",
   "private": true,
@@ -73,7 +72,14 @@
     "ghp": "react-scripts build && gh-pages -d build"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "plugins": [
+      "react-hooks"
+    ],
+    "rules": {
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn"
+    }
   },
   "browserslist": [
     ">0.2%",

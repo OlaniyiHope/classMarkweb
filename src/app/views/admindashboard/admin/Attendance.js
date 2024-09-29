@@ -57,7 +57,7 @@ const Attendance = () => {
   const [selectedStudentId, setSelectedStudentId] = useState("");
 
   const [showMarkManagement, setShowMarkManagement] = useState(false);
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const fetchStudentData = async (examId) => {
     try {

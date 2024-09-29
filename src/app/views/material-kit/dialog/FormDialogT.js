@@ -186,7 +186,7 @@ export default function FormDialogT({ updateTableData }) {
   const [selectedTeacher, setSelectedTeacher] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
   const navigate = useNavigate();
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
 

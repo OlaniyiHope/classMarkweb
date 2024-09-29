@@ -29,7 +29,7 @@ export default function NoticeBoard({ updateTableData }) {
     posted_by: "",
   });
 
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleChange = (event) => {
     const { name, value } = event.target;

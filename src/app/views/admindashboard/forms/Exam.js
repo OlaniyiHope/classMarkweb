@@ -58,7 +58,7 @@ const Exam = () => {
 
   const [subjectIdLookup, setSubjectIdLookup] = useState({});
   const [showMarkManagement, setShowMarkManagement] = useState(false);
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   // const gradeDefinitions = [
   //   { markfrom: 80, markupto: 100, comment: "Excellent" },

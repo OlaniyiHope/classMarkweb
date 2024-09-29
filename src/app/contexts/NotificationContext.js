@@ -150,7 +150,7 @@ const NotificationContext = createContext({
 
 export const NotificationProvider = ({ settings, children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
   const deleteNotification = async (notificationID) => {
     try {
       await axios.post("/api/notification/delete", { id: notificationID });

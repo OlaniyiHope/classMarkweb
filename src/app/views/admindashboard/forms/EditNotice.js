@@ -198,7 +198,7 @@ const EditNotice = ({ open, noticeId, onClose, onSave }) => {
     posted_by: "",
   });
 
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchNoticeById = async () => {

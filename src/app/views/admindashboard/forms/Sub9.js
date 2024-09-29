@@ -57,7 +57,7 @@ const Sub9 = () => {
 
   const [tableData, setTableData] = useState([]);
 
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState(null); // State to hold selected subject data
 
