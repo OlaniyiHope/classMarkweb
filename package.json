@@ -1,4 +1,5 @@
 {
+  "proxy": "https://edupro.com.ng",
   "name": "matx-react",
   "version": "3.0.0",
   "private": true,
@@ -71,15 +72,14 @@
     "eject": "react-scripts eject",
     "ghp": "react-scripts build && gh-pages -d build"
   },
+  "extends": [
+    "react-hooks"
+  ],
+  "plugins": [
+    "react-hooks"
+  ],
   "eslintConfig": {
-    "extends": "react-app",
-    "plugins": [
-      "react-hooks"
-    ],
-    "rules": {
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn"
-    }
+    "extends": "react-app"
   },
   "browserslist": [
     ">0.2%",
@@ -91,6 +91,7 @@
     "@babel/runtime": "^7.10.5",
     "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "react-app-rewired": "^2.1.8"
   }
 }
