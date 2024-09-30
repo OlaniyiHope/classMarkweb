@@ -9,7 +9,7 @@ export const SessionProvider = ({ children }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/sessions")
+      .get("https://eduproapi.vercel.app/api/sessions")
       .then((response) => {
         if (Array.isArray(response.data)) {
           setSessions(response.data);
