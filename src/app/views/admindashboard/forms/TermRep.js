@@ -25,6 +25,7 @@ import useAuth from "../../../../app/hooks/useAuth";
 import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 import "./report.css";
+import "./print.css";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -53,15 +54,32 @@ const TermRep = ({ studentId }) => {
     const contentToPrint = componentRef.current.cloneNode(true);
     const elementsToHide = contentToPrint.querySelectorAll(".dont-print");
     elementsToHide.forEach((element) => {
-      element.style.display = "none";
+        element.style.display = "none";
     });
 
     // Append content to the new window/tab
     printWindow.document.body.appendChild(contentToPrint);
 
+    // Copy styles from the current document to the new window/tab
+    const styleSheets = [...document.styleSheets].map((styleSheet) => {
+        try {
+            return [...styleSheet.cssRules]
+                .map((rule) => rule.cssText)
+                .join("\n");
+        } catch (e) {
+            console.error("Error accessing stylesheet:", e);
+            return "";
+        }
+    }).join("\n");
+
+    const styleElement = printWindow.document.createElement("style");
+    styleElement.textContent = styleSheets;
+    printWindow.document.head.appendChild(styleElement);
+
     // Trigger print dialog
     printWindow.print();
-  };
+};
+
 
   const [studentData, setStudentData] = useState(null);
   const [psyData, setPsyData] = useState(null);
@@ -77,6 +95,8 @@ const TermRep = ({ studentId }) => {
 
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [teacherName, setTeacherName] = useState("")
+
   const [error, setError] = useState(null);
   const [schoolSettings, setSchoolSettings] = useState({
     principalName: "",
@@ -95,7 +115,7 @@ const TermRep = ({ studentId }) => {
     schoolLogo: "",
   });
 
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
   // Inside useEffect after fetching student data
 
   // const fetchStudentData = async (studentId) => {
@@ -383,6 +403,58 @@ const TermRep = ({ studentId }) => {
 
     console.log("Student ID in useEffect:", studentId);
   }, [studentId, currentSession]);
+
+
+
+  const fetchclassteacher = async (studentId) => {
+    try {
+      const token = localStorage.getItem("jwtToken");
+      if (!token) {
+        throw new Error("JWT token not found");
+      }
+  
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+  
+      const response = await axios.get(
+        `${apiUrl}/api/class/${currentSession._id}`,
+        { headers }
+      );
+  
+      // Debug: Log the entire API response
+      console.log("API Response for class:", response.data);
+  
+      // Assuming 'data' holds the student data
+      const studentClassName = data[0]?.classname;  // Replace with correct field
+      if (!studentClassName) {
+        throw new Error("Student's class not found");
+      }
+  
+      // Find the class that matches the student's class name
+      const matchedClass = response.data.find(
+        (classItem) => classItem.name === studentClassName
+      );
+  
+      if (matchedClass) {
+        console.log("Class Teacher:", matchedClass.teacher);
+        setTeacherName(matchedClass.teacher)
+        return matchedClass.teacher;
+      } else {
+        console.log("No class found matching the student's class.");
+      }
+  
+    } catch (error) {
+      console.error("Error fetching class teacher:", error);
+      // throw new Error("Failed to fetch class teacher");
+    }
+  };
+  
+  fetchclassteacher();
+
+
+
+
 
   const fetchStudentData = async (studentId) => {
     try {
@@ -1093,49 +1165,25 @@ const TermRep = ({ studentId }) => {
   return (
     <Fragment>
       <ContentBox className="analytics">
-        <Box width="100%" overflow="auto">
-          <body className="print-button-container">
-            <button onClick={handlePrint}> Print this out!</button>
-            <button onClick={handlePrintInNewTab}>Print in New Tab</button>
-            <div class="container" ref={componentRef}>
-              <div
-                class="header"
-                style={{
-                  textAlign: "center",
-                  padding: "20px",
-                  backgroundColor: "#f0f0f0",
-                }}>
-                <div class="logo">
-                  <img
-                    src={`https://edupros.s3.amazonaws.com/${accountSettings.schoolLogo}`}
-                    style={{
-                      width: "200px",
-                      height: "180px",
-                    }}
-                  />
-                </div>
-                <div class="bd_title">
-                  <h1
-                    style={{
-                      fontSize: "25px",
-                      fontWeight: "800",
-                      textTransform: "uppercase",
-                      margin: "10px 0",
-                    }}>
-                    {accountSettings.name || ""}
-                  </h1>
-                  <h4 style={{ fontSize: "18px", margin: "5px 0" }}>
-                    {accountSettings.address || ""}
-                  </h4>
-                  <p style={{ color: " #042954", margin: " 5px 0" }}>
-                    Tel: {accountSettings.phone || ""},{" "}
-                    {accountSettings.phonetwo || ""}, Email:
-                    {accountSettings.email || ""}
-                  </p>
-                  <h3 style={{ color: "#042954", margin: "10px 0" }}>
-                    {data[0]?.classname || ""} Second Term Report Card
-                  </h3>
-                </div>
+      <Box width="100%" overflow="auto">
+          <button onClick={handlePrint}>Print this out!</button>
+          <div className="comp" ref={componentRef}>
+            <div
+              className="header"
+              style={{
+                textAlign: "center",
+                padding: "20px",
+                backgroundColor: "#f0f0f0",
+              }}>
+              <div className="logo">
+                <img
+                  src={`https://edupros.s3.amazonaws.com/${accountSettings.schoolLogo}`}
+                  style={{
+                    width: "200px",
+                    height: "180px",
+                  }}
+                  alt="School Logo"
+                />
               </div>
 
               <div
@@ -1186,8 +1234,9 @@ const TermRep = ({ studentId }) => {
                         marginLeft: "30px",
                         textAlign: "center",
                       }}>
-                      {accountSettings.sessionStart}-
-                      {accountSettings.sessionEnd}
+                   {currentSession?.name
+                          ? `${currentSession.name}`
+                          : "No active session"}
                     </p>
                   </div>
                   <div style={{ marginBottom: "20px" }}>
@@ -1334,6 +1383,8 @@ const TermRep = ({ studentId }) => {
                   </div>
                 </div>
               </div>
+
+              <div className="tables-container">
               <table
                 className="table"
                 id="customers"
@@ -1396,12 +1447,11 @@ const TermRep = ({ studentId }) => {
 </tbody>
               </table>
 
-              <td style={{ verticalAlign: "top", width: "100%" }}>
                 {/* Second Sub-Table for Affective and Psychomotor Report */}
                 <table
                   className="table second-sub-table"
                   id="customersreport"
-                  style={{ width: "100%" }}>
+                  style={{ width: "150%" }}>
                   <colgroup>
                     <col style={{ width: "33.33%" }} />
                     <col style={{ width: "33.33%" }} />
@@ -1463,7 +1513,8 @@ const TermRep = ({ studentId }) => {
                     ))}
                   </tbody>
                 </table>
-              </td>
+
+              </div>
 
               <div style={{ color: "#042954", fontSize: "16px" }}>
                 KEY TO GRADES A (DISTINCTION)=70% &amp; ABOVE , C
@@ -1535,7 +1586,362 @@ const TermRep = ({ studentId }) => {
                 <div class="clearfix"></div>
               </div>
             </div>
-          </body>
+
+            <div
+              className="bd_detailssec"
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}>
+              <div style={{ flex: "0 0 auto" }}>
+                <div className="bd_photo">
+                  <img
+                    className="profile-photo"
+                    alt="profile-photo"
+                    src="https://hlhs.portalreport.org/uploads/user.jpg"
+                    style={{ width: "100px", height: "100px" }}
+                  />
+                </div>
+              </div>
+              <div
+                style={{ flex: "1", padding: "0 20px", textAlign: "center" }}>
+                <div style={{ marginBottom: "20px" }}>
+                  <span>Student Name:</span>
+                  {""}
+                  <span
+                    style={{
+                      border: 0,
+                      outline: 0,
+                      background: "transparent",
+                      borderBottom: "1px solid black",
+                      width: "50%",
+                      marginLeft: "30px",
+                      textAlign: "center",
+                    }}>
+                    {data && Array.isArray(data)
+                      ? data[0]?.studentName || "Name not available"
+                      : "Data format unexpected"}
+                  </span>
+                </div>
+                <div style={{ marginBottom: "20px" }}>
+                  <span>Session:</span>{" "}
+                  <p
+                    style={{
+                      border: 0,
+                      outline: 0,
+                      background: "transparent",
+                      borderBottom: "1px solid black",
+                      width: "50%",
+                      marginLeft: "30px",
+                      textAlign: "center",
+                    }}>
+                    {currentSession?.name
+                          ? `${currentSession.name}`
+                          : "No active session"}
+                  </p>
+                </div>
+                <div style={{ marginBottom: "20px" }}>
+                  <span>Class Teacher:</span>{" "}
+                  <span
+                    style={{
+                      border: 0,
+                      outline: 0,
+                      background: "transparent",
+                      borderBottom: "1px solid black",
+                      width: "50%",
+                      marginLeft: "30px",
+                      textAlign: "center",
+                    }}>
+                    {teacherName}
+                  </span>
+                </div>
+              </div>
+              <div
+                style={{ flex: "1", padding: "0 20px", textAlign: "center" }}>
+                <p style={{ color: "#042954" }}>
+                  <span>Student Id No:</span>{" "}
+                  <input
+                    type="text"
+                    style={{
+                      border: 0,
+                      outline: 0,
+                      background: "transparent",
+                      borderBottom: "1px solid black",
+                      width: "50%",
+                      marginLeft: "30px",
+                      textAlign: "center",
+                    }}
+                    value={data[0]?.AdmNo || "ID not available"}
+                    readOnly
+                  />
+                </p>
+                <p style={{ color: "#042954" }}>
+                  <span>Total Marks:</span>{" "}
+                  <input
+                    type="text"
+                    style={{
+                      border: 0,
+                      outline: 0,
+                      background: "transparent",
+                      borderBottom: "1px solid black",
+                      width: "50%",
+                      marginLeft: "30px",
+                      textAlign: "center",
+                    }}
+                    value={totalMarks || "0"}
+                    readOnly
+                  />
+                </p>
+              </div>
+              <div
+                style={{ flex: "1", padding: "0 20px", textAlign: "center" }}>
+                <p style={{ color: "#042954" }}>
+                  <span>Marks Obtained:</span>{" "}
+                  <input
+                    type="text"
+                    style={{
+                      border: 0,
+                      outline: 0,
+                      background: "transparent",
+                      borderBottom: "1px solid black",
+                      width: "50%",
+                      marginLeft: "30px",
+                      textAlign: "center",
+                    }}
+                    value={totalMarksObtained || "0"}
+                    readOnly
+                  />
+                </p>
+                <p style={{ color: "#042954" }}>
+                  <span>Average Marks:</span>{" "}
+                  <input
+                    type="text"
+                    style={{
+                      border: 0,
+                      outline: 0,
+                      background: "transparent",
+                      borderBottom: "1px solid black",
+                      width: "50%",
+                      marginLeft: "30px",
+                      textAlign: "center",
+                    }}
+                    value={averageMarks || "0"}
+                    readOnly
+                  />
+                </p>
+                <p style={{ color: "#042954" }}>
+                  <span>Average Grade:</span>{" "}
+                  <input
+                    type="text"
+                    style={{
+                      border: 0,
+                      outline: 0,
+                      background: "transparent",
+                      borderBottom: "1px solid black",
+                      width: "50%",
+                      marginLeft: "30px",
+                      textAlign: "center",
+                    }}
+                    value={calculateAverageGrade() || "N/A"}
+                    readOnly
+                  />
+                </p>
+              </div>
+            </div>
+
+            <div className="tables-container flex">
+            {/* First Table */}
+            <table className="table" id="customers" style={{ width: "100%" }}>
+              <thead>
+                <tr>
+                  <th>S/No</th>
+                  <th>Subject</th>
+                  <th>Test</th>
+                  <th>Exam</th>
+                  <th>Obtained Marks</th>
+                  <th>Position</th>
+                  <th>Grade</th>
+                  <th>Remark</th>
+                </tr>
+              </thead>
+              <tbody style={{ width: "100% !important" }}>
+                {/* Check if there's data and map through the scores */}
+                {studentData && studentData.length > 0 ? (
+                  studentData.map((score, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td> {/* Serial number */}
+                      <td>{score?.subjectName || "-"}</td> {/* Subject Name */}
+                      <td>
+                        {score?.testscore !== undefined ? score.testscore : "-"}
+                      </td>{" "}
+                      {/* Test Score */}
+                      <td>
+                        {score?.examscore !== undefined ? score.examscore : "-"}
+                      </td>{" "}
+                      {/* Exam Score */}
+                      <td>
+                        {score?.marksObtained !== undefined
+                          ? score.marksObtained
+                          : "-"}
+                      </td>{" "}
+                      {/* Obtained Marks */}
+                      <td>
+                        {score?.position !== undefined ? score.position : "-"}
+                      </td>{" "}
+                      {/* Position */}
+                      <td>{calculateGrade(score?.comment) || "-"}</td>{" "}
+                      {/* Grade */}
+                      <td>{score?.comment || "-"}</td> {/* Comment/Remark */}
+                    </tr>
+                  ))
+                ) : (
+                  // Fallback for when no data is available
+                  <tr>
+                    <td colSpan="8">No data available for this term.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+            {/* Second Table */}
+            <table
+              className="table second-sub-table"
+              id="customersreport"
+              style={{ width: "100%" }}>
+              <thead>
+                <tr>
+                  <th
+                    colSpan="3"
+                    style={{ textAlign: "center", fontSize: "18px" }}>
+                    AFFECTIVE AND PSYCHOMOTOR REPORT
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th></th>
+                  <th>Work Habits</th>
+                  <th>RATINGS</th>
+                </tr>
+                {psyData?.scores?.length > 0 ? (
+                  psyData.scores.map((score, index) => (
+                    <React.Fragment key={index}>
+                      <tr>
+                        <td>{index + 1}</td>
+                        <td>Following Instruction</td>
+                        <td>{score?.instruction || "0"}</td>
+                      </tr>
+                      <tr>
+                        <td>{index + 2}</td>
+                        <td>Working Independently</td>
+                        <td>{score?.independently || "0"}</td>
+                      </tr>
+                      <tr>
+                        <th></th>
+                        <th>Behaviour</th>
+                        <th>RATINGS</th>
+                      </tr>
+                      <tr>
+                        <td>1</td>
+                        <td>Punctuality</td>
+                        <td>{score?.punctuality || "0"}</td>
+                      </tr>
+                      <tr>
+                        <th></th>
+                        <th>Communication</th>
+                        <th>RATINGS</th>
+                      </tr>
+                      <tr>
+                        <td>1</td>
+                        <td>Talking</td>
+                        <td>{score?.talking || "0"}</td>
+                      </tr>
+                      <tr>
+                        <td>2</td>
+                        <td>Eye Contact</td>
+                        <td>{score?.eyecontact || "0"}</td>
+                      </tr>
+                    </React.Fragment>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3">No psychomotor data available</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+            </div>
+
+
+            <div style={{ color: "#042954", fontSize: "16px" }}>
+              KEY TO GRADES A (DISTINCTION)=70% &amp; ABOVE , C (CREDIT)=55-69%
+              , P(PASS)=40-54% , F(FAIL)=BELOW 40%
+            </div>
+            <div className="remarksbox" style={{ padding: "10px 0" }}>
+              <table className="table">
+                <tbody>
+                  <tr>
+                    <th>CLASS TEACHER'S REMARK</th>
+                    {psyData?.scores?.map((score, index) => (
+                      <td key={index} colSpan="2">
+                        {score.remarks || "No remarks"}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <th>PRINCIPAL'S REMARK</th>
+                    {psyData?.scores?.map((score, index) => (
+                      <td key={index} colSpan="2">
+                        {score.premarks || "No principal remarks"}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <th>PRINCIPAL'S NAME</th>
+                    <td>{schoolSettings.principalName || "N/A"}</td>
+                    <td style={{ textAlign: "right" }}>
+                      <img
+                        src={`${apiUrl}/uploads/${schoolSettings.signature}`}
+                        width="200"
+                        alt="Principal Signature"
+                      />
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th>SCHOOL RESUMES</th>
+                    <td>
+                      {schoolSettings.resumptionDate
+                        ? new Date(
+                            schoolSettings.resumptionDate
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div
+              className="bd_key"
+              style={{ color: "#042954", fontSize: "16px" }}>
+              KEY TO RATINGS : 5 = Excellent , 4 = Good , 3 = Fair , 2 = Poor ,
+              1 = Very Poor
+            </div>
+
+            <div className="bdftrtop">
+              <div className="float-left text-right bdftrtopl">
+                <span style={{ color: "#042954" }}>Seal of the Register</span>
+              </div>
+              <div className="float-right text-left bdftrtopr">
+                <span style={{ color: "#042954" }}>Date</span>
+              </div>
+              <div className="clearfix"></div>
+            </div>
+          </div>
         </Box>
       </ContentBox>
     </Fragment>
