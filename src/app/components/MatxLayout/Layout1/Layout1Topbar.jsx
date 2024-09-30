@@ -133,7 +133,7 @@ const Layout1Topbar = () => {
   // }, []);
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/sessions")
+      .get("https://eduproapi.vercel.app/api/sessions")
       .then((response) => {
         if (Array.isArray(response.data)) {
           const activeSession = response.data.find(
@@ -181,7 +181,9 @@ const Layout1Topbar = () => {
 
       // Update session to be active on the backend
       axios
-        .patch(`http://localhost:5000/api/sessions/${sessionId}/activate`)
+        .patch(
+          `https://eduproapi.vercel.app/api/sessions/${sessionId}/activate`
+        )
         .then((response) => {
           console.log("Session activated:", response.data);
 
