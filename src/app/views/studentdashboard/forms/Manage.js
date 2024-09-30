@@ -436,21 +436,17 @@ const Manage = () => {
     endTime.setHours(parseInt(toTimeParts[0], 10));
     endTime.setMinutes(parseInt(toTimeParts[1], 10));
 
-      const examTaken = item.submittedAnswers.some(
-        (answer) => answer.userId === user._id // Compare logged-in user's ID with submittedAnswers userId
-      );
-  
-      if (examTaken) {
-        alert("You have already taken this exam.");
-        return; // Prevent the menu from opening
-      }
+    // Check if the student has submitted the exam
+    const examTaken = item.submittedAnswers.some(
+      (answer) => answer.userId === user._id // Compare logged-in user's ID with submittedAnswers userId
+    );
 
-      // Check if it's time for the exam
-      if (userLocalTime >= startTime && userLocalTime <= endTime) {
-        setAnchorElMap((prev) => ({
-          ...prev,
-          [item._id]: event.currentTarget,
-        }));
+    // If the exam has been submitted
+    if (examTaken) {
+      // Check if the exam time has elapsed
+      if (userLocalTime > endTime) {
+        alert("You have already taken this exam, and the exam time has ended.");
+        return; // Prevent further action if the time has elapsed
       } else {
         alert("You have already taken this exam, but the exam time hasn't finished. You can continue.");
       }

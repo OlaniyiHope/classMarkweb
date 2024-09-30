@@ -88,6 +88,9 @@ const Analytics = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const { currentSession } = useContext(SessionContext);
 
+  const { logout, user } = useAuth();
+
+
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
@@ -127,44 +130,21 @@ const Analytics = () => {
   const [studentCount, setStudentCount] = useState(0);
 // get all users in a class 
 
-  useEffect(() => {
-    const fetchUserCounts = async () => {
-      // Reset userCounts to zero before fetching new data
-      setUserCounts({
-        students: 0,
-        teachers: 0,
-        parents: 0,
-        admins: 0,
-      });
 
-      try {
-        const roles = ["student", "teacher", "parent", "admin"];
-        const sessionId = currentSession._id; // Assuming currentSession is available from context
 
-        const counts = await Promise.all(
-          roles.map(async (role) => {
-            try {
-              const response = await axios.get(
-                `${process.env.REACT_APP_API_URL.trim()}/api/users/${role}/${sessionId}`
-              );
-              return { role, count: response.data?.length || 0 };
-            } catch (err) {
-              console.error(`Error fetching ${role} count:`, err);
-              return { role, count: 0 }; // Default to 0 if there's an error
-            }
-          })
-        );
+useEffect(() => {
+  // Fetch data from the API with Authorization token
+  const fetchStudents = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken"); // Retrieve the JWT token from localStorage
+      const headers = {
+        Authorization: `Bearer ${token}`, // Set the Authorization header
+      };
 
-        const newCounts = counts.reduce((acc, { role, count }) => {
-          acc[role + "s"] = count; // For example, role "student" becomes "students"
-          return acc;
-        }, {});
-
-        setUserCounts(newCounts);
-      } catch (error) {
-        console.error("Error fetching user counts:", error);
-        if (error.response) {
-          console.error("Server responded with:", error.response.data);
+      const response = await fetch(
+        `${apiUrl}/api/get-all-students/${user.classname}/${currentSession._id}`,
+        {
+          headers, // Pass the headers with the request
         }
       );
 
@@ -189,10 +169,6 @@ const Analytics = () => {
   }
 }, [currentSession, user.classname]); // Fetch data again if currentSession, user.classname, or apiUrl changes
 
-    if (currentSession) {
-      fetchUserCounts();
-    }
-  }, [currentSession]);
   return (
     <div>
       <h2 style={{ paddingTop: "15px", paddingLeft: "10px" }}>
