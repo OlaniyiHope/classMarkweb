@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, useRef } from "react";
+import React, { Fragment, useContext, useEffect, useState, useRef } from "react";
 import {
   Box,
   Button,
@@ -17,6 +17,9 @@ import useFetch from "../../../../hooks/useFetch";
 import axios from "axios";
 import useAuth from "../../../../app/hooks/useAuth";
 import "./report.css";
+
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -40,12 +43,30 @@ const ThirdTermRep = ({ studentId }) => {
 
   const [studentData, setStudentData] = useState(null);
   const [psyData, setPsyData] = useState(null);
+  const { currentSession } = useContext(SessionContext);
 
   const { id } = useParams();
 
   // const { data } = useFetch(`/students/${id}`);
+  console.log("std",studentId)
 
-  const { data } = useFetch(`/students/${studentId}`);
+  const { data } = useFetch(`/students/${studentId}/${currentSession._id}`);
+
+
+  useEffect(() => {
+    if (data) {
+      setStudentData(data);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+  }, [data]);
+
+
+  // if (!data || data.length === 0) {
+  //   alert("err")
+  // }
+
   console.log("lets check data", data);
 
   // const { data,  } = useFetch(`/students/${user._id}`); // Fetch data using the correct URL
@@ -467,7 +488,7 @@ const ThirdTermRep = ({ studentId }) => {
   //     setLoading(false);
   //   }
   // };
-
+ 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -490,7 +511,7 @@ const ThirdTermRep = ({ studentId }) => {
     fetchData();
 
     console.log("Student ID in useEffect:", studentId);
-  }, [studentId]);
+  }, [studentId, currentSession]);
 
   const fetchStudentData = async (studentId) => {
     try {
@@ -504,7 +525,7 @@ const ThirdTermRep = ({ studentId }) => {
       };
 
       const response = await axios.get(
-        `${apiUrl}/api/get-scores-by-student/${studentId}`,
+        `${apiUrl}/api/get-scores-by-student/${studentId}/${currentSession._id}`,
         { headers }
       );
 
@@ -568,7 +589,7 @@ const ThirdTermRep = ({ studentId }) => {
       }
     } catch (error) {
       console.error("Error fetching student data:", error);
-      throw new Error("Failed to fetch student data");
+      // throw new Error("Failed to fetch student data");
     }
   };
 
@@ -657,7 +678,7 @@ const ThirdTermRep = ({ studentId }) => {
       };
 
       const response = await axios.get(
-        `${apiUrl}/api/get-psy-by-student/${studentId}`,
+        `${apiUrl}/api/get-psy-by-student/${studentId}/${currentSession._id}`,
         { headers }
       );
 
@@ -739,7 +760,7 @@ const ThirdTermRep = ({ studentId }) => {
     fetchData();
 
     console.log("Student ID in useEffect:", studentId);
-  }, [studentId]);
+  }, [studentId, currentSession]);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -748,6 +769,11 @@ const ThirdTermRep = ({ studentId }) => {
   if (error) {
     return <p>{error}</p>;
   }
+
+  if (error || !data || data.length === 0) {
+    return <div>{error || "No data available."}</div>;
+  }
+
   let totalMarksObtained = 0;
 
   if (studentData && Array.isArray(studentData)) {
@@ -759,7 +785,7 @@ const ThirdTermRep = ({ studentId }) => {
 
   console.log("Total Marks Obtained:", totalMarksObtained); // Log totalMarksObtained
 
-  // const totalMarks = studentData?.scores
+  // const totalMarks = studentData[0]?.scores
   //   ? studentData.scores.length * 100 // Assuming 100 marks per subject
   //   : 0;
   const totalMarks = studentData ? studentData.length * 100 : 0;
@@ -768,6 +794,9 @@ const ThirdTermRep = ({ studentId }) => {
     : 0;
 
   const calculateGrade = (comment) => {
+
+    if (!comment) return "-"; // Return a default value if comment is undefined or null
+  
     // Use your existing gradeDefinitions to find a grade with a similar comment
     const matchingGrade = gradeDefinitions.find((grade) =>
       comment.toLowerCase().includes(grade.comment.toLowerCase())
@@ -888,7 +917,7 @@ const ThirdTermRep = ({ studentId }) => {
                     {accountSettings.email || ""}
                   </p>
                   <h3 style={{ color: "#042954", margin: "10px 0" }}>
-                    {data?.classname || ""} Second Term Report Card
+                    {data[0]?.classname || ""} Third Term Report Card
                   </h3>
                 </div>
               </div>
@@ -928,7 +957,7 @@ const ThirdTermRep = ({ studentId }) => {
                         textAlign: "center",
                       }}
                     >
-                      {data?.studentName || ""}
+                      {data[0]?.studentName || ""}
                     </span>
                   </div>
                   <div style={{ marginBottom: "20px" }}>
@@ -984,7 +1013,7 @@ const ThirdTermRep = ({ studentId }) => {
                           marginLeft: "30px",
                           textAlign: "center",
                         }}
-                        value={data?.AdmNo || ""}
+                        value={data[0]?.AdmNo || ""}
                       />
                     </p>
                     {/*<p style={{ color: "#042954" }}>
@@ -1000,7 +1029,7 @@ const ThirdTermRep = ({ studentId }) => {
                           marginLeft: "30px",
                           textAlign: "center",
                         }}
-                        value={studentData?.position || ""}
+                        value={studentData[0]?.position || ""}
                       />
                     </p>
                     <p style={{ color: "#042954" }}>
@@ -1016,7 +1045,7 @@ const ThirdTermRep = ({ studentId }) => {
                           marginLeft: "30px",
                           textAlign: "center",
                         }}
-                        value={studentData?.noinclass || ""}
+                        value={studentData[0]?.noinclass || ""}
                       />
                       </p>*/}
                     <p style={{ color: "#042954" }}>
@@ -1113,27 +1142,33 @@ const ThirdTermRep = ({ studentId }) => {
                     <th scope="col">Test</th>
                     <th scope="col">Exam</th>
                     <th scope="col">Obtained Marks</th>
-
+                    <th scope="col">Position</th>
                     <th scope="col">Grade</th>
                     <th scope="col">Remark</th>
                   </tr>
                 </thead>
                 <tbody style={{ width: "100% !important" }}>
-                  {studentData &&
-                    studentData?.map((score, index) => {
-                      return (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{score?.subjectName || "-"}</td>{" "}
-                          <td>{score?.testscore || "-"}</td>{" "}
-                          <td>{score?.examscore || "-"}</td>{" "}
-                          <td>{score?.marksObtained || "-"}</td>
-                          <td>{calculateGrade(score?.comment) || "-"}</td>
-                          <td>{score?.comment || "-"}</td>
-                        </tr>
-                      );
-                    })}
-                </tbody>
+  {/* Check if there's data and map through the scores */}
+  {studentData && studentData.length > 0 ? (
+    studentData.map((score, index) => (
+      <tr key={index}>
+        <td>{index + 1}</td> {/* Serial number */}
+        <td>{score?.subjectName || "-"}</td> {/* Subject Name */}
+        <td>{score?.testscore !== undefined ? score.testscore : "-"}</td> {/* Test Score */}
+        <td>{score?.examscore !== undefined ? score.examscore : "-"}</td> {/* Exam Score */}
+        <td>{score?.marksObtained !== undefined ? score.marksObtained : "-"}</td> {/* Obtained Marks */}
+        <td>{score?.position !== undefined ? score.position : "-"}</td> {/* Position */}
+        <td>{calculateGrade(score?.comment) || "-"}</td> {/* Grade */}
+        <td>{score?.comment || "-"}</td> {/* Comment/Remark */}
+      </tr>
+    ))
+  ) : (
+    // Fallback for when no data is available
+    <tr>
+      <td colSpan="8">No data available for this term.</td>
+    </tr>
+  )}
+</tbody>
               </table>
 
               <td style={{ verticalAlign: "top", width: "100%" }}>

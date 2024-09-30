@@ -72,12 +72,6 @@
     "eject": "react-scripts eject",
     "ghp": "react-scripts build && gh-pages -d build"
   },
-  "extends": [
-    "react-hooks"
-  ],
-  "plugins": [
-    "react-hooks"
-  ],
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -91,7 +85,7 @@
     "@babel/runtime": "^7.10.5",
     "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
-    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-jsx-a11y": "^6.10.0",
     "react-app-rewired": "^2.1.8"
   }
 }

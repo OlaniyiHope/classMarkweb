@@ -19,12 +19,17 @@ import {
 } from "@mui/material";
 import useFetch from "../../../../hooks/useFetch";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "./form.css";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { ToastContainer, toast } from "react-toastify";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import "react-toastify/dist/ReactToastify.css";
+
+
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
 
 const Container = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -41,16 +46,25 @@ const TextField = styled(TextValidator)(() => ({
 }));
 
 const Tab = () => {
+  const { currentSession } = useContext(SessionContext);
+
   const {
-    data: classData,
+    data:classData,
     loading: classLoading,
     error: classError,
-  } = useFetch("/class");
-  const { data: examData } = useFetch("/getofflineexam");
+  } = useFetch(
+      currentSession ? `/class/${currentSession._id}` : null      
+    );
+    console.log(classData)
+    const { data: examData } = useFetch(
+      currentSession ? `/getofflineexam/${currentSession._id}` : null
+    );
+    console.log(examData)
   const [subjectData, setSubjectData] = useState([]);
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedExam, setSelectedExam] = useState("");
+
 
   const [studentData, setStudentData] = useState([]);
   console.log("Current studentData state:", studentData);
@@ -58,7 +72,12 @@ const Tab = () => {
 
   const [subjectIdLookup, setSubjectIdLookup] = useState({});
   const [showMarkManagement, setShowMarkManagement] = useState(false);
-  const apiUrl = process.env.REACT_APP_API_URL;
+
+  const subjects = ["English", "Math", "Crs", "Basic Tech", "Business Studies"];
+  const [students, setStudents] = useState(studentData);
+
+
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   const fetchStudentData = async (examId, subjectId) => {
     try {
@@ -95,7 +114,7 @@ const Tab = () => {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      const response = await fetch(`${apiUrl}/api/student/${selectedClass}`, {
+      const response = await fetch(`${apiUrl}/api/student/${selectedClass}/${currentSession._id}`, {
         headers,
       });
 
@@ -355,27 +374,37 @@ const Tab = () => {
     }
   };
 
-  const handleScoreChange = (index, scoreType, value) => {
-    // Assuming studentData is an array
-    const updatedStudents = [...studentData];
-
-    // Update the corresponding score
-    if (scoreType === "testscore") {
-      updatedStudents[index].testscore = parseInt(value, 10) || 0;
-    } else if (scoreType === "examscore") {
-      updatedStudents[index].examscore = parseInt(value, 10) || 0;
-    } else if (scoreType === "comment") {
-      updatedStudents[index].comment = value; // Update the comment field
-    }
-
-    // Update marksObtained by adding test score and exam score
-    updatedStudents[index].marksObtained =
-      (updatedStudents[index].testscore || 0) +
-      (updatedStudents[index].examscore || 0);
-
-    // Update state with the modified students
+  const handleScoreChange = (studentIndex, scoreType, value) => {
+    // Create a copy of the studentData array
+    const updatedStudents = studentData.map((student, index) => {
+      if (index === studentIndex) {
+        // Update the relevant score type or comment
+        if (scoreType === "testscore") {
+          return {
+            ...student,
+            testscore: parseInt(value, 10) || 0, // Update test score
+            marksObtained: (parseInt(value, 10) || 0) + (student.examscore || 0) // Calculate marksObtained
+          };
+        } else if (scoreType === "examscore") {
+          return {
+            ...student,
+            examscore: parseInt(value, 10) || 0, // Update exam score
+            marksObtained: (student.testscore || 0) + (parseInt(value, 10) || 0) // Calculate marksObtained
+          };
+        } else if (scoreType === "comment") {
+          return {
+            ...student,
+            comment: value // Update comment field
+          };
+        }
+      }
+      return student;
+    });
+  
+    // Update state with modified student data
     setStudentData(updatedStudents);
   };
+  
 
   return (
     <div>
@@ -431,111 +460,60 @@ const Tab = () => {
           </Grid>
 
           {showMarkManagement && (
-            <>
-              <div className="container">
-                <div class="header">
-                  <div class="logo">
-                    <img
-                      src="https://hlhs.portalreport.org/uploads/1680762525Screenshot_20230405-172641.jpg"
-                      style={{ width: "30px", height: "30px" }}
-                    />
-                  </div>
-                  <div class="bd_title">
-                    <h1 class="f20">
-                      <strong>HEAVENLY LOVE HIGH SCHOOL</strong>
-                    </h1>
-                    <h4 class="f18">
-                      {" "}
-                      14, Babs Ladipo Street, Agbe Road, Abule Egba, Lagos
-                      State.{" "}
-                    </h4>
-                    <p style={{ color: "#042954" }}> Report Card</p>
-                  </div>
-                  <div class="headrt">
-                    <p style={{ color: "#042954" }}>
-                      Telephone : +234 8028724575, +234 8165051826
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <table className="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>S/N</th>
-                    <th>Student Name</th>
-                    <th>English</th>
-                    <th>Math</th>
-                    <th>Crs </th>
-                    <th>Basic Tech</th>
-                    <th>Business Studies</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {studentData.map((student, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{student.AdmNo}</td>
-                      {/*}  <td id={`subjectId_${index}`} style={{ display: "none" }}>
-                        {subjectIdLookup[student.subjectName]}
-                  </td>*/}
-                      <td>{student.studentName}</td>
+  <>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Student Name</TableCell>
+            <TableCell>Test Score</TableCell>
+            <TableCell>Exam Score</TableCell>
+            <TableCell>Total Marks</TableCell>
+            <TableCell>Comment</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {studentData.map((student, index) => (
+            <TableRow key={student.studentId || index}>
+              <TableCell>{student.studentName}</TableCell>
+              <TableCell>
+                <input
+                  type="number"
+                  value={student.testscore}
+                  onChange={(e) => handleScoreChange(index, "testscore", Number(e.target.value))}
+                />
+              </TableCell>
+              <TableCell>
+                <input
+                  type="number"
+                  value={student.examscore}
+                  onChange={(e) => handleScoreChange(index, "examscore", Number(e.target.value))}
+                />
+              </TableCell>
+              <TableCell>{student.marksObtained}</TableCell>
+              <TableCell>
+                <input
+                  type="text"
+                  value={student.comment}
+                  onChange={(e) => handleScoreChange(index, "comment", e.target.value)}
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+    <Button
+      color="primary"
+      variant="contained"
+      type="button"
+      onClick={handleSaveChanges}
+    >
+      Save Changes
+    </Button>
+  </>
+)}
 
-                      <td>
-                        <TextField
-                          type="number"
-                          name={`testscore_${index}`}
-                          id={`testscore_${index}`}
-                          value={student.testscore || ""}
-                          onChange={(e) =>
-                            handleScoreChange(
-                              index,
-                              "testscore",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                      <td>
-                        <TextField
-                          type="number"
-                          name={`examscore_${index}`}
-                          id={`examscore_${index}`}
-                          value={student.examscore || ""}
-                          onChange={(e) =>
-                            handleScoreChange(
-                              index,
-                              "examscore",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                      {/* Fix the nesting issue for marksObtained */}
-                      <td>{student.marksObtained || ""}</td>
-                      <td>
-                        <TextField
-                          name={`comment_${index}`}
-                          id={`comment_${index}`}
-                          value={student.comment || ""}
-                          onChange={(e) =>
-                            handleScoreChange(index, "comment", e.target.value)
-                          }
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <Button
-                color="primary"
-                variant="contained"
-                type="button"
-                onClick={handleSaveChanges}
-              >
-                Save Changes
-              </Button>
-            </>
-          )}
         </ValidatorForm>
         <ToastContainer />
       </Container>

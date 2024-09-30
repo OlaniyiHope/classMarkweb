@@ -359,9 +359,11 @@ const StyledTable = styled(Table)(({ theme }) => ({
 }));
 
 const Grade = () => {
-  // const { data: fetchedData, loading, error, reFetch } = useFetch("/grade");
-
   const { currentSession } = useContext(SessionContext);
+  // const { data, loading, error, reFetch } = useFetch(
+  //   currentSession ? `/grade/${currentSession._id}` : null
+  // );
+
   console.log("Current session:", currentSession); // Log the current session
 
   const [gradesData, setGradesData] = useState([]);

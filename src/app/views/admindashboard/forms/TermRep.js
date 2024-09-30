@@ -1,4 +1,10 @@
-import React, { Fragment, useEffect, useState, useRef } from "react";
+import React, {
+  Fragment,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import {
   Box,
   Button,
@@ -16,6 +22,8 @@ import { useReactToPrint } from "react-to-print";
 import useFetch from "../../../../hooks/useFetch";
 import axios from "axios";
 import useAuth from "../../../../app/hooks/useAuth";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
 import "./report.css";
 
 const ContentBox = styled("div")(({ theme }) => ({
@@ -57,12 +65,13 @@ const TermRep = ({ studentId }) => {
 
   const [studentData, setStudentData] = useState(null);
   const [psyData, setPsyData] = useState(null);
+  const { currentSession } = useContext(SessionContext);
 
   const { id } = useParams();
 
   // const { data } = useFetch(`/students/${id}`);
 
-  const { data } = useFetch(`/students/${studentId}`);
+  const { data } = useFetch(`/students/${studentId}/${currentSession._id}`);
 
   // const { data,  } = useFetch(`/students/${user._id}`); // Fetch data using the correct URL
 
@@ -373,7 +382,7 @@ const TermRep = ({ studentId }) => {
     fetchData();
 
     console.log("Student ID in useEffect:", studentId);
-  }, [studentId]);
+  }, [studentId, currentSession]);
 
   const fetchStudentData = async (studentId) => {
     try {
@@ -387,7 +396,7 @@ const TermRep = ({ studentId }) => {
       };
 
       const response = await axios.get(
-        `${apiUrl}/api/get-scores-by-student/${studentId}`,
+        `${apiUrl}/api/get-scores-by-student/${studentId}/${currentSession._id}`,
         { headers }
       );
 
@@ -451,7 +460,7 @@ const TermRep = ({ studentId }) => {
       }
     } catch (error) {
       console.error("Error fetching student data:", error);
-      throw new Error("Failed to fetch student data");
+      // throw new Error("Failed to fetch student data");
     }
   };
   const fetchAllStudentsData = async (examId, subjectId) => {
@@ -500,7 +509,7 @@ const TermRep = ({ studentId }) => {
       };
 
       const response = await axios.get(
-        `${apiUrl}/api/get-psy-by-student/${studentId}`,
+        `${apiUrl}/api/get-psy-by-student/${studentId}/${currentSession._id}`,
         { headers }
       );
 
@@ -582,7 +591,7 @@ const TermRep = ({ studentId }) => {
     fetchData();
 
     console.log("Student ID in useEffect:", studentId);
-  }, [studentId]);
+  }, [studentId, currentSession]);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -1095,8 +1104,7 @@ const TermRep = ({ studentId }) => {
                   textAlign: "center",
                   padding: "20px",
                   backgroundColor: "#f0f0f0",
-                }}
-              >
+                }}>
                 <div class="logo">
                   <img
                     src={`https://edupros.s3.amazonaws.com/${accountSettings.schoolLogo}`}
@@ -1113,8 +1121,7 @@ const TermRep = ({ studentId }) => {
                       fontWeight: "800",
                       textTransform: "uppercase",
                       margin: "10px 0",
-                    }}
-                  >
+                    }}>
                     {accountSettings.name || ""}
                   </h1>
                   <h4 style={{ fontSize: "18px", margin: "5px 0" }}>
@@ -1126,7 +1133,7 @@ const TermRep = ({ studentId }) => {
                     {accountSettings.email || ""}
                   </p>
                   <h3 style={{ color: "#042954", margin: "10px 0" }}>
-                    {data?.classname || ""} Second Term Report Card
+                    {data[0]?.classname || ""} Second Term Report Card
                   </h3>
                 </div>
               </div>
@@ -1137,8 +1144,7 @@ const TermRep = ({ studentId }) => {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                }}
-              >
+                }}>
                 <div style={{ flex: "0 0 auto" }}>
                   <div className="bd_photo">
                     <img
@@ -1150,8 +1156,7 @@ const TermRep = ({ studentId }) => {
                   </div>
                 </div>
                 <div
-                  style={{ flex: "1", padding: "0 20px", textAlign: "center" }}
-                >
+                  style={{ flex: "1", padding: "0 20px", textAlign: "center" }}>
                   <div style={{ marginBottom: "20px" }}>
                     <span>Student Name:</span>{" "}
                     <span
@@ -1164,9 +1169,8 @@ const TermRep = ({ studentId }) => {
                         width: "50%",
                         marginLeft: "30px",
                         textAlign: "center",
-                      }}
-                    >
-                      {data?.studentName || ""}
+                      }}>
+                      {data[0]?.studentName || ""}
                     </span>
                   </div>
                   <div style={{ marginBottom: "20px" }}>
@@ -1181,8 +1185,7 @@ const TermRep = ({ studentId }) => {
                         width: "50%",
                         marginLeft: "30px",
                         textAlign: "center",
-                      }}
-                    >
+                      }}>
                       {accountSettings.sessionStart}-
                       {accountSettings.sessionEnd}
                     </p>
@@ -1199,15 +1202,13 @@ const TermRep = ({ studentId }) => {
                         width: "50%",
                         marginLeft: "30px",
                         textAlign: "center",
-                      }}
-                    >
+                      }}>
                       Mrs Adebisi Emmanuel
                     </span>
                   </div>
                 </div>
                 <div
-                  style={{ flex: "1", padding: "0 20px", textAlign: "center" }}
-                >
+                  style={{ flex: "1", padding: "0 20px", textAlign: "center" }}>
                   <div>
                     <p style={{ color: "#042954" }}>
                       <span>Student Id No:</span>{" "}
@@ -1222,7 +1223,7 @@ const TermRep = ({ studentId }) => {
                           marginLeft: "30px",
                           textAlign: "center",
                         }}
-                        value={data?.AdmNo || ""}
+                        value={data[0]?.AdmNo || ""}
                       />
                     </p>
                     {/*<p style={{ color: "#042954" }}>
@@ -1276,8 +1277,7 @@ const TermRep = ({ studentId }) => {
                   </div>
                 </div>
                 <div
-                  style={{ flex: "1", padding: "0 20px", textAlign: "center" }}
-                >
+                  style={{ flex: "1", padding: "0 20px", textAlign: "center" }}>
                   <div>
                     <p style={{ color: "#042954" }}>
                       <span>Marks Obtained:</span>{" "}
@@ -1337,8 +1337,7 @@ const TermRep = ({ studentId }) => {
               <table
                 className="table"
                 id="customers"
-                style={{ width: "100% !important" }}
-              >
+                style={{ width: "100% !important" }}>
                 <thead style={{ width: "100% !important" }}>
                   <tr style={{ width: "100% !important" }}>
                     <th scope="col">S/No</th>
@@ -1373,23 +1372,28 @@ const TermRep = ({ studentId }) => {
                       })}
                     </tbody>*/}
 
-                <tbody style={{ width: "100% !important" }}>
-                  {studentData &&
-                    studentData?.map((score, index) => {
-                      return (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{score?.subjectName || "-"}</td>{" "}
-                          <td>{score?.testscore || "-"}</td>{" "}
-                          <td>{score?.examscore || "-"}</td>{" "}
-                          <td>{score?.marksObtained || "-"}</td>
-                          <td>{score?.position || "-"}</td>
-                          <td>{calculateGrade(score?.comment) || "-"}</td>
-                          <td>{score?.comment || "-"}</td>
-                        </tr>
-                      );
-                    })}
-                </tbody>
+<tbody style={{ width: "100% !important" }}>
+  {/* Check if there's data and map through the scores */}
+  {studentData && studentData.length > 0 ? (
+    studentData.map((score, index) => (
+      <tr key={index}>
+        <td>{index + 1}</td> {/* Serial number */}
+        <td>{score?.subjectName || "-"}</td> {/* Subject Name */}
+        <td>{score?.testscore !== undefined ? score.testscore : "-"}</td> {/* Test Score */}
+        <td>{score?.examscore !== undefined ? score.examscore : "-"}</td> {/* Exam Score */}
+        <td>{score?.marksObtained !== undefined ? score.marksObtained : "-"}</td> {/* Obtained Marks */}
+        <td>{score?.position !== undefined ? score.position : "-"}</td> {/* Position */}
+        <td>{calculateGrade(score?.comment) || "-"}</td> {/* Grade */}
+        <td>{score?.comment || "-"}</td> {/* Comment/Remark */}
+      </tr>
+    ))
+  ) : (
+    // Fallback for when no data is available
+    <tr>
+      <td colSpan="8">No data available for this term.</td>
+    </tr>
+  )}
+</tbody>
               </table>
 
               <td style={{ verticalAlign: "top", width: "100%" }}>
@@ -1397,8 +1401,7 @@ const TermRep = ({ studentId }) => {
                 <table
                   className="table second-sub-table"
                   id="customersreport"
-                  style={{ width: "100%" }}
-                >
+                  style={{ width: "100%" }}>
                   <colgroup>
                     <col style={{ width: "33.33%" }} />
                     <col style={{ width: "33.33%" }} />
@@ -1408,8 +1411,7 @@ const TermRep = ({ studentId }) => {
                     <tr>
                       <th
                         colSpan="3"
-                        style={{ textAlign: "center", fontSize: "18px" }}
-                      >
+                        style={{ textAlign: "center", fontSize: "18px" }}>
                         AFFECTIVE AND PSYCHOMOTOR REPORT
                       </th>
                     </tr>
@@ -1518,8 +1520,7 @@ const TermRep = ({ studentId }) => {
 
               <div
                 class="bd_key"
-                style={{ color: "#042954", fontSize: "16px" }}
-              >
+                style={{ color: "#042954", fontSize: "16px" }}>
                 KEY TO RATINGS : 5 = Excellent , 4 = Good , 3 = Fair , 2 = Poor
                 , 1 = Very Poor
               </div>
