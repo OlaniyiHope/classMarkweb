@@ -83,6 +83,7 @@ const Layout1Topbar = () => {
   const { settings, updateSettings } = useSettings();
   const { logout, user } = useAuth();
   const isMdScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const { sessions, currentSession, setSessions, setCurrentSession } =
     useContext(SessionContext);
@@ -133,7 +134,7 @@ const Layout1Topbar = () => {
   // }, []);
   useEffect(() => {
     axios
-      .get("https://eduproapi.vercel.app/api/sessions")
+      .get(`${apiUrl}/api/sessions`)
       .then((response) => {
         if (Array.isArray(response.data)) {
           const activeSession = response.data.find(
@@ -181,9 +182,7 @@ const Layout1Topbar = () => {
 
       // Update session to be active on the backend
       axios
-        .patch(
-          `https://eduproapi.vercel.app/api/sessions/${sessionId}/activate`
-        )
+        .patch(`${apiUrl}/api/sessions/${sessionId}/activate`)
         .then((response) => {
           console.log("Session activated:", response.data);
 

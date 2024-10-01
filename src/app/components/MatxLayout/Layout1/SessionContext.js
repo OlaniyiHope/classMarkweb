@@ -6,10 +6,11 @@ export const SessionContext = createContext();
 export const SessionProvider = ({ children }) => {
   const [sessions, setSessions] = useState([]);
   const [currentSession, setCurrentSession] = useState(null);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     axios
-      .get("https://eduproapi.vercel.app/api/sessions")
+      .get(`${apiUrl}/api/sessions`)
       .then((response) => {
         if (Array.isArray(response.data)) {
           setSessions(response.data);
