@@ -1,5 +1,5 @@
 {
-  "proxy": "https://edupro.com.ng",
+  "proxy": "https://localhost:3001",
   "name": "matx-react",
   "version": "3.0.0",
   "private": true,
