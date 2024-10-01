@@ -25,7 +25,6 @@ import useAuth from "../../../../app/hooks/useAuth";
 import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 import "./report.css";
-// import "./print.css";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",

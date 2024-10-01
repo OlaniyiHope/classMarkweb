@@ -23,7 +23,6 @@ import useFetch from "../../../../hooks/useFetch";
 import axios from "axios";
 import useAuth from "../../../../app/hooks/useAuth";
 import "./report.css";
-// import "./print.css";
 
 import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
