@@ -26,6 +26,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import "./style.css";
 import jwtDecode from "jwt-decode";
 import CustomLabel from "./CustomLabel";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const FlexBox = styled(Box)(() => ({ display: "flex", alignItems: "center" }));
 
@@ -63,6 +64,7 @@ const initialValues = {
   classname: "",
   parentsName: "",
   date: "",
+  sessionId: "",
   remember: true,
 };
 
@@ -88,6 +90,7 @@ const validationSchema = Yup.object().shape({
   role: Yup.string().required("Role is required!"),
 });
 const roles = ["admin", "teacher", "parent", "student"]; // Define the available roles
+// const sessions = []
 
 const JwtRegister = () => {
   const theme = useTheme();
@@ -96,6 +99,8 @@ const JwtRegister = () => {
   const [loading, setLoading] = useState(false);
   // Declare variables and states here
   const [classData, setClassData] = useState([]); // To store the list of classes
+  const [sessionList, setSessionList] = useState([]); // To store the list of classes
+  console.log(sessionList);
 
   const [selectedClass, setSelectedClass] = useState(""); // To store the selected class
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -104,6 +109,7 @@ const JwtRegister = () => {
     // Assuming you have the JWT token stored in localStorage
     const token = localStorage.getItem("jwtToken");
     // Fetch classes from your API
+    console.log(token)
     fetch(`https://doneapi.vercel.app/api/class`, {
       method: "GET",
       headers: {
@@ -113,9 +119,23 @@ const JwtRegister = () => {
       .then((response) => response.json())
       .then((data) => {
         setClassData(data);
+        console.log(data)
       })
       .catch((error) => {
         console.error("Error fetching classes:", error);
+      });
+    fetch(`${apiUrl}/api/sessions`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`, // Include your authentication token
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setSessionList(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching Sessions:", error);
       });
   }, []);
 
@@ -123,25 +143,47 @@ const JwtRegister = () => {
     setLoading(true);
 
     try {
-      register(
-        values.username,
-        values.email,
-        values.phone,
-        values.address,
-        values.password,
-        values.role,
-        values.studentName,
-        values.AdmNo,
-        values.classname,
-        values.parentsName,
-        values.date
-      );
+      const cleanDoubleQuotes = (str) => str.replace(/""/g, "");
+
+      const cleanedValues = {
+        role: cleanDoubleQuotes(values.role),
+        username: cleanDoubleQuotes(values.username),
+        email: cleanDoubleQuotes(values.email),
+        phone: cleanDoubleQuotes(values.phone),
+        address: cleanDoubleQuotes(values.address),
+        password: cleanDoubleQuotes(values.password),
+        studentName: cleanDoubleQuotes(values.studentName),
+        AdmNo: cleanDoubleQuotes(values.AdmNo),
+        classname: cleanDoubleQuotes(values.classname),
+        parentsName: cleanDoubleQuotes(values.parentsName),
+        sessionId: cleanDoubleQuotes(values.sessionId),
+        date: cleanDoubleQuotes(values.date),
+      };
+
+      register({
+        role: cleanedValues.role,
+        username: cleanedValues.username,
+        email: cleanedValues.email,
+        password: cleanedValues.password,
+        address: cleanedValues.address,
+        phone: cleanedValues.phone,
+        sessionId: cleanedValues.sessionId,
+        classname: cleanedValues.classname,
+        date: cleanedValues.date,
+        AdmNo: cleanedValues.AdmNo,
+        parentsName: cleanedValues.parentsName,
+        studentName: cleanedValues.studentName
+      });
+
+      console.log("role", values.role);
+
       navigate("/");
       setLoading(false);
     } catch (e) {
       console.log(e);
       setLoading(false);
     }
+    console.log(values);
   };
   const [showPassword, setShowPassword] = useState(false);
   const [selectedRole, setSelectedRole] = useState(""); // State to hold the selected role
@@ -150,8 +192,7 @@ const JwtRegister = () => {
     <div className="authincation d-flex flex-column flex-lg-row flex-column-fluid">
       <div
         className="login-aside text-center d-flex flex-column flex-row-auto"
-        style={{ backgroundColor: "#000080 !important" }}
-      >
+        style={{ backgroundColor: "#000080 !important" }}>
         <div className="d-flex flex-column-auto flex-column pt-lg-40 pt-15">
           <div className="text-center mb-lg-4 mb-2 pt-5 logo"></div>
           <h3 className="mb-2 text-white">
@@ -170,13 +211,11 @@ const JwtRegister = () => {
               <div className="col-xl-12 tab-content">
                 <div
                   id="sign-up"
-                  className="auth-form tab-pane fade show active form-validation"
-                >
+                  className="auth-form tab-pane fade show active form-validation">
                   <Formik
                     onSubmit={handleFormSubmit}
                     initialValues={initialValues}
-                    validationSchema={validationSchema}
-                  >
+                    validationSchema={validationSchema}>
                     {({
                       values,
                       errors,
@@ -274,8 +313,7 @@ const JwtRegister = () => {
                               <InputAdornment position="end">
                                 <IconButton
                                   onClick={() => setShowPassword(!showPassword)}
-                                  edge="end"
-                                >
+                                  edge="end">
                                   {showPassword ? (
                                     <VisibilityOff />
                                   ) : (
@@ -288,8 +326,43 @@ const JwtRegister = () => {
                         />
                         <FormControl
                           component="fieldset"
-                          sx={{ mb: 3, width: "100%" }}
-                        >
+                          sx={{ mb: 3, width: "100%" }}>
+                          <FormLabel component="legend">
+                            <CustomLabel label="Select a Session" required />
+                          </FormLabel>
+                          {/*} <RadioGroup
+                            name="role"
+                            value={values.role}
+                            onChange={handleChange}
+                          >
+                            {roles.map((role) => (
+                              <FormControlLabel
+                                key={role}
+                                value={role}
+                                control={<Radio />}
+                                label={role}
+                              />
+                            ))}
+                            </RadioGroup> */}
+
+                          <TextField
+                            fullWidth
+                            select
+                            label="Select a Session"
+                            variant="outlined"
+                            name="sessionId"
+                            value={values.sessionId}
+                            onChange={handleChange}>
+                            {sessionList.map((session) => (
+                              <MenuItem key={session._id} value={session._id}>
+                                {session.name}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                        </FormControl>
+                        <FormControl
+                          component="fieldset"
+                          sx={{ mb: 3, width: "100%" }}>
                           <FormLabel component="legend">
                             <CustomLabel label="Select a Role" required />
                           </FormLabel>
@@ -316,8 +389,7 @@ const JwtRegister = () => {
                             name="role"
                             value={values.role}
                             onChange={handleChange}
-                            sx={{ mb: 3 }}
-                          >
+                            sx={{ mb: 3 }}>
                             {roles.map((role) => (
                               <MenuItem key={role} value={role}>
                                 {role}
@@ -373,16 +445,15 @@ const JwtRegister = () => {
                               name="classname" // Make sure the name matches your form field
                               value={values.classname}
                               onChange={handleChange}
-                              sx={{ mb: 3 }}
-                            >
-                              {classData.map((classItem) => (
-                                <MenuItem
-                                  key={classItem._id}
-                                  value={classItem.name}
-                                >
-                                  {classItem.name}
-                                </MenuItem>
-                              ))}
+                              sx={{ mb: 3 }}>
+                              {Array.isArray(classData) &&
+                                classData.map((classItem) => (
+                                  <MenuItem
+                                    key={classItem._id}
+                                    value={classItem.name}>
+                                    {classItem.name}
+                                  </MenuItem>
+                                ))}
                             </TextField>
 
                             <TextField
@@ -446,8 +517,7 @@ const JwtRegister = () => {
                           loading={loading}
                           variant="contained"
                           sx={{ mb: 2, mt: 3 }}
-                          class="btn btn-block btn-primary"
-                        >
+                          class="btn btn-block btn-primary">
                           Register
                         </LoadingButton>
 
@@ -458,8 +528,7 @@ const JwtRegister = () => {
                             style={{
                               color: theme.palette.primary.main,
                               marginLeft: 5,
-                            }}
-                          >
+                            }}>
                             Login
                           </NavLink>
                         </Paragraph>

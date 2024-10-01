@@ -10,9 +10,13 @@ import TextField from "@mui/material/TextField";
 import React from "react";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
+
 const initialState = {
   grade_name: "",
   gradepoint: "",
@@ -21,6 +25,8 @@ const initialState = {
   comment: "",
 };
 const FormDialog16 = ({ setGradesData }) => {
+  const { currentSession } = useContext(SessionContext); // Get the active session
+
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState(initialState);
@@ -34,17 +40,48 @@ const FormDialog16 = ({ setGradesData }) => {
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+
+    e.preventDefault();
+
+
+    // Retrieve the current session ID (this should be set earlier in your code)
+    const currentSessionId = currentSession._id; // Ensure this variable holds the current session ID
+    console.log(currentSessionId)
+
+    // Include the current session ID in the formData payload
+    const payload = {
+      ...formData, // Include other form fields
+      session: currentSessionId, // Add session to the payload
+    };
+
+    console.log("Payload:", payload); 
+
     try {
-      const response = await axios.post(`${apiUrl}/api/grade`, formData);
+            // Fetch the authentication token from local storage
+            const token = localStorage.getItem("jwtToken");
+
+            // Include the token in the request headers
+            const headers = {
+              Authorization: `Bearer ${token}`,
+            };
+      
+      const response = await axios.post(`${apiUrl}/api/grade`, payload, {
+        headers,
+      });
+      
       const newGrade = response.data;
-      toast.success(`Grade ${newGrade.grade_name} created successfully`);
+      if (response.status === 200) {
+        toast.success(`Grade ${newGrade.grade_name} created successfully`);
+  
+        // Reset the form and close the dialog
+        setFormData(initialState);
+        setOpen(false);
+        navigate("/dashboard/grade");
+      } else {
+        toast.error("Failed to create Grade");
+      }
 
-      // Reset the form and close the dialog
-      setFormData(initialState);
-      setOpen(false);
-
-      navigate("/dashboard/grade");
 
       // Optionally, you can also update the gradesData state in Grade component
       if (setGradesData) {
@@ -67,6 +104,7 @@ const FormDialog16 = ({ setGradesData }) => {
 
   return (
     <Box>
+      <ToastContainer />
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
         Add New Grades
       </Button>

@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { Fragment, React, useState, useEffect } from "react";
+import { Fragment, React, useState, useContext, useEffect } from "react";
 import useFetch from "../../../hooks/useFetch";
 import { Box } from "@mui/system";
 import {
@@ -20,7 +20,12 @@ import { faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons";
 import Calendar from "react-calendar";
 import "./calendar.css";
 import axios from "axios";
+import useAuth from "../../hooks/useAuth";
+
 import "./style.css";
+
+import { SessionContext } from "../../components/MatxLayout/Layout1/SessionContext";
+
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -81,6 +86,11 @@ const Analytics = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const { currentSession } = useContext(SessionContext);
+
+  const { logout, user } = useAuth();
+
+
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
@@ -93,11 +103,11 @@ const Analytics = () => {
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
   useEffect(() => {
     const fetchNotices = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/get-all-notices`);
+        const response = await axios.get(`${apiUrl}/api/get-all-notices/${currentSession._id}`);
         setNotices(response.data);
       } catch (error) {
         console.error("Error fetching notices:", error);
@@ -109,7 +119,7 @@ const Analytics = () => {
     };
 
     fetchNotices();
-  }, [apiUrl]);
+  }, [apiUrl, currentSession]);
   // Fetch user counts
   const [userCounts, setUserCounts] = useState({
     students: 0,
@@ -117,96 +127,55 @@ const Analytics = () => {
     parents: 0,
     admins: 0,
   });
+  const [studentCount, setStudentCount] = useState(0);
+// get all users in a class 
 
-  useEffect(() => {
-    const fetchUserCounts = async () => {
-      try {
-        const roles = ["student", "teacher", "parent", "admin"];
 
-        const counts = await Promise.all(
-          roles.map(async (role) => {
-            const response = await axios.get(`${apiUrl}/api/users/${role}`);
-            return { role, count: response.data.length };
-          })
-        );
 
-        const newCounts = counts.reduce((acc, { role, count }) => {
-          acc[role + "s"] = count;
-          return acc;
-        }, {});
+useEffect(() => {
+  // Fetch data from the API with Authorization token
+  const fetchStudents = async () => {
+    try {
+      const token = localStorage.getItem("jwtToken"); // Retrieve the JWT token from localStorage
+      const headers = {
+        Authorization: `Bearer ${token}`, // Set the Authorization header
+      };
 
-        setUserCounts(newCounts);
-      } catch (error) {
-        console.error("Error fetching user counts:", error);
-
-        if (error.response) {
-          console.error("Server responded with:", error.response.data);
+      const response = await fetch(
+        `${apiUrl}/api/get-all-students/${user.classname}/${currentSession._id}`,
+        {
+          headers, // Pass the headers with the request
         }
-      }
-    };
+      );
 
-    fetchUserCounts();
-  }, [apiUrl]);
+      if (!response.ok) {
+        throw new Error("Failed to fetch students");
+      }
+
+      const data = await response.json();
+
+      // Count the number of students in the returned data
+      const numberOfStudents = data.length;
+
+      // Update the state with the student count
+      setStudentCount(numberOfStudents);
+    } catch (error) {
+      console.error("Error fetching student data:", error);
+    }
+  };
+
+  if (currentSession) {
+    fetchStudents();
+  }
+}, [currentSession, user.classname]); // Fetch data again if currentSession, user.classname, or apiUrl changes
+
   return (
     <div>
       <h2 style={{ paddingTop: "15px", paddingLeft: "10px" }}>
         Student Dashboard
       </h2>
       <div className="row gutters-20" style={{ marginTop: "20px" }}>
-        {Object.entries(userCounts).map(([role, count]) => (
-          <div key={role} className="col-xl-3 col-sm-6 col-12">
-            <div className="dashboard-summery-one mg-b-20">
-              <div className="row align-items-center">
-                <div className="col-6">
-                  <div
-                    className={`item-icon bg-light-${
-                      role === "admins"
-                        ? "red"
-                        : role === "teachers"
-                        ? "blue"
-                        : role === "parents"
-                        ? "yellow"
-                        : "green"
-                    }`}
-                  >
-                    <FontAwesomeIcon
-                      icon={
-                        role === "admins"
-                          ? faUsers
-                          : role === "teachers"
-                          ? faUsers
-                          : role === "parents"
-                          ? faUserFriends
-                          : faUser
-                      }
-                      className={`flaticon-classmates text-${
-                        role === "admins"
-                          ? "red"
-                          : role === "teachers"
-                          ? "blue"
-                          : role === "parents"
-                          ? "yellow"
-                          : "green"
-                      }`}
-                    />
-                  </div>
-                </div>
-                <div className="col-6">
-                  <div className="item-content">
-                    <div className="item-title">
-                      {role.charAt(0).toUpperCase() + role.slice(1)}
-                    </div>
-                    <div className="item-number">
-                      <span className="counter" data-num={count}>
-                        {count}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
+       <h2>No of Students in this class: {studentCount}</h2>
       </div>
       <div className="row gutters-20" style={{ marginTop: "60px" }}></div>
       <div className="cald">

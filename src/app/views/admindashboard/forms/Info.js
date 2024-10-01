@@ -147,7 +147,8 @@ const Info = () => {
   const handleDeleteUser = async () => {
     try {
       const response = await axios.delete(
-        `${apiUrl}/api/users/${userToDelete._id}`
+        // `${apiUrl}/api/users/${userToDelete._id}`
+        `${apiUrl}/api/session/${currentSession._id}/users/${userToDelete._id}`
       );
 
       console.log("Response from delete API:", response.data);
@@ -194,7 +195,7 @@ const Info = () => {
         });
 
         const response = await axios.put(
-          `${apiUrl}/api/students/${editStudentData._id}`,
+          `${apiUrl}/api/put-students/${editStudentData._id}`,
           {
             studentName: updatedData.studentName,
             address: updatedData.address,

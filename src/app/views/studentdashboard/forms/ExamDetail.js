@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Typography,
   Button,
@@ -25,6 +25,9 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 import CameraFeed from "./CameraFeed";
 
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
+
 const ExamDetail = () => {
   const { id } = useParams(); // Get the id parameter from the route
   const [exam, setExam] = useState(null);
@@ -40,7 +43,10 @@ const ExamDetail = () => {
   const [timerInterval, setTimerInterval] = useState(null);
 
   const [examFinished, setExamFinished] = useState(false);
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const { currentSession } = useContext(SessionContext);
+
+  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  
 
   const navigate = useNavigate();
 
@@ -191,56 +197,50 @@ const ExamDetail = () => {
 
   const fetchExamAndQuestions = async () => {
     try {
-      const examResponse = await axios.get(`${apiUrl}/api/get-exam/${id}`);
-      setExam(examResponse.data);
-      // Set the exam object before calling startTimer
-      console.log("Exam details:", examResponse.data);
-
+      const examResponse = await axios.get(`${apiUrl}/api/get-exam-by-id/${id}/${currentSession._id}`);
+      const examData = examResponse.data;
+      setExam(examData);
+  
+      // Fetch previously submitted answers
       const token = localStorage.getItem("jwtToken");
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-
+      const headers = { Authorization: `Bearer ${token}` };
+      const submissionResponse = await axios.get(
+        `${apiUrl}/api/exams/get-submission/${id}/${getLoggedInUserId()}`,
+        { headers }
+      );
+  
+      const userAnswers = submissionResponse.data.answers;
+      console.log(userAnswers)
+      setAnswers(userAnswers);  // Populate the form with user's previous answers
+  
       const questionsResponse = await axios.get(
         `${apiUrl}/api/questions/${id}`,
         { headers }
       );
       const questionsData = questionsResponse.data;
-      console.log("Fetched questions:", questionsData);
-
+      setQuestions(questionsData);
+  
       const correctAnswersData = {};
-
       questionsData.forEach((question) => {
         if (question.questionType === "true_false") {
-          correctAnswersData[question._id] =
-            question.correctAnswer.toLowerCase(); // Convert to lowercase
-        } else if (question.questionType === "theory") {
-          // Handle theory questions
-          // For theory questions, correctAnswer might not be available
-          // You can set it to an empty string or handle it differently based on your requirements
-          correctAnswersData[question._id] = "";
+          correctAnswersData[question._id] = question.correctAnswer.toLowerCase();
         } else {
           correctAnswersData[question._id] =
-            question.options
-              .find((option) => option.isCorrect)
-              ?.option.toLowerCase() || "";
+            question.options.find((option) => option.isCorrect)?.option.toLowerCase() || "";
         }
       });
-      console.log("Correct Answers Data:", correctAnswersData);
+  
       setCorrectAnswers(correctAnswersData);
-
-      setQuestions(questionsData);
-
-      const calculatedTotalMark = questionsData.reduce(
-        (total, question) => total + parseInt(question.mark),
-        0
+      setTotalMark(
+        questionsData.reduce((total, question) => total + parseInt(question.mark), 0)
       );
-      setTotalMark(calculatedTotalMark);
+  
       startTimer();
     } catch (error) {
       console.error("Error fetching exam or questions:", error);
     }
   };
+  
 
   // useEffect(() => {
   //   fetchExamAndQuestions();
@@ -324,7 +324,7 @@ const ExamDetail = () => {
 
       console.log("Data before submitting:", data); // Log the data before submitting
 
-      const response = await axios.post(`${apiUrl}/api/exams/submit`, data, {
+      const response = await axios.post(`${apiUrl}/api/exams/submit/${currentSession._id}`, data, {
         headers,
       });
 

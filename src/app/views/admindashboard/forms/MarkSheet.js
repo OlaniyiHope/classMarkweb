@@ -63,7 +63,7 @@
 
 // ... (import statements)
 
-import { Fragment, React, useEffect, useState } from "react";
+import { Fragment, React, useEffect, useState, useContext } from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Button, styled } from "@mui/material";
@@ -71,24 +71,34 @@ import { Link, useParams } from "react-router-dom";
 import useFetch from "../../../../hooks/useFetch";
 import TermRep from "./TermRep";
 
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
 }));
 
 const MarkSheet = () => {
+  const { currentSession } = useContext(SessionContext);
+  // console.log(currentSession)
+
   const [studentData, setStudentData] = useState(null);
   const { id } = useParams();
   console.log("Student ID:", id);
 
-  const { data, loading, error } = useFetch(`/students/${id}`); // Fetch data using the correct URL
+  const { data, loading, error } = useFetch(`/students/${id}/${currentSession._id}`); // Fetch data using the correct URL
   console.log("student data", data);
   useEffect(() => {
     // Check if the data is available before updating the state
     console.log("Data from useFetch:", data);
-    if (data && data.studentName && data.classname) {
-      console.log("Fetched student data:", data);
-      setStudentData(data);
+    if (data) {
+      // If data is an array and contains at least one object, extract the first one
+      const student = Array.isArray(data) && data.length > 0 ? data[0] : data;
+
+      // Ensure student contains the expected fields before setting state
+      if (student && student.studentName && student.classname) {
+        setStudentData(student);
+      }
     }
   }, [data]);
 

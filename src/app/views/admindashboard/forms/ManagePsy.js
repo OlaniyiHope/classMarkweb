@@ -19,12 +19,15 @@ import {
 } from "@mui/material";
 import useFetch from "../../../../hooks/useFetch";
 import { Span } from "../../../../app/components/Typography";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "./form.css";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+
 
 const Container = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -41,13 +44,20 @@ const TextField = styled(TextValidator)(() => ({
 }));
 
 const ManagePsy = () => {
+  const { currentSession } = useContext(SessionContext);
+
   const {
-    data: classData,
+    data:classData,
     loading: classLoading,
     error: classError,
-  } = useFetch("/class");
-  const { data: examData } = useFetch("/getofflineexam");
-
+  } = useFetch(
+      currentSession ? `/class/${currentSession._id}` : null      
+    );
+    console.log(classData)
+    const { data: examData } = useFetch(
+      currentSession ? `/getofflineexam/${currentSession._id}` : null
+    );
+    console.log(examData)
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedExam, setSelectedExam] = useState("");
@@ -91,7 +101,7 @@ const ManagePsy = () => {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      const response = await fetch(`${apiUrl}/api/student/${selectedClass}`, {
+      const response = await fetch(`${apiUrl}/api/student/${selectedClass}/${currentSession._id}`, {
         headers,
       });
 

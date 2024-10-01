@@ -73,7 +73,7 @@ const StyledTable = styled(Table)(() => ({
 
 const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(1),
-}));
+})); 
 
 const ViewAdmin = () => {
   const { data, loading, error, reFetch } = useFetch("/get-admin");

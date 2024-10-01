@@ -68,7 +68,7 @@ const ManagemarkView = () => {
   const term = query.get("term");
   const subject = query.get("subject");
   const classname = query.get("classname");
-  console.log(term, classname, subject);
+  console.log("vals: ", term, classname, subject);
   const { data, loading, error, reFetch } = useFetch(
     `/mark/${term}/${classname}/${subject}`
   );

@@ -97,7 +97,7 @@ const ViewAdmin = () => {
   const handleDeleteUser = async () => {
     try {
       const response = await axios.delete(
-        `${apiUrl}/api/users/${userToDelete._id}`
+        `${apiUrl}/api/session/${currentSession._id}/users/${userToDelete._id}`
       );
 
       console.log("Response from delete API:", response.data);

@@ -1,5 +1,5 @@
 import {} from "@mui/material";
-import { Fragment, React, useState, useEffect } from "react";
+import { Fragment, React, useState, useEffect, useContext } from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 
@@ -34,6 +34,7 @@ import { Breadcrumb } from "../../../../app/components";
 import useFetch from "../../../../hooks/useFetch";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -74,7 +75,11 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Info = () => {
-  const { data, loading, error, reFetch } = useFetch("/student/JS1");
+  // const { data, loading, error, reFetch } = useFetch("/student/JS1");
+  const { currentSession } = useContext(SessionContext);
+  const { data, loading, error, reFetch } = useFetch(
+    currentSession ? `/student/JS1/${currentSession._id}` : null
+  );
   console.log("Data:", data);
 
   const { palette } = useTheme();

@@ -82,6 +82,7 @@ export default function Examform() {
 
   return (
     <Box>
+      <ToastContainer />
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
         Add Exam
       </Button>
