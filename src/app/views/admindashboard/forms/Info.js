@@ -302,7 +302,7 @@ const Info = () => {
                                   <MenuItem>
                                     <ListItemIcon></ListItemIcon>
                                     <Link
-                                      to={`/dashboard/student_mark_sheet/${item._id}`} 
+                                      to={`/dashboard/student_mark_sheet/${item._id}`}
                                     >
                                       Mark Sheet
                                     </Link>

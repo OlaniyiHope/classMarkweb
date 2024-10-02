@@ -269,10 +269,14 @@ const MarkSheet = () => {
   }
 
   // Access studentName and classname correctly from studentData
-  const studentName = studentData
-    ? studentData.student.studentName
-    : "Loading...";
-  const studentClass = studentData ? studentData.student.classname : "";
+  // const studentName = studentData
+  //   ? studentData.student.studentName
+  //   : "Loading...";
+  // const studentClass = studentData ? studentData.student.classname : "";
+
+  // Safely access studentName and classname using optional chaining
+  const studentName = studentData?.student?.studentName ?? "Loading...";
+  const studentClass = studentData?.student?.classname ?? "";
 
   return (
     <Fragment>
