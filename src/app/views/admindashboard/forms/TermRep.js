@@ -162,7 +162,7 @@ const TermRep = ({ studentId }) => {
       console.log("API Response for class:", response.data);
 
       // Assuming 'data' holds the student data
-      const studentClassName = data[0]?.classname; // Replace with correct field
+      const studentClassName = data?.classname; // Replace with correct field
       if (!studentClassName) {
         throw new Error("Student's class not found");
       }
