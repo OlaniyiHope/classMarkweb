@@ -164,7 +164,7 @@ const TermRep = ({ studentId }) => {
       // Assuming 'data' holds the student data
       const studentClassName = data?.classname; // Replace with correct field
       if (!studentClassName) {
-        throw new Error("Student's class not found");
+        throw new Error("Student's class is not found");
       }
 
       // Find the class that matches the student's class name
