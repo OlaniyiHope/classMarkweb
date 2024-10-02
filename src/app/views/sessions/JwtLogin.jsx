@@ -137,17 +137,17 @@ const JwtLogin = () => {
         <div className="d-flex flex-column-auto flex-column pt-lg-40 pt-15">
           <div className="text-center mb-lg-4 mb-2 pt-5 logo">
             <img
-            // src={`https://edupros.s3.amazonaws.com/${accountSettings.schoolLogo}`}
-            // style={{
-            //   width: "200px",
-            //   height: "130px",
-            // }}
+              src={`https://edupros.s3.amazonaws.com/${accountSettings.schoolLogo}`}
+              style={{
+                width: "200px",
+                height: "130px",
+              }}
             />
           </div>
-          {/*} <p style={{ fontWeight: "700", fontSize: "20px", color: "white" }}>
+          <p style={{ fontWeight: "700", fontSize: "20px", color: "white" }}>
             {" "}
             {accountSettings.name || ""}
-          </p>*/}
+          </p>
           <p className="mb-4" style={{ color: "white" }}>
             Welcome Back!...Login to your School Dashboard. 📚💡
             <br />
