@@ -149,7 +149,7 @@ const JwtLogin = () => {
             {accountSettings.name || ""}
           </p>*/}
           <p className="mb-4" style={{ color: "white" }}>
-            Welcome!...Login to your School Dashboard. 📚💡
+            Welcome Back!...Login to your School Dashboard. 📚💡
             <br />
           </p>
         </div>
