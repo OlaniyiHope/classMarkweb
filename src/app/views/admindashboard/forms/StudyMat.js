@@ -429,13 +429,14 @@ const StudyMat = () => {
 
   console.log("Data fetched:", data); // Ensure this is displaying the expected data structure
 
-  const [downloads, setDownloads] = useState([]);
+  const [downloads, setDownloads] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedGradeId, setSelectedGradeId] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorElMap, setAnchorElMap] = useState({});
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
-  const [userToDelete, setUserToDelete] = useState(null);
+  const apiUrl = process.env.REACT_APP_API_URL;
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editGradeData, setEditGradeData] = useState(null);
 
@@ -448,31 +449,47 @@ const StudyMat = () => {
     setPage(0);
   };
 
-  const handleOpenMenu = (event, gradeId) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedGradeId(gradeId);
+  const handleOpenMenu = (event, examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: event.currentTarget,
+    }));
   };
 
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
+  const handleCloseMenu = (examId) => {
+    setAnchorElMap((prev) => ({
+      ...prev,
+      [examId]: null,
+    }));
   };
 
   const handleOpenDeleteConfirmation = (user) => {
-    setUserToDelete(user);
+    setDownloads(user);
     setDeleteConfirmationOpen(true);
   };
 
   const handleCloseDeleteConfirmation = () => {
-    setUserToDelete(null);
+    setDownloads(null);
     setDeleteConfirmationOpen(false);
   };
 
   const handleDeleteUser = async () => {
     try {
-      // Make your API call here to delete the user
-      // After successful delete, refetch the data
-      await reFetch();
-      handleCloseDeleteConfirmation();
+      const response = await axios.delete(
+        // `${apiUrl}/api/users/${userToDelete._id}`
+        `${apiUrl}/api/download/${currentSession._id}/${downloads._id}`
+      );
+
+      console.log("Response from delete API:", response.data);
+
+      if (response.status === 200) {
+        console.log("User deleted successfully");
+
+        // Manually trigger data refetch
+        reFetch();
+      } else {
+        console.error("Failed to delete User");
+      }
     } catch (error) {
       console.error("Error deleting User:", error);
     }
@@ -542,7 +559,7 @@ const StudyMat = () => {
                             <Button
                               variant="contained"
                               component="a"
-                              href={`https://edupros.s3.amazonaws.com/${download.Download}`}
+                              href={download.Downloads}
                               target="_blank"
                               rel="noopener noreferrer"
                               download
@@ -550,16 +567,43 @@ const StudyMat = () => {
                               Download
                             </Button>
                           </td>
+
                           <td>
-                            <IconButton
-                              aria-controls="action-menu"
-                              aria-haspopup="true"
-                              onClick={(event) =>
-                                handleOpenMenu(event, download._id)
-                              }
-                            >
-                              <MoreVertIcon />
-                            </IconButton>
+                            <TableCell align="right">
+                              <IconButton
+                                aria-controls={`action-menu-${download._id}`}
+                                aria-haspopup="true"
+                                onClick={(event) =>
+                                  handleOpenMenu(event, download._id)
+                                } // Pass item._id
+                              >
+                                <MoreVertIcon />{" "}
+                                {/* MoreVertIcon for the menu */}
+                              </IconButton>
+                              <Menu
+                                id={`action-menu-${download._id}`}
+                                anchorEl={anchorElMap[download._id]}
+                                open={Boolean(anchorElMap[download._id])}
+                                onClose={() => handleCloseMenu(download._id)}
+                              >
+                                <MenuItem>
+                                  <ListItemIcon>
+                                    <EditIcon /> {/* Use an Edit icon */}
+                                  </ListItemIcon>
+                                  Edit
+                                </MenuItem>
+                                <MenuItem
+                                  onClick={() =>
+                                    handleOpenDeleteConfirmation(download)
+                                  }
+                                >
+                                  <ListItemIcon>
+                                    <DeleteIcon />
+                                  </ListItemIcon>
+                                  Delete
+                                </MenuItem>
+                              </Menu>
+                            </TableCell>
                           </td>
                         </tr>
                       ))}
@@ -587,7 +631,7 @@ const StudyMat = () => {
                 >
                   <DialogTitle>Delete Confirmation</DialogTitle>
                   <DialogContent>
-                    Are you sure you want to delete {userToDelete?.username}?
+                    Are you sure you want to delete {downloads?.username}?
                   </DialogContent>
                   <DialogActions>
                     <Button onClick={handleCloseDeleteConfirmation}>
@@ -595,7 +639,7 @@ const StudyMat = () => {
                     </Button>
                     <Button
                       onClick={async () => {
-                        await handleDeleteUser();
+                        await handleDeleteUser(); // Call the asynchronous function
                         handleCloseDeleteConfirmation();
                       }}
                     >

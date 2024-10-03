@@ -369,6 +369,78 @@ export const navigations = [
     path: "/dashboard/teacher",
     icon: <span style={{ color: "#ffc107" }}>person</span>,
   },
+
+  {
+    name: "Subject",
+    icon: "book",
+    children: [
+      {
+        name: "Class J.S.S 1",
+        iconText: "SI",
+        path: "/dashboard/js1-subject",
+      },
+      {
+        name: "Class J.S.S 2",
+        iconText: "SI",
+        path: "/dashboard/js2-subject",
+      },
+      {
+        name: "Class J.S.S 3",
+        iconText: "SI",
+        path: "/dashboard/js3-subject",
+      },
+      {
+        name: "Class S.S.1.S",
+        iconText: "SI",
+        path: "/dashboard/ss1-science-subject",
+      },
+      {
+        name: "Class S.S.1.A",
+        iconText: "SI",
+        path: "/dashboard/ss1-art-subject",
+      },
+      {
+        name: "Class S.S.1.C",
+        iconText: "SI",
+        path: "/dashboard/ss1-commercial-subject",
+      },
+      {
+        name: "Class S.S.1.T",
+        iconText: "SI",
+        path: "/dashboard/ss1-technology-subject",
+      },
+      {
+        name: "Class S.S.2.S",
+        iconText: "SI",
+        path: "/dashboard/ss2-science-subject",
+      },
+      {
+        name: "Class S.S.2.A",
+        iconText: "SI",
+        path: "/dashboard/ss2-art-subject",
+      },
+      {
+        name: "Class S.S.2.C",
+        iconText: "SI",
+        path: "/dashboard/ss2-commercial-subject",
+      },
+      {
+        name: "Class S.S.3.S",
+        iconText: "SI",
+        path: "/dashboard/ss3-science-subject",
+      },
+      {
+        name: "Class S.S.3.A",
+        iconText: "SI",
+        path: "/dashboard/ss3-art-subject",
+      },
+      {
+        name: "Class S.S.3.C",
+        iconText: "SI",
+        path: "/dashboard/ss3-commercial-subject",
+      },
+    ],
+  },
   {
     name: "Noticeboard",
     icon: <span style={{ color: "#ffc107" }}>info</span>,

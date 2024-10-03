@@ -28,6 +28,7 @@ import ExamDetail from "./forms/ExamDetail";
 import ManageResult from "./forms/ManageResult";
 import MarkSheet from "./forms/MarkSheet";
 import ReportCard from "./forms/ReportCard";
+import StudyMat from "./forms/StudyMat";
 
 // import Su from "./forms/SubSubject";
 // import SubSubject from "./forms/subSubject";
@@ -138,6 +139,11 @@ const studentDashboardRoutes = [
   {
     path: "/student/dashboard/student-payment",
     element: <Payment />,
+    auth: "student",
+  },
+  {
+    path: "/student/dashboard/student-material",
+    element: <StudyMat />,
     auth: "student",
   },
   // {

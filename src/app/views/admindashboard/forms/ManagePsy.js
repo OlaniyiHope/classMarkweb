@@ -28,7 +28,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
-
 const Container = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -47,17 +46,15 @@ const ManagePsy = () => {
   const { currentSession } = useContext(SessionContext);
 
   const {
-    data:classData,
+    data: classData,
     loading: classLoading,
     error: classError,
-  } = useFetch(
-      currentSession ? `/class/${currentSession._id}` : null      
-    );
-    console.log(classData)
-    const { data: examData } = useFetch(
-      currentSession ? `/getofflineexam/${currentSession._id}` : null
-    );
-    console.log(examData)
+  } = useFetch(currentSession ? `/class/${currentSession._id}` : null);
+  console.log(classData);
+  const { data: examData } = useFetch(
+    currentSession ? `/getofflineexam/${currentSession._id}` : null
+  );
+  console.log(examData);
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedExam, setSelectedExam] = useState("");
@@ -101,9 +98,12 @@ const ManagePsy = () => {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      const response = await fetch(`${apiUrl}/api/student/${selectedClass}/${currentSession._id}`, {
-        headers,
-      });
+      const response = await fetch(
+        `${apiUrl}/api/student/${selectedClass}/${currentSession._id}`,
+        {
+          headers,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch student data");
@@ -185,8 +185,273 @@ const ManagePsy = () => {
     return selectedExam ? selectedExam.name : "";
   };
 
+  // const handleSaveChanges = async () => {
+  //   try {
+  //     const marks = studentData.map((student) => {
+  //       const {
+  //         studentId,
+  //         instruction = 5,
+  //         independently = 5,
+  //         punctuality = 5,
+  //         talking = 5,
+  //         eyecontact = 5,
+  //         remarks = 5,
+  //         premarks = 5,
+  //       } = student;
+
+  //       return {
+  //         studentId,
+
+  //         instruction,
+  //         independently,
+  //         punctuality,
+  //         talking,
+  //         eyecontact,
+  //         remarks,
+  //         premarks,
+  //       };
+  //     });
+
+  //     console.log("Updated Marks:", marks);
+
+  //     const token = localStorage.getItem("jwtToken");
+  //     const headers = new Headers();
+  //     headers.append("Authorization", `Bearer ${token}`);
+
+  //     // Check if there are existing marks by verifying the examId and subjectId
+  //     if (selectedExam) {
+  //       const responseCheckMarks = await fetch(
+  //         `${apiUrl}/api/get-all-psy/${selectedExam}`,
+  //         {
+  //           headers,
+  //         }
+  //       );
+
+  //       console.log("Response from Check Marks:", responseCheckMarks);
+
+  //       if (responseCheckMarks.ok) {
+  //         const responseData = await responseCheckMarks.json();
+  //         const existingMarks = responseData.scores || [];
+
+  //         // Check if there are existing marks
+  //         if (existingMarks.length > 0) {
+  //           // Existing marks found, proceed with updating
+  //           const responseUpdateMarks = await fetch(
+  //             `${apiUrl}/api/update-all-psy`,
+  //             {
+  //               method: "PUT",
+  //               headers: {
+  //                 ...headers,
+  //                 "Content-Type": "application/json",
+  //               },
+  //               body: JSON.stringify({
+  //                 examId: selectedExam,
+
+  //                 updates: marks,
+  //               }),
+  //             }
+  //           );
+
+  //           console.log("Request Payload:", {
+  //             examId: selectedExam,
+
+  //             updates: marks,
+  //           });
+
+  //           console.log("Response from Update Marks:", responseUpdateMarks);
+
+  //           if (!responseUpdateMarks.ok) {
+  //             const errorMessage = await responseUpdateMarks.text();
+  //             console.error(
+  //               `Failed to update marks. Server response: ${errorMessage}`
+  //             );
+  //             throw new Error("Failed to update marks");
+  //           } else {
+  //             // Notify success using toast
+  //             toast.success("Marks updated successfully!");
+  //           }
+  //         } else {
+
+  //           // No existing marks found, proceed to create new marks
+  //           const responseSaveMarks = await fetch(`${apiUrl}/api/save-psy`, {
+  //             method: "POST",
+  //             headers: {
+  //               ...headers,
+  //               "Content-Type": "application/json",
+  //             },
+  //             body: JSON.stringify({
+  //               examId: selectedExam,
+
+  //               updates: marks,
+  //             }),
+  //           });
+
+  //           console.log("Response from Save Marks:", responseSaveMarks);
+
+  //           if (!responseSaveMarks.ok) {
+  //             const errorMessage = await responseSaveMarks.text();
+
+  //             console.error(
+  //               `Failed to save marks. Server response: ${errorMessage}`
+  //             );
+  //             throw new Error("Failed to save marks");
+  //           } else {
+  //             // Notify success using toast
+  //             toast.success("Marks saved successfully!");
+  //           }
+  //         }
+  //       } else {
+  //         // Handle other response statuses
+  //         // ...
+  //       }
+  //     }
+  //     // ... (remaining code)
+  //   } catch (error) {
+  //     console.error("Error saving marks:", error);
+  //     // ... (error handling)
+  //   }
+  // };
+
+  // const handleSaveChanges = async () => {
+  //   try {
+  //     // Prepare marks data from studentData
+  //     const marks = studentData.map((student) => {
+  //       const {
+  //         studentId = "",
+  //         instruction = "",
+  //         independently = "",
+  //         punctuality = "",
+  //         talking = "",
+  //         eyecontact = "",
+  //         remarks = "",
+  //         premarks = "No principal remarks",
+  //       } = student;
+
+  //       // Validate premarks before returning the object
+  //       if (!premarks) {
+  //         toast.error("Principal remarks cannot be empty.");
+  //         return null; // Skip this entry or handle accordingly
+  //       }
+
+  //       return {
+  //         studentId,
+  //         instruction,
+  //         independently,
+  //         punctuality,
+  //         talking,
+  //         eyecontact,
+  //         remarks,
+  //         premarks,
+  //       };
+  //     });
+
+  //     console.log("Updated Marks:", marks);
+
+  //     const token = localStorage.getItem("jwtToken");
+  //     const headers = new Headers();
+  //     headers.append("Authorization", `Bearer ${token}`);
+
+  //     // Check if there are existing marks
+  //     if (selectedExam) {
+  //       const responseCheckMarks = await fetch(
+  //         `${apiUrl}/api/get-all-psy/${selectedExam}`,
+  //         { headers }
+  //       );
+
+  //       console.log("Response from Check Marks:", responseCheckMarks);
+
+  //       if (responseCheckMarks.ok) {
+  //         const responseData = await responseCheckMarks.json();
+  //         const existingMarks = responseData.scores || [];
+
+  //         console.log("Existing Marks:", existingMarks); // Log existing marks
+
+  //         // If existing marks found, proceed with updating
+  //         if (existingMarks.length > 0) {
+  //           const responseUpdateMarks = await fetch(
+  //             `${apiUrl}/api/update-all-psy`,
+  //             {
+  //               method: "PUT",
+  //               headers: {
+  //                 ...headers,
+  //                 "Content-Type": "application/json",
+  //               },
+  //               body: JSON.stringify({
+  //                 examId: selectedExam,
+  //                 updates: marks,
+  //               }),
+  //             }
+  //           );
+
+  //           console.log("Request Payload for Update:", {
+  //             examId: selectedExam,
+  //             updates: marks,
+  //           });
+
+  //           console.log("Response from Update Marks:", responseUpdateMarks);
+
+  //           if (!responseUpdateMarks.ok) {
+  //             const errorMessage = await responseUpdateMarks.text();
+  //             console.error(
+  //               `Failed to update marks. Server response: ${errorMessage}`
+  //             );
+  //             throw new Error("Failed to update marks");
+  //           } else {
+  //             toast.success("Marks updated successfully!");
+  //           }
+  //         } else {
+  //           // No existing marks found, proceed to create new marks
+  //           if (currentSession && currentSession._id) {
+  //             const responseSaveMarks = await fetch(
+  //               `${apiUrl}/api/save-psy/${currentSession._id}`,
+  //               {
+  //                 method: "POST",
+  //                 headers: {
+  //                   ...headers,
+  //                   "Content-Type": "application/json",
+  //                 },
+  //                 body: JSON.stringify({
+  //                   examId: selectedExam,
+  //                   updates: marks,
+  //                 }),
+  //               }
+  //             );
+
+  //             console.log("Response from Save Marks:", responseSaveMarks);
+
+  //             if (!responseSaveMarks.ok) {
+  //               const errorMessage = await responseSaveMarks.text();
+  //               console.error(
+  //                 `Failed to save marks. Server response: ${errorMessage}`
+  //               );
+  //               throw new Error("Failed to save marks");
+  //             } else {
+  //               toast.success("Marks saved successfully!");
+  //             }
+  //           } else {
+  //             console.error("Current session is not available.");
+  //             toast.error("Failed to save marks: Current session is missing.");
+  //           }
+  //         }
+  //       } else {
+  //         // Handle other response statuses, e.g., 404, 500, etc.
+  //         console.error(
+  //           "Failed to check marks. Status code:",
+  //           responseCheckMarks.status
+  //         );
+  //         toast.error("Failed to check existing marks.");
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Error saving marks:", error);
+  //     toast.error("An error occurred while saving marks.");
+  //   }
+  // };
   const handleSaveChanges = async () => {
     try {
+      // Validate all student data before proceeding
+
+      // Proceed if all validations pass
       const marks = studentData.map((student) => {
         const {
           studentId,
@@ -212,30 +477,26 @@ const ManagePsy = () => {
         };
       });
 
-      console.log("Updated Marks:", marks);
+      // Now log the marks array once it's fully created
+      console.log("Marks to be sent:", marks);
 
+      // Proceed with sending the marks data to the backend
       const token = localStorage.getItem("jwtToken");
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      // Check if there are existing marks by verifying the examId and subjectId
       if (selectedExam) {
         const responseCheckMarks = await fetch(
           `${apiUrl}/api/get-all-psy/${selectedExam}`,
-          {
-            headers,
-          }
+          { headers }
         );
-
-        console.log("Response from Check Marks:", responseCheckMarks);
 
         if (responseCheckMarks.ok) {
           const responseData = await responseCheckMarks.json();
           const existingMarks = responseData.scores || [];
 
-          // Check if there are existing marks
           if (existingMarks.length > 0) {
-            // Existing marks found, proceed with updating
+            // Update marks
             const responseUpdateMarks = await fetch(
               `${apiUrl}/api/update-all-psy`,
               {
@@ -246,19 +507,10 @@ const ManagePsy = () => {
                 },
                 body: JSON.stringify({
                   examId: selectedExam,
-
                   updates: marks,
                 }),
               }
             );
-
-            console.log("Request Payload:", {
-              examId: selectedExam,
-
-              updates: marks,
-            });
-
-            console.log("Response from Update Marks:", responseUpdateMarks);
 
             if (!responseUpdateMarks.ok) {
               const errorMessage = await responseUpdateMarks.text();
@@ -267,47 +519,42 @@ const ManagePsy = () => {
               );
               throw new Error("Failed to update marks");
             } else {
-              // Notify success using toast
               toast.success("Marks updated successfully!");
             }
           } else {
-            // No existing marks found, proceed to create new marks
-            const responseSaveMarks = await fetch(`${apiUrl}/api/save-psy`, {
-              method: "POST",
-              headers: {
-                ...headers,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                examId: selectedExam,
-
-                updates: marks,
-              }),
-            });
-
-            console.log("Response from Save Marks:", responseSaveMarks);
+            // Save new marks
+            const responseSaveMarks = await fetch(
+              `${apiUrl}/api/save-psy/${currentSession._id}`,
+              {
+                method: "POST",
+                headers: {
+                  ...headers,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  examId: selectedExam,
+                  updates: marks,
+                }),
+              }
+            );
 
             if (!responseSaveMarks.ok) {
               const errorMessage = await responseSaveMarks.text();
-
               console.error(
                 `Failed to save marks. Server response: ${errorMessage}`
               );
               throw new Error("Failed to save marks");
             } else {
-              // Notify success using toast
               toast.success("Marks saved successfully!");
             }
           }
         } else {
-          // Handle other response statuses
-          // ...
+          toast.error("Failed to check existing marks.");
         }
       }
-      // ... (remaining code)
     } catch (error) {
       console.error("Error saving marks:", error);
-      // ... (error handling)
+      toast.error("An error occurred while saving marks.");
     }
   };
 

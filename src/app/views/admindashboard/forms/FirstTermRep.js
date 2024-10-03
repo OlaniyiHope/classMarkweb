@@ -412,7 +412,8 @@ const FirstTermRep = ({ studentId }) => {
                 textAlign: "center",
                 padding: "20px",
                 backgroundColor: "#f0f0f0",
-              }}>
+              }}
+            >
               <div className="logo">
                 <img
                   src={`https://edupros.s3.amazonaws.com/${accountSettings.schoolLogo}`}
@@ -430,7 +431,8 @@ const FirstTermRep = ({ studentId }) => {
                     fontWeight: "800",
                     textTransform: "uppercase",
                     margin: "10px 0",
-                  }}>
+                  }}
+                >
                   {accountSettings.name || ""}
                 </h1>
                 <h4 style={{ fontSize: "18px", margin: "5px 0" }}>
@@ -442,7 +444,7 @@ const FirstTermRep = ({ studentId }) => {
                   {accountSettings.email || ""}
                 </p>
                 <h3 style={{ color: "#042954", margin: "10px 0" }}>
-                  {data[0]?.classname || ""} First Term Report Card
+                  {data?.classname || ""} First Term Report Card
                 </h3>
               </div>
             </div>
@@ -453,7 +455,8 @@ const FirstTermRep = ({ studentId }) => {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-              }}>
+              }}
+            >
               <div style={{ flex: "0 0 auto" }}>
                 <div className="bd_photo">
                   <img
@@ -465,7 +468,8 @@ const FirstTermRep = ({ studentId }) => {
                 </div>
               </div>
               <div
-                style={{ flex: "1", padding: "0 20px", textAlign: "center" }}>
+                style={{ flex: "1", padding: "0 20px", textAlign: "center" }}
+              >
                 <div style={{ marginBottom: "20px" }}>
                   <span>Student Name:</span>
                   {""}
@@ -478,9 +482,10 @@ const FirstTermRep = ({ studentId }) => {
                       width: "50%",
                       marginLeft: "30px",
                       textAlign: "center",
-                    }}>
+                    }}
+                  >
                     {data && Array.isArray(data)
-                      ? data[0]?.studentName || "Name not available"
+                      ? data?.studentName || "Name not available"
                       : "Data format unexpected"}
                   </span>
                 </div>
@@ -495,7 +500,8 @@ const FirstTermRep = ({ studentId }) => {
                       width: "50%",
                       marginLeft: "30px",
                       textAlign: "center",
-                    }}>
+                    }}
+                  >
                     {accountSettings.sessionStart}-{accountSettings.sessionEnd}
                   </p>
                 </div>
@@ -510,13 +516,15 @@ const FirstTermRep = ({ studentId }) => {
                       width: "50%",
                       marginLeft: "30px",
                       textAlign: "center",
-                    }}>
+                    }}
+                  >
                     Mrs Adebisi Emmanuel
                   </span>
                 </div>
               </div>
               <div
-                style={{ flex: "1", padding: "0 20px", textAlign: "center" }}>
+                style={{ flex: "1", padding: "0 20px", textAlign: "center" }}
+              >
                 <p style={{ color: "#042954" }}>
                   <span>Student Id No:</span>{" "}
                   <input
@@ -530,7 +538,7 @@ const FirstTermRep = ({ studentId }) => {
                       marginLeft: "30px",
                       textAlign: "center",
                     }}
-                    value={data[0]?.AdmNo || "ID not available"}
+                    value={data?.AdmNo || "ID not available"}
                     readOnly
                   />
                 </p>
@@ -553,7 +561,8 @@ const FirstTermRep = ({ studentId }) => {
                 </p>
               </div>
               <div
-                style={{ flex: "1", padding: "0 20px", textAlign: "center" }}>
+                style={{ flex: "1", padding: "0 20px", textAlign: "center" }}
+              >
                 <p style={{ color: "#042954" }}>
                   <span>Marks Obtained:</span>{" "}
                   <input
@@ -665,12 +674,14 @@ const FirstTermRep = ({ studentId }) => {
             <table
               className="table second-sub-table"
               id="customersreport"
-              style={{ width: "100%" }}>
+              style={{ width: "100%" }}
+            >
               <thead>
                 <tr>
                   <th
                     colSpan="3"
-                    style={{ textAlign: "center", fontSize: "18px" }}>
+                    style={{ textAlign: "center", fontSize: "18px" }}
+                  >
                     AFFECTIVE AND PSYCHOMOTOR REPORT
                   </th>
                 </tr>
@@ -781,7 +792,8 @@ const FirstTermRep = ({ studentId }) => {
 
             <div
               className="bd_key"
-              style={{ color: "#042954", fontSize: "16px" }}>
+              style={{ color: "#042954", fontSize: "16px" }}
+            >
               KEY TO RATINGS : 5 = Excellent , 4 = Good , 3 = Fair , 2 = Poor ,
               1 = Very Poor
             </div>

@@ -66,7 +66,7 @@ export const navigations = [
   {
     name: "Study Material",
     icon: <span style={{ color: "#ffc107" }}>group_work</span>,
-    path: "/student/dashboard/student-payment",
+    path: "/student/dashboard/student-material",
   },
 
   {
