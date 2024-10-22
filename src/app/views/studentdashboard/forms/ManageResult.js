@@ -143,6 +143,7 @@ import AuthContext from "../../../../app/contexts/JWTAuthContext";
 
 // Import useNavigate
 import { useNavigate } from "react-router-dom";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 const ManageResult = () => {
   // const { user } = useContext(AuthContext);
@@ -157,7 +158,7 @@ const ManageResult = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const apiUrl = process.env.REACT_APP_API_URL;
-
+  const { currentSession } = useContext(SessionContext);
   // Import useNavigate
   const navigate = useNavigate();
 
@@ -175,7 +176,7 @@ const ManageResult = () => {
         };
 
         const response = await axios.get(
-          `${apiUrl}/api/students/all-scores/${user._id}`, // Use user._id instead of user.id
+          `${apiUrl}/api/students/all-scores/${user._id}/${currentSession._id}`, // Use user._id instead of user.id
           {
             headers,
           }
