@@ -484,8 +484,8 @@ const FirstTermRep = ({ studentId }) => {
                       textAlign: "center",
                     }}
                   >
-                    {data && Array.isArray(data)
-                      ? data?.studentName || "Name not available"
+                    {data && data.length > 0
+                      ? data[0]?.studentName || "Name not available"
                       : "Data format unexpected"}
                   </span>
                 </div>

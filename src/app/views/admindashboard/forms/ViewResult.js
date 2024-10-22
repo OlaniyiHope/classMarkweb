@@ -6,7 +6,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { Fragment, React, useEffect, useState } from "react";
+import { Fragment, React, useContext, useEffect, useState } from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 
@@ -33,6 +33,7 @@ import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
 import useFetch from "../../../../hooks/useFetch";
 import { Link, useParams } from "react-router-dom";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -81,7 +82,9 @@ const ViewResult = () => {
   console.log("examId:", examId);
 
   const { data, loading, error } = useFetch(`/exams/all-scores/${examId}`);
+  console.log("Exam data:", data);
 
+  const { currentSession } = useContext(SessionContext);
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -98,7 +101,9 @@ const ViewResult = () => {
     // Fetch exam details separately
     async function fetchExamData() {
       try {
-        const response = await fetch(`${apiUrl}/api/get-exam/${id}`);
+        const response = await fetch(
+          `${apiUrl}/api/get-exam-by-id/${id}/${currentSession._id}`
+        );
         const data = await response.json();
         setExamData(data);
         console.log("this is data", data);
@@ -196,7 +201,7 @@ const ViewResult = () => {
                 </TableCell>
                 <TableCell>
                   {" "}
-                  {examData ? examData.mark : "Loading..."}
+                  {examData ? examData?.totalMark : "Loading..."}
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -233,7 +238,7 @@ const ViewResult = () => {
             page={page}
             component="div"
             rowsPerPage={rowsPerPage}
-            count={data.length}
+            count={data ? data.length : 0}
             onPageChange={handleChangePage}
             rowsPerPageOptions={[5, 10, 25]}
             onRowsPerPageChange={handleChangeRowsPerPage}

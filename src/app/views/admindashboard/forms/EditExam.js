@@ -170,7 +170,7 @@
 
 // export default EditExam;
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -179,6 +179,7 @@ import {
   Button,
   TextField,
 } from "@mui/material";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 const EditExam = ({ open, onClose, examId, onSave }) => {
   const [formData, setFormData] = useState({
@@ -190,16 +191,21 @@ const EditExam = ({ open, onClose, examId, onSave }) => {
     toTime: "",
   });
   const apiUrl = process.env.REACT_APP_API_URL;
+  const { currentSession } = useContext(SessionContext);
   useEffect(() => {
     const fetchExamById = async () => {
+      const sessionId = currentSession?._id;
       try {
         if (examId) {
           const token = localStorage.getItem("jwtToken");
-          const response = await fetch(`${apiUrl}/api/get-exam/${examId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          const response = await fetch(
+            `${apiUrl}/api/get-exam-by-id/${examId}/${sessionId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
           if (response.ok) {
             const data = await response.json();

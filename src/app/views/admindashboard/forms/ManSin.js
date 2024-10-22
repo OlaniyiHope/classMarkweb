@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Grid,
   Paper,
@@ -20,13 +20,21 @@ import IconButton from "@mui/material/IconButton";
 
 import useFetch from "../../../../hooks/useFetch";
 import EditQuestionModal from "./EditQuestionModal";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 const ManSin = () => {
   const location = useLocation();
   const parts = location.pathname.split("/");
   const id = parts[3];
 
-  const { data, loading, error } = useFetch(`/get-exam/${id}`);
+  // Get current session from the SessionContext
+  const { currentSession } = useContext(SessionContext);
+
+  // Fetch exam data using the id and current session's sessionId
+  const { data, loading, error } = useFetch(
+    currentSession ? `/get-exam-by-id/${id}/${currentSession._id}` : null
+  );
+
   const [questionType, setQuestionType] = useState("");
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -256,8 +264,8 @@ const ManSin = () => {
         // Additional logic for theory questions
         questionData.onscreenMarking = onscreenMarking;
       }
-
-      const response = await fetch(`${apiUrl}/api/questions`, {
+      const sessionId = currentSession?._id;
+      const response = await fetch(`${apiUrl}/api/questions/${sessionId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -284,7 +292,14 @@ const ManSin = () => {
       <div key={i} className="form-group options">
         <label className="col-sm-3 control-label">Option {i + 1}</label>
         <div className="col-sm-8">
-          <div className="input-group">
+          <div
+            className="input-group"
+            style={{
+              display: "flex",
+              flexWrap: "nowrap",
+              alignItems: "center",
+            }}
+          >
             <TextField
               type="text"
               variant="outlined"
@@ -293,7 +308,7 @@ const ManSin = () => {
               required
               id={`option${i + 1}`}
             />
-            <div className="input-group-addon">
+            <div className="input-group-addon" style={{ marginLeft: "10px" }}>
               <input
                 type="checkbox"
                 name="correct_answers[]"
@@ -761,7 +776,7 @@ const ManSin = () => {
                       <TableCell
                         style={{ width: "25%", whiteSpace: "pre-line" }}
                       >
-                        {data.title}
+                        {data?.title}
                       </TableCell>
                       <TableCell
                         style={{ width: "25%", whiteSpace: "pre-line" }}
@@ -771,7 +786,7 @@ const ManSin = () => {
                       <TableCell
                         style={{ width: "25%", whiteSpace: "pre-line" }}
                       >
-                        {data.date
+                        {data?.date
                           ? new Date(data.date).toLocaleDateString()
                           : ""}
                       </TableCell>
@@ -787,7 +802,7 @@ const ManSin = () => {
                         <b>Time</b>
                       </TableCell>
                       <TableCell style={{ whiteSpace: "pre-line" }}>
-                        {data.fromTime} - {data.toTime}
+                        {data?.fromTime} - {data?.toTime}
                       </TableCell>
                     </TableRow>
                     <TableRow>
@@ -801,7 +816,7 @@ const ManSin = () => {
                         <b>Passing Percentage</b>
                       </TableCell>
                       <TableCell style={{ whiteSpace: "pre-line" }}>
-                        {data.percent}%
+                        {data?.percent}%
                       </TableCell>
                     </TableRow>
                     <TableRow>
