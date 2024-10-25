@@ -314,7 +314,7 @@ const EditExam = ({ open, onClose, examId, onSave }) => {
           Cancel
         </Button>
         <Button onClick={handleSave} color="primary">
-          Save Changes
+          Save
         </Button>
       </DialogActions>
     </Dialog>
