@@ -227,7 +227,7 @@ const ViewResult = () => {
                     </TableCell>{" "}
                     {/* Access userId.studentName */}
                     <TableCell align="center">{item.score}</TableCell>
-                    <TableCell align="left">Result Here</TableCell>
+                    <TableCell align="left">Your Result Here</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
