@@ -191,31 +191,71 @@ const Info7 = () => {
     setEditDialogOpen(true);
   };
 
+  // const handleSaveEdit = async (updatedData) => {
+  //   try {
+  //     const token = localStorage.getItem("jwtToken");
+
+  //     // Check if editStudentData is not null and has the _id property
+  //     if (editStudentData?._id) {
+  //       // Log the payload before sending the request
+  //       console.log("Payload before sending:", {
+  //         studentName: updatedData.studentName,
+  //         address: updatedData.address,
+  //         // Add other fields as needed
+  //       });
+
+  //       const response = await axios.put(
+  //         `${apiUrl}/api/put-students/${editStudentData._id}`,
+  //         {
+  //           studentName: updatedData.studentName,
+  //           address: updatedData.address,
+  //           AdmNo: updatedData.AdmNo,
+  //           email: updatedData.email,
+  //           username: updatedData.username,
+  //           phone: updatedData.phone,
+  //           password: newPassword || updatedData.password,
+  //           // Add other fields as needed
+  //         },
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
+
+  //       console.log("Student updated successfully:", response.data);
+  //       setEditDialogOpen(false);
+  //       reFetch(); // Manually trigger data refetch
+  //     } else {
+  //       console.error("Invalid or missing _id property in editStudentData");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating student:", error);
+  //   }
+  // };
   const handleSaveEdit = async (updatedData) => {
+    console.log("New Password:", newPassword); // Log the new password before sending
     try {
       const token = localStorage.getItem("jwtToken");
 
       // Check if editStudentData is not null and has the _id property
       if (editStudentData?._id) {
-        // Log the payload before sending the request
-        console.log("Payload before sending:", {
+        const payload = {
           studentName: updatedData.studentName,
           address: updatedData.address,
-          // Add other fields as needed
-        });
+          AdmNo: updatedData.AdmNo,
+          email: updatedData.email,
+          username: updatedData.username,
+          phone: updatedData.phone,
+          password: updatedData.password, // Use newPassword if provided, otherwise use existing password
+        };
+
+        console.log("Payload before sending:", payload); // Log the payload before sending
+        console.log("Token:", token); // Log the token for verification
 
         const response = await axios.put(
           `${apiUrl}/api/put-students/${editStudentData._id}`,
-          {
-            studentName: updatedData.studentName,
-            address: updatedData.address,
-            AdmNo: updatedData.AdmNo,
-            email: updatedData.email,
-            username: updatedData.username,
-            phone: updatedData.phone,
-            password: newPassword || updatedData.password,
-            // Add other fields as needed
-          },
+          payload,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -223,9 +263,13 @@ const Info7 = () => {
           }
         );
 
-        console.log("Student updated successfully:", response.data);
-        setEditDialogOpen(false);
-        reFetch(); // Manually trigger data refetch
+        if (response.status === 200) {
+          console.log("Student updated successfully:", response.data);
+          setEditDialogOpen(false);
+          reFetch(); // Manually trigger data refetch
+        } else {
+          console.error("Failed to update student:", response.statusText);
+        }
       } else {
         console.error("Invalid or missing _id property in editStudentData");
       }
@@ -233,6 +277,7 @@ const Info7 = () => {
       console.error("Error updating student:", error);
     }
   };
+
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });

@@ -263,15 +263,26 @@ const EditStudent = ({ open, onClose, studentId, onSave }) => {
     const { name, value } = e.target;
     if (name === "newPassword") {
       setNewPassword(value);
+      console.log("Updated New Password:", value);
     } else {
       setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
     }
   };
 
   const handleSave = () => {
-    onSave(formData);
+    // Include newPassword only if it's set
+    const updatedData = {
+      ...formData,
+      password: newPassword || formData.password, // Use new password if provided
+    };
+    onSave(updatedData);
     onClose();
   };
+
+  // const handleSave = () => {
+  //   onSave(formData);
+  //   onClose();
+  // };
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
