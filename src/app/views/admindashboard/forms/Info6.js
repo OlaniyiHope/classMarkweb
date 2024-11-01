@@ -1,5 +1,12 @@
 import {} from "@mui/material";
-import { Fragment, React, useState, useEffect, useContext } from "react";
+import {
+  Fragment,
+  React,
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+} from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 
@@ -33,6 +40,8 @@ import { Breadcrumb } from "../../../../app/components";
 import FormDialog2 from "../../../../app/views/material-kit/dialog/FormDialog2";
 import useFetch from "../../../../hooks/useFetch";
 import axios from "axios";
+import { useReactToPrint } from "react-to-print";
+
 import { Link } from "react-router-dom";
 import EditStudent from "./EditStudent";
 import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
@@ -86,6 +95,7 @@ const Info6 = () => {
   );
 
   console.log("Data:", data);
+  const componentRef = useRef();
 
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
@@ -224,6 +234,10 @@ const Info6 = () => {
     }
   };
 
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
   return (
     <Fragment>
       <ContentBox className="analytics">
@@ -235,7 +249,21 @@ const Info6 = () => {
             <FormDialog2 />
           </Box>
 
-          <Box width="100%" overflow="auto">
+          <Box className="breadcrumb">
+            <button
+              onClick={handlePrint}
+              style={{
+                backgroundColor: "white",
+                border: "1px solid black",
+                padding: "8px",
+                borderRadius: "10px",
+              }}
+            >
+              Print this out!
+            </button>
+          </Box>
+
+          <Box width="100%" overflow="auto" ref={componentRef}>
             <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
               <div class="table-responsive full-data">
                 <div style={{ overflowX: "auto", maxWidth: "100%" }}>

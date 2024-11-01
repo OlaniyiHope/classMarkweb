@@ -1,5 +1,12 @@
 import {} from "@mui/material";
-import { Fragment, React, useState, useEffect, useContext } from "react";
+import {
+  Fragment,
+  React,
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+} from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 
@@ -29,6 +36,8 @@ import { Container } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
 import RowCards from "../shared/RowCards";
+import { useReactToPrint } from "react-to-print";
+
 import { Breadcrumb } from "../../../../app/components";
 import FormDialog2 from "../../../../app/views/material-kit/dialog/FormDialog2";
 import useFetch from "../../../../hooks/useFetch";
@@ -93,6 +102,8 @@ const Info13 = () => {
   const [editStudentData, setEditStudentData] = useState(null);
   const [anchorElMap, setAnchorElMap] = useState({});
   const [newPassword, setNewPassword] = useState("");
+
+  const componentRef = useRef();
 
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
@@ -223,6 +234,9 @@ const Info13 = () => {
       console.error("Error updating student:", error);
     }
   };
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
   return (
     <Fragment>
@@ -235,7 +249,21 @@ const Info13 = () => {
             <FormDialog2 />
           </Box>
 
-          <Box width="100%" overflow="auto">
+          <Box className="breadcrumb">
+            <button
+              onClick={handlePrint}
+              style={{
+                backgroundColor: "white",
+                border: "1px solid black",
+                padding: "8px",
+                borderRadius: "10px",
+              }}
+            >
+              Print this out!
+            </button>
+          </Box>
+
+          <Box width="100%" overflow="auto" ref={componentRef}>
             <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
               <div class="table-responsive full-data">
                 <div style={{ overflowX: "auto", maxWidth: "100%" }}>
