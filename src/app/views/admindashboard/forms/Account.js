@@ -20,7 +20,7 @@ import {
   Radio,
 } from "@mui/material";
 import { Span } from "../../../../app/components/Typography";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 
@@ -29,6 +29,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { Navigate, useNavigate } from "react-router-dom";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 const Container = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -45,6 +46,7 @@ const TextField = styled(TextValidator)(() => ({
 
 const Account = () => {
   const navigate = useNavigate();
+  const { currentSession } = useContext(SessionContext); // Get the active session
   const [formData, setFormData] = useState({
     name: "",
     principalName: "",
@@ -68,6 +70,7 @@ const Account = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const currentSessionId = currentSession._id; // Ensure this variable holds the current session ID
 
     // Create FormData for sending files
     const formDataToSend = new FormData();
