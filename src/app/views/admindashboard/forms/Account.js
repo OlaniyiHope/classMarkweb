@@ -30,6 +30,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { Navigate, useNavigate } from "react-router-dom";
 import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
+import useFetch from "../../../../hooks/useFetch";
 const Container = styled("div")(({ theme }) => ({
   margin: "30px",
   [theme.breakpoints.down("sm")]: { margin: "16px" },
@@ -47,6 +48,12 @@ const TextField = styled(TextValidator)(() => ({
 const Account = () => {
   const navigate = useNavigate();
   const { currentSession } = useContext(SessionContext); // Get the active session
+  const { data: examData } = useFetch(
+    currentSession ? `/getofflineexam/${currentSession._id}` : null
+  );
+
+  const [selectedExam, setSelectedExam] = useState("");
+
   const [formData, setFormData] = useState({
     name: "",
     principalName: "",
@@ -67,27 +74,36 @@ const Account = () => {
         console.error("Error fetching classes:", error);
       });
   }, []);
+  const handleExamChange = (event) => {
+    const selectedExamId = event.target.value;
+    setSelectedExam(selectedExamId);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const currentSessionId = currentSession._id; // Ensure this variable holds the current session ID
+
+    // Ensure this variable holds the current session ID
+    const currentSessionId = currentSession._id;
 
     // Create FormData for sending files
     const formDataToSend = new FormData();
     formDataToSend.append("name", formData.name);
     formDataToSend.append("principalName", formData.principalName);
     formDataToSend.append("resumptionDate", formData.resumptionDate);
+    formDataToSend.append("examName", selectedExam); // Add the selected exam to the FormData
+
+    formDataToSend.append("session", currentSessionId); // Add the session ID to the FormData
 
     if (formData.signature) {
       formDataToSend.append("signature", formData.signature);
     }
 
     try {
-      // await axios.post(
-      //   `https://hlhs-98d6f8c9ac3a.herokuapp.com/api/setting`,
-      //   formDataToSend
-      // );
-      await axios.post(`${apiUrl}/api/setting`, formDataToSend);
+      await axios.post(`${apiUrl}/api/setting`, formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Important for file uploads
+        },
+      });
       toast.success("School profile updated successfully");
     } catch (err) {
       console.error("Error updating school profile:", err);
@@ -158,6 +174,23 @@ const Account = () => {
                     onChange={handleChange}
                     sx={{ mb: 3 }}
                   />
+
+                  <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
+                    <TextField
+                      select
+                      label="Select an Exam"
+                      variant="outlined"
+                      value={selectedExam}
+                      onChange={handleExamChange}
+                    >
+                      {examData &&
+                        examData.map((item) => (
+                          <MenuItem key={item._id} value={item._id}>
+                            {item.name}
+                          </MenuItem>
+                        ))}
+                    </TextField>
+                  </Grid>
 
                   <label>Signature</label>
                   <input
