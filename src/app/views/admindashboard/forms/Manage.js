@@ -30,7 +30,8 @@ import {
   TableRow,
 } from "@mui/material";
 import RowCards from "../shared/RowCards";
-
+import { Container } from "@mui/material";
+import { Breadcrumb } from "../../../../app/components";
 import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
 import useFetch from "../../../../hooks/useFetch";
@@ -258,215 +259,199 @@ const Manage = () => {
   return (
     <Fragment>
       <ContentBox className="analytics">
-        {/*}    <Box className="breadcrumb">
-          <FormDialog2 />
-  </Box>*/}
+        <Container>
+          <Box className="breadcrumb">
+            <Breadcrumb routeSegments={[{ name: "Student Information" }]} />
+          </Box>
 
-        <Box width="100%" overflow="auto">
-          <div class="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
-            <div class="table-responsive full-data">
-              <table
-                class="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
-                id="example-student"
-              >
-                <thead>
-                  <tr>
-                    <th>
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="checkAll"
-                        required=""
-                      />
-                    </th>
-                    <th>S/N</th>
-                    <th>Exam Name</th>
-                    <th>Class Name</th>
-                    <th>Subject</th>
-                    <th>Exam Date</th>
-                    <th>Time</th>
-
-                    <th class="text-end">Action</th>
-                  </tr>
-                </thead>
-                {data && data.length > 0 ? (
-                  data.map((item, index) => (
-                    <tbody>
-                      <tr key={item._id}>
-                        <td>
-                          <div class="checkbox me-0 align-self-center">
-                            <div class="custom-control custom-checkbox ">
-                              <input
-                                type="checkbox"
-                                class="form-check-input"
-                                id="check16"
-                                required=""
-                              />
-                              <label
-                                class="custom-control-label"
-                                for="check16"
-                              ></label>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="trans-list">
-                            <h4>{index + 1}</h4>
-                          </div>
-                        </td>
-
-                        <td>
-                          <div class="date">{item.title}</div>
-                        </td>
-                        <td>
-                          <h6 class="mb-0">{item.className}</h6>
-                        </td>
-                        <td>
-                          <h6 class="mb-0">{item.subject}</h6>
-                        </td>
-                        <td>
-                          <h6 class="mb-0">
-                            {item.date
-                              ? new Date(item.date).toLocaleDateString()
-                              : ""}
-                          </h6>
-                        </td>
-                        <td>
-                          <h6 class="mb-0">
-                            {" "}
-                            {item.fromTime} --
-                            {item.toTime}
-                          </h6>
-                        </td>
-
-                        <td>
-                          <TableCell align="right">
-                            <IconButton
-                              aria-controls={`action-menu-${item._id}`}
-                              aria-haspopup="true"
-                              onClick={(event) =>
-                                handleOpenMenu(event, item._id)
-                              } // Pass item._id
-                            >
-                              <MoreVertIcon /> {/* MoreVertIcon for the menu */}
-                            </IconButton>
-                            <Menu
-                              id={`action-menu-${item._id}`}
-                              anchorEl={anchorElMap[item._id]}
-                              open={Boolean(anchorElMap[item._id])}
-                              onClose={() => handleCloseMenu(item._id)}
-                            >
-                              <MenuItem>
-                                <ListItemIcon></ListItemIcon>
-                                <Link
-                                  to={`/dashboard/manage-online-exam/${item._id}`}
-                                >
-                                  Manage Questions
-                                </Link>
-                              </MenuItem>
-                              <MenuItem>
-                                <ListItemIcon></ListItemIcon>
-
-                                <Link to={`/dashboard/view-result/${item._id}`}>
-                                  View Result
-                                </Link>
-                              </MenuItem>
-                              <MenuItem
-                                onClick={() => handleEditExam(item._id)}
-                              >
-                                <ListItemIcon>
-                                  <EditIcon /> {/* Use an Edit icon */}
-                                </ListItemIcon>
-                                Edit
-                              </MenuItem>
-
-                              <MenuItem
-                                onClick={() =>
-                                  handleOpenDeleteConfirmation(item)
-                                }
-                              >
-                                <ListItemIcon>
-                                  <DeleteIcon /> {/* Use a Delete icon */}
-                                </ListItemIcon>
-                                Delete
-                              </MenuItem>
-                            </Menu>
-                          </TableCell>
-                        </td>
+          <Box width="100%" overflow="auto">
+            <div className="col-xl-12 wow fadeInUp" data-wow-delay="1.5s">
+              <div className="table-responsive full-data">
+                <div style={{ overflowX: "auto", maxWidth: "100%" }}>
+                  <table
+                    style={{ overflowX: "auto", maxWidth: "100%" }}
+                    className="table-responsive-lg table display dataTablesCard student-tab dataTable no-footer"
+                    id="example-student"
+                  >
+                    <thead>
+                      <tr>
+                        <th>
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="checkAll"
+                            required=""
+                          />
+                        </th>
+                        <th>S/N</th>
+                        <th>Exam Name</th>
+                        <th>Class Name</th>
+                        <th>Subject</th>
+                        <th>Exam Date</th>
+                        <th>Time</th>
+                        <th className="text-end">Action</th>
                       </tr>
+                    </thead>
+
+                    <tbody>
+                      {data && data.length > 0 ? (
+                        data.map((item, index) => (
+                          <tr key={item._id}>
+                            <td>
+                              <div className="checkbox me-0 align-self-center">
+                                <div className="custom-control custom-checkbox ">
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    id="check16"
+                                    required=""
+                                  />
+                                  <label
+                                    className="custom-control-label"
+                                    htmlFor="check16"
+                                  ></label>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div className="trans-list">
+                                <h4>{index + 1}</h4>
+                              </div>
+                            </td>
+                            <td>
+                              <span className="text-primary font-w600">
+                                {item.title}
+                              </span>
+                            </td>
+                            <td>
+                              <div className="date">{item.className}</div>
+                            </td>
+                            <td>
+                              <h6 className="mb-0">{item.subject}</h6>
+                            </td>
+                            <td>
+                              <h6 className="mb-0">
+                                {item.date
+                                  ? new Date(item.date).toLocaleDateString()
+                                  : ""}
+                              </h6>
+                            </td>
+                            <td>
+                              <h6 className="mb-0">
+                                {item.fromTime} -- {item.toTime}
+                              </h6>
+                            </td>
+                            <td>
+                              <TableCell align="right">
+                                <IconButton
+                                  aria-controls={`action-menu-${item._id}`}
+                                  aria-haspopup="true"
+                                  onClick={(event) =>
+                                    handleOpenMenu(event, item._id)
+                                  } // Pass item._id
+                                >
+                                  <MoreVertIcon />{" "}
+                                  {/* MoreVertIcon for the menu */}
+                                </IconButton>
+                                <Menu
+                                  id={`action-menu-${item._id}`}
+                                  anchorEl={anchorElMap[item._id]}
+                                  open={Boolean(anchorElMap[item._id])}
+                                  onClose={() => handleCloseMenu(item._id)}
+                                >
+                                  <MenuItem>
+                                    <ListItemIcon></ListItemIcon>
+                                    <Link
+                                      to={`/dashboard/manage-online-exam/${item._id}`}
+                                    >
+                                      Manage Questions
+                                    </Link>
+                                  </MenuItem>
+
+                                  <MenuItem>
+                                    <ListItemIcon></ListItemIcon>
+                                    <Link
+                                      to={`/dashboard/view-result/${item._id}`}
+                                    >
+                                      View Result
+                                    </Link>
+                                  </MenuItem>
+                                  <MenuItem
+                                    onClick={() => handleEditExam(item._id)}
+                                  >
+                                    <ListItemIcon>
+                                      <EditIcon /> {/* Use an Edit icon */}
+                                    </ListItemIcon>
+                                    Edit
+                                  </MenuItem>
+                                  <MenuItem
+                                    onClick={() =>
+                                      handleOpenDeleteConfirmation(item)
+                                    }
+                                  >
+                                    <ListItemIcon>
+                                      <DeleteIcon />
+                                    </ListItemIcon>
+                                    Delete
+                                  </MenuItem>
+                                </Menu>
+                              </TableCell>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={8} align="center">
+                            No Exam to display.
+                          </TableCell>
+                        </TableRow>
+                      )}
                     </tbody>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={5} align="center">
-                      No Exam to display.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </table>
+                  </table>
 
-              {editExamData && (
-                <EditExam
-                  open={editDialogOpen}
-                  onClose={() => setEditDialogOpen(false)}
-                  examId={editExamData._id}
-                  onSave={handleSaveEdit}
-                />
-              )}
+                  {editExamData && (
+                    <EditExam
+                      open={editDialogOpen}
+                      onClose={() => setEditDialogOpen(false)}
+                      examId={editExamData._id}
+                      onSave={handleSaveEdit}
+                    />
+                  )}
 
-              <Dialog
-                open={deleteConfirmationOpen}
-                onClose={handleCloseDeleteConfirmation}
-              >
-                <DialogTitle>Delete Confirmation</DialogTitle>
-                <DialogContent>
-                  Are you sure you want to delete the exam "
-                  {itemToDelete?.title}"?
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleCloseDeleteConfirmation}>
-                    Cancel
-                  </Button>
-                  <Button onClick={handleDeleteItem}>Delete</Button>
-                </DialogActions>
-              </Dialog>
+                  <Dialog
+                    open={deleteConfirmationOpen}
+                    onClose={handleCloseDeleteConfirmation}
+                  >
+                    <DialogTitle>Delete Confirmation</DialogTitle>
+                    <DialogContent>
+                      Are you sure you want to delete the exam "
+                      {itemToDelete?.title}"?
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleCloseDeleteConfirmation}>
+                        Cancel
+                      </Button>
+                      <Button onClick={handleDeleteItem}>Delete</Button>
+                    </DialogActions>
+                  </Dialog>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <TablePagination
-            sx={{ px: 2 }}
-            page={page}
-            component="div"
-            rowsPerPage={rowsPerPage}
-            count={data ? data.length : 0}
-            onPageChange={handleChangePage}
-            rowsPerPageOptions={[5, 10, 25]}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            nextIconButtonProps={{ "aria-label": "Next Page" }}
-            backIconButtonProps={{ "aria-label": "Previous Page" }}
-          />
-        </Box>
-
-        {/* <TopSellingTable />
-            <StatCards2 />
-
-            <H4>Ongoing Projects</H4>
-            <RowCards />
-          </Grid>
-
-          <Grid item lg={4} md={4} sm={12} xs={12}>
-            <Card sx={{ px: 3, py: 2, mb: 3 }}>
-              <Title>Traffic Sources</Title>
-              <SubTitle>Last 30 days</SubTitle>
-
-              <DoughnutChart
-                height="300px"
-                color={[palette.primary.dark, palette.primary.main, palette.primary.light]}
-              />
-            </Card>
-
-            <UpgradeCard />
-            <Campaigns />*/}
+            <TablePagination
+              sx={{ px: 2 }}
+              page={page}
+              component="div"
+              rowsPerPage={rowsPerPage}
+              count={data ? data.length : 0}
+              onPageChange={handleChangePage}
+              rowsPerPageOptions={[5, 10, 25]}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              nextIconButtonProps={{ "aria-label": "Next Page" }}
+              backIconButtonProps={{ "aria-label": "Previous Page" }}
+            />
+          </Box>
+        </Container>
       </ContentBox>
     </Fragment>
   );
