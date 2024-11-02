@@ -532,9 +532,12 @@ const Manage = () => {
                   </div>
                 </td>
                 <td>
-                  <Link onClick={() => handleManageQuestions(item._id)}>
-                    <div className="date">{item.title}</div>
-                  </Link>
+                  <div className="date">
+                    {" "}
+                    <Link onClick={() => handleManageQuestions(item._id)}>
+                      {item.title}{" "}
+                    </Link>
+                  </div>
                 </td>
                 <td>
                   <h6 className="mb-0">{item.className}</h6>
