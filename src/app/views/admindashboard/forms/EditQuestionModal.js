@@ -60,22 +60,43 @@ const EditQuestionModal = ({ open, onClose, question, onUpdate }) => {
     });
   };
 
-  const handleOptionChange = (index, e) => {
+  // const handleOptionChange = (index, e) => {
+  //   const updatedOptions = [...editedQuestion.options];
+  //   updatedOptions[index] = e.target.value;
+  //   setEditedQuestion({
+  //     ...editedQuestion,
+  //     options: updatedOptions,
+  //   });
+  // };
+
+  const handleOptionChange = (index, field, value) => {
     const updatedOptions = [...editedQuestion.options];
-    updatedOptions[index] = e.target.value;
+    updatedOptions[index] = {
+      ...updatedOptions[index],
+      [field]: value,
+    };
     setEditedQuestion({
       ...editedQuestion,
       options: updatedOptions,
     });
   };
 
-  const handleCorrectAnswerChange = (option) => {
+  // const handleCorrectAnswerChange = (option) => {
+  //   setEditedQuestion({
+  //     ...editedQuestion,
+  //     correctAnswer: option,
+  //   });
+  // };
+  const handleCorrectAnswerChange = (index) => {
+    const updatedOptions = editedQuestion.options.map((option, idx) => ({
+      ...option,
+      isCorrect: idx === index, // Set only the selected option as correct
+    }));
     setEditedQuestion({
       ...editedQuestion,
-      correctAnswer: option,
+      options: updatedOptions,
     });
   };
-
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Edit Question</DialogTitle>
@@ -103,16 +124,18 @@ const EditQuestionModal = ({ open, onClose, question, onUpdate }) => {
                 <div key={index}>
                   <TextField
                     label={`Option ${index + 1}`}
-                    value={option}
-                    onChange={(e) => handleOptionChange(index, e)}
+                    value={option.option}
+                    onChange={(e) =>
+                      handleOptionChange(index, "option", e.target.value)
+                    }
                     fullWidth
                     margin="normal"
                   />
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={editedQuestion.correctAnswer === option}
-                        onChange={() => handleCorrectAnswerChange(option)}
+                        checked={option.isCorrect} // Check if this option is the correct answer
+                        onChange={() => handleCorrectAnswerChange(index)}
                         name={`correct${index + 1}`}
                       />
                     }

@@ -476,17 +476,21 @@ const Form = () => {
         });
     }
   }, [apiUrl, currentSession]); // Depend on currentSession
-
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: async (values) => {
       try {
-        await axios.post(`${apiUrl}/api/register`, {
+        const dataToSubmit = {
           ...values,
           role: "student",
           sessionId: currentSession._id,
-        });
+        };
+
+        console.log("Submitting values:", dataToSubmit); // Log the data to be submitted
+
+        await axios.post(`${apiUrl}/api/register`, dataToSubmit);
+
         toast.success("Student successfully created");
       } catch (err) {
         console.error("Error registering student:", err);
