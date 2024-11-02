@@ -1,7 +1,7 @@
 // import React, { Fragment, useEffect, useState } from "react";
 // import { Box } from "@mui/system";
 // import {
-//   Table, 
+//   Table,
 //   TableBody,
 //   TableCell,
 //   TableHead,
@@ -366,7 +366,7 @@
 // };
 
 // export default Manage;
-import React, { useState,useContext, useEffect, Fragment } from "react";
+import React, { useState, useContext, useEffect, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useTheme } from "@mui/material/styles";
@@ -383,7 +383,6 @@ import { Breadcrumb } from "../../../../app/components";
 import useAuth from "../../../../app/hooks/useAuth";
 import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
-
 const Manage = () => {
   const { palette } = useTheme();
   const [page, setPage] = useState(0);
@@ -394,7 +393,6 @@ const Manage = () => {
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL.trim();
   const { currentSession } = useContext(SessionContext);
-
 
   useEffect(() => {
     const fetchExams = async () => {
@@ -417,55 +415,58 @@ const Manage = () => {
     navigate(`/student/dashboard/manage-online-exam/${examId}`);
   };
 
- const handleOpenMenu = async (event, item) => {
-  try {
-    // Get user's local time
-    const userLocalTime = new Date();
+  const handleOpenMenu = async (event, item) => {
+    try {
+      // Get user's local time
+      const userLocalTime = new Date();
 
-    // Convert exam start time to Date object
-    const startTime = new Date(item.date);
-    const fromTime24Hours = convertTo24HourFormat(item.fromTime);
-    const fromTimeParts = fromTime24Hours.split(":");
-    startTime.setHours(parseInt(fromTimeParts[0], 10));
-    startTime.setMinutes(parseInt(fromTimeParts[1], 10));
+      // Convert exam start time to Date object
+      const startTime = new Date(item.date);
+      const fromTime24Hours = convertTo24HourFormat(item.fromTime);
+      const fromTimeParts = fromTime24Hours.split(":");
+      startTime.setHours(parseInt(fromTimeParts[0], 10));
+      startTime.setMinutes(parseInt(fromTimeParts[1], 10));
 
-    // Convert exam end time to Date object
-    const endTime = new Date(item.date);
-    const toTime24Hours = convertTo24HourFormat(item.toTime);
-    const toTimeParts = toTime24Hours.split(":");
-    endTime.setHours(parseInt(toTimeParts[0], 10));
-    endTime.setMinutes(parseInt(toTimeParts[1], 10));
+      // Convert exam end time to Date object
+      const endTime = new Date(item.date);
+      const toTime24Hours = convertTo24HourFormat(item.toTime);
+      const toTimeParts = toTime24Hours.split(":");
+      endTime.setHours(parseInt(toTimeParts[0], 10));
+      endTime.setMinutes(parseInt(toTimeParts[1], 10));
 
-    // Check if the student has submitted the exam
-    const examTaken = item.submittedAnswers.some(
-      (answer) => answer.userId === user._id // Compare logged-in user's ID with submittedAnswers userId
-    );
+      // Check if the student has submitted the exam
+      const examTaken = item.submittedAnswers.some(
+        (answer) => answer.userId === user._id // Compare logged-in user's ID with submittedAnswers userId
+      );
 
-    // If the exam has been submitted
-    if (examTaken) {
-      // Check if the exam time has elapsed
-      if (userLocalTime > endTime) {
-        alert("You have already taken this exam, and the exam time has ended.");
-        return; // Prevent further action if the time has elapsed
-      } else {
-        alert("You have already taken this exam, but the exam time hasn't finished. You can continue.");
+      // If the exam has been submitted
+      if (examTaken) {
+        // Check if the exam time has elapsed
+        if (userLocalTime > endTime) {
+          alert(
+            "You have already taken this exam, and the exam time has ended."
+          );
+          return; // Prevent further action if the time has elapsed
+        } else {
+          alert(
+            "You have already taken this exam, but the exam time hasn't finished. You can continue."
+          );
+        }
       }
-    }
 
-    // Check if it's still within the exam time window
-    if (userLocalTime >= startTime && userLocalTime <= endTime) {
-      setAnchorElMap((prev) => ({
-        ...prev,
-        [item._id]: event.currentTarget,
-      }));
-    } else {
-      alert("It's not yet time for this exam, or the exam time has ended.");
+      // Check if it's still within the exam time window
+      if (userLocalTime >= startTime && userLocalTime <= endTime) {
+        setAnchorElMap((prev) => ({
+          ...prev,
+          [item._id]: event.currentTarget,
+        }));
+      } else {
+        alert("It's not yet time for this exam, or the exam time has ended.");
+      }
+    } catch (error) {
+      console.error("Error handling menu open event:", error);
     }
-  } catch (error) {
-    console.error("Error handling menu open event:", error);
-  }
-};
-
+  };
 
   const handleCloseMenu = (examId) => {
     setAnchorElMap((prev) => ({
@@ -531,7 +532,9 @@ const Manage = () => {
                   </div>
                 </td>
                 <td>
-                  <div className="date">{item.title}</div>
+                  <Link onClick={() => handleManageQuestions(item._id)}>
+                    <div className="date">{item.title}</div>
+                  </Link>
                 </td>
                 <td>
                   <h6 className="mb-0">{item.className}</h6>
@@ -605,7 +608,6 @@ const Manage = () => {
 
 //   const { currentSession } = useContext(SessionContext);
 
-
 //   useEffect(() => {
 //         const fetchExams = async () => {
 //           try {
@@ -622,7 +624,7 @@ const Manage = () => {
 //         };
 //         fetchExams();
 //       }, [user.classname, currentSession]);
-    
+
 //   const handleManageQuestions = (examId) => {
 //     navigate(`/student/dashboard/manage-online-exam/${examId}`);
 //   };
