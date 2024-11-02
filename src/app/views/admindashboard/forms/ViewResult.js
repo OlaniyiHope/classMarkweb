@@ -6,7 +6,14 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { Fragment, React, useContext, useEffect, useState } from "react";
+import {
+  Fragment,
+  React,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Box } from "@mui/system";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import the MoreVert icon
 
@@ -33,6 +40,7 @@ import EditIcon from "@mui/icons-material/Edit"; // Import the Edit icon
 import DeleteIcon from "@mui/icons-material/Delete";
 import useFetch from "../../../../hooks/useFetch";
 import { Link, useParams } from "react-router-dom";
+import { useReactToPrint } from "react-to-print";
 import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -83,6 +91,7 @@ const ViewResult = () => {
 
   const { data, loading, error } = useFetch(`/exams/all-scores/${examId}`);
   console.log("Exam data:", data);
+  const componentRef = useRef();
 
   const { currentSession } = useContext(SessionContext);
   const { palette } = useTheme();
@@ -150,123 +159,116 @@ const ViewResult = () => {
       day: "numeric",
     });
   };
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
   return (
     <Fragment>
       <ContentBox className="analytics">
-        <TableContainer component={Paper}>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <b>Exam Title</b>
-                </TableCell>
-                <TableCell>
-                  {examData ? examData.title : "Loading..."}
-                </TableCell>
-                <TableCell>
-                  <b>Date</b>
-                </TableCell>
-                <TableCell>
-                  {" "}
-                  {examData ? formatDate(examData.date) : "Loading..."}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <b>Class</b>
-                </TableCell>
-                <TableCell>
-                  {" "}
-                  {examData ? examData.className : "Loading..."}
-                </TableCell>
-                <TableCell>
-                  <b>Time</b>
-                </TableCell>
-                <TableCell>
-                  {" "}
-                  {examData ? examData.fromTime : "Loading..."} -{" "}
-                  {examData ? examData.toTime : "Loading..."}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <b>Exam Instruction</b>
-                </TableCell>
-                <TableCell>
-                  {" "}
-                  {examData ? examData.instruction : "Loading..."}
-                </TableCell>
-                <TableCell>
-                  <b>Total Mark</b>
-                </TableCell>
-                <TableCell>
-                  {" "}
-                  {examData ? examData?.totalMark : "Loading..."}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <Box width="100%" overflow="auto">
-          <StyledTable>
-            <TableHead>
-              <TableRow>
-                <TableCell align="left">Student Name</TableCell>
-                <TableCell align="left">Mark Obtained</TableCell>
-                <TableCell align="left">Result</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {scores &&
-                scores.map((item) => (
-                  <TableRow>
-                    {" "}
-                    {/* Assuming userId is unique */}
-                    <TableCell align="center">
-                      {item.studentName}
-                    </TableCell>{" "}
-                    {/* Access userId.studentName */}
+        {/* Print Button */}
+        <Box className="breadcrumb" sx={{ mb: 2 }}>
+          <button
+            onClick={handlePrint}
+            style={{
+              backgroundColor: "white",
+              border: "1px solid black",
+              padding: "8px",
+              borderRadius: "10px",
+              cursor: "pointer",
+            }}
+          >
+            Print this out!
+          </button>
+        </Box>
+
+        {/* Printable Content */}
+        <div ref={componentRef}>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <b>Exam Title</b>
+                  </TableCell>
+                  <TableCell>
+                    {examData ? examData.title : "Loading..."}
+                  </TableCell>
+                  <TableCell>
+                    <b>Date</b>
+                  </TableCell>
+                  <TableCell>
+                    {examData ? formatDate(examData.date) : "Loading..."}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <b>Class</b>
+                  </TableCell>
+                  <TableCell>
+                    {examData ? examData.className : "Loading..."}
+                  </TableCell>
+                  <TableCell>
+                    <b>Time</b>
+                  </TableCell>
+                  <TableCell>
+                    {examData
+                      ? `${examData.fromTime} - ${examData.toTime}`
+                      : "Loading..."}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <b>Exam Instruction</b>
+                  </TableCell>
+                  <TableCell>
+                    {examData ? examData.instruction : "Loading..."}
+                  </TableCell>
+                  <TableCell>
+                    <b>Total Mark</b>
+                  </TableCell>
+                  <TableCell>
+                    {examData ? examData.totalMark : "Loading..."}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <Box width="100%" overflow="auto">
+            <StyledTable>
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left">Student Name</TableCell>
+                  <TableCell align="left">Mark Obtained</TableCell>
+                  <TableCell align="left">Result</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {scores.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell align="center">{item.studentName}</TableCell>
                     <TableCell align="center">{item.score}</TableCell>
                     <TableCell align="left">Your Result Here</TableCell>
                   </TableRow>
                 ))}
-            </TableBody>
-          </StyledTable>
+              </TableBody>
+            </StyledTable>
 
-          <TablePagination
-            sx={{ px: 2 }}
-            page={page}
-            component="div"
-            rowsPerPage={rowsPerPage}
-            count={data ? data.length : 0}
-            onPageChange={handleChangePage}
-            rowsPerPageOptions={[5, 10, 25]}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            nextIconButtonProps={{ "aria-label": "Next Page" }}
-            backIconButtonProps={{ "aria-label": "Previous Page" }}
-          />
-        </Box>
-
-        {/* <TopSellingTable />
-              <StatCards2 />
-  
-              <H4>Ongoing Projects</H4>
-              <RowCards />
-            </Grid>
-  
-            <Grid item lg={4} md={4} sm={12} xs={12}>
-              <Card sx={{ px: 3, py: 2, mb: 3 }}>
-                <Title>Traffic Sources</Title>
-                <SubTitle>Last 30 days</SubTitle>
-  
-                <DoughnutChart
-                  height="300px"
-                  color={[palette.primary.dark, palette.primary.main, palette.primary.light]}
-                />
-              </Card>
-  
-              <UpgradeCard />
-              <Campaigns />*/}
+            <TablePagination
+              sx={{ px: 2 }}
+              page={page}
+              component="div"
+              rowsPerPage={rowsPerPage}
+              count={scores.length}
+              onPageChange={handleChangePage}
+              rowsPerPageOptions={[5, 10, 25]}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              nextIconButtonProps={{ "aria-label": "Next Page" }}
+              backIconButtonProps={{ "aria-label": "Previous Page" }}
+            />
+          </Box>
+        </div>
       </ContentBox>
     </Fragment>
   );
