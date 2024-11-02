@@ -534,9 +534,9 @@ const Manage = () => {
                 <td>
                   <div className="date">
                     {" "}
-                    <Link onClick={() => handleManageQuestions(item._id)}>
+                    <MenuItem onClick={() => handleManageQuestions(item._id)}>
                       {item.title}{" "}
-                    </Link>
+                    </MenuItem>
                   </div>
                 </td>
                 <td>
