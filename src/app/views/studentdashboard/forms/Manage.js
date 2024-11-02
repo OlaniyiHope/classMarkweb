@@ -515,7 +515,7 @@ const Manage = () => {
           <thead>
             <tr>
               <th>S/N</th>
-              <th>Exam Name</th>
+              <th>ExamnName</th>
               <th>Class Name</th>
               <th>Subject</th>
               <th>Exam Date</th>
