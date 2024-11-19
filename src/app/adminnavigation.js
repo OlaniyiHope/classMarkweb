@@ -515,13 +515,24 @@ export const navigations = [
     ],
   },
   {
-    name: "Past Questions",
+    name: "Curriculum",
+    icon: <span style={{ color: "#ffc107" }}>group_work</span>,
+    children: [
+      {
+        name: "Curriculum Generator",
+        iconText: "SI",
+        path: "/dashboard/curriculum",
+      },
+    ],
+  },
+  {
+    name: "Questions",
     icon: "assignment",
     children: [
       {
-        name: "Add Past Questions",
+        name: "Generate Questions",
         iconText: "SI",
-        path: "/dashboard/addpq",
+        path: "/dashboard/generate-question",
       },
     ],
   },

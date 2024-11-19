@@ -13,13 +13,9 @@ import {
   RadioGroup,
   styled,
 } from "@mui/material";
-import { DateAdapter, LocalizationProvider } from "@mui/x-date-pickers";
+
 import { useNavigate } from "react-router-dom";
 
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-
-import DateFnsUtils from "@mui/x-date-pickers/AdapterDateFns";
-import { TimePicker } from "@mui/x-date-pickers";
 import { Span } from "../../../../app/components/Typography";
 import { useContext, useEffect, useState } from "react";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
@@ -51,7 +47,7 @@ const PQ = () => {
   const [title, setTitle] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
-  const [selectedDate, setSelectedDate] = useState("");
+
   const [fromTime, setFromTime] = useState(null);
   const [toTime, setToTime] = useState(null);
   const [suggestions, setSuggestions] = useState([]); // New state for suggestions
@@ -67,25 +63,7 @@ const PQ = () => {
   // ...
   const apiUrl = process.env.REACT_APP_API_URL;
 
-  const currentDate = new Date();
-  const formattedDate = currentDate.toJSON().slice(0, 10); // Format the date (yyyy-MM-dd)
-
   const navigate = useNavigate();
-
-  const [state, setState] = useState({ date: new Date() });
-  const formatTime = (time) => {
-    const options = { hour: "2-digit", minute: "2-digit", hour12: true };
-    return new Date(time).toLocaleTimeString([], options);
-  };
-
-  useEffect(() => {
-    ValidatorForm.addValidationRule("isPasswordMatch", (value) => {
-      if (value !== state.password) return false;
-
-      return true;
-    });
-    return () => ValidatorForm.removeValidationRule("isPasswordMatch");
-  }, [state.password]);
 
   // const handleSubmit = (event) => {
   //   event.preventDefault();
@@ -203,7 +181,6 @@ const PQ = () => {
   const handleSubmit = (event, preview = false) => {
     event.preventDefault();
 
-    const formattedDate = new Date(selectedDate).toISOString().split("T")[0];
     const token = localStorage.getItem("jwtToken");
 
     if (!token) {
@@ -215,11 +192,7 @@ const PQ = () => {
       title,
       className: selectedClass,
       subject: selectedSubject,
-      date: formattedDate,
-      fromTime,
-      toTime,
-      percent,
-      instruction,
+
       session: currentSession._id,
       topic,
       difficulty,
@@ -359,24 +332,24 @@ const PQ = () => {
           <Breadcrumb
             routeSegments={[
               // { name: "Material", path: "/material" },
-              { name: "Add Exam" },
+              { name: "Questions Generator" },
             ]}
           />
         </Box>
 
         <Stack spacing={3}>
-          <SimpleCard title="Add Exam">
+          <SimpleCard title="">
             <ValidatorForm onError={() => null}>
               <Grid container spacing={6}>
                 <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
-                  <TextField
+                  {/*} <TextField
                     type="text"
                     name="title"
                     value={title}
                     label="Exam title"
                     placeholder="Exam title"
                     onChange={(e) => setTitle(e.target.value)}
-                  />
+                  />*/}
 
                   {/*} <TextField select label="Select a Section" variant="outlined">
                     <MenuItem value="Class A"> A</MenuItem>
@@ -416,7 +389,7 @@ const PQ = () => {
                 </Grid>
 
                 <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
-                  <label>Exam Date</label>
+                  {/*}  <label>Exam Date</label>
                   <TextField
                     fullWidth
                     size="small"
@@ -426,7 +399,7 @@ const PQ = () => {
                     sx={{ mb: 3 }}
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)} // Update the selectedDate when the user selects a date
-                  />
+                  />*/}
                   <TextField
                     label="Enter Topic"
                     variant="outlined"
@@ -463,7 +436,7 @@ const PQ = () => {
                     value={numberOfQuestions}
                     onChange={(e) => setNumberOfQuestions(e.target.value)}
                   />
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  {/*} <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <TimePicker
                       label="From"
                       value={fromTime}
@@ -476,9 +449,9 @@ const PQ = () => {
                         />
                       )}
                     />
-                  </LocalizationProvider>
+                  </LocalizationProvider>*/}
 
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  {/*}  <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <TimePicker
                       label="To"
                       value={toTime}
@@ -491,8 +464,8 @@ const PQ = () => {
                         />
                       )}
                     />
-                  </LocalizationProvider>
-                  <TextField
+                  </LocalizationProvider>*/}
+                  {/*} <TextField
                     type="text"
                     id="standard-basic"
                     value={percent}
@@ -516,7 +489,7 @@ const PQ = () => {
                     onChange={(e) => setInstruction(e.target.value)}
                     label=""
                     placeholder="Instruction"
-                  />
+                  />*/}
                 </Grid>
               </Grid>
 

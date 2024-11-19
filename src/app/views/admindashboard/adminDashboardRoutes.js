@@ -73,6 +73,7 @@ import FirstTermRepCont from "./forms/FirstTermRepCont";
 import ThirdTermRepCont from "./forms/ThirdTermRepCont";
 import Syllabus from "./forms/Syllabus";
 import PQ from "./forms/PQ";
+import Curriculum from "./forms/Curriculum";
 // import Js1b from "./forms/Js1b";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
@@ -228,7 +229,8 @@ const adminDashboardRoutes = [
   { path: "/dashboard/class", element: <Class />, auth: "admin" },
   { path: "/dashboard/exam", element: <Exam />, auth: "admin" },
   { path: "/dashboard/grade", element: <Grade />, auth: "admin" },
-  { path: "/dashboard/addpq", element: <PQ />, auth: "admin" },
+  { path: "/dashboard/generate-question", element: <PQ />, auth: "admin" },
+  { path: "/dashboard/curriculum", element: <Curriculum />, auth: "admin" },
   {
     path: "/dashboard/tabulation-sheet",
     element: <Tab />,
