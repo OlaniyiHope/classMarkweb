@@ -11,11 +11,12 @@ import {
   Icon,
   Radio,
   RadioGroup,
+  Typography,
   styled,
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
-
+import CircularProgress from "@mui/material/CircularProgress";
 import { Span } from "../../../../app/components/Typography";
 import { useContext, useEffect, useState } from "react";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
@@ -37,6 +38,8 @@ const TextField = styled(TextValidator)(() => ({
 
 const PQ = () => {
   const { currentSession } = useContext(SessionContext);
+  const [topics, setTopics] = useState([]);
+  const [loading, setLoading] = useState(false);
   const {
     data: classData,
     loading: classLoading,
@@ -53,138 +56,22 @@ const PQ = () => {
   const [suggestions, setSuggestions] = useState([]); // New state for suggestions
   const [previewContent, setPreviewContent] = useState(""); // New state for preview content
 
-  // New state variables for topic, difficulty, and number of questions
   const [topic, setTopic] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [numberOfQuestions, setNumberOfQuestions] = useState(0);
 
-  const [percent, setPercent] = useState(0); // Add state for percent
-  const [instruction, setInstruction] = useState(""); // Add state for instruction
-  // ...
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const navigate = useNavigate();
 
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-
-  //   // Convert selectedDate to ISO string
-  //   const formattedDate = new Date(selectedDate).toISOString().split("T")[0];
-
-  //   // Retrieve JWT token
-  //   const token = localStorage.getItem("jwtToken");
-  //   if (!token) {
-  //     console.error("Token is missing or expired");
-  //     return;
-  //   }
-
-  //   // Construct exam data object
-  //   const examData = {
-  //     title,
-  //     className: selectedClass,
-  //     subject: selectedSubject,
-  //     date: formattedDate,
-  //     fromTime,
-  //     toTime,
-  //     percent,
-  //     instruction,
-  //     session: currentSession._id, // Ensure session ID is fetched from context
-  //     topic,
-  //     difficulty,
-  //     numberOfQuestions,
-  //   };
-
-  //   // Send POST request to generate questions
-  //   fetch(`${apiUrl}/api/generate-questions`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //     body: JSON.stringify(examData),
-  //   })
-  //     .then((response) => {
-  //       if (!response.ok) {
-  //         throw new Error(`HTTP error! status: ${response.status}`);
-  //       }
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       // Handle success, e.g., navigate or show success message
-  //       console.log("Exam questions generated:", data);
-  //       navigate("/dashboard/manage-online-exam");
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error generating exam questions:", error);
-  //       // Handle the error, e.g., show an error message
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   // Fetch class data here if needed
-  // }, []);
-
-  // const handleSubmit = (event, preview = false) => {
-  //   event.preventDefault();
-
-  //   const formattedDate = new Date(selectedDate).toISOString().split("T")[0];
-  //   const token = localStorage.getItem("jwtToken");
-
-  //   if (!token) {
-  //     console.error("Token is missing or expired");
-  //     return;
-  //   }
-
-  //   const examData = {
-  //     title,
-  //     className: selectedClass,
-  //     subject: selectedSubject,
-  //     date: formattedDate,
-  //     fromTime,
-  //     toTime,
-  //     percent,
-  //     instruction,
-  //     session: currentSession._id,
-  //     topic,
-  //     difficulty,
-  //     numberOfQuestions,
-  //     preview, // Add preview flag to the request body
-  //   };
-
-  //   fetch(`${apiUrl}/api/generate-questions`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //     body: JSON.stringify(examData),
-  //   })
-  //     .then((response) => {
-  //       if (!response.ok) {
-  //         throw new Error(`HTTP error! status: ${response.status}`);
-  //       }
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       if (preview) {
-  //         console.log("Preview of generated questions:", data.questions);
-  //         // Display preview to the user, e.g., set it in state
-  //       } else {
-  //         console.log("Exam questions generated and saved:", data);
-  //         navigate("/dashboard/manage-online-exam");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error generating exam questions:", error);
-  //     });
-  // };
   const handleSubmit = (event, preview = false) => {
     event.preventDefault();
-
+    setLoading(true);
     const token = localStorage.getItem("jwtToken");
 
     if (!token) {
       console.error("Token is missing or expired");
+      setLoading(false);
       return;
     }
 
@@ -220,43 +107,18 @@ const PQ = () => {
         } else {
           navigate("/dashboard/manage-online-exam");
         }
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error generating exam questions:", error);
+        setLoading(false); // Set loading to false in case of error
       });
   };
 
-  // Call handleSubmit with preview set to true to preview
   const handlePreview = (event) => handleSubmit(event, true);
 
-  // Call handleSubmit with preview set to false to save
   const handleSave = (event) => handleSubmit(event, false);
 
-  // useEffect(() => {
-  //   if (selectedClass) {
-  //     // Fetch the authentication token from wherever you've stored it (e.g., local storage)
-  //     const token = localStorage.getItem("jwtToken");
-
-  //     // Include the token in the request headers
-  //     const headers = new Headers();
-  //     headers.append("Authorization", `Bearer ${token}`);
-
-  //     // Make an API call to fetch subjects for the selected class with the authorization token
-  //     fetch(`${apiUrl}/api/get-subject/${selectedClass}`, {
-  //       headers,
-  //     })
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         setSubjectData(data);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching subjects:", error);
-  //       });
-  //   } else {
-  //     // Clear the subjects if no class is selected
-  //     setSubjectData([]);
-  //   }
-  // }, [selectedClass]);
   useEffect(() => {
     if (selectedClass && currentSession) {
       const token = localStorage.getItem("jwtToken");
@@ -280,13 +142,6 @@ const PQ = () => {
       setSubjectData([]);
     }
   }, [selectedClass, currentSession]); // Re-fetch when class or session changes
-
-  // const handleClassChange = (event) => {
-  //   setSelectedClass(event.target.value);
-  // };
-  // const handleSubjectChange = (event) => {
-  //   setSelectedSubject(event.target.value);
-  // };
 
   const handleClassChange = (event) => {
     const newSelectedClass = event.target.value;
@@ -325,6 +180,23 @@ const PQ = () => {
     setSuggestions([]); // Clear suggestions after selection
   };
 
+  useEffect(() => {
+    if (selectedSubject) {
+      fetch(`${apiUrl}/api/generate-topics`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ subject: selectedSubject }),
+      })
+        .then((res) => res.json())
+        .then((data) => setTopics(data.topics || []))
+        .catch((err) => console.error("Error fetching topics:", err));
+    } else {
+      setTopics([]);
+    }
+  }, [selectedSubject]);
+
   return (
     <div>
       <Container>
@@ -342,22 +214,6 @@ const PQ = () => {
             <ValidatorForm onError={() => null}>
               <Grid container spacing={6}>
                 <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
-                  {/*} <TextField
-                    type="text"
-                    name="title"
-                    value={title}
-                    label="Exam title"
-                    placeholder="Exam title"
-                    onChange={(e) => setTitle(e.target.value)}
-                  />*/}
-
-                  {/*} <TextField select label="Select a Section" variant="outlined">
-                    <MenuItem value="Class A"> A</MenuItem>
-                    <MenuItem value="Class B"> B</MenuItem>
-                    <MenuItem value="Class C"> C</MenuItem>
-                   
-          </TextField>*/}
-
                   <TextField
                     select
                     label="Select a class"
@@ -400,7 +256,7 @@ const PQ = () => {
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)} // Update the selectedDate when the user selects a date
                   />*/}
-                  <TextField
+                  {/*}    <TextField
                     label="Enter Topic"
                     variant="outlined"
                     value={topic}
@@ -417,7 +273,25 @@ const PQ = () => {
                         </li>
                       ))}
                     </ul>
-                  )}
+                  )}*/}
+                  <TextField
+                    select
+                    label="Select Topic"
+                    fullWidth
+                    value={topic}
+                    onChange={(e) => setTopic(e.target.value)}
+                  >
+                    {!topics.length && selectedSubject && (
+                      <MenuItem disabled>
+                        <Typography>Loading topics...</Typography>
+                      </MenuItem>
+                    )}
+                    {topics.map((topic, index) => (
+                      <MenuItem key={index} value={topic}>
+                        {topic}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                   <TextField
                     select
                     label="Select Difficulty"
@@ -492,7 +366,24 @@ const PQ = () => {
                   />*/}
                 </Grid>
               </Grid>
-
+              {loading && ( // Spinner overlay
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(255, 255, 255, 0.8)",
+                    zIndex: 9999,
+                  }}
+                >
+                  <CircularProgress size={60} />
+                </Box>
+              )}
               <Button onClick={handlePreview}>Preview</Button>
               <Button onClick={handleSave}>Save</Button>
               <TextField
