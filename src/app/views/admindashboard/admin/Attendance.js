@@ -19,10 +19,11 @@ import {
 } from "@mui/material";
 import useFetch from "../../../../hooks/useFetch";
 import { Span } from "../../../../app/components/Typography";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -41,12 +42,18 @@ const TextField = styled(TextValidator)(() => ({
 }));
 
 const Attendance = () => {
+  const { currentSession } = useContext(SessionContext);
+
   const {
     data: classData,
     loading: classLoading,
     error: classError,
-  } = useFetch("/class");
-  const { data: examData } = useFetch("/getofflineexam");
+  } = useFetch(currentSession ? `/class/${currentSession._id}` : null);
+  console.log(classData);
+  const { data: examData } = useFetch(
+    currentSession ? `/getofflineexam/${currentSession._id}` : null
+  );
+  console.log(examData);
 
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
