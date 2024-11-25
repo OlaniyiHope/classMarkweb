@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Container, Grid, TextField, MenuItem, Button } from "@mui/material";
 import { ValidatorForm } from "react-material-ui-form-validator";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Box } from "@mui/system";
 import useFetch from "../../../../hooks/useFetch";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 import {
   Check,
   Close,
@@ -22,12 +23,13 @@ import {
 
 const OnScreen = () => {
   // const [classData, setClassData] = useState([]);
+
+  const { currentSession } = useContext(SessionContext);
   const {
     data: classData,
     loading: classLoading,
     error: classError,
-  } = useFetch("/class"); // Assuming useFetch is correctly implemented
-
+  } = useFetch(`/class/${currentSession._id}`);
   const canvasRef = useRef(null);
   const [ctx, setCtx] = useState(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -784,11 +786,12 @@ const OnScreen = () => {
                 onChange={handleClassChange}
                 fullWidth
               >
-                {classData.map((item) => (
-                  <MenuItem key={item.id} value={item.name}>
-                    {item.name}
-                  </MenuItem>
-                ))}
+                {classData &&
+                  classData.map((item) => (
+                    <MenuItem key={item.id} value={item.name}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
               </TextField>
             </Grid>
             <Grid item xs={4}>

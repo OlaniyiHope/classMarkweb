@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { Container, Grid, TextField, MenuItem, Button } from "@mui/material";
 import { ValidatorForm } from "react-material-ui-form-validator";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Box } from "@mui/system";
 import useFetch from "../../../../hooks/useFetch";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 import {
   Check,
   Close,
@@ -23,12 +24,13 @@ import axios from "axios";
 
 const OnOff = () => {
   // const [classData, setClassData] = useState([]);
+
+  const { currentSession } = useContext(SessionContext);
   const {
     data: classData,
     loading: classLoading,
     error: classError,
-  } = useFetch("/class"); // Assuming useFetch is correctly implemented
-
+  } = useFetch(`/class/${currentSession._id}`);
   const canvasRef = useRef(null);
   const [ctx, setCtx] = useState(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -85,11 +87,48 @@ const OnOff = () => {
     }
   };
 
+  // useEffect(() => {
+  //   if (selectedClass) {
+  //     const token = localStorage.getItem("jwtToken");
+
+  //     fetch(`${apiUrl}/api/student/${selectedClass}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     })
+  //       .then((response) => {
+  //         if (!response.ok) {
+  //           throw new Error("Failed to fetch student data");
+  //         }
+  //         return response.json();
+  //       })
+  //       .then((data) => {
+  //         console.log("Student Data Received:", data);
+  //         setStudentData(data);
+  //       })
+  //       .catch((error) => console.error("Error fetching student data:", error));
+
+  //     // Fetch subjects based on the selected class
+  //     fetch(`${apiUrl}/api/get-subject/${selectedClass}`)
+  //       .then((response) => {
+  //         if (!response.ok) {
+  //           throw new Error("Failed to fetch subject data");
+  //         }
+  //         return response.json();
+  //       })
+  //       .then((data) => setSubjectData(data))
+  //       .catch((error) => console.error("Error fetching subject data:", error));
+  //   } else {
+  //     setStudentData([]);
+  //     setSubjectData([]);
+  //   }
+  // }, [selectedClass]);
   useEffect(() => {
-    if (selectedClass) {
+    if (selectedClass && currentSession) {
       const token = localStorage.getItem("jwtToken");
 
-      fetch(`${apiUrl}/api/student/${selectedClass}`, {
+      // Fetch students based on the selected class and session
+      fetch(`${apiUrl}/api/students/${currentSession._id}/${selectedClass}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -106,21 +145,31 @@ const OnOff = () => {
         })
         .catch((error) => console.error("Error fetching student data:", error));
 
-      // Fetch subjects based on the selected class
-      fetch(`${apiUrl}/api/get-subject/${selectedClass}`)
+      // Fetch subjects based on the selected class and session
+      fetch(
+        `${apiUrl}/api/get-subject/${selectedClass}/${currentSession._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
         .then((response) => {
           if (!response.ok) {
             throw new Error("Failed to fetch subject data");
           }
           return response.json();
         })
-        .then((data) => setSubjectData(data))
+        .then((data) => {
+          console.log("Subject Data Received:", data);
+          setSubjectData(data);
+        })
         .catch((error) => console.error("Error fetching subject data:", error));
     } else {
       setStudentData([]);
       setSubjectData([]);
     }
-  }, [selectedClass]);
+  }, [selectedClass, currentSession]);
 
   const handleClassChange = (event) => {
     const newSelectedClass = event.target.value;
@@ -768,11 +817,12 @@ const OnOff = () => {
                 onChange={handleClassChange}
                 fullWidth
               >
-                {classData.map((item) => (
-                  <MenuItem key={item.id} value={item.name}>
-                    {item.name}
-                  </MenuItem>
-                ))}
+                {classData &&
+                  classData.map((item) => (
+                    <MenuItem key={item.id} value={item.name}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
               </TextField>
             </Grid>
             <Grid item xs={4}>
