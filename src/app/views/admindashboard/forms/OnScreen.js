@@ -86,10 +86,11 @@ const OnScreen = () => {
   };
 
   useEffect(() => {
-    if (selectedClass) {
+    if (selectedClass && currentSession) {
       const token = localStorage.getItem("jwtToken");
 
-      fetch(`${apiUrl}/api/student/${selectedClass}`, {
+      // Fetch students based on the selected class and session
+      fetch(`${apiUrl}/api/students/${currentSession._id}/${selectedClass}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -106,22 +107,31 @@ const OnScreen = () => {
         })
         .catch((error) => console.error("Error fetching student data:", error));
 
-      // Fetch subjects based on the selected class
-      fetch(`${apiUrl}/api/get-subject/${selectedClass}`)
+      // Fetch subjects based on the selected class and session
+      fetch(
+        `${apiUrl}/api/get-subject/${selectedClass}/${currentSession._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
         .then((response) => {
           if (!response.ok) {
             throw new Error("Failed to fetch subject data");
           }
           return response.json();
         })
-        .then((data) => setSubjectData(data))
+        .then((data) => {
+          console.log("Subject Data Received:", data);
+          setSubjectData(data);
+        })
         .catch((error) => console.error("Error fetching subject data:", error));
     } else {
       setStudentData([]);
       setSubjectData([]);
     }
-  }, [selectedClass]);
-
+  }, [selectedClass, currentSession]);
   const handleClassChange = (event) => {
     const newSelectedClass = event.target.value;
     setSelectedClass(newSelectedClass);
