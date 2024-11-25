@@ -98,9 +98,12 @@ const Attendance = () => {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      const response = await fetch(`${apiUrl}/api/student/${selectedClass}`, {
-        headers,
-      });
+      const response = await fetch(
+        `${apiUrl}/api/students/${currentSession._id}/${selectedClass}`,
+        {
+          headers,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch student data");
