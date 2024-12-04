@@ -53,7 +53,7 @@ const FirstTermRep = ({ studentId }) => {
   // const { id } = useParams();
   const id = studentId;
   console.log("std", id);
-  const { data } = useFetch(`/students/${id}/${currentSession._id}`);
+  const { data } = useFetch(`/get-students/${id}/${currentSession._id}`);
   useEffect(() => {
     console.log("Data from useFetch:", data);
   }, [data]);
@@ -538,7 +538,11 @@ const FirstTermRep = ({ studentId }) => {
                       marginLeft: "30px",
                       textAlign: "center",
                     }}
-                    value={data?.AdmNo || "ID not available"}
+                    value={
+                      data && data.length > 0
+                        ? data[0]?.AdmNo || "ID not available"
+                        : "Data format unexpected"
+                    }
                     readOnly
                   />
                 </p>
