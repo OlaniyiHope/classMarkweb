@@ -54,7 +54,11 @@ const FirstTermRep = ({ studentId }) => {
   const id = studentId;
 
   const { data } = useFetch(`/get-students/${id}/${currentSession._id}`);
+
   useEffect(() => {}, [data]);
+  console.log("Student ID:", id);
+  console.log("Current Session ID:", currentSession._id);
+  console.log("this is the student data", data);
 
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -468,7 +472,7 @@ const FirstTermRep = ({ studentId }) => {
               </div>
             </div>
 
-            <div
+            {/*} <div
               className="bd_detailssec"
               style={{
                 display: "flex",
@@ -503,7 +507,7 @@ const FirstTermRep = ({ studentId }) => {
                       textAlign: "center",
                     }}
                   >
-                    {data && data.length > 0
+                    {Array.isArray(data) && data.length > 0
                       ? data[0]?.studentName || "Name not available"
                       : "Data format unexpected"}
                   </span>
@@ -638,6 +642,183 @@ const FirstTermRep = ({ studentId }) => {
                   />
                 </p>
               </div>
+            </div>*/}
+            <div className="bd_detailssec" style={{ padding: "20px" }}>
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  textAlign: "left",
+                  border: "1px solid #000",
+                }}
+              >
+                <tbody>
+                  <tr>
+                    <td
+                      style={{
+                        padding: "10px",
+                        borderRight: "2px solid #000",
+                        verticalAlign: "middle",
+                        textAlign: "center",
+                      }}
+                    >
+                      <img
+                        className="profile-photo"
+                        alt="profile-photo"
+                        src="https://hlhs.portalreport.org/uploads/user.jpg"
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          borderRadius: "50%",
+                          border: "2px solid #000",
+                        }}
+                      />
+                    </td>
+                    <td
+                      style={{
+                        padding: "10px",
+                        borderRight: "2px solid #000",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      <div style={{ marginBottom: "10px" }}>
+                        <span style={{ fontWeight: "bold" }}>
+                          Student Name:
+                        </span>
+                        <span
+                          style={{
+                            marginLeft: "10px",
+                            borderBottom: "1px solid black",
+                            display: "inline-block",
+                            paddingBottom: "2px",
+                            minWidth: "200px",
+                          }}
+                        >
+                          {Array.isArray(data) && data.length > 0
+                            ? data[0]?.studentName || "Name not available"
+                            : "Data format unexpected"}
+                        </span>
+                      </div>
+                      <div style={{ marginBottom: "10px" }}>
+                        <span style={{ fontWeight: "bold" }}>Student ID:</span>
+                        <span
+                          style={{
+                            marginLeft: "10px",
+                            borderBottom: "1px solid black",
+                            display: "inline-block",
+                            paddingBottom: "2px",
+                            minWidth: "100px",
+                          }}
+                        >
+                          {data && data.length > 0
+                            ? data[0]?.AdmNo || "ID not available"
+                            : "Data format unexpected"}
+                        </span>
+                      </div>
+                      <div style={{ marginBottom: "10px" }}>
+                        <span style={{ fontWeight: "bold" }}>Session:</span>
+                        <span
+                          style={{
+                            marginLeft: "10px",
+                            borderBottom: "1px solid black",
+                            display: "inline-block",
+                            paddingBottom: "2px",
+                            minWidth: "200px",
+                          }}
+                        >
+                          {accountSettings.sessionStart}-
+                          {accountSettings.sessionEnd}
+                        </span>
+                      </div>
+                      <div style={{ marginBottom: "10px" }}>
+                        <span style={{ fontWeight: "bold" }}>
+                          Class Teacher:
+                        </span>
+                        <span
+                          style={{
+                            marginLeft: "10px",
+                            borderBottom: "1px solid black",
+                            display: "inline-block",
+                            paddingBottom: "2px",
+                            minWidth: "200px",
+                          }}
+                        >
+                          Mrs Adebisi Emmanuel
+                        </span>
+                      </div>
+                    </td>
+                    <td
+                      style={{
+                        padding: "10px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      <div style={{ marginBottom: "10px" }}>
+                        <span style={{ fontWeight: "bold" }}>Total Marks:</span>
+                        <span
+                          style={{
+                            marginLeft: "10px",
+                            borderBottom: "1px solid black",
+                            display: "inline-block",
+                            paddingBottom: "2px",
+                            minWidth: "100px",
+                          }}
+                        >
+                          {totalMarks || "0"}
+                        </span>
+                      </div>
+                      <div style={{ marginBottom: "10px" }}>
+                        <span style={{ fontWeight: "bold" }}>
+                          Marks Obtained:
+                        </span>
+                        <span
+                          style={{
+                            marginLeft: "10px",
+                            borderBottom: "1px solid black",
+                            display: "inline-block",
+                            paddingBottom: "2px",
+                            minWidth: "100px",
+                          }}
+                        >
+                          {totalMarksObtained || "0"}
+                        </span>
+                      </div>
+                      <div style={{ marginBottom: "10px" }}>
+                        <span style={{ fontWeight: "bold" }}>
+                          Average Marks:
+                        </span>
+                        <span
+                          style={{
+                            marginLeft: "10px",
+                            borderBottom: "1px solid black",
+                            display: "inline-block",
+                            paddingBottom: "2px",
+                            minWidth: "100px",
+                          }}
+                        >
+                          {averageMarks || "0"}
+                        </span>
+                      </div>
+                      <div style={{ marginBottom: "10px" }}>
+                        <span style={{ fontWeight: "bold" }}>
+                          Average Grade:
+                        </span>
+                        <span
+                          style={{
+                            marginLeft: "10px",
+                            borderBottom: "1px solid black",
+                            display: "inline-block",
+                            paddingBottom: "2px",
+                            minWidth: "100px",
+                          }}
+                        >
+                          {calculateAverageGrade() || "N/A"}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
             {/* First Table */}

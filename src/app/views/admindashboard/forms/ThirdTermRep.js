@@ -740,21 +740,58 @@ const ThirdTermRep = ({ studentId }) => {
       throw new Error("Failed to fetch student data");
     }
   };
+  // useEffect(() => {
+  //   const fetchSchoolSettings = async () => {
+  //     try {
+  //       const response = await axios.get(`${apiUrl}/api/setting`);
+  //       const { data } = response.data;
+
+  //       // Set the retrieved school settings to the state
+  //       setSchoolSettings(data);
+  //     } catch (error) {
+  //       console.error("Error fetching school settings:", error);
+  //     }
+  //   };
+
+  //   fetchSchoolSettings();
+  // }, [apiUrl]);
   useEffect(() => {
     const fetchSchoolSettings = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/setting`);
+        // Log the API URL and parameters being used
+        console.log("Fetching School Settings...");
+        console.log("API URL:", `${apiUrl}/api/setting`);
+        console.log("Parameters:", {
+          sessionId: currentSession._id,
+          term: "THIRD TERM",
+        });
+
+        const response = await axios.get(`${apiUrl}/api/setting`, {
+          params: {
+            sessionId: currentSession._id,
+            term: "THIRD TERM", // Or dynamically determine term
+          },
+        });
+
+        // Log the full API response
+        console.log("Full API Response:", response);
+
+        // Extract data from the API response
         const { data } = response.data;
 
-        // Set the retrieved school settings to the state
+        // Log the extracted data
+        console.log("Extracted Data (School Settings):", data);
+
+        // Update state with the fetched data
         setSchoolSettings(data);
       } catch (error) {
+        // Log the error if the API request fails
         console.error("Error fetching school settings:", error);
       }
     };
 
     fetchSchoolSettings();
-  }, [apiUrl]);
+  }, [apiUrl, currentSession]);
   useEffect(() => {
     const fetchAccountSettings = async () => {
       try {
