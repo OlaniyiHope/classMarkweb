@@ -151,7 +151,7 @@ const Settings = () => {
                     size="small"
                     type="text"
                     name="name"
-                    placeholder="Enter the name"
+                    placeholder="Name of your school"
                     label="Full Name"
                     variant="outlined"
                     value={formData.name}

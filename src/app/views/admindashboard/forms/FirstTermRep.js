@@ -52,11 +52,9 @@ const FirstTermRep = ({ studentId }) => {
 
   // const { id } = useParams();
   const id = studentId;
-  console.log("std", id);
+
   const { data } = useFetch(`/get-students/${id}/${currentSession._id}`);
-  useEffect(() => {
-    console.log("Data from useFetch:", data);
-  }, [data]);
+  useEffect(() => {}, [data]);
 
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -81,10 +79,7 @@ const FirstTermRep = ({ studentId }) => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   // Debug: Log the studentId and currentSession
-  useEffect(() => {
-    console.log("Component mounted with studentId:", studentId);
-    console.log("Current Session:", currentSession);
-  }, [studentId, currentSession]);
+  useEffect(() => {}, [studentId, currentSession]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -95,7 +90,6 @@ const FirstTermRep = ({ studentId }) => {
         const fetchedStudentData = await fetchStudentData(studentId);
 
         // Debug: Log the fetched student data
-        console.log("Fetched Student Data:", fetchedStudentData);
 
         // Set the student data in state
         setStudentData(fetchedStudentData);
@@ -110,8 +104,6 @@ const FirstTermRep = ({ studentId }) => {
     };
 
     fetchData();
-
-    console.log("Student ID in useEffect:", studentId);
   }, [studentId, currentSession]);
 
   const fetchStudentData = async (studentId) => {
@@ -131,7 +123,6 @@ const FirstTermRep = ({ studentId }) => {
       );
 
       // Debug: Log the entire API response
-      console.log("API Response for get-scores-by-student:", response.data);
 
       const filteredScores = response.data.scores.filter(
         (score) =>
@@ -143,18 +134,11 @@ const FirstTermRep = ({ studentId }) => {
         throw new Error("No first term scores found for the student");
       }
 
-      // Debug: Log the filtered scores
-      console.log("Filtered Scores:", filteredScores);
-
       const scoresWithPositions = await Promise.all(
         filteredScores.map(async (score) => {
           const { examId, subjectId } = score;
 
           if (!examId || !subjectId) {
-            console.error(
-              "Exam ID or Subject ID not found for a score:",
-              score
-            );
             return { ...score, position: 0 };
           }
 
@@ -173,10 +157,6 @@ const FirstTermRep = ({ studentId }) => {
             ) + 1;
 
           // Debug: Log the position for each subject
-          console.log(
-            `Position of current student for Subject ${subjectId._id} and Exam ${examId._id}:`,
-            studentPosition
-          );
 
           return {
             ...score,
@@ -184,9 +164,6 @@ const FirstTermRep = ({ studentId }) => {
           };
         })
       );
-
-      // Debug: Log scores with positions
-      console.log("Scores with Positions:", scoresWithPositions);
 
       // Make sure scoresWithPositions is an array with at least one element
       if (scoresWithPositions && scoresWithPositions.length > 0) {
@@ -217,20 +194,16 @@ const FirstTermRep = ({ studentId }) => {
       );
 
       // Debug: Log all students data
-      console.log("All Students Data:", response.data);
 
       const data = response.data;
       if (data && data.scores) {
-        console.log("Number of students with marks:", data.scores.length);
         const studentsWithMarks = data.scores.filter(
           (student) =>
             student.marksObtained !== undefined && student.marksObtained !== 0
         );
-        console.log("Students with marks:", studentsWithMarks);
 
         return studentsWithMarks;
       } else {
-        console.log("No scores data available.");
         return [];
       }
     } catch (error) {
@@ -251,9 +224,6 @@ const FirstTermRep = ({ studentId }) => {
         { headers }
       );
 
-      // Debug: Log the psychomotor data
-      console.log("Psychomotor Data:", response.data);
-
       return { ...response.data };
     } catch (error) {
       console.error("Error fetching psychomotor data:", error);
@@ -262,25 +232,82 @@ const FirstTermRep = ({ studentId }) => {
   };
 
   // Fetch school settings
+  // useEffect(() => {
+  //   const fetchSchoolSettings = async () => {
+  //     try {
+  //       const response = await axios.get(`${apiUrl}/api/setting`);
+  //       const { data } = response.data;
+
+  //       // Debug: Log school settings
+  //       console.log("School Settings:", data);
+
+  //       // Set the retrieved school settings to the state
+  //       setSchoolSettings(data);
+  //     } catch (error) {
+  //       console.error("Error fetching school settings:", error);
+  //     }
+  //   };
+
+  //   fetchSchoolSettings();
+  // }, [apiUrl]);
+
+  // useEffect(() => {
+  //   const fetchSchoolSettings = async () => {
+  //     try {
+  //       const response = await axios.get(`${apiUrl}/api/setting`, {
+  //         params: {
+  //           sessionId: currentSession._id,
+  //           term: "FIRST TERM", // Or dynamically determine term
+  //         },
+  //       });
+
+  //       const { data } = response.data;
+
+  //       setSchoolSettings(data);
+  //     } catch (error) {
+  //       console.error("Error fetching school settings:", error);
+  //     }
+  //   };
+
+  //   fetchSchoolSettings();
+  // }, [apiUrl, currentSession]);
   useEffect(() => {
     const fetchSchoolSettings = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/setting`);
+        // Log the API URL and parameters being used
+        console.log("Fetching School Settings...");
+        console.log("API URL:", `${apiUrl}/api/setting`);
+        console.log("Parameters:", {
+          sessionId: currentSession._id,
+          term: "FIRST TERM",
+        });
+
+        const response = await axios.get(`${apiUrl}/api/setting`, {
+          params: {
+            sessionId: currentSession._id,
+            term: "FIRST TERM", // Or dynamically determine term
+          },
+        });
+
+        // Log the full API response
+        console.log("Full API Response:", response);
+
+        // Extract data from the API response
         const { data } = response.data;
 
-        // Debug: Log school settings
-        console.log("School Settings:", data);
+        // Log the extracted data
+        console.log("Extracted Data (School Settings):", data);
 
-        // Set the retrieved school settings to the state
+        // Update state with the fetched data
         setSchoolSettings(data);
       } catch (error) {
+        // Log the error if the API request fails
         console.error("Error fetching school settings:", error);
       }
     };
 
     fetchSchoolSettings();
-  }, [apiUrl]);
-
+  }, [apiUrl, currentSession]);
   // Fetch account settings
   useEffect(() => {
     const fetchAccountSettings = async () => {
@@ -289,7 +316,6 @@ const FirstTermRep = ({ studentId }) => {
         const { data } = response.data;
 
         // Debug: Log account settings
-        console.log("Account Settings:", data);
 
         // Set the retrieved account settings to the state
         setAccountSettings(data);
@@ -310,7 +336,6 @@ const FirstTermRep = ({ studentId }) => {
         const fetchedPsyData = await fetchPsyData(studentId);
 
         // Debug: Log the fetched psychomotor data
-        console.log("Fetched Psychomotor Data:", fetchedPsyData);
 
         setPsyData(fetchedPsyData);
 
@@ -323,14 +348,10 @@ const FirstTermRep = ({ studentId }) => {
     };
 
     fetchData();
-
-    console.log("Student ID in psychomotor useEffect:", studentId);
   }, [studentId, currentSession]);
 
   // Log the main data fetched via useFetch
-  useEffect(() => {
-    console.log("Data from useFetch:", data);
-  }, [data]);
+  useEffect(() => {}, [data]);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -349,7 +370,6 @@ const FirstTermRep = ({ studentId }) => {
   }
 
   // Debug: Log totalMarksObtained
-  console.log("Total Marks Obtained:", totalMarksObtained);
 
   const totalMarks = studentData ? studentData.length * 100 : 0;
   const averageMarks = totalMarks
@@ -380,7 +400,6 @@ const FirstTermRep = ({ studentId }) => {
     );
 
     if (!subjectsWithGrades || subjectsWithGrades.length === 0) {
-      console.log("No subjects with valid grades found.");
       return "N/A";
     }
 
@@ -769,16 +788,15 @@ const FirstTermRep = ({ studentId }) => {
                   </tr>
                   <tr>
                     <th>PRINCIPAL'S NAME</th>
-                    <td>{schoolSettings.principalName || "N/A"}</td>
+                    <td>{schoolSettings?.principalName || "N/A"}</td>
                     <td style={{ textAlign: "right" }}>
                       <img
-                        src={`${apiUrl}/uploads/${schoolSettings.signature}`}
+                        src={schoolSettings?.signature} // Use full URL directly
                         width="200"
                         alt="Principal Signature"
                       />
                     </td>
                   </tr>
-
                   <tr>
                     <th>SCHOOL RESUMES</th>
                     <td>
