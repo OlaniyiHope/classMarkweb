@@ -143,24 +143,6 @@ td {
     vertical-align: top;
   }
 }
-/* @media print {
-  .main-table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #ddd; 
-  }
-
-  .main-table td {
-    padding: 8px; 
-    vertical-align: top;
-  }
-
-  .main-table th {
-    padding: 8px;
-    text-align: left;
-    border-bottom: 2px solid #000; 
-  }
-} */
 
 /* @media print {
 
