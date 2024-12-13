@@ -97,6 +97,7 @@
 .table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 12px;
   margin-bottom: 20px;
   border: 2px solid black; /* Border around the table */
 }
@@ -124,12 +125,16 @@ td {
 @media print {
   table thead {
     background-color: #ffc107 !important;
+    font-size: 12px;
   }
   #customers th {
     background-color: #ffc107 !important;
+    font-size: 11px;
   }
   #customersreport th {
     background-color: #ffc107 !important;
+    font-size: 11px;
+    page-break-inside: avoid;
   }
 }
 @media print {
