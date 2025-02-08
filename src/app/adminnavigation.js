@@ -439,6 +439,16 @@ export const navigations = [
         iconText: "SI",
         path: "/dashboard/ss3-commercial-subject",
       },
+      {
+        name: "JAMB",
+        iconText: "SI",
+        path: "/dashboard/jamb",
+      },
+      {
+        name: "WAEC",
+        iconText: "SI",
+        path: "/dashboard/waec",
+      },
     ],
   },
   {
@@ -533,6 +543,27 @@ export const navigations = [
         name: "Generate Questions",
         iconText: "SI",
         path: "/dashboard/generate-question",
+      },
+    ],
+  },
+  {
+    name: "Past Questions",
+    icon: "assignment",
+    children: [
+      {
+        name: "Create UTME Questions",
+        iconText: "SI",
+        path: "/dashboard/create-utme-question",
+      },
+      {
+        name: "JAMB(UTME)",
+        iconText: "SI",
+        path: "/dashboard/jamb-past-question",
+      },
+      {
+        name: "WAEC",
+        iconText: "SI",
+        path: "/dashboard/waec-past-question",
       },
     ],
   },

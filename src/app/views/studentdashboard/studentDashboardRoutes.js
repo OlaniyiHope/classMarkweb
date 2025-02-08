@@ -29,6 +29,8 @@ import ManageResult from "./forms/ManageResult";
 import MarkSheet from "./forms/MarkSheet";
 import ReportCard from "./forms/ReportCard";
 import StudyMat from "./forms/StudyMat";
+import Jamb from "./forms/Jamb";
+import JambDetail from "./forms/JambDetail";
 
 // import Su from "./forms/SubSubject";
 // import SubSubject from "./forms/subSubject";
@@ -114,6 +116,16 @@ const studentDashboardRoutes = [
   {
     path: "/student/dashboard/manage-online-exam",
     element: <Manage />,
+    auth: "student",
+  },
+  {
+    path: "/student/dashboard/jamb-past-questions",
+    element: <Jamb />,
+    auth: "student",
+  },
+  {
+    path: "/student/dashboard/jamb-past-questions/:id",
+    element: <JambDetail />,
     auth: "student",
   },
   {

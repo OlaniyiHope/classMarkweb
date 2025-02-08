@@ -31,9 +31,14 @@ export const navigations = [
       //   path: "student/dashboard/add-past-questions",
       // },
       {
-        name: "View Past Questions",
+        name: "JAMB(UTME)",
         iconText: "SI",
-        path: "/student/dashboard/view-past-questions",
+        path: "/student/dashboard/jamb-past-questions",
+      },
+      {
+        name: "WAEC",
+        iconText: "SI",
+        path: "/student/dashboard/waec-past-questions",
       },
     ],
   },

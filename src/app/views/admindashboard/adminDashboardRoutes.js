@@ -74,6 +74,11 @@ import ThirdTermRepCont from "./forms/ThirdTermRepCont";
 import Syllabus from "./forms/Syllabus";
 import PQ from "./forms/PQ";
 import Curriculum from "./forms/Curriculum";
+import Jamb from "./forms/Jamb";
+import Waec from "./forms/Waec";
+import CreateJamb from "./forms/CreateJamb";
+import ManageJamb from "./forms/ManageJamb";
+import JambSingle from "./forms/JambSingle";
 // import Js1b from "./forms/Js1b";
 
 const Analytics = Loadable(lazy(() => import("./Analytics")));
@@ -87,6 +92,8 @@ const adminDashboardRoutes = [
   { path: "/dashboard/examlist", element: <Examlist />, auth: "admin" },
   { path: "/dashboard/js3-subject", element: <Sub3 />, auth: "admin" },
   { path: "/dashboard/js2-subject", element: <Sub2 />, auth: "admin" },
+  { path: "/dashboard/jamb", element: <Jamb />, auth: "admin" },
+  { path: "/dashboard/waec", element: <Waec />, auth: "admin" },
   { path: "/dashboard/syllabus", element: <Syllabus /> },
   { path: "/dashboard/ss1-science-subject", element: <Sub4 />, auth: "admin" },
   { path: "/dashboard/ss1-art-subject", element: <Sub5 />, auth: "admin" },
@@ -242,13 +249,28 @@ const adminDashboardRoutes = [
     auth: "admin",
   },
   {
+    path: "/dashboard/create-utme-question",
+    element: <CreateJamb />,
+    auth: "admin",
+  },
+  {
     path: "/dashboard/manage-online-exam",
     element: <Manage />,
     auth: "admin",
   },
   {
+    path: "/dashboard/jamb-past-question",
+    element: <ManageJamb />,
+    auth: "admin",
+  },
+  {
     path: "/dashboard/manage-online-exam/:id",
     element: <ManSin />,
+    auth: "admin",
+  },
+  {
+    path: "/dashboard/manage-jamb-question/:id",
+    element: <JambSingle />,
     auth: "admin",
   },
   {
