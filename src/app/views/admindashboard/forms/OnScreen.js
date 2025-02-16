@@ -235,44 +235,161 @@ const OnScreen = () => {
   //   }
   // };
 
-  const handleManageMarkClick = async () => {
-    try {
-      if (!selectedClass || !selectedSubject || !selectedName) {
-        throw new Error("Please select class, subject, and student");
-      }
+  // const handleManageMarkClick = async () => {
+  //   try {
+  //     if (!selectedClass || !selectedSubject || !selectedName) {
+  //       throw new Error("Please select class, subject, and student");
+  //     }
 
-      // Fetch theory answer from the backend
-      const theoryAnswerResponse = await fetch(
-        `${apiUrl}/api/get-theory-answer-by-name/className/${selectedClass}/student/${encodeURIComponent(
-          selectedName
-        )}/subject/${selectedSubject}`
-      );
+  //     // Fetch theory answer from the backend
+  //     // const theoryAnswerResponse = await fetch(
+  //     //   `${apiUrl}/api/get-theory-answer-by-name/className/${selectedClass}/student/${encodeURIComponent(
+  //     //     selectedName
+  //     //   )}/subject/${selectedSubject}`
+  //     // );
+  //     const theoryAnswerResponse = await fetch(
+  //       `${apiUrl}/api/get-theory-answer-by-name/className/${selectedClass}/session/${currentSession}/student/${encodeURIComponent(
+  //         selectedName
+  //       )}/subject/${selectedSubject}`
+  //     );
 
-      if (!theoryAnswerResponse.ok) {
-        throw new Error("Failed to fetch theory answer");
-      }
+  //     if (!theoryAnswerResponse.ok) {
+  //       throw new Error("Failed to fetch theory answer");
+  //     }
 
-      const theoryAnswerData = await theoryAnswerResponse.json();
-      setTheoryAnswer(theoryAnswerData.theoryAnswer);
+  //     const theoryAnswerData = await theoryAnswerResponse.json();
+  //     setTheoryAnswer(theoryAnswerData.theoryAnswer);
 
-      // Fetch student theory scores from the backend
-      // const scoresResponse = await fetch(
-      //   `${apiUrl}/api/student-theory-scores/${selectedStudentId}`
-      // );
-      const scoresResponse = await fetch(
-        `${apiUrl}/api/student-theory-scores/${selectedClass}/${selectedName}/${selectedSubject}`
-      );
+  //     // Fetch student theory scores from the backend
+  //     // const scoresResponse = await fetch(
+  //     //   `${apiUrl}/api/student-theory-scores/${selectedStudentId}`
+  //     // );
+  //     const scoresResponse = await fetch(
+  //       `${apiUrl}/api/student-theory-scores/${selectedClass}/${selectedName}/${selectedSubject}`
+  //     );
 
-      if (!scoresResponse.ok) {
-        throw new Error("Failed to fetch student theory scores");
-      }
+  //     if (!scoresResponse.ok) {
+  //       throw new Error("Failed to fetch student theory scores");
+  //     }
 
-      const scoresData = await scoresResponse.json();
-      setStudentTheoryScores(scoresData.studentTheoryScores);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      // Handle error
+  //     const scoresData = await scoresResponse.json();
+  //     setStudentTheoryScores(scoresData.studentTheoryScores);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //     // Handle error
+  //   }
+  // };
+  // const handleManageMarkClick = async () => {
+  //   try {
+  //     if (
+  //       !selectedClass ||
+  //       !selectedSubject ||
+  //       !selectedName ||
+  //       !currentSession
+  //     ) {
+  //       throw new Error("Please select class, subject, student, and session");
+  //     }
+
+  //     // Extract session ID correctly
+  //     const sessionId = currentSession._id;
+
+  //     if (!sessionId) {
+  //       throw new Error("Invalid session ID");
+  //     }
+
+  //     // Fetch theory answer from the backend
+  //     const theoryAnswerResponse = await fetch(
+  //       `${apiUrl}/api/get-theory-answer-by-name/className/${selectedClass}/session/${sessionId}/student/${encodeURIComponent(
+  //         selectedName
+  //       )}/subject/${selectedSubject}`
+  //     );
+
+  //     if (!theoryAnswerResponse.ok) {
+  //       throw new Error("Failed to fetch theory answer");
+  //     }
+
+  //     const theoryAnswerData = await theoryAnswerResponse.json();
+  //     setTheoryAnswer(theoryAnswerData.theoryAnswer);
+
+  //     // Fetch student theory scores from the backend
+  //     const scoresResponse = await fetch(
+  //       `${apiUrl}/api/student-theory-scores/${selectedClass}/${selectedName}/${selectedSubject}`
+  //     );
+
+  //     if (!scoresResponse.ok) {
+  //       throw new Error("Failed to fetch student theory scores");
+  //     }
+
+  //     const scoresData = await scoresResponse.json();
+  //     setStudentTheoryScores(scoresData.studentTheoryScores);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+  const handleManageMarkClick = () => {
+    if (
+      !selectedClass ||
+      !selectedSubject ||
+      !selectedName ||
+      !currentSession
+    ) {
+      console.error("Please select class, subject, student, and session");
+      return;
     }
+
+    const token = localStorage.getItem("jwtToken");
+    const sessionId = currentSession._id;
+
+    if (!sessionId) {
+      console.error("Invalid session ID");
+      return;
+    }
+
+    // Fetch theory answer from the backend
+    fetch(
+      `${apiUrl}/api/get-theory-answer-by-name/className/${selectedClass}/session/${sessionId}/student/${encodeURIComponent(
+        selectedName
+      )}/subject/${selectedSubject}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch theory answer");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Theory Answer Received:", data);
+        setTheoryAnswer(data.theoryAnswer);
+      })
+      .catch((error) => console.error("Error fetching theory answer:", error));
+
+    // Fetch student theory scores from the backend
+    fetch(
+      `${apiUrl}/api/student-theory-scores/${selectedClass}/${selectedName}/${selectedSubject}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch student theory scores");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Student Theory Scores Received:", data);
+        setStudentTheoryScores(data.studentTheoryScores);
+      })
+      .catch((error) =>
+        console.error("Error fetching student theory scores:", error)
+      );
   };
 
   useEffect(() => {

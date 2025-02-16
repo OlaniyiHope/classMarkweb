@@ -44,7 +44,7 @@ const JambDetail = () => {
 
   const [examFinished, setExamFinished] = useState(false);
   const { currentSession } = useContext(SessionContext);
-
+  console.log("Session ID:", currentSession._id);
   const apiUrl = process.env.REACT_APP_API_URL.trim();
 
   const navigate = useNavigate();
@@ -194,71 +194,6 @@ const JambDetail = () => {
     return null;
   };
 
-  // const fetchExamAndQuestions = async () => {
-  //   try {
-  //     const examResponse = await axios.get(
-  //       `${apiUrl}/api/get-exam-by-id/${id}/${currentSession._id}`
-  //     );
-  //     const examData = examResponse.data;
-  //     setExam(examData);
-
-  //     // Fetch previously submitted answers
-  //     const token = localStorage.getItem("jwtToken");
-  //     const headers = { Authorization: `Bearer ${token}` };
-  //     const submissionResponse = await axios.get(
-  //       `${apiUrl}/api/exams/get-submission/${id}/${getLoggedInUserId()}`,
-  //       { headers }
-  //     );
-
-  //     const userAnswers = submissionResponse.data.answers;
-  //     console.log(userAnswers);
-  //     setAnswers(userAnswers); // Populate the form with user's previous answers
-
-  //     const questionsResponse = await axios.get(
-  //       `${apiUrl}/api/questions/${id}`,
-  //       { headers }
-  //     );
-  //     const questionsData = questionsResponse.data;
-  //     setQuestions(questionsData);
-
-  //     const correctAnswersData = {};
-  //     questionsData.forEach((question) => {
-  //       if (question.questionType === "true_false") {
-  //         correctAnswersData[question._id] =
-  //           question.correctAnswer.toLowerCase();
-  //       } else {
-  //         correctAnswersData[question._id] =
-  //           question.options
-  //             .find((option) => option.isCorrect)
-  //             ?.option.toLowerCase() || "";
-  //       }
-  //     });
-
-  //     setCorrectAnswers(correctAnswersData);
-  //     setTotalMark(
-  //       questionsData.reduce(
-  //         (total, question) => total + parseInt(question.mark),
-  //         0
-  //       )
-  //     );
-
-  //     startTimer();
-  //   } catch (error) {
-  //     console.error("Error fetching exam or questions:", error);
-  //   }
-  // };
-
-  // // useEffect(() => {
-  // //   fetchExamAndQuestions();
-  // // }, [id]);
-
-  // useEffect(() => {
-  //   fetchExamAndQuestions();
-  //   return () => {
-  //     clearInterval(timerInterval); // Clear the timer interval on component unmount
-  //   };
-  // }, [id]);
-
   const fetchExamAndQuestions = async () => {
     try {
       const examResponse = await axios.get(
@@ -395,7 +330,7 @@ const JambDetail = () => {
       };
 
       console.log("Data before submitting:", data); // Log the data before submitting
-
+      console.log("Session ID:", currentSession._id);
       const response = await axios.post(
         `${apiUrl}/api/jamb-exams/submit/${currentSession._id}`,
         data,
@@ -596,7 +531,10 @@ const JambDetail = () => {
         <DialogTitle>Exam Completed</DialogTitle>
         <DialogContent>
           <Typography variant="body1">
-            You have successfully completed the exam. Thank you!
+            You have successfully completed the exam. Your score is
+          </Typography>
+          <Typography variant="h6" color="primary">
+            {score} out of {totalMark}
           </Typography>
         </DialogContent>
         <DialogActions>
