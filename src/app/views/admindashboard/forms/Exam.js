@@ -26,11 +26,7 @@ import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
-
 import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
-
-
 
 const Container = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -50,19 +46,17 @@ const Exam = () => {
   const { currentSession } = useContext(SessionContext);
 
   const {
-    data:classData,
+    data: classData,
     loading: classLoading,
     error: classError,
-  } = useFetch(
-      currentSession ? `/class/${currentSession._id}` : null      
-    );
-    console.log(classData)
-    const { data: examData } = useFetch(
-      currentSession ? `/getofflineexam/${currentSession._id}` : null
-    );
-    console.log(examData)
+  } = useFetch(currentSession ? `/class/${currentSession._id}` : null);
+  console.log(classData);
+  const { data: examData } = useFetch(
+    currentSession ? `/getofflineexam/${currentSession._id}` : null
+  );
+  console.log(examData);
   const [subjectData, setSubjectData] = useState([]);
-  console.log("sub",subjectData)
+  console.log("sub", subjectData);
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedExam, setSelectedExam] = useState("");
@@ -98,7 +92,7 @@ const Exam = () => {
       headers.append("Authorization", `Bearer ${token}`);
 
       const response = await fetch(
-        `${apiUrl}/api/get-all-scores/${examId}/${subjectId}`,
+        `${apiUrl}/api/get-all-scores/${examId}/${subjectId}/${currentSession._id}`,
         {
           headers,
         }
@@ -126,9 +120,12 @@ const Exam = () => {
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
 
-      const response = await fetch(`${apiUrl}/api/student/${selectedClass}/${currentSession._id}`, {
-        headers,
-      });
+      const response = await fetch(
+        `${apiUrl}/api/student/${selectedClass}/${currentSession._id}`,
+        {
+          headers,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch student data");
@@ -194,7 +191,7 @@ const Exam = () => {
       console.error("Error fetching student data:", error);
     }
   };
-  console.log("selectedclass: ", selectedClass)
+  console.log("selectedclass: ", selectedClass);
 
   useEffect(() => {
     const fetchSubjectData = async () => {
@@ -268,6 +265,161 @@ const Exam = () => {
     setSelectedSubject(event.target.value);
   };
 
+  // const handleSaveChanges = async () => {
+  //   try {
+  //     const marks = studentData.map((student) => {
+  //       const {
+  //         studentId,
+  //         testscore = 0,
+  //         examscore = 0,
+  //         comment = "",
+  //       } = student;
+  //       const marksObtained = testscore + examscore;
+
+  //       return {
+  //         studentId,
+  //         subjectId: subjectIdLookup[selectedSubject],
+  //         testscore,
+  //         examscore,
+  //         marksObtained,
+  //         comment,
+  //       };
+  //     });
+
+  //     console.log("Updated Marks:", marks);
+
+  //     const token = localStorage.getItem("jwtToken");
+  //     const headers = new Headers();
+  //     headers.append("Authorization", `Bearer ${token}`);
+  //     console.log("selectedExam:", selectedExam);
+  //     console.log(
+  //       "subjectIdLookup[selectedSubject]:",
+  //       subjectIdLookup[selectedSubject]
+  //     );
+  //     console.log("currentSession._id:", currentSession._id);
+
+  //     // Check if there are existing marks by verifying the examId and subjectId
+  //     if (selectedExam && subjectIdLookup[selectedSubject]) {
+  //       console.log("Fetching marks data");
+  //       const responseCheckMarks = await fetch(
+  //         `${apiUrl}/api/get-all-scores/${selectedExam}/${subjectIdLookup[selectedSubject]}/${currentSession._id}`,
+  //         {
+  //           headers,
+  //         }
+  //       );
+
+  //       console.log("Response from Check Marks:", responseCheckMarks);
+
+  //       if (responseCheckMarks.ok) {
+  //         const responseData = await responseCheckMarks.json();
+  //         console.log("Parsed Response Data:", responseData);
+  //         const existingMarks = responseData.scores || [];
+
+  //         // Check if there are existing marks
+  //         if (existingMarks.length > 0) {
+  //           // Existing marks found, proceed with updating
+  //           const responseUpdateMarks = await fetch(
+  //             `${apiUrl}/api/update-all-marks/${currentSession._id}`,
+  //             {
+  //               method: "PUT",
+  //               headers: {
+  //                 ...headers,
+  //                 "Content-Type": "application/json",
+  //               },
+  //               body: JSON.stringify({
+  //                 examId: selectedExam,
+  //                 subjectId: subjectIdLookup[selectedSubject],
+  //                 updates: marks,
+  //               }),
+  //             }
+  //           );
+  //           console.log("Existing Marks:", existingMarks);
+
+  //           console.log("Request Payload:", {
+  //             examId: selectedExam,
+  //             subjectId: subjectIdLookup[selectedSubject],
+  //             updates: marks,
+  //           });
+
+  //           console.log("Response from Update Marks:", responseUpdateMarks);
+
+  //           if (!responseUpdateMarks.ok) {
+  //             const errorMessage = await responseUpdateMarks.text();
+  //             console.error(
+  //               `Failed to update marks. Server response: ${errorMessage}`
+  //             );
+  //             throw new Error("Failed to update marks");
+  //           } else {
+  //             // Notify success using toast
+  //             toast.success("Marks updated successfully!");
+  //           }
+  //         } else {
+  //           // No existing marks found, proceed to create new marks
+  //           const responseSaveMarks = await fetch(
+  //             `${apiUrl}/api/save-marks/${currentSession._id}`,
+  //             {
+  //               method: "POST",
+  //               headers: {
+  //                 ...headers,
+  //                 "Content-Type": "application/json",
+  //               },
+  //               body: JSON.stringify({
+  //                 examId: selectedExam,
+  //                 subjectId: subjectIdLookup[selectedSubject],
+  //                 updates: marks,
+  //                 session: currentSession._id,
+  //               }),
+  //             }
+  //           );
+
+  //           console.log("Response from Save Marks:", responseSaveMarks);
+
+  //           if (!responseSaveMarks.ok) {
+  //             const errorMessage = await responseSaveMarks.text();
+
+  //             console.error(
+  //               `Failed to save marks. Server response: ${errorMessage}`
+  //             );
+  //             throw new Error("Failed to save marks");
+  //           } else {
+  //             // Notify success using toast
+  //             toast.success("Marks saved successfully!");
+  //           }
+  //         }
+  //       } else {
+  //         // Handle other response statuses
+  //         // ...
+  //       }
+  //     }
+  //     // ... (remaining code)
+  //   } catch (error) {
+  //     console.error("Error saving marks:", error);
+  //     // ... (error handling)
+  //   }
+  // };
+
+  // const handleScoreChange = (index, scoreType, value) => {
+  //   // Assuming studentData is an array
+  //   const updatedStudents = [...studentData];
+
+  //   // Update the corresponding score
+  //   if (scoreType === "testscore") {
+  //     updatedStudents[index].testscore = parseInt(value, 10) || 0;
+  //   } else if (scoreType === "examscore") {
+  //     updatedStudents[index].examscore = parseInt(value, 10) || 0;
+  //   } else if (scoreType === "comment") {
+  //     updatedStudents[index].comment = value; // Update the comment field
+  //   }
+
+  //   // Update marksObtained by adding test score and exam score
+  //   updatedStudents[index].marksObtained =
+  //     (updatedStudents[index].testscore || 0) +
+  //     (updatedStudents[index].examscore || 0);
+
+  //   // Update state with the modified students
+  //   setStudentData(updatedStudents);
+  // };
+
   const handleSaveChanges = async () => {
     try {
       const marks = studentData.map((student) => {
@@ -294,11 +446,22 @@ const Exam = () => {
       const token = localStorage.getItem("jwtToken");
       const headers = new Headers();
       headers.append("Authorization", `Bearer ${token}`);
+      console.log("selectedExam:", selectedExam);
+      console.log(
+        "subjectIdLookup[selectedSubject]:",
+        subjectIdLookup[selectedSubject]
+      );
+      console.log("currentSession._id:", currentSession._id);
 
-      // Check if there are existing marks by verifying the examId and subjectId
-      if (selectedExam && subjectIdLookup[selectedSubject]) {
+      // Check if there are existing marks by verifying the examId, subjectId, and sessionId
+      if (
+        selectedExam &&
+        subjectIdLookup[selectedSubject] &&
+        currentSession._id
+      ) {
+        console.log("Fetching marks data");
         const responseCheckMarks = await fetch(
-          `${apiUrl}/api/get-all-scores/${selectedExam}/${subjectIdLookup[selectedSubject]}`,
+          `${apiUrl}/api/get-all-scores/${selectedExam}/${subjectIdLookup[selectedSubject]}/${currentSession._id}`,
           {
             headers,
           }
@@ -308,13 +471,14 @@ const Exam = () => {
 
         if (responseCheckMarks.ok) {
           const responseData = await responseCheckMarks.json();
+          console.log("Parsed Response Data:", responseData);
           const existingMarks = responseData.scores || [];
 
           // Check if there are existing marks
           if (existingMarks.length > 0) {
             // Existing marks found, proceed with updating
             const responseUpdateMarks = await fetch(
-              `${apiUrl}/api/update-all-marks`,
+              `${apiUrl}/api/update-all-marks/${currentSession._id}`,
               {
                 method: "PUT",
                 headers: {
@@ -328,6 +492,7 @@ const Exam = () => {
                 }),
               }
             );
+            console.log("Existing Marks:", existingMarks);
 
             console.log("Request Payload:", {
               examId: selectedExam,
@@ -349,25 +514,27 @@ const Exam = () => {
             }
           } else {
             // No existing marks found, proceed to create new marks
-            const responseSaveMarks = await fetch(`${apiUrl}/api/save-marks/${currentSession._id}`, {
-              method: "POST",
-              headers: {
-                ...headers, 
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                examId: selectedExam,
-                subjectId: subjectIdLookup[selectedSubject],
-                updates: marks,
-                session: currentSession._id
-              }),
-            });
+            const responseSaveMarks = await fetch(
+              `${apiUrl}/api/save-marks/${currentSession._id}`,
+              {
+                method: "POST",
+                headers: {
+                  ...headers,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  examId: selectedExam,
+                  subjectId: subjectIdLookup[selectedSubject],
+                  updates: marks,
+                  session: currentSession._id,
+                }),
+              }
+            );
 
             console.log("Response from Save Marks:", responseSaveMarks);
 
             if (!responseSaveMarks.ok) {
               const errorMessage = await responseSaveMarks.text();
-
               console.error(
                 `Failed to save marks. Server response: ${errorMessage}`
               );
@@ -379,37 +546,20 @@ const Exam = () => {
           }
         } else {
           // Handle other response statuses
-          // ...
+          const errorMessage = await responseCheckMarks.text();
+          console.error(
+            `Failed to fetch marks. Server response: ${errorMessage}`
+          );
+          throw new Error("Failed to fetch marks");
         }
       }
-      // ... (remaining code)
     } catch (error) {
       console.error("Error saving marks:", error);
-      // ... (error handling)
+      // Handle error (e.g., show error message to the user)
+      toast.error("Failed to save changes. Please try again.");
     }
   };
 
-  // const handleScoreChange = (index, scoreType, value) => {
-  //   // Assuming studentData is an array
-  //   const updatedStudents = [...studentData];
-
-  //   // Update the corresponding score
-  //   if (scoreType === "testscore") {
-  //     updatedStudents[index].testscore = parseInt(value, 10) || 0;
-  //   } else if (scoreType === "examscore") {
-  //     updatedStudents[index].examscore = parseInt(value, 10) || 0;
-  //   } else if (scoreType === "comment") {
-  //     updatedStudents[index].comment = value; // Update the comment field
-  //   }
-
-  //   // Update marksObtained by adding test score and exam score
-  //   updatedStudents[index].marksObtained =
-  //     (updatedStudents[index].testscore || 0) +
-  //     (updatedStudents[index].examscore || 0);
-
-  //   // Update state with the modified students
-  //   setStudentData(updatedStudents);
-  // };
   const handleScoreChange = (index, scoreType, value) => {
     // Assuming studentData is an array
     const updatedStudents = [...studentData];

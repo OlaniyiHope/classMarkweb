@@ -79,6 +79,7 @@ const ExamDetail = () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [showQuestions, examFinished, remainingTime]);
+
   const handleKeyDown = (event) => {
     console.log("Key pressed:", event.key);
     console.log("Exam finished:", examFinished);
