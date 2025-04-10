@@ -51,6 +51,32 @@ export default function FormDialog4() {
   //     // Handle errors
   //   }
   // };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     const token = localStorage.getItem("jwtToken");
+
+  //     const headers = {
+  //       Authorization: `Bearer ${token}`,
+  //     };
+
+  //     const formDataWithSession = {
+  //       ...formData,
+  //       session: currentSession?._id, // Include session ID
+  //     };
+
+  //     console.log("Form data before sending:", formDataWithSession);
+
+  //     await axios.post(`${apiUrl}/api/create-subject`, formDataWithSession, {
+  //       headers,
+  //     });
+
+  //     navigate("/dashboard/ss1-subject");
+  //   } catch (err) {
+  //     console.error("Error creating subject:", err);
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -61,16 +87,20 @@ export default function FormDialog4() {
         Authorization: `Bearer ${token}`,
       };
 
-      const formDataWithSession = {
-        ...formData,
-        session: currentSession?._id, // Include session ID
+      const formDataWithoutSession = {
+        name: formData.name,
+        teacher: formData.teacher,
+        classname: formData.classname,
       };
 
-      console.log("Form data before sending:", formDataWithSession);
+      console.log("Form data before sending:", formDataWithoutSession);
 
-      await axios.post(`${apiUrl}/api/create-subject`, formDataWithSession, {
-        headers,
-      });
+      // ✅ Include sessionId in the URL
+      await axios.post(
+        `${apiUrl}/api/create-subject/${currentSession?._id}`,
+        formDataWithoutSession,
+        { headers }
+      );
 
       navigate("/dashboard/ss1-subject");
     } catch (err) {
