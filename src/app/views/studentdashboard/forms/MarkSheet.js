@@ -107,8 +107,7 @@ const MarkSheet = () => {
     <Fragment>
       <ContentBox className="analytics">
         <h2>
-          Marksheet for {studentData ? studentData?.studentName : ""}({" "}
-          {studentData ? studentData?.classname : ""})
+          Marksheet for {user?.studentName} ({user?.classname})
         </h2>
 
         <Box width="100%" overflow="auto">
