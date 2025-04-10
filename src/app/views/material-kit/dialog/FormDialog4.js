@@ -189,42 +189,78 @@ export default function FormDialog4({ updateTableData }) {
   const [selectedClass, setSelectedClass] = useState("");
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     // Fetch the authentication token from wherever you've stored it (e.g., local storage)
+  //     const token = localStorage.getItem("jwtToken");
+
+  //     // Include the token in the request headers
+  //     const headers = {
+  //       Authorization: `Bearer ${token}`,
+  //     };
+
+  //     // Add the current session to the form data
+  //     const payload = {
+  //       ...formData,
+  //       session: currentSession, // Add session to the payload
+  //     };
+
+  //     // Make an API call to create a subject
+  //     const response = await axios.post(
+  //       `${apiUrl}/api/create-subject`,
+  //       payload,
+  //       {
+  //         headers, // Include the headers in the request
+  //       }
+  //     );
+
+  //     // Handle successful subject creation
+  //     toast.success("Subject saved successfully!");
+  //     const newSubject = response.data;
+  //     updateTableData(newSubject);
+
+  //     handleClose();
+  //   } catch (err) {
+  //     // Handle errors
+  //     toast.error("An error occurred during subject creation");
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // Fetch the authentication token from wherever you've stored it (e.g., local storage)
       const token = localStorage.getItem("jwtToken");
 
-      // Include the token in the request headers
       const headers = {
         Authorization: `Bearer ${token}`,
       };
 
-      // Add the current session to the form data
-      const payload = {
-        ...formData,
-        session: currentSession, // Add session to the payload
+      const formDataWithoutSession = {
+        name: formData.name,
+        teacher: formData.teacher,
+        classname: formData.classname,
       };
 
-      // Make an API call to create a subject
-      const response = await axios.post(
-        `${apiUrl}/api/create-subject`,
-        payload,
-        {
-          headers, // Include the headers in the request
-        }
+      console.log(
+        "Sending request to:",
+        `${apiUrl}/api/create-subject/${currentSession?._id}`
+      );
+      console.log("Form data:", formDataWithoutSession);
+
+      await axios.post(
+        `${apiUrl}/api/create-subject/${currentSession?._id}`,
+        formDataWithoutSession,
+        { headers }
       );
 
-      // Handle successful subject creation
-      toast.success("Subject saved successfully!");
-      const newSubject = response.data;
-      updateTableData(newSubject);
-
-      handleClose();
+      navigate("/dashboard/ss1-subject");
     } catch (err) {
-      // Handle errors
-      toast.error("An error occurred during subject creation");
+      console.error(
+        "Error creating subject:",
+        err.response?.data || err.message
+      );
     }
   };
 
