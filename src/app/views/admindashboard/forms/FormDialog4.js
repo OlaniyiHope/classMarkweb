@@ -95,7 +95,6 @@ export default function FormDialog4() {
 
       console.log("Form data before sending:", formDataWithoutSession);
 
-      // ✅ Include sessionId in the URL
       await axios.post(
         `${apiUrl}/api/create-subject/${currentSession?._id}`,
         formDataWithoutSession,
