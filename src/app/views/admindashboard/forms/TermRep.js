@@ -90,9 +90,7 @@ const TermRep = ({ studentId }) => {
 
   // const { data } = useFetch(`/students/${id}`);
 
-  const { data } = useFetch(
-    `/get-students/${studentId}/${currentSession._id}`
-  );
+  const { data } = useFetch(`/get-students/${studentId}/${currentSession._id}`);
 
   // const { data,  } = useFetch(`/students/${user._id}`); // Fetch data using the correct URL
 
@@ -118,30 +116,49 @@ const TermRep = ({ studentId }) => {
     schoolLogo: "",
   });
 
-  const apiUrl = process.env.REACT_APP_API_URL.trim();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setLoading(true);
+
+  //     try {
+  //       // Fetch student data
+  //       const studentData = await fetchStudentData(studentId);
+
+  //       // Set the student data in state
+  //       setStudentData(studentData);
+
+  //       setLoading(false);
+  //     } catch (error) {
+  //       // Handle errors
+  //       setError(error.message);
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchData();
+
+  //   console.log("Student ID in useEffect:", studentId);
+  // }, [studentId, currentSession]);
   useEffect(() => {
+    if (!studentId || !currentSession?._id) return;
+
     const fetchData = async () => {
       setLoading(true);
 
       try {
-        // Fetch student data
-        const studentData = await fetchStudentData(studentId);
-
-        // Set the student data in state
-        setStudentData(studentData);
-
-        setLoading(false);
+        const studentScores = await fetchStudentData(studentId);
+        setStudentData(studentScores);
       } catch (error) {
-        // Handle errors
-        setError(error.message);
+        console.error("Error loading student scores:", error);
+        setError("Failed to load student data");
+      } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-
-    console.log("Student ID in useEffect:", studentId);
   }, [studentId, currentSession]);
 
   const fetchclassteacher = async (studentId) => {
