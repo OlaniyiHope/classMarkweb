@@ -90,7 +90,9 @@ const TermRep = ({ studentId }) => {
 
   // const { data } = useFetch(`/students/${id}`);
 
-  const { data } = useFetch(`/get-students/${studentId}/${currentSession._id}`);
+  const { data } = useFetch(
+    `/get-students/${studentId}/${currentSession?._id}`
+  );
 
   // const { data,  } = useFetch(`/students/${user._id}`); // Fetch data using the correct URL
 
@@ -311,8 +313,13 @@ const TermRep = ({ studentId }) => {
         Authorization: `Bearer ${token}`,
       };
 
+      // const response = await axios.get(
+      //   `${apiUrl}/api/get-psy-by-student/${studentId}/${currentSession._id}`,
+      //   { headers }
+      // );
+      const term = "SECOND TERM";
       const response = await axios.get(
-        `${apiUrl}/api/get-psy-by-student/${studentId}/${currentSession._id}`,
+        `${apiUrl}/api/get-psy-by-student/${studentId}/${currentSession._id}?term=${term}`,
         { headers }
       );
 
