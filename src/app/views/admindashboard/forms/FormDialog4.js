@@ -9,6 +9,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import axios from "axios";
 import useFetch from "hooks/useFetch";
+import { SessionContext } from "../../../components/MatxLayout/Layout1/SessionContext";
 
 const initialState = {
   name: "",
@@ -24,28 +25,56 @@ export default function FormDialog4() {
   const [selectedClass, setSelectedClass] = useState("");
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
+  const { currentSession } = useContext(SessionContext);
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     // Fetch the authentication token from wherever you've stored it (e.g., local storage)
+  //     const token = localStorage.getItem("jwtToken");
+
+  //     // Include the token in the request headers
+  //     const headers = {
+  //       Authorization: `Bearer ${token}`,
+  //     };
+  //     console.log("Form data before sending:", formData);
+
+  //     // Make an API call to create a subject
+  //     await axios.post(`${apiUrl}/api/create-subject/`, formData, {
+  //       headers, // Include the headers in the request
+  //     });
+
+  //     // Handle successful subject creation
+  //     navigate("/dashboard/ss1-subject");
+  //   } catch (err) {
+  //     // Handle errors
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // Fetch the authentication token from wherever you've stored it (e.g., local storage)
       const token = localStorage.getItem("jwtToken");
 
-      // Include the token in the request headers
       const headers = {
         Authorization: `Bearer ${token}`,
       };
 
-      // Make an API call to create a subject
-      await axios.post(`${apiUrl}/api/create-subject`, formData, {
-        headers, // Include the headers in the request
+      const formDataWithSession = {
+        ...formData,
+        session: currentSession?._id, // Include session ID
+      };
+
+      console.log("Form data before sending:", formDataWithSession);
+
+      await axios.post(`${apiUrl}/api/create-subject`, formDataWithSession, {
+        headers,
       });
 
-      // Handle successful subject creation
       navigate("/dashboard/ss1-subject");
     } catch (err) {
-      // Handle errors
+      console.error("Error creating subject:", err);
     }
   };
 
