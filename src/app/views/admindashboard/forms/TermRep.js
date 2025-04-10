@@ -82,7 +82,7 @@ const TermRep = ({ studentId }) => {
     printWindow.print();
   };
 
-  const [studentData, setStudentData] = useState(null);
+  const [studentData, setStudentData] = useState([]);
   const [psyData, setPsyData] = useState(null);
   const { currentSession } = useContext(SessionContext);
 
@@ -206,6 +206,85 @@ const TermRep = ({ studentId }) => {
 
   fetchclassteacher();
 
+  // const fetchStudentData = async (studentId) => {
+  //   try {
+  //     const token = localStorage.getItem("jwtToken");
+  //     if (!token) {
+  //       throw new Error("JWT token not found");
+  //     }
+
+  //     const headers = {
+  //       Authorization: `Bearer ${token}`,
+  //     };
+
+  //     const response = await axios.get(
+  //       `${apiUrl}/api/get-scores-by-student/${studentId}/${currentSession._id}`,
+  //       { headers }
+  //     );
+
+  //     const filteredScores = response.data.scores.filter(
+  //       (score) =>
+  //         (score.marksObtained !== undefined || score.marksObtained === 0) &&
+  //         score.examId.name.toUpperCase() === "SECOND TERM"
+  //     );
+
+  //     if (filteredScores.length === 0) {
+  //       throw new Error("No second term scores found for the student");
+  //     }
+
+  //     console.log("Filtered Scores:", filteredScores);
+
+  //     const scoresWithPositions = await Promise.all(
+  //       filteredScores.map(async (score) => {
+  //         const { examId, subjectId } = score;
+
+  //         if (!examId || !subjectId) {
+  //           console.error(
+  //             "Exam ID or Subject ID not found for a score:",
+  //             score
+  //           );
+  //           return { ...score, position: 0 };
+  //         }
+
+  //         const allStudentsData = await fetchAllStudentsData(
+  //           examId._id,
+  //           subjectId._id
+  //         );
+
+  //         const sortedStudents = allStudentsData.sort(
+  //           (a, b) => b.marksObtained - a.marksObtained
+  //         );
+
+  //         const studentPosition =
+  //           sortedStudents.findIndex(
+  //             (student) => student.studentId?._id === studentId
+  //           ) + 1;
+
+  //         console.log(
+  //           `Position of current student for Subject ${subjectId._id} and Exam ${examId._id}:`,
+  //           studentPosition
+  //         );
+
+  //         return {
+  //           ...score,
+  //           position: studentPosition,
+  //         };
+  //       })
+  //     );
+
+  //     console.log("Scores with Positions:", scoresWithPositions); // Log scores with positions
+
+  //     // Make sure scoresWithPositions is an array with at least one element
+  //     if (scoresWithPositions && scoresWithPositions.length > 0) {
+  //       return scoresWithPositions;
+  //     } else {
+  //       throw new Error("No scores available");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching student data:", error);
+  //     // throw new Error("Failed to fetch student data");
+  //   }
+  // };
   const fetchStudentData = async (studentId) => {
     try {
       const token = localStorage.getItem("jwtToken");
@@ -229,10 +308,9 @@ const TermRep = ({ studentId }) => {
       );
 
       if (filteredScores.length === 0) {
-        throw new Error("No second term scores found for the student");
+        console.warn("No second term scores found for the student");
+        return []; // <<< Important: Return empty array instead of throwing
       }
-
-      console.log("Filtered Scores:", filteredScores);
 
       const scoresWithPositions = await Promise.all(
         filteredScores.map(async (score) => {
@@ -243,7 +321,7 @@ const TermRep = ({ studentId }) => {
               "Exam ID or Subject ID not found for a score:",
               score
             );
-            return { ...score, position: 0 };
+            return { ...score, position: "-" }; // use placeholder
           }
 
           const allStudentsData = await fetchAllStudentsData(
@@ -260,11 +338,6 @@ const TermRep = ({ studentId }) => {
               (student) => student.studentId?._id === studentId
             ) + 1;
 
-          console.log(
-            `Position of current student for Subject ${subjectId._id} and Exam ${examId._id}:`,
-            studentPosition
-          );
-
           return {
             ...score,
             position: studentPosition,
@@ -272,19 +345,13 @@ const TermRep = ({ studentId }) => {
         })
       );
 
-      console.log("Scores with Positions:", scoresWithPositions); // Log scores with positions
-
-      // Make sure scoresWithPositions is an array with at least one element
-      if (scoresWithPositions && scoresWithPositions.length > 0) {
-        return scoresWithPositions;
-      } else {
-        throw new Error("No scores available");
-      }
+      return scoresWithPositions;
     } catch (error) {
       console.error("Error fetching student data:", error);
-      // throw new Error("Failed to fetch student data");
+      return []; // <<< Also important: always return [] on error
     }
   };
+
   const fetchAllStudentsData = async (examId, subjectId) => {
     try {
       const token = localStorage.getItem("jwtToken");
