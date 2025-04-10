@@ -223,11 +223,15 @@ const FirstTermRep = ({ studentId }) => {
         Authorization: `Bearer ${token}`,
       };
 
+      // const response = await axios.get(
+      //   `${apiUrl}/api/get-psy-by-student/${studentId}/${currentSession._id}`,
+      //   { headers }
+      // );
+      const term = "FIRST TERM";
       const response = await axios.get(
-        `${apiUrl}/api/get-psy-by-student/${studentId}/${currentSession._id}`,
+        `${apiUrl}/api/get-psy-by-student/${studentId}/${currentSession._id}?term=${term}`,
         { headers }
       );
-
       return { ...response.data };
     } catch (error) {
       console.error("Error fetching psychomotor data:", error);
