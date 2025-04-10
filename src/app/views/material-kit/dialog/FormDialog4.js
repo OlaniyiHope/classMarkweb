@@ -286,14 +286,14 @@ export default function FormDialog4({ updateTableData }) {
     data: teachersData,
     loading: teachersLoading,
     error: teachersError,
-  } = useFetch(`/get-teachers/${currentSession._id}`);
+  } = useFetch(`/get-teachers/${currentSession?._id}`);
 
   // Fetch class data
   const {
     data: classData,
     loading: classLoading,
     error: classError,
-  } = useFetch(`/class/${currentSession._id}`);
+  } = useFetch(`/class/${currentSession?._id}`);
 
   console.log("Teachers Data:", teachersData);
   console.log("Teachers Loading:", teachersLoading);
