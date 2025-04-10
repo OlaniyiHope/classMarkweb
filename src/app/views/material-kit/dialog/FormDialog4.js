@@ -255,7 +255,7 @@ export default function FormDialog4({ updateTableData }) {
         { headers }
       );
 
-      navigate("/dashboard/ss1-subject");
+      navigate("/dashboard/js1-subject");
     } catch (err) {
       console.error(
         "Error creating subject:",
