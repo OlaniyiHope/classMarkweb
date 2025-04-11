@@ -493,6 +493,45 @@ const TermRep = ({ studentId }) => {
   //     throw new Error("Failed to fetch student data");
   //   }
   // };
+  // const fetchPsyData = async (studentId) => {
+  //   console.log("Before API call...");
+
+  //   try {
+  //     const token = localStorage.getItem("jwtToken");
+  //     const headers = {
+  //       Authorization: `Bearer ${token}`,
+  //     };
+
+  //     // Make sure currentSession._id is valid
+  //     if (!currentSession?._id) {
+  //       throw new Error("Missing sessionId");
+  //     }
+
+  //     // Make the API call with studentId and sessionId
+  //     const response = await axios.get(
+  //       `${apiUrl}/api/get-psy-by-student/${studentId}/${currentSession._id}`,
+  //       { headers }
+  //     );
+  //     console.log("API response status:", response.status);
+  //     console.log("Original data:", response.data);
+
+  //     const filteredScores = response.data.marks.filter(
+  //       (mark) => mark.examName?.toUpperCase() === "SECOND TERM" // Use examName instead of examId
+  //     );
+
+  //     if (filteredScores.length === 0) {
+  //       console.warn("No second term scores found for the student");
+  //       return []; // <<< Important: Return empty array instead of throwing
+  //     }
+
+  //     console.log("Filtered Scores:", filteredScores);
+
+  //     return filteredScores; // Return filtered scores
+  //   } catch (error) {
+  //     console.error("Error fetching student data:", error);
+  //     return []; // <<< Always return an empty array in case of error
+  //   }
+  // };
   const fetchPsyData = async (studentId) => {
     console.log("Before API call...");
 
@@ -502,34 +541,42 @@ const TermRep = ({ studentId }) => {
         Authorization: `Bearer ${token}`,
       };
 
-      // Make sure currentSession._id is valid
+      // Ensure currentSession._id is valid
       if (!currentSession?._id) {
         throw new Error("Missing sessionId");
       }
 
-      // Make the API call with studentId and sessionId
+      // Define the exam name you are filtering by
+      const examName = "SECOND TERM"; // You can dynamically set this if needed
+
+      // Make the API call with studentId, sessionId, and examName as query params
       const response = await axios.get(
-        `${apiUrl}/api/get-psy-by-student/${studentId}/${currentSession._id}`,
+        `${apiUrl}/api/get-psy-by-student/${studentId}/${
+          currentSession._id
+        }?examName=${encodeURIComponent(examName)}`,
         { headers }
       );
+
       console.log("API response status:", response.status);
       console.log("Original data:", response.data);
 
+      // Filter for "SECOND TERM" exam only (just in case)
       const filteredScores = response.data.marks.filter(
-        (mark) => mark.examName?.toUpperCase() === "SECOND TERM" // Use examName instead of examId
+        (mark) => mark.examName?.toUpperCase() === "SECOND TERM"
       );
 
       if (filteredScores.length === 0) {
         console.warn("No second term scores found for the student");
-        return []; // <<< Important: Return empty array instead of throwing
+        alert("No second term scores available for this student."); // User-friendly alert
+        return []; // Return empty array
       }
 
       console.log("Filtered Scores:", filteredScores);
-
       return filteredScores; // Return filtered scores
     } catch (error) {
       console.error("Error fetching student data:", error);
-      return []; // <<< Always return an empty array in case of error
+      alert("An error occurred while fetching data. Please try again."); // Error message
+      return []; // Always return empty array in case of error
     }
   };
 
@@ -606,6 +653,54 @@ const TermRep = ({ studentId }) => {
 
   //   console.log("Student ID in useEffect:", studentId);
   // }, [studentId, currentSession]);
+  // useEffect(() => {
+  //   console.log("useEffect triggered");
+  //   console.log("new studentId:", studentId);
+  //   console.log("new currentSession:", currentSession);
+
+  //   if (!studentId || !currentSession?._id) return;
+
+  //   const fetchData = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const data = await fetchPsyData(studentId);
+  //       console.log("PsyData new fetched data:", data);
+  //       console.log("PsyData marks structure:", data.marks); // Check the marks specifically
+
+  //       setPsyData(data);
+  //     } catch (error) {
+  //       setError("Failed to fetch student data");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [studentId, currentSession]);
+  // useEffect(() => {
+  //   console.log("useEffect triggered");
+  //   console.log("new studentId:", studentId);
+  //   console.log("new currentSession:", currentSession);
+
+  //   if (!studentId || !currentSession?._id) return;
+
+  //   const fetchData = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const data = await fetchPsyData(studentId);
+  //       console.log("PsyData new fetched data:", data);
+  //       console.log("PsyData marks structure:", data[0]?.marks); // Access the first element and then marks
+
+  //       setPsyData(data[0]); // Set the first element to psyData
+  //     } catch (error) {
+  //       setError("Failed to fetch student data");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [studentId, currentSession]);
   useEffect(() => {
     console.log("useEffect triggered");
     console.log("new studentId:", studentId);
@@ -617,8 +712,15 @@ const TermRep = ({ studentId }) => {
       setLoading(true);
       try {
         const data = await fetchPsyData(studentId);
-        console.log("PsyData:", data);
-        setPsyData(data);
+        console.log("PsyData new fetched data:", data);
+
+        // Assuming data is an array and the first element is the one you want
+        const studentData = data[0];
+        console.log("PsyData marks structure:", studentData?.marks); // Access marks directly from the first element
+
+        setPsyData(studentData); // Set the student data directly, not the array
+        // Log the entire psyData
+        console.log("PsyData after setting:", studentData); // Log the full object
       } catch (error) {
         setError("Failed to fetch student data");
       } finally {
@@ -1289,45 +1391,25 @@ const TermRep = ({ studentId }) => {
             <div className="remarksbox" style={{ padding: "10px 0" }}>
               <table className="table">
                 <tbody>
-                  <tr>
-                    <th>CLASS TEACHER'S REMARK</th>
-                    {psyData?.scores?.map((score, index) => (
-                      <td key={index} colSpan="2">
-                        {score.remarks || "No remarks"}
-                      </td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <th>PRINCIPAL'S REMARK</th>
-                    {psyData?.scores?.map((score, index) => (
-                      <td key={index} colSpan="2">
-                        {score.premarks || "No principal remarks"}
-                      </td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <th>PRINCIPAL'S NAME</th>
-                    <td>{schoolSettings.principalName || "N/A"}</td>
-                    <td style={{ textAlign: "right" }}>
-                      <img
-                        src={`${apiUrl}/uploads/${schoolSettings.signature}`}
-                        width="200"
-                        alt="Principal Signature"
-                      />
-                    </td>
-                  </tr>
+                  {psyData ? (
+                    <>
+                      <tr>
+                        <th>CLASS TEACHER'S REMARK</th>
+                        <td colSpan="2">{psyData?.remarks || "No remarks"}</td>
+                      </tr>
 
-                  <tr>
-                    <th>SCHOOL RESUMES</th>
-                    <td>
-                      {schoolSettings.resumptionDate
-                        ? new Date(
-                            schoolSettings.resumptionDate
-                          ).toLocaleDateString()
-                        : "N/A"}
-                    </td>
-                    <td></td>
-                  </tr>
+                      <tr>
+                        <th>PRINCIPAL'S REMARK</th>
+                        <td colSpan="2">
+                          {psyData?.premarks || "No principal remarks"}
+                        </td>
+                      </tr>
+                    </>
+                  ) : (
+                    <tr>
+                      <td colSpan="2">No data available</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
