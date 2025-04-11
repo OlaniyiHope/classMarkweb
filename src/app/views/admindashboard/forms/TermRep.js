@@ -1409,6 +1409,28 @@ const TermRep = ({ studentId }) => {
                       <td colSpan="2">No data available</td>
                     </tr>
                   )}
+                  <tr>
+                    <th>PRINCIPAL'S NAME</th>
+                    <td>{schoolSettings?.principalName || "N/A"}</td>
+                    <td style={{ textAlign: "right" }}>
+                      <img
+                        src={schoolSettings?.signature} // Use full URL directly
+                        width="200"
+                        alt="Principal Signature"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>SCHOOL RESUMES</th>
+                    <td>
+                      {schoolSettings.resumptionDate
+                        ? new Date(
+                            schoolSettings.resumptionDate
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </td>
+                    <td></td>
+                  </tr>
                 </tbody>
               </table>
             </div>
