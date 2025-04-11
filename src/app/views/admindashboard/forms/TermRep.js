@@ -1335,49 +1335,48 @@ const TermRep = ({ studentId }) => {
                     <th>Work Habits</th>
                     <th>RATINGS</th>
                   </tr>
-                  {psyData?.scores?.length > 0 ? (
-                    psyData.scores.map((score, index) => (
-                      <React.Fragment key={index}>
-                        <tr>
-                          <td>{index + 1}</td>
-                          <td>Following Instruction</td>
-                          <td>{score?.instruction || "0"}</td>
-                        </tr>
-                        <tr>
-                          <td>{index + 2}</td>
-                          <td>Working Independently</td>
-                          <td>{score?.independently || "0"}</td>
-                        </tr>
-                        <tr>
-                          <th></th>
-                          <th>Behaviour</th>
-                          <th>RATINGS</th>
-                        </tr>
-                        <tr>
-                          <td>1</td>
-                          <td>Punctuality</td>
-                          <td>{score?.punctuality || "0"}</td>
-                        </tr>
-                        <tr>
-                          <th></th>
-                          <th>Communication</th>
-                          <th>RATINGS</th>
-                        </tr>
-                        <tr>
-                          <td>1</td>
-                          <td>Talking</td>
-                          <td>{score?.talking || "0"}</td>
-                        </tr>
-                        <tr>
-                          <td>2</td>
-                          <td>Eye Contact</td>
-                          <td>{score?.eyecontact || "0"}</td>
-                        </tr>
-                      </React.Fragment>
-                    ))
+
+                  {psyData ? (
+                    <React.Fragment>
+                      <tr>
+                        <td>1</td>
+                        <td>Following Instruction</td>
+                        <td>{psyData?.instruction || "0"}</td>
+                      </tr>
+                      <tr>
+                        <td>2</td>
+                        <td>Working Independently</td>
+                        <td>{psyData?.independently || "0"}</td>
+                      </tr>
+                      <tr>
+                        <th></th>
+                        <th>Behaviour</th>
+                        <th>RATINGS</th>
+                      </tr>
+                      <tr>
+                        <td>1</td>
+                        <td>Punctuality</td>
+                        <td>{psyData?.punctuality || "0"}</td>
+                      </tr>
+                      <tr>
+                        <th></th>
+                        <th>Communication</th>
+                        <th>RATINGS</th>
+                      </tr>
+                      <tr>
+                        <td>1</td>
+                        <td>Talking</td>
+                        <td>{psyData?.talking || "0"}</td>
+                      </tr>
+                      <tr>
+                        <td>2</td>
+                        <td>Eye Contact</td>
+                        <td>{psyData?.eyecontact || "0"}</td>
+                      </tr>
+                    </React.Fragment>
                   ) : (
                     <tr>
-                      <td colSpan="3">No psychomotor data available</td>
+                      <td colSpan="2">No Psychomotor available</td>
                     </tr>
                   )}
                 </tbody>
